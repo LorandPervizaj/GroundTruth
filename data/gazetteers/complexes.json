@@ -1,0 +1,12 @@
+[
+  {"id": 1, "name": "Mati 1", "slug": "mati-1", "neighborhood_slug": "mati", "aliases": ["Mati I", "Kompleksi Mati 1", "te Mati 1", "Mati 1"]},
+  {"id": 2, "name": "BS Group", "slug": "bs-group", "neighborhood_slug": "lakrishte", "aliases": ["Kompleksi BS Group", "BS Group Kompleks"]},
+  {"id": 3, "name": "Green Hill", "slug": "green-hill", "neighborhood_slug": "sunny-hill", "aliases": ["Green Hill Residence", "Kompleksi Green Hill"]},
+  {"id": 4, "name": "Arbëria Residence", "slug": "arberia-residence", "neighborhood_slug": "arberia", "aliases": ["Arberia Residence", "Kompleksi Arbëria"]},
+  {"id": 5, "name": "Lesna Residence", "slug": "lesna-residence", "neighborhood_slug": "lakrishte", "aliases": ["Lesna", "Kompleksi Lesna", "Lesna Residence"]},
+  {"id": 6, "name": "Mati 2", "slug": "mati-2", "neighborhood_slug": "mati", "aliases": ["Mati II", "Kompleksi Mati 2", "te Mati 2"]},
+  {"id": 7, "name": "Dardania Residence", "slug": "dardania-residence", "neighborhood_slug": "dardania", "aliases": ["Kompleksi Dardania", "Dardania Residences"]},
+  {"id": 8, "name": "Ulpiana Residence", "slug": "ulpiana-residence", "neighborhood_slug": "ulpiana", "aliases": ["Kompleksi Ulpiana", "Ulpiana Res"]},
+  {"id": 9, "name": "Sunny Hill Residence", "slug": "sunny-hill-residence", "neighborhood_slug": "sunny-hill", "aliases": ["SH Residence", "Sunny Hill Res"]},
+  {"id": 10, "name": "Emshir Residence", "slug": "emshir-residence", "neighborhood_slug": "emshir", "aliases": ["Kompleksi Emshir", "Emshir Res"]}
+]

@@ -1,0 +1,7 @@
+[
+  {"id": 1, "name": "Tower A", "slug": "tower-a-mati-1", "complex_slug": "mati-1", "neighborhood_slug": "mati", "aliases": ["Kulla A", "Tower 1"]},
+  {"id": 2, "name": "Tower B", "slug": "tower-b-mati-1", "complex_slug": "mati-1", "neighborhood_slug": "mati", "aliases": ["Kulla B", "Tower 2"]},
+  {"id": 3, "name": "Lesna A", "slug": "lesna-a", "complex_slug": "lesna-residence", "neighborhood_slug": "lakrishte", "aliases": ["Kulla Lesna A", "Lesna Tower A"]},
+  {"id": 4, "name": "Lesna B", "slug": "lesna-b", "complex_slug": "lesna-residence", "neighborhood_slug": "lakrishte", "aliases": ["Kulla Lesna B", "Lesna Tower B"]},
+  {"id": 5, "name": "BS Group A", "slug": "bs-group-a", "complex_slug": "bs-group", "neighborhood_slug": "lakrishte", "aliases": ["Kulla A BS", "BS A"]}
+]
