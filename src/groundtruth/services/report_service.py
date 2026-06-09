@@ -4,10 +4,15 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 import pandas as pd
+from sqlalchemy.orm import Session
 
+from groundtruth.analytics.dataframe import normalized_listings_dataframe
 from groundtruth.analytics.market_table import build_neighborhood_market_table
 from groundtruth.config import Settings, get_settings
+from groundtruth.gazetteers.version import compute_gazetteer_version
 from groundtruth.logging import get_logger
+from groundtruth.services.parsing import PARSER_VERSION
+from groundtruth.services.normalization import NORMALIZATION_VERSION
 
 logger = get_logger(__name__)
 
@@ -28,6 +33,76 @@ class ReportService:
         output_path = self._output_dir / f"neighborhood_summary_{timestamp}.csv"
         table.to_csv(output_path, index=False)
         logger.info("report_generated", path=str(output_path), rows=len(table))
+        return output_path
+
+    def generate_market_report_v01(self, session: Session) -> Path:
+        """Generate Market Report v0.1 markdown from all normalized listings."""
+        self._output_dir.mkdir(parents=True, exist_ok=True)
+        df = normalized_listings_dataframe(session)
+        if df.empty:
+            raise ValueError("No normalized listings available for market report")
+
+        table = build_neighborhood_market_table(df)
+        nh_names = df.drop_duplicates("neighborhood_id").set_index("neighborhood_id")["neighborhood"]
+        if not table.empty and "neighborhood_id" in table.columns:
+            table = table.copy()
+            table["neighborhood"] = table["neighborhood_id"].map(nh_names).fillna("Unknown")
+
+        sale_df = df[df["listing_type"] == "sale"]
+        rent_df = df[df["listing_type"] == "rent"]
+        total = len(df)
+        sale_pct = round(100.0 * len(sale_df) / total, 1) if total else 0.0
+        rent_pct = round(100.0 * len(rent_df) / total, 1) if total else 0.0
+        median_price_per_sqm = sale_df["price_per_sqm"].median() if not sale_df.empty else 0.0
+        mean_area = df["area_sqm"].dropna().mean() if not df["area_sqm"].dropna().empty else 0.0
+
+        def _fmt(value, fmt: str = ".0f", fallback: str = "—") -> str:
+            if value is None or (isinstance(value, float) and pd.isna(value)):
+                return fallback
+            return format(value, fmt)
+
+        top20 = table.head(20) if not table.empty else pd.DataFrame()
+        neighborhood_rows = []
+        for _, row in top20.iterrows():
+            name = row.get("neighborhood", row.get("neighborhood_id", "?"))
+            neighborhood_rows.append(
+                f"| {name} | {_fmt(row.get('median_price_per_sqm'))} | "
+                f"{int(row.get('inventory', 0) or 0)} | {_fmt(row.get('median_size_sqm'))} | "
+                f"{_fmt(row.get('median_rent'))} | {_fmt(row.get('gross_yield_pct'))} | "
+                f"{_fmt(row.get('luxury_percentage'))} |"
+            )
+
+        generated_at = datetime.now(UTC).strftime("%Y-%m-%d %H:%M UTC")
+        executive_summary = (
+            f"GroundTruth Market Report v0.1 covers **{total:,}** normalized listings "
+            f"from Gjirafa ({sale_pct}% sale, {rent_pct}% rent). "
+            f"Overall median sale price is **€{median_price_per_sqm:,.0f}/m²** "
+            f"with average apartment size **{mean_area:.0f} m²**. "
+            f"Parser {PARSER_VERSION}, normalizer {NORMALIZATION_VERSION}, "
+            f"gazetteer {compute_gazetteer_version()}."
+        )
+
+        template_path = self._templates_dir / "neighborhood_summary.md"
+        if template_path.exists():
+            body = template_path.read_text(encoding="utf-8")
+        else:
+            body = "# Kosovo Real Estate Market Report\n\n**Generated:** {{ generated_at }}\n"
+
+        body = (
+            body.replace("{{ generated_at }}", generated_at)
+            .replace("{{ data_period }}", "All available listings")
+            .replace("{{ executive_summary }}", executive_summary)
+            .replace("{{ neighborhood_rows }}", "\n".join(neighborhood_rows) or "| — | — | — | — | — | — | — |")
+        )
+
+        timestamp = datetime.now(UTC).strftime("%Y%m%d")
+        output_path = self._output_dir / f"market_report_v0.1_{timestamp}.md"
+        output_path.write_text(body, encoding="utf-8")
+        table_path = self._output_dir / f"market_report_v0.1_{timestamp}_table.csv"
+        if not table.empty:
+            table.to_csv(table_path, index=False)
+
+        logger.info("market_report_generated", path=str(output_path), listings=total)
         return output_path
 
     def list_templates(self) -> list[Path]:

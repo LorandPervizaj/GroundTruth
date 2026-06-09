@@ -31,6 +31,7 @@ class EtlMetrics(Base):
     source: Mapped[str] = mapped_column(String(100), nullable=False, index=True)
     parser_version: Mapped[str] = mapped_column(String(20), nullable=False)
     normalization_version: Mapped[str] = mapped_column(String(20), nullable=False)
+    gazetteer_version: Mapped[str] = mapped_column(String(20), nullable=False, default="unknown")
 
     total_scraped: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     parsed_success: Mapped[int] = mapped_column(Integer, nullable=False, default=0)

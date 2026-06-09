@@ -1,0 +1,27 @@
+{
+  "version": "1.3.0",
+  "regression_tests": {
+    "neighborhood": 1.0,
+    "price": 1.0,
+    "area": 1.0
+  },
+  "golden_dataset": {
+    "file": "golden_v1.csv",
+    "min_overall_accuracy": 0.97,
+    "sample_size": 901
+  },
+  "golden_scores": {
+    "overall": 1.0,
+    "neighborhood": 1.0,
+    "price": 1.0,
+    "area": 1.0,
+    "type": 1.0
+  },
+  "etl_benchmark_v1_3_0_final": {
+    "price_coverage_pct": 100.0,
+    "area_coverage_pct": 90.3,
+    "area_coverage_with_source_signal_pct": 99.6,
+    "neighborhood_coverage_pct": 95.8,
+    "invalid_rate_pct": 2.4
+  }
+}

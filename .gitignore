@@ -24,6 +24,10 @@ venv/
 .coverage
 htmlcov/
 
+# Training data collected at runtime (keep structure)
+data/training/*
+!data/training/.gitkeep
+
 # Data (keep structure, ignore scraped content)
 data/raw/**
 data/parsed/**

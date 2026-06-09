@@ -141,5 +141,6 @@ class NormalizedListingSchema(BaseModel):
     geocode_precision: str | None = None
 
     normalization_version: str = "1.0.0"
+    gazetteer_version: str = "unknown"
     confidence_score: float | None = None
     confidence_details: dict[str, Any] | None = None

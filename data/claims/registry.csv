@@ -1,0 +1,6 @@
+claim_id,statement,claim_type,etl_run_id,etl_date,parser_version,methodology_version,notebook_path,notebook_hash,query_path,sql_hash,dataset_hash,n,reviewer,status,superseded_by,created_at,notes
+GT-000,The dataset represents Prishtina apartment rentals not Kosovo residential market,fact,,2026-06-09,1.3.0,1.0.0,,,reports/generated/audit_2026-06-09/source_bias.csv,,,2404,,published,,2026-06-09T00:00:00+00:00,Source bias audit section 7
+GT-001,Overall area coverage is 90.3% with 99.6% extraction when source contains area signal,fact,,2026-06-09,1.3.0,1.0.0,,,RESEARCH.md#area-coverage-ceiling,,,2404,,published,,2026-06-09T00:00:00+00:00,Report both metrics in methodology
+GT-002,Parser golden accuracy is 100% on auto-labeled sample n=901,fact,,2026-06-09,1.3.0,1.0.0,,,scripts/evaluate_golden_dataset.py,,,901,,draft,,2026-06-09T00:00:00+00:00,Requires manual verification of golden_v1_manual_review_100.csv
+GT-003,Invalid listing rate is below 3% after parser v1.3.0,fact,,2026-06-09,1.3.0,1.0.0,,,reports/generated/benchmark_log.csv,,,11823,,published,,2026-06-09T00:00:00+00:00,2.4% on full normalized set
+GT-004,Median rent analysis by neighborhood requires n>=30 per neighborhood for publication,method,,,1.3.0,1.0.0,,,,,,,draft,,2026-06-09T00:00:00+00:00,Publication policy placeholder

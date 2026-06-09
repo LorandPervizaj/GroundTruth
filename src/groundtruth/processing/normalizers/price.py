@@ -58,16 +58,21 @@ class PriceNormalizer(Processor[Decimal | float | int | str | None, Decimal | No
         return self.process(value, description=description)
 
     def _parse_numeric_token(self, token: str) -> str | None:
-        """Parse European-style numbers: 125.000 = 125000, 1.300 = 1300, 1,50 = 1.50."""
+        """Parse European and US-style grouped numbers: 125.000, 125,000, 1.300, 1,50."""
         cleaned = token.strip().replace(" ", "").replace("€", "").replace("EUR", "")
         if not cleaned:
             return None
+        # Thousands grouped with dots: 125.000
         if re.fullmatch(r"\d{1,3}(?:\.\d{3})+", cleaned):
             return cleaned.replace(".", "")
+        # Thousands grouped with commas: 125,000 (common on Gjirafa)
+        if re.fullmatch(r"\d{1,3}(?:,\d{3})+", cleaned):
+            return cleaned.replace(",", "")
         if "," in cleaned and "." in cleaned:
             if cleaned.rfind(",") > cleaned.rfind("."):
                 return cleaned.replace(".", "").replace(",", ".")
             return cleaned.replace(",", "")
+        # Decimal comma only when not a thousands pattern: 1,50
         if "," in cleaned:
             return cleaned.replace(",", ".")
         return cleaned
@@ -85,12 +90,16 @@ class PriceNormalizer(Processor[Decimal | float | int | str | None, Decimal | No
 
     def _extract_from_text(self, text: str) -> Decimal | None:
         patterns = [
-            r"çmimi[:\s]*([\d\s.,]+)\s*€?",
-            r"cmimi[:\s]*([\d\s.,]+)\s*€?",
+            r"çmimi[:\s]*([\d\s.,]+)\s*(?:€|eur|euro)?",
+            r"cmimi[:\s]*([\d\s.,]+)\s*(?:€|eur|euro)?",
             r"price[:\s]*([\d\s.,]+)",
+            r"(\d[\d\s.,]+)\s*(?:€|eur|euro)\b",
+            r"(\d[\d\s.,]+)\s*mij[eë]\b",
         ]
         for pattern in patterns:
             match = re.search(pattern, text, re.IGNORECASE)
             if match:
-                return self.process(match.group(1))
+                amount = self.process(match.group(1))
+                if amount is not None:
+                    return amount
         return None

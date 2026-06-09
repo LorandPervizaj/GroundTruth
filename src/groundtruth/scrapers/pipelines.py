@@ -7,7 +7,7 @@ from itemadapter import ItemAdapter
 
 from groundtruth.database.repositories import ScrapeRunRepository
 from groundtruth.database.session import get_session_factory
-from groundtruth.logging import configure_logging, get_logger
+from groundtruth.logging import get_logger
 from groundtruth.schemas.pipeline import RawListingSchema
 from groundtruth.services.pipeline import PipelineService
 
@@ -31,7 +31,6 @@ class RawListingPipeline:
     """Persist raw listings to PostgreSQL without modification."""
 
     def open_spider(self, spider) -> None:
-        configure_logging()
         self._session_factory = get_session_factory()
         self._session = self._session_factory()
         self._scrape_run_repo = ScrapeRunRepository(self._session)
@@ -44,7 +43,7 @@ class RawListingPipeline:
         )
         spider.scrape_run_id = self._scrape_run.id
         self._items_stored = 0
-        logger.info("raw_pipeline_opened", spider=spider.name, scrape_run_id=self._scrape_run.id)
+        logger.debug("raw_pipeline_opened", spider=spider.name, scrape_run_id=self._scrape_run.id)
 
     def close_spider(self, spider) -> None:
         self._scrape_run_repo.complete_run(
@@ -55,7 +54,7 @@ class RawListingPipeline:
         )
         self._session.commit()
         self._session.close()
-        logger.info("raw_pipeline_closed", spider=spider.name, stored=self._items_stored)
+        logger.warning("raw_pipeline_closed", spider=spider.name, stored=self._items_stored)
 
     def process_item(self, item, spider):
         adapter = ItemAdapter(item)
@@ -76,4 +75,7 @@ class RawListingPipeline:
         )
         self._pipeline_service.store_raw(schema, spider.scrape_run_id)
         self._items_stored += 1
+        if self._items_stored % 100 == 0:
+            self._session.commit()
+            logger.warning("crawl_progress", spider=spider.name, stored=self._items_stored)
         return item

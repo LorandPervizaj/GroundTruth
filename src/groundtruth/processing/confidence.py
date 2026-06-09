@@ -20,6 +20,7 @@ class ConfidenceFactors:
     """Signals collected during normalization for confidence scoring."""
 
     neighborhood_match_type: str = "missing"
+    neighborhood_gazetteer_slug: str | None = None
     street_match_type: str = "missing"
     complex_match_type: str = "missing"
     building_match_type: str = "missing"

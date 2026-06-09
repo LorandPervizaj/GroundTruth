@@ -25,14 +25,18 @@ class ValidationResult(BaseModel):
 
 
 class FieldExtractionRates(BaseModel):
-    """Percentage of listings where a field was successfully extracted."""
+    """Field coverage: percentage of listings where a field was successfully extracted."""
 
     price: float = 0.0
     area: float = 0.0
     neighborhood: float = 0.0
     building: float = 0.0
+    heating: float = 0.0
+    furnished: float = 0.0
     description: float = 0.0
     listing_type: float = 0.0
+    error_breakdown: dict[str, int] | None = None
+    parser_kpis: dict[str, Any] | None = None
 
 
 class EtlMetricsSchema(BaseModel):
@@ -44,6 +48,7 @@ class EtlMetricsSchema(BaseModel):
     source: str
     parser_version: str
     normalization_version: str
+    gazetteer_version: str | None = None
     total_scraped: int = 0
     parsed_success: int = 0
     parsed_failed: int = 0

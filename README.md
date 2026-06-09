@@ -1,6 +1,8 @@
-# GroundTruth — Real Estate Market Analysis (Kosovo)
+# GroundTruth — Kosovo Real Estate Intelligence Platform
 
-Market intelligence platform for residential real estate in Prishtina and Fushë Kosovë.
+The scraper is an input. The asset is the data.
+
+Market intelligence for residential real estate in Prishtina and Fushë Kosovë. See [docs/PLATFORM.md](docs/PLATFORM.md) for roadmap and publication strategy.
 
 ## Stack
 

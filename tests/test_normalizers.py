@@ -20,6 +20,9 @@ class TestPriceNormalizer:
         "raw,expected",
         [
             ("145.000 €", Decimal("145000.00")),
+            ("145,000 EUR", Decimal("145000.00")),
+            ("125,000 EUR", Decimal("125000.00")),
+            ("1.300 EUR", Decimal("1300.00")),
             ("145000", Decimal("145000.00")),
             ("145k", Decimal("145000.00")),
         ],

@@ -20,6 +20,9 @@ def generate_market_snapshots(
 ) -> list[MarketSnapshot]:
     """Compute and persist market snapshots for all neighborhoods."""
     snapshot_date = snapshot_date or date.today()
+    session.query(MarketSnapshot).filter_by(snapshot_date=snapshot_date).delete(
+        synchronize_session=False
+    )
     table = build_neighborhood_market_table(df)
     if table.empty:
         logger.warning("no_data_for_snapshots", date=str(snapshot_date))

@@ -15,10 +15,13 @@ from groundtruth.processing.normalizers.heating import HeatingNormalizer
 from groundtruth.processing.normalizers.neighborhood import NeighborhoodNormalizer
 from groundtruth.processing.normalizers.price import PriceNormalizer
 from groundtruth.processing.normalizers.street import StreetNormalizer
+from groundtruth.gazetteers.loader import GazetteerService
 from groundtruth.processing.confidence import ConfidenceFactors
+from groundtruth.gazetteers.version import compute_gazetteer_version
 from groundtruth.schemas.pipeline import NormalizedListingSchema, ParsedListingSchema
 
 NORMALIZATION_VERSION = "1.0.0"
+GAZETTEER_VERSION = compute_gazetteer_version()
 
 
 def _match_type(match, fallback: str = "missing") -> str:
@@ -30,11 +33,13 @@ class NormalizationService:
 
     def __init__(self, session: Session | None = None) -> None:
         self._session = session
+        gazetteer = GazetteerService()
+        gazetteer.load()
         self._price = PriceNormalizer()
         self._area = AreaNormalizer()
         self._currency = CurrencyNormalizer()
-        self._neighborhood = NeighborhoodNormalizer()
-        self._street = StreetNormalizer()
+        self._neighborhood = NeighborhoodNormalizer(gazetteer)
+        self._street = StreetNormalizer(gazetteer)
         self._complex = ComplexNormalizer()
         self._building = BuildingNormalizer()
         self._heating = HeatingNormalizer()
@@ -46,8 +51,9 @@ class NormalizationService:
     ) -> tuple[NormalizedListingSchema, ConfidenceFactors]:
         """Transform a parsed listing into a normalized listing."""
         currency = self._currency.normalize(parsed.currency, parsed.description_original)
-        sale_price = self._price.normalize(parsed.sale_price, parsed.description_original)
-        rent_price = self._price.normalize(parsed.rent_price, parsed.description_original)
+        # Never re-extract price from description here — avoids populating the wrong field.
+        sale_price = self._price.normalize(parsed.sale_price, None)
+        rent_price = self._price.normalize(parsed.rent_price, None)
         area_sqm = self._area.normalize(parsed.area_sqm, parsed.description_original)
 
         neighborhood_match = self._neighborhood.normalize(
@@ -88,9 +94,15 @@ class NormalizationService:
             if street_row:
                 neighborhood_id = street_row.neighborhood_id
                 neighborhood_match_type = "street_fallback"
+        if neighborhood_id is None and complex_match and self._session:
+            complex_row = self._session.query(Complex).filter_by(slug=complex_match.slug).first()
+            if complex_row and complex_row.neighborhood_id:
+                neighborhood_id = complex_row.neighborhood_id
+                neighborhood_match_type = "complex_fallback"
 
         factors = ConfidenceFactors(
             neighborhood_match_type=neighborhood_match_type,
+            neighborhood_gazetteer_slug=neighborhood_match.slug if neighborhood_match else None,
             street_match_type=_match_type(street_match),
             complex_match_type=_match_type(complex_match),
             building_match_type=_match_type(building_match),
@@ -137,6 +149,7 @@ class NormalizationService:
             longitude=geocode.longitude,
             geocode_precision=geocode.precision,
             normalization_version=NORMALIZATION_VERSION,
+            gazetteer_version=GAZETTEER_VERSION,
         )
         return schema, factors
 

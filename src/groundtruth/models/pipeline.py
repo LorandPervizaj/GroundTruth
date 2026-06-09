@@ -282,6 +282,7 @@ class NormalizedListing(Base):
     geocode_precision: Mapped[str | None] = mapped_column(String(50), nullable=True)
 
     normalization_version: Mapped[str] = mapped_column(String(20), nullable=False, default="1.0.0")
+    gazetteer_version: Mapped[str] = mapped_column(String(20), nullable=False, default="unknown")
     scraped_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     confidence_score: Mapped[float | None] = mapped_column(Float, nullable=True, index=True)
     confidence_details: Mapped[dict[str, Any] | None] = mapped_column(JSONB, nullable=True)

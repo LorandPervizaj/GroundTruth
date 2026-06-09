@@ -9,6 +9,7 @@ from groundtruth.config import get_settings
 from groundtruth.models import Base  # noqa: F401 — registers all models
 from groundtruth.models.canonical import CanonicalProperty, ListingSource, PriceHistory  # noqa: F401
 from groundtruth.models.etl import EtlMetrics, InvalidListing  # noqa: F401
+from groundtruth.models.lineage import DataLineage  # noqa: F401
 from groundtruth.models.events import PropertyEvent  # noqa: F401
 from groundtruth.models.market import MarketSnapshot  # noqa: F401
 from groundtruth.models.pipeline import NormalizedListing, ParsedListing, RawListing  # noqa: F401

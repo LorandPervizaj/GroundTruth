@@ -32,11 +32,26 @@ class GjirafaSpider(BaseRealEstateSpider):
 
     custom_settings = {
         "ROBOTSTXT_OBEY": False,
+        # Gjirafa serves static HTML — Playwright adds ~50s/page overhead.
+        "DOWNLOAD_HANDLERS": {
+            "http": "scrapy.core.downloader.handlers.http11.HTTP11DownloadHandler",
+            "https": "scrapy.core.downloader.handlers.http11.HTTP11DownloadHandler",
+        },
+        "AUTOTHROTTLE_ENABLED": False,
+        "DOWNLOAD_DELAY": 0.5,
+        "CONCURRENT_REQUESTS": 8,
+        "CONCURRENT_REQUESTS_PER_DOMAIN": 8,
+        "LOG_LEVEL": "WARNING",
     }
 
-    def __init__(self, max_pages: str = "1", *args, **kwargs) -> None:
+    def __init__(self, max_pages: str = "250", max_listings: str = "0", *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self._max_pages = int(max_pages)
+        self._max_listings = int(max_listings)
+        self._detail_requests_sent = 0
+
+    def _at_listing_limit(self) -> bool:
+        return self._max_listings > 0 and self._detail_requests_sent >= self._max_listings
 
     def _is_detail_page(self, response: Response) -> bool:
         if response.meta.get("page_type") == "detail":
@@ -44,6 +59,10 @@ class GjirafaSpider(BaseRealEstateSpider):
         return bool(_LISTING_PATH_RE.search(response.url))
 
     def parse_index_page(self, response: Response) -> Iterable:
+        if self._at_listing_limit():
+            self.logger.info("listing_limit_reached count=%d", self._detail_requests_sent)
+            return
+
         listing_urls: set[str] = set(_LISTING_URL_RE.findall(response.text))
         for path in _LISTING_PATH_RE.findall(response.text):
             listing_urls.add(response.urljoin(path))
@@ -51,7 +70,13 @@ class GjirafaSpider(BaseRealEstateSpider):
         self.logger.info("index_listings_found count=%d url=%s", len(listing_urls), response.url)
 
         for url in sorted(listing_urls):
+            if self._at_listing_limit():
+                break
+            self._detail_requests_sent += 1
             yield self.request_detail(response, url)
+
+        if self._at_listing_limit():
+            return
 
         current_page = response.meta.get("page", 0)
         if current_page + 1 < self._max_pages:
@@ -73,3 +98,9 @@ class GjirafaSpider(BaseRealEstateSpider):
             raw_payload=payload,
             raw_html=response.text,
         )
+        if self.listings_found % 100 == 0:
+            self.logger.warning(
+                "crawl_progress listings=%d requests=%d",
+                self.listings_found,
+                self._detail_requests_sent,
+            )

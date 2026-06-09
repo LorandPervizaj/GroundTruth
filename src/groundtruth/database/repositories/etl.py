@@ -23,6 +23,7 @@ class EtlMetricsRepository(BaseRepository[EtlMetrics]):
             source=schema.source,
             parser_version=schema.parser_version,
             normalization_version=schema.normalization_version,
+            gazetteer_version=schema.gazetteer_version or "unknown",
             total_scraped=schema.total_scraped,
             parsed_success=schema.parsed_success,
             parsed_failed=schema.parsed_failed,

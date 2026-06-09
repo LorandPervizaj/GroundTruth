@@ -37,7 +37,7 @@ class PipelineService:
     ):
         """Persist immutable raw listing."""
         entity = self._raw_repo.create_from_schema(schema, scrape_run_id)
-        logger.info(
+        logger.debug(
             "raw_listing_stored",
             raw_listing_id=entity.id,
             source=schema.source_website,

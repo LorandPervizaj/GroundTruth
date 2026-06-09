@@ -13,6 +13,8 @@ from groundtruth.models.enums import (
     ScrapeRunStatus,
 )
 from groundtruth.models.etl import EtlMetrics, InvalidListing
+from groundtruth.models.lineage import DataLineage
+from groundtruth.models.listing_observation import ListingObservation
 from groundtruth.models.events import PropertyEvent
 from groundtruth.models.market import MarketSnapshot
 from groundtruth.models.pipeline import NormalizedListing, ParsedListing, RawListing
@@ -27,9 +29,11 @@ __all__ = [
     "CanonicalProperty",
     "Complex",
     "Currency",
+    "DataLineage",
     "EtlMetrics",
     "HeatingType",
     "InvalidListing",
+    "ListingObservation",
     "ListingSource",
     "ListingType",
     "PipelineStage",

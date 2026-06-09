@@ -8,5 +8,6 @@
   {"id": 7, "name": "Dardania Residence", "slug": "dardania-residence", "neighborhood_slug": "dardania", "aliases": ["Kompleksi Dardania", "Dardania Residences"]},
   {"id": 8, "name": "Ulpiana Residence", "slug": "ulpiana-residence", "neighborhood_slug": "ulpiana", "aliases": ["Kompleksi Ulpiana", "Ulpiana Res"]},
   {"id": 9, "name": "Sunny Hill Residence", "slug": "sunny-hill-residence", "neighborhood_slug": "sunny-hill", "aliases": ["SH Residence", "Sunny Hill Res"]},
-  {"id": 10, "name": "Emshir Residence", "slug": "emshir-residence", "neighborhood_slug": "emshir", "aliases": ["Kompleksi Emshir", "Emshir Res"]}
+  {"id": 10, "name": "Emshir Residence", "slug": "emshir-residence", "neighborhood_slug": "emshir", "aliases": ["Kompleksi Emshir", "Emshir Res"]},
+  {"id": 11, "name": "Royal City", "slug": "royal-city", "neighborhood_slug": "lakrishte", "aliases": ["Royal City Prishtina", "ne Royal City", "te Royal City"]}
 ]

@@ -44,7 +44,16 @@ class AreaNormalizer(Processor[float | int | str | None, float | None]):
         patterns = [
             r"siperfaqe[:\s]*(\d+(?:[.,]\d+)?)\s*m",
             r"sipërfaqe[:\s]*(\d+(?:[.,]\d+)?)\s*m",
+            r"sipërfaqja[:\s]*(\d+(?:[.,]\d+)?)\s*m",
+            r"siperfaqe\s+banimi[:\s]*(\d+(?:[.,]\d+)?)\s*m",
+            r"sip[:\s]*(\d+(?:[.,]\d+)?)\s*m",
+            r"(\d+(?:[.,]\d+)?)\s*m\s*/\s*2",
+            r"(\d+(?:[.,]\d+)?)\s*m/2",
+            r"prej\s+(\d+(?:[.,]\d+)?)\s*m(?:²|2|\b)",
             r"(\d+(?:[.,]\d+)?)\s*m²",
+            r"(\d+(?:[.,]\d+)?)\s*m2\b",
+            r"(\d+(?:[.,]\d+)?)\s*metra\s*katror",
+            r"(\d+(?:[.,]\d+)?)\s*metra\b",
         ]
         for pattern in patterns:
             match = re.search(pattern, text, re.IGNORECASE)

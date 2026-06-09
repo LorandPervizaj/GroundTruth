@@ -16,12 +16,16 @@ from groundtruth.database.repositories import (
     RawListingRepository,
 )
 from groundtruth.logging import get_logger
-from groundtruth.models.enums import ListingType, PipelineStage
+from groundtruth.models.enums import HeatingType, ListingType, PipelineStage
 from groundtruth.models.pipeline import NormalizedListing, RawListing
 from groundtruth.processing.confidence import ConfidenceScorer
+from groundtruth.models.lineage import DataLineage
+from groundtruth.processing.neighborhood_failures import log_neighborhood_failure
+from groundtruth.processing.parser_kpis import build_parser_kpi_report
 from groundtruth.processing.validation import ListingValidator
 from groundtruth.schemas.etl import EtlMetricsSchema, FieldExtractionRates, InvalidListingSchema
 from groundtruth.schemas.pipeline import NormalizedListingSchema
+from groundtruth.gazetteers.version import compute_gazetteer_version
 from groundtruth.services.normalization import NORMALIZATION_VERSION, NormalizationService
 from groundtruth.services.parsing import PARSER_VERSION, ParsingService
 from groundtruth.services.pipeline import PipelineService
@@ -74,7 +78,10 @@ class EtlService:
             "normalized_failed": 0,
             "validation_failed": 0,
         }
+        error_counts: dict[str, int] = {}
         normalized_entities: list[NormalizedListing] = []
+        lineage_pending: list[dict[str, int | str]] = []
+        gazetteer_version = compute_gazetteer_version()
 
         for raw in raw_listings:
             if skip_existing and self._parsed_repo.exists_for_raw(raw.id):
@@ -98,9 +105,12 @@ class EtlService:
                 if not validation.is_valid:
                     is_valid = False
                     counters["validation_failed"] += 1
+                    codes = [issue.code for issue in validation.issues]
+                    for code in codes:
+                        error_counts[code] = error_counts.get(code, 0) + 1
                     self._record_invalid(
                         stage=PipelineStage.VALIDATE,
-                        error_codes=[issue.code for issue in validation.issues],
+                        error_codes=codes,
                         field_errors={issue.field: issue.message for issue in validation.issues},
                         message="; ".join(issue.message for issue in validation.issues),
                         scrape_run_id=raw.scrape_run_id,
@@ -118,6 +128,18 @@ class EtlService:
                 normalized_schema.confidence_score = confidence.score
                 normalized_schema.confidence_details = confidence.details
 
+                if normalized_schema.neighborhood_id is None:
+                    payload = raw.raw_payload or {}
+                    title = payload.get("title") or ""
+                    description = parsed_schema.description_original or ""
+                    log_neighborhood_failure(
+                        source_listing_id=raw.source_listing_id,
+                        raw_text=f"{title}\n{description}".strip(),
+                        regex_result=parsed_schema.neighborhood_raw,
+                        gazetteer_result=factors.neighborhood_gazetteer_slug
+                        or factors.neighborhood_match_type,
+                    )
+
                 normalized_entity = self._pipeline.normalize_and_store(
                     parsed_schema,
                     parsed_listing_id=parsed_entity.id,
@@ -126,6 +148,16 @@ class EtlService:
                 )
                 counters["normalized_success"] += 1
                 normalized_entities.append(normalized_entity)
+                lineage_pending.append(
+                    {
+                        "normalized_listing_id": normalized_entity.id,
+                        "raw_listing_id": raw.id,
+                        "parsed_listing_id": parsed_entity.id,
+                        "parser_version": PARSER_VERSION,
+                        "normalization_version": NORMALIZATION_VERSION,
+                        "gazetteer_version": gazetteer_version,
+                    }
+                )
             except Exception as exc:
                 counters["normalized_failed"] += 1
                 self._record_invalid(
@@ -144,7 +176,15 @@ class EtlService:
                 )
 
         field_rates = self._compute_field_rates(normalized_entities)
+        field_rates.error_breakdown = error_counts
         duplicate_candidates = self._count_duplicate_candidates(normalized_entities)
+        kpi_report = build_parser_kpi_report(
+            field_rates,
+            normalized_count=counters["normalized_success"],
+            validation_failed=counters["validation_failed"],
+            duplicate_candidates=duplicate_candidates,
+        )
+        field_rates.parser_kpis = kpi_report.model_dump(mode="json")
         duration = round(time.perf_counter() - started, 2)
 
         metrics = EtlMetricsSchema(
@@ -152,6 +192,7 @@ class EtlService:
             source=source_name,
             parser_version=PARSER_VERSION,
             normalization_version=NORMALIZATION_VERSION,
+            gazetteer_version=gazetteer_version,
             total_scraped=len(raw_listings),
             parsed_success=counters["parsed_success"],
             parsed_failed=counters["parsed_failed"],
@@ -162,7 +203,14 @@ class EtlService:
             duration_seconds=duration,
             field_rates=field_rates,
         )
-        self._metrics_repo.create_from_schema(metrics)
+        metrics_entity = self._metrics_repo.create_from_schema(metrics)
+        for row in lineage_pending:
+            self._session.add(
+                DataLineage(
+                    etl_metrics_id=metrics_entity.id,
+                    **row,
+                )
+            )
         self._session.commit()
 
         logger.info("etl_run_complete", metrics=metrics.model_dump(mode="json"))
@@ -252,6 +300,12 @@ class EtlService:
         area_count = sum(1 for listing in listings if listing.area_sqm is not None)
         neighborhood_count = sum(1 for listing in listings if listing.neighborhood_id is not None)
         building_count = sum(1 for listing in listings if listing.building_id is not None)
+        heating_count = sum(
+            1
+            for listing in listings
+            if listing.heating_type is not None and listing.heating_type != HeatingType.UNKNOWN
+        )
+        furnished_count = sum(1 for listing in listings if listing.is_furnished is not None)
         description_count = sum(
             1 for listing in listings if listing.description_original
         )
@@ -262,6 +316,8 @@ class EtlService:
             area=pct(area_count),
             neighborhood=pct(neighborhood_count),
             building=pct(building_count),
+            heating=pct(heating_count),
+            furnished=pct(furnished_count),
             description=pct(description_count),
             listing_type=pct(listing_type_count),
         )
