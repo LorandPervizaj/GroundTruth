@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Metrik - Rent yield</title>
+  <meta name="description" content="Gross rent yield by Prishtina neighborhood where rent and sale samples are sufficient." />
+  <meta property="og:title" content="Metrik - Rent yield" />
+  <meta property="og:description" content="Neighborhood gross rental yield from median rent and sale prices." />
+  <meta property="og:type" content="website" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/static/style.css?v=46" />
+</head>
+<body data-page-title="rent_yield_title">
+  <div class="page page-wide">
+    <div id="site-nav"></div>
+    <div id="insights-subnav"></div>
+
+    <header class="compare-header">
+      <h1 class="hero-title" data-i18n="rent_yield_title"></h1>
+      <p class="hero-sub" data-i18n="rent_yield_sub"></p>
+      <p class="hint hint-info" data-i18n="rent_yield_hint" data-info-attach=".compare-header .hero-title"></p>
+    </header>
+
+    <section class="panel">
+      <div id="yield-status" class="hint" hidden></div>
+      <div class="table-wrap">
+        <table class="data-table" id="yield-table">
+          <thead>
+            <tr>
+              <th data-i18n="neighborhood"></th>
+              <th data-i18n="rent_yield_col_yield"></th>
+              <th data-i18n="pulse_median_rent"></th>
+              <th data-i18n="pulse_median_sale"></th>
+              <th data-i18n="rent_yield_col_rent_n"></th>
+              <th data-i18n="rent_yield_col_sale_n"></th>
+            </tr>
+          </thead>
+          <tbody id="yield-body">
+            <tr><td colspan="6" data-i18n="loading"></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <div id="site-footer"></div>
+  </div>
+
+  <script src="/static/i18n.js?v=45"></script>
+  <script src="/static/format.js?v=10"></script>
+  <script src="/static/site.js?v=31"></script>
+  <script src="/static/rent-yield.js?v=3"></script>
+</body>
+</html>
+

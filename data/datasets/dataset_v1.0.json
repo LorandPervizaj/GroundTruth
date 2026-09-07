@@ -1,0 +1,55 @@
+{
+  "dataset_version": "v1.0",
+  "frozen_at": "2026-06-09T13:44:45.060340+00:00",
+  "description": "GroundTruth Prishtina residential baseline \u2014 single source (Gjirafa), parser v1.3.1",
+  "sources": [
+    {
+      "source_website": "gjirafa",
+      "unique_listings": 2404
+    }
+  ],
+  "coverage": {
+    "normalized_rows": 11823.0,
+    "unique_listings": 2404.0,
+    "rent_rows": 10684.0,
+    "sale_rows": 1139.0,
+    "furnished_true": 8166.0,
+    "furnished_false": 192.0,
+    "furnished_null": 3465.0,
+    "area_coverage_pct": 90.3,
+    "neighborhood_coverage_pct": 95.8
+  },
+  "versions": {
+    "parser_version": "1.3.1",
+    "etl_version": "1.0.0",
+    "methodology_version": "1.0.0"
+  },
+  "fingerprints": {
+    "raw_crawl_hash": "efb023133f987c7fabad98a4eec18c11450616812ae98b823b42082d308f6e81",
+    "etl_version": "1.0.0",
+    "parser_version": "1.3.1",
+    "methodology_version": "1.0.0",
+    "notebook_hash": "",
+    "sql_hash": "",
+    "dataset_hash": "39e40fd623be290419b92f5835126066f108a51036e99e3dd83508ecc9aa70fc"
+  },
+  "calibration": {
+    "manual_review_rows": 100,
+    "ece_pct": 4.6,
+    "all_fields_accuracy_pct": 92.0,
+    "source": "data/calibration/review_bins.csv"
+  },
+  "claims_baseline": [
+    "GT-000",
+    "GT-001",
+    "GT-003",
+    "GT-005",
+    "GT-006",
+    "GT-007"
+  ],
+  "reports": {
+    "audit": "reports/generated/audit_2026-06-09/",
+    "quarterly": "reports/generated/quarterly_report_v1_0_2026-06-09.md"
+  },
+  "notes": "Do not mix pre-v1.3.1 normalized rows in comparative analysis. Next data increment should be MerrJep (source diversity), not more Gjirafa volume."
+}

@@ -1,0 +1,903 @@
+[
+  {
+    "id": 1,
+    "name": "Rruga B",
+    "slug": "rruga-b",
+    "city": "Prishtina",
+    "neighborhood_slug": "matiqan",
+    "aliases": [],
+    "district_type": "street_district"
+  },
+  {
+    "id": 2,
+    "name": "Rruga A",
+    "slug": "rruga-a",
+    "city": "Prishtina",
+    "neighborhood_slug": "matiqan",
+    "aliases": [],
+    "district_type": "street_district"
+  },
+  {
+    "id": 3,
+    "name": "Rruga C",
+    "slug": "rruga-c",
+    "city": "Prishtina",
+    "neighborhood_slug": "matiqan",
+    "aliases": [],
+    "district_type": "street_district"
+  },
+  {
+    "id": 4,
+    "name": "Rruga Muharrem Fejza",
+    "slug": "muharrem-fejza",
+    "city": "Prishtina",
+    "neighborhood_slug": "matiqan",
+    "aliases": [],
+    "district_type": "street_district"
+  },
+  {
+    "id": 5,
+    "name": "Mati 1",
+    "slug": "mati-1",
+    "city": "Prishtina",
+    "neighborhood_slug": "matiqan",
+    "aliases": [],
+    "district_type": "district"
+  },
+  {
+    "id": 6,
+    "name": "Mati 2",
+    "slug": "mati-2",
+    "city": "Prishtina",
+    "neighborhood_slug": "matiqan",
+    "aliases": [],
+    "district_type": "district"
+  },
+  {
+    "id": 7,
+    "name": "Mati 3",
+    "slug": "mati-3",
+    "city": "Prishtina",
+    "neighborhood_slug": "matiqan",
+    "aliases": [],
+    "district_type": "district"
+  },
+  {
+    "id": 8,
+    "name": "Rruga Ndue Përlleshi",
+    "slug": "ndue-perlleshi",
+    "city": "Prishtina",
+    "neighborhood_slug": "matiqan",
+    "aliases": [
+      "Ndue Perlleshi"
+    ],
+    "district_type": "street_district"
+  },
+  {
+    "id": 9,
+    "name": "Shkolla Iliria",
+    "slug": "shkolla-iliria",
+    "city": "Prishtina",
+    "neighborhood_slug": "bregu-i-diellit",
+    "aliases": [],
+    "district_type": "landmark"
+  },
+  {
+    "id": 10,
+    "name": "Fakulteti Teknik",
+    "slug": "fakulteti-teknik",
+    "city": "Prishtina",
+    "neighborhood_slug": "bregu-i-diellit",
+    "aliases": [],
+    "district_type": "landmark"
+  },
+  {
+    "id": 11,
+    "name": "Lagja e Profesorëve",
+    "slug": "lagja-e-profesoreve",
+    "city": "Prishtina",
+    "neighborhood_slug": "bregu-i-diellit",
+    "aliases": [],
+    "district_type": "district"
+  },
+  {
+    "id": 12,
+    "name": "Route 66",
+    "slug": "route-66",
+    "city": "Prishtina",
+    "neighborhood_slug": "bregu-i-diellit",
+    "aliases": [],
+    "district_type": "landmark"
+  },
+  {
+    "id": 13,
+    "name": "Don Bosko",
+    "slug": "don-bosko",
+    "city": "Prishtina",
+    "neighborhood_slug": "emshir",
+    "aliases": [
+      "Donbosko"
+    ],
+    "district_type": "school"
+  },
+  {
+    "id": 14,
+    "name": "7 Marsi",
+    "slug": "7-marsi",
+    "city": "Prishtina",
+    "neighborhood_slug": "emshir",
+    "aliases": [],
+    "district_type": "school"
+  },
+  {
+    "id": 15,
+    "name": "Goldeni",
+    "slug": "goldeni",
+    "city": "Prishtina",
+    "neighborhood_slug": "emshir",
+    "aliases": [],
+    "district_type": "landmark"
+  },
+  {
+    "id": 16,
+    "name": "Ambulanta",
+    "slug": "ambulanta",
+    "city": "Prishtina",
+    "neighborhood_slug": "emshir",
+    "aliases": [
+      "Ambullanta"
+    ],
+    "district_type": "landmark"
+  },
+  {
+    "id": 17,
+    "name": "Ujsjellësi",
+    "slug": "ujsjellsi",
+    "city": "Prishtina",
+    "neighborhood_slug": "emshir",
+    "aliases": [],
+    "district_type": "landmark"
+  },
+  {
+    "id": 18,
+    "name": "Te KFOR-i",
+    "slug": "te-kfori",
+    "city": "Prishtina",
+    "neighborhood_slug": "arberia",
+    "aliases": [
+      "KFOR",
+      "te Kfori"
+    ],
+    "district_type": "district"
+  },
+  {
+    "id": 19,
+    "name": "Ambasada Amerikane",
+    "slug": "ambasada-amerikane",
+    "city": "Prishtina",
+    "neighborhood_slug": "arberia",
+    "aliases": [],
+    "district_type": "landmark"
+  },
+  {
+    "id": 20,
+    "name": "Te Shkallët e Dragodanit",
+    "slug": "te-shkallet-dragodanit",
+    "city": "Prishtina",
+    "neighborhood_slug": "arberia",
+    "aliases": [
+      "Shkallët e Dragodanit"
+    ],
+    "district_type": "district"
+  },
+  {
+    "id": 21,
+    "name": "Taslixhe 1",
+    "slug": "taslixhe-1",
+    "city": "Prishtina",
+    "neighborhood_slug": "taslixhe",
+    "aliases": [],
+    "district_type": "district"
+  },
+  {
+    "id": 22,
+    "name": "Taslixhe 2",
+    "slug": "taslixhe-2",
+    "city": "Prishtina",
+    "neighborhood_slug": "taslixhe",
+    "aliases": [],
+    "district_type": "district"
+  },
+  {
+    "id": 23,
+    "name": "Taslixhe 3",
+    "slug": "taslixhe-3",
+    "city": "Prishtina",
+    "neighborhood_slug": "taslixhe",
+    "aliases": [],
+    "district_type": "district"
+  },
+  {
+    "id": 24,
+    "name": "Taslixhe 4",
+    "slug": "taslixhe-4",
+    "city": "Prishtina",
+    "neighborhood_slug": "taslixhe",
+    "aliases": [],
+    "district_type": "district"
+  },
+  {
+    "id": 25,
+    "name": "Tokebashqe",
+    "slug": "tokebashqe",
+    "city": "Prishtina",
+    "neighborhood_slug": "sofalia",
+    "aliases": [],
+    "district_type": "landmark"
+  },
+  {
+    "id": 26,
+    "name": "Gërmia",
+    "slug": "germia-sofalia",
+    "city": "Prishtina",
+    "neighborhood_slug": "sofalia",
+    "aliases": [
+      "Gerrmi"
+    ],
+    "district_type": "district"
+  },
+  {
+    "id": 27,
+    "name": "Meto Bajraktari",
+    "slug": "meto-bajraktari",
+    "city": "Prishtina",
+    "neighborhood_slug": "tophane",
+    "aliases": [
+      "MetoBajraktari"
+    ],
+    "district_type": "school"
+  },
+  {
+    "id": 28,
+    "name": "Te kafet e vogla",
+    "slug": "te-kafet-e-vogla",
+    "city": "Prishtina",
+    "neighborhood_slug": "qafa",
+    "aliases": [],
+    "district_type": "landmark"
+  },
+  {
+    "id": 29,
+    "name": "Sheshi Nënë Terezë",
+    "slug": "sheshi-nene-tereze",
+    "city": "Prishtina",
+    "neighborhood_slug": "qendra",
+    "aliases": [
+      "Sheshi Nenterez"
+    ],
+    "district_type": "district"
+  },
+  {
+    "id": 30,
+    "name": "Sheshi Skënderbeu",
+    "slug": "sheshi-skenderbeu",
+    "city": "Prishtina",
+    "neighborhood_slug": "qendra",
+    "aliases": [
+      "Sheshi Skenderbeu"
+    ],
+    "district_type": "district"
+  },
+  {
+    "id": 31,
+    "name": "Sheshi Zahir Pajaziti",
+    "slug": "sheshi-zahir-pajaziti",
+    "city": "Prishtina",
+    "neighborhood_slug": "qendra",
+    "aliases": [],
+    "district_type": "district"
+  },
+  {
+    "id": 32,
+    "name": "Grand Hotel",
+    "slug": "grand-hotel",
+    "city": "Prishtina",
+    "neighborhood_slug": "qendra",
+    "aliases": [
+      "Grandi"
+    ],
+    "district_type": "district"
+  },
+  {
+    "id": 33,
+    "name": "Katedralja",
+    "slug": "katedralja",
+    "city": "Prishtina",
+    "neighborhood_slug": "qendra",
+    "aliases": [],
+    "district_type": "district"
+  },
+  {
+    "id": 34,
+    "name": "Universiteti i Prishtinës",
+    "slug": "universiteti-prishtines",
+    "city": "Prishtina",
+    "neighborhood_slug": "qendra",
+    "aliases": [],
+    "district_type": "district"
+  },
+  {
+    "id": 35,
+    "name": "Biblioteka Kombëtare",
+    "slug": "biblioteka-kombetare",
+    "city": "Prishtina",
+    "neighborhood_slug": "qendra",
+    "aliases": [
+      "Bibloteka Kombtare"
+    ],
+    "district_type": "district"
+  },
+  {
+    "id": 36,
+    "name": "Newborn",
+    "slug": "newborn",
+    "city": "Prishtina",
+    "neighborhood_slug": "qendra",
+    "aliases": [
+      "Newborni"
+    ],
+    "district_type": "district"
+  },
+  {
+    "id": 37,
+    "name": "Rilindja / Boraramizi",
+    "slug": "rilindja-boraramizi",
+    "city": "Prishtina",
+    "neighborhood_slug": "qendra",
+    "aliases": [
+      "Rilinjda",
+      "Bororamizi",
+      "Pallati i Rinisë"
+    ],
+    "district_type": "district"
+  },
+  {
+    "id": 38,
+    "name": "Garibaldi",
+    "slug": "garibaldi",
+    "city": "Prishtina",
+    "neighborhood_slug": "qendra",
+    "aliases": [
+      "Garivaldi"
+    ],
+    "district_type": "district"
+  },
+  {
+    "id": 39,
+    "name": "Faik Konica",
+    "slug": "faik-konica",
+    "city": "Prishtina",
+    "neighborhood_slug": "qendra",
+    "aliases": [],
+    "district_type": "school"
+  },
+  {
+    "id": 40,
+    "name": "Ambasada Italiane",
+    "slug": "ambasada-italiane",
+    "city": "Prishtina",
+    "neighborhood_slug": "pejton-lakrishte",
+    "aliases": [
+      "Ambasanda Italjane"
+    ],
+    "district_type": "district"
+  },
+  {
+    "id": 41,
+    "name": "Ramiz Stiku",
+    "slug": "ramiz-stiku",
+    "city": "Prishtina",
+    "neighborhood_slug": "pejton-lakrishte",
+    "aliases": [],
+    "district_type": "district"
+  },
+  {
+    "id": 42,
+    "name": "Përball Santes",
+    "slug": "perball-santes",
+    "city": "Prishtina",
+    "neighborhood_slug": "pejton-lakrishte",
+    "aliases": [
+      "Perball Santes"
+    ],
+    "district_type": "district"
+  },
+  {
+    "id": 43,
+    "name": "Hekurudha",
+    "slug": "hekurudha",
+    "city": "Prishtina",
+    "neighborhood_slug": "pejton-lakrishte",
+    "aliases": [],
+    "district_type": "landmark"
+  },
+  {
+    "id": 44,
+    "name": "Xhevdet Doda / Stefan Gjeçovi",
+    "slug": "xhevdet-doda",
+    "city": "Prishtina",
+    "neighborhood_slug": "pejton-lakrishte",
+    "aliases": [
+      "Stefan Gjeqova"
+    ],
+    "district_type": "school"
+  },
+  {
+    "id": 45,
+    "name": "Parku",
+    "slug": "parku-dardania",
+    "city": "Prishtina",
+    "neighborhood_slug": "dardania",
+    "aliases": [],
+    "district_type": "landmark"
+  },
+  {
+    "id": 46,
+    "name": "Xhamia e Dardanisë",
+    "slug": "xhamia-dardanise",
+    "city": "Prishtina",
+    "neighborhood_slug": "dardania",
+    "aliases": [],
+    "district_type": "district"
+  },
+  {
+    "id": 47,
+    "name": "Kurrizi",
+    "slug": "kurrizi-dardania",
+    "city": "Prishtina",
+    "neighborhood_slug": "dardania",
+    "aliases": [
+      "Kurriz"
+    ],
+    "district_type": "district"
+  },
+  {
+    "id": 48,
+    "name": "Bill Klinton",
+    "slug": "bill-klinton",
+    "city": "Prishtina",
+    "neighborhood_slug": "dardania",
+    "aliases": [],
+    "district_type": "landmark"
+  },
+  {
+    "id": 49,
+    "name": "Shkolla Dardania",
+    "slug": "shkolla-dardania",
+    "city": "Prishtina",
+    "neighborhood_slug": "dardania",
+    "aliases": [
+      "Dardania"
+    ],
+    "district_type": "district"
+  },
+  {
+    "id": 50,
+    "name": "Xhemail Mustafa",
+    "slug": "xhemail-mustafa",
+    "city": "Prishtina",
+    "neighborhood_slug": "dardania",
+    "aliases": [],
+    "district_type": "school"
+  },
+  {
+    "id": 51,
+    "name": "Posta",
+    "slug": "posta-dardania",
+    "city": "Prishtina",
+    "neighborhood_slug": "dardania",
+    "aliases": [],
+    "district_type": "district"
+  },
+  {
+    "id": 52,
+    "name": "Santea",
+    "slug": "santea",
+    "city": "Prishtina",
+    "neighborhood_slug": "dardania",
+    "aliases": [],
+    "district_type": "district"
+  },
+  {
+    "id": 53,
+    "name": "Lorik Center",
+    "slug": "lorik-center",
+    "city": "Prishtina",
+    "neighborhood_slug": "dardania",
+    "aliases": [],
+    "district_type": "district"
+  },
+  {
+    "id": 54,
+    "name": "Termokosi",
+    "slug": "termokosi",
+    "city": "Prishtina",
+    "neighborhood_slug": "dardania",
+    "aliases": [],
+    "district_type": "district"
+  },
+  {
+    "id": 55,
+    "name": "Sami Frashëri",
+    "slug": "sami-frashri",
+    "city": "Prishtina",
+    "neighborhood_slug": "llullat-dodona",
+    "aliases": [],
+    "district_type": "district"
+  },
+  {
+    "id": 56,
+    "name": "4 Lullat",
+    "slug": "4-lullat",
+    "city": "Prishtina",
+    "neighborhood_slug": "llullat-dodona",
+    "aliases": [],
+    "district_type": "district"
+  },
+  {
+    "id": 57,
+    "name": "Teatri Dodona",
+    "slug": "teatri-dodona",
+    "city": "Prishtina",
+    "neighborhood_slug": "llullat-dodona",
+    "aliases": [],
+    "district_type": "district"
+  },
+  {
+    "id": 58,
+    "name": "Shkolla Sami Frashëri",
+    "slug": "shkolla-sami-frashri",
+    "city": "Prishtina",
+    "neighborhood_slug": "llullat-dodona",
+    "aliases": [],
+    "district_type": "school"
+  },
+  {
+    "id": 59,
+    "name": "Ahmet Gashi",
+    "slug": "ahmet-gashi",
+    "city": "Prishtina",
+    "neighborhood_slug": "llullat-dodona",
+    "aliases": [],
+    "district_type": "school"
+  },
+  {
+    "id": 60,
+    "name": "Elena Gjika",
+    "slug": "elena-gjika",
+    "city": "Prishtina",
+    "neighborhood_slug": "llullat-dodona",
+    "aliases": [
+      "Elenalgjika"
+    ],
+    "district_type": "school"
+  },
+  {
+    "id": 61,
+    "name": "Pazari",
+    "slug": "pazari-llullat",
+    "city": "Prishtina",
+    "neighborhood_slug": "llullat-dodona",
+    "aliases": [],
+    "district_type": "district"
+  },
+  {
+    "id": 62,
+    "name": "Aba",
+    "slug": "aba",
+    "city": "Prishtina",
+    "neighborhood_slug": "llullat-dodona",
+    "aliases": [],
+    "district_type": "district"
+  },
+  {
+    "id": 63,
+    "name": "Riga",
+    "slug": "riga",
+    "city": "Prishtina",
+    "neighborhood_slug": "llullat-dodona",
+    "aliases": [],
+    "district_type": "district"
+  },
+  {
+    "id": 64,
+    "name": "Skënda",
+    "slug": "skenda",
+    "city": "Prishtina",
+    "neighborhood_slug": "llullat-dodona",
+    "aliases": [],
+    "district_type": "district"
+  },
+  {
+    "id": 65,
+    "name": "Domi i Plequve",
+    "slug": "domi-i-pleqve",
+    "city": "Prishtina",
+    "neighborhood_slug": "llullat-dodona",
+    "aliases": [
+      "Domi i Pleqve"
+    ],
+    "district_type": "district"
+  },
+  {
+    "id": 66,
+    "name": "Parku i Qytetit",
+    "slug": "parku-i-qytetit-aktash",
+    "city": "Prishtina",
+    "neighborhood_slug": "aktash-muhaxhere",
+    "aliases": [],
+    "district_type": "district"
+  },
+  {
+    "id": 67,
+    "name": "Extrm Pizza",
+    "slug": "extrm-pizza",
+    "city": "Prishtina",
+    "neighborhood_slug": "aktash-muhaxhere",
+    "aliases": [],
+    "district_type": "landmark"
+  },
+  {
+    "id": 68,
+    "name": "Naim Frashëri",
+    "slug": "naim-frashri",
+    "city": "Prishtina",
+    "neighborhood_slug": "aktash-muhaxhere",
+    "aliases": [],
+    "district_type": "district"
+  },
+  {
+    "id": 69,
+    "name": "Ambasada e Zvicrës",
+    "slug": "ambasada-zviceres",
+    "city": "Prishtina",
+    "neighborhood_slug": "aktash-muhaxhere",
+    "aliases": [],
+    "district_type": "district"
+  },
+  {
+    "id": 70,
+    "name": "Kulla e Zontit",
+    "slug": "kulla-e-zontit",
+    "city": "Prishtina",
+    "neighborhood_slug": "aktash-muhaxhere",
+    "aliases": [],
+    "district_type": "district"
+  },
+  {
+    "id": 71,
+    "name": "Hotel Afa",
+    "slug": "hotel-afa",
+    "city": "Prishtina",
+    "neighborhood_slug": "aktash-muhaxhere",
+    "aliases": [],
+    "district_type": "district"
+  },
+  {
+    "id": 72,
+    "name": "QKUK",
+    "slug": "qkuk",
+    "city": "Prishtina",
+    "neighborhood_slug": "spitali",
+    "aliases": [],
+    "district_type": "landmark"
+  },
+  {
+    "id": 73,
+    "name": "Rruga Holger Pedersen",
+    "slug": "rruga-holger-pedersen",
+    "city": "Prishtina",
+    "neighborhood_slug": "spitali",
+    "aliases": [
+      "Rruga Holeger Pederson"
+    ],
+    "district_type": "district"
+  },
+  {
+    "id": 74,
+    "name": "Pallati i Drejtësisë",
+    "slug": "pallati-drejtesise",
+    "city": "Prishtina",
+    "neighborhood_slug": "spitali",
+    "aliases": [],
+    "district_type": "district"
+  },
+  {
+    "id": 75,
+    "name": "Fontana",
+    "slug": "fontana",
+    "city": "Prishtina",
+    "neighborhood_slug": "ulpiana",
+    "aliases": [],
+    "district_type": "district"
+  },
+  {
+    "id": 76,
+    "name": "Hasan Prishtina",
+    "slug": "hasan-prishtina",
+    "city": "Prishtina",
+    "neighborhood_slug": "ulpiana",
+    "aliases": [
+      "Hasn Prishtina"
+    ],
+    "district_type": "district"
+  },
+  {
+    "id": 77,
+    "name": "Soliterat",
+    "slug": "soliterat",
+    "city": "Prishtina",
+    "neighborhood_slug": "ulpiana",
+    "aliases": [],
+    "district_type": "district"
+  },
+  {
+    "id": 78,
+    "name": "Gorenje",
+    "slug": "gorenje",
+    "city": "Prishtina",
+    "neighborhood_slug": "veternik",
+    "aliases": [
+      "Gorenja"
+    ],
+    "district_type": "district"
+  },
+  {
+    "id": 79,
+    "name": "Prishtina e Re",
+    "slug": "prishtina-e-re",
+    "city": "Prishtina",
+    "neighborhood_slug": "veternik",
+    "aliases": [],
+    "district_type": "district"
+  },
+  {
+    "id": 80,
+    "name": "Albi Mall",
+    "slug": "albi-mall",
+    "city": "Prishtina",
+    "neighborhood_slug": "veternik",
+    "aliases": [],
+    "district_type": "district"
+  },
+  {
+    "id": 81,
+    "name": "Fshati Ndërkombëtar",
+    "slug": "fshati-nderkombetar",
+    "city": "Prishtina",
+    "neighborhood_slug": "veternik",
+    "aliases": [],
+    "district_type": "district"
+  },
+  {
+    "id": 82,
+    "name": "Lagjja Qëndresa",
+    "slug": "lagjja-qendresa",
+    "city": "Prishtina",
+    "neighborhood_slug": "veternik",
+    "aliases": [],
+    "district_type": "district"
+  },
+  {
+    "id": 83,
+    "name": "Afrim Gashi",
+    "slug": "afrim-gashi",
+    "city": "Prishtina",
+    "neighborhood_slug": "hajvali",
+    "aliases": [],
+    "district_type": "landmark"
+  },
+  {
+    "id": 84,
+    "name": "Shpia e Rugovës",
+    "slug": "shpia-e-rugoves",
+    "city": "Prishtina",
+    "neighborhood_slug": "velania",
+    "aliases": [],
+    "district_type": "district"
+  },
+  {
+    "id": 85,
+    "name": "Vorri i Rugovës",
+    "slug": "vorri-i-rugoves",
+    "city": "Prishtina",
+    "neighborhood_slug": "velania",
+    "aliases": [],
+    "district_type": "district"
+  },
+  {
+    "id": 86,
+    "name": "SOS",
+    "slug": "sos-velania",
+    "city": "Prishtina",
+    "neighborhood_slug": "velania",
+    "aliases": [],
+    "district_type": "district"
+  },
+  {
+    "id": 87,
+    "name": "Kolovica e Re",
+    "slug": "kolovica-e-re",
+    "city": "Prishtina",
+    "neighborhood_slug": "kolovice",
+    "aliases": [],
+    "district_type": "district"
+  },
+  {
+    "id": 88,
+    "name": "Kolovica e Vjetër",
+    "slug": "kolovica-e-vjeter",
+    "city": "Prishtina",
+    "neighborhood_slug": "kolovice",
+    "aliases": [],
+    "district_type": "district"
+  },
+  {
+    "id": 89,
+    "name": "Kolovica e Epërme",
+    "slug": "kolovica-e-eperme",
+    "city": "Prishtina",
+    "neighborhood_slug": "kolovice",
+    "aliases": [],
+    "district_type": "district"
+  },
+  {
+    "id": 90,
+    "name": "Shkolla e Gjelbër",
+    "slug": "shkolla-e-gjelber",
+    "city": "Prishtina",
+    "neighborhood_slug": "kolovice",
+    "aliases": [],
+    "district_type": "school"
+  },
+  {
+    "id": 91,
+    "name": "Çigllat",
+    "slug": "cigllat",
+    "city": "Prishtina",
+    "neighborhood_slug": "vranjevc-kodra-trimave",
+    "aliases": [
+      "Cigllanat"
+    ],
+    "district_type": "district"
+  },
+  {
+    "id": 92,
+    "name": "Zenel Hajdini",
+    "slug": "zenel-hajdini",
+    "city": "Prishtina",
+    "neighborhood_slug": "vranjevc-kodra-trimave",
+    "aliases": [],
+    "district_type": "school"
+  },
+  {
+    "id": 93,
+    "name": "Raiffeisen Bank",
+    "slug": "raiffeisen-bank",
+    "city": "Prishtina",
+    "neighborhood_slug": "vranjevc-kodra-trimave",
+    "aliases": [
+      "Rajajze Bank"
+    ],
+    "district_type": "district"
+  },
+  {
+    "id": 94,
+    "name": "Princi i Arbërit",
+    "slug": "princi-i-arbrit",
+    "city": "Prishtina",
+    "neighborhood_slug": "vranjevc-kodra-trimave",
+    "aliases": [],
+    "district_type": "district"
+  }
+]

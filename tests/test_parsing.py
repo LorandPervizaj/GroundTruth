@@ -12,7 +12,9 @@ def _raw_listing(payload: dict) -> SimpleNamespace:
         scrape_run_id=1,
         source_website="gjirafa",
         source_listing_id=payload.get("source_listing_id", "banesa-123"),
-        original_url=payload.get("original_url", "https://listime.gjirafa.com/Shpallje/Patundshmeri/banesa-123"),
+        original_url=payload.get(
+            "original_url", "https://listime.gjirafa.com/Shpallje/Patundshmeri/banesa-123"
+        ),
         spider_version="1.0.0",
         raw_payload=payload,
     )

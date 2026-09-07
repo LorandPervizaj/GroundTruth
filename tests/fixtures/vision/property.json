@@ -1,0 +1,11 @@
+{
+  "id": 1,
+  "title": {"rendered": "Banese"},
+  "class_list": ["property-type-banesa"],
+  "property-statuses": [27],
+  "property_meta": {
+    "REAL_HOMES_property_price": "400",
+    "REAL_HOMES_property_size": "65",
+    "REAL_HOMES_property_address": "District of Prishtina"
+  }
+}

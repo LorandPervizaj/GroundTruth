@@ -1,0 +1,45 @@
+{
+  "model_version": "1.1.0",
+  "dataset_version": "v2.0",
+  "holdout_path": "data/evaluation/valuation_holdout_v1.csv",
+  "evaluated_at": "2026-07-03T07:04:05.086943+00:00",
+  "total_rows": 60,
+  "evaluated_rows": 20,
+  "skipped_rows": 40,
+  "mae": 42350.0,
+  "rmse": 51167.86,
+  "median_ae": 36000.0,
+  "mape_pct": 42.39,
+  "by_municipality": {
+    "Prishtina": {
+      "n": 20,
+      "mae": 42350.0,
+      "rmse": 51167.86,
+      "median_ae": 36000.0,
+      "mape_pct": 42.39
+    }
+  },
+  "by_confidence_tier": {
+    "high": {
+      "n": 3,
+      "mae": 71666.67,
+      "rmse": 86442.66,
+      "median_ae": 39000.0,
+      "mape_pct": 76.77
+    },
+    "medium": {
+      "n": 17,
+      "mae": 37176.47,
+      "rmse": 41970.58,
+      "median_ae": 35000.0,
+      "mape_pct": 36.32
+    }
+  },
+  "error_distribution": {
+    "\u22645%": 1,
+    "5\u201310%": 1,
+    "10\u201320%": 1,
+    "20\u201350%": 11,
+    ">50%": 6
+  }
+}

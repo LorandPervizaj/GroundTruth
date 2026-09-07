@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Metrik - Market statistics</title>
+  <meta name="description" content="Annual Prishtina residential market statistics from Metrik's frozen public dataset." />
+  <meta property="og:title" content="Metrik - Market statistics" />
+  <meta property="og:description" content="Annual market report, confidence, and neighborhood rankings for Prishtina housing." />
+  <meta property="og:type" content="website" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/static/style.css?v=46" />
+  <script src="/static/chart.umd.min.js?v=4.4.8"></script>
+</head>
+<body data-page-title="statistics_title">
+  <div class="page page-wide">
+    <div id="site-nav"></div>
+    <div id="insights-subnav"></div>
+
+    <header class="hero reveal-on-scroll statistics-hero">
+      <h1 class="hero-title hero-title--tight" data-i18n="statistics_hero"></h1>
+      <p class="hero-lead" id="annual-hero-lead"></p>
+      <p class="data-freshness data-freshness-hero" id="annual-freshness-badge" hidden></p>
+      <div class="statistics-hero-actions">
+        <p class="hint hint-info" data-i18n="statistics_pdf_hint" data-info-attach="#pdf-download-top"></p>
+        <a class="btn-secondary btn-compact pdf-download-btn" id="pdf-download-top" href="/api/reports/annual_pdf" data-i18n="statistics_download_pdf"></a>
+      </div>
+    </header>
+
+    <main>
+      <section class="panel" id="annual-loading" role="status">
+        <p class="hint" data-i18n="annual_loading"></p>
+      </section>
+
+      <section class="panel panel-accent" id="annual-error" role="alert" hidden>
+        <p class="accent-lead" data-i18n="annual_load_error"></p>
+        <button class="btn-secondary" id="annual-retry" type="button" data-i18n="annual_retry"></button>
+      </section>
+
+      <div id="annual-content" hidden>
+      <section class="panel reveal-on-scroll">
+        <p class="annual-disclaimer" id="annual-disclaimer"></p>
+      </section>
+
+      <section class="panel reveal-on-scroll">
+        <h2 class="section-title" data-i18n="annual_hero"></h2>
+        <div class="pulse-grid" id="annual-kpis" aria-label="Key metrics"></div>
+      </section>
+
+      <section class="panel panel-accent reveal-on-scroll">
+        <h2 class="section-title section-title--tight" data-i18n="annual_summary_title"></h2>
+        <p class="annual-summary-strip" id="annual-summary-strip">-</p>
+      </section>
+
+      <section class="panel reveal-on-scroll">
+        <h2 class="section-title" data-i18n="annual_conclusions_title"></h2>
+        <p class="hint hint-info" data-i18n="annual_conclusions_hint"></p>
+        <ul class="conclusions-list" id="conclusions-list"></ul>
+      </section>
+
+      <section class="panel panel-accent reveal-on-scroll">
+        <h2 class="section-title section-title--tight section-title--split">
+          <span data-i18n="annual_quality_title"></span>
+          <span class="score-badge" id="confidence-score">-</span>
+        </h2>
+        <p class="accent-lead" id="confidence-text"></p>
+        <ul class="coverage-list" id="coverage-list"></ul>
+      </section>
+
+      <section class="panel reveal-on-scroll">
+        <h2 class="section-title" data-i18n="annual_volume_title"></h2>
+        <p class="hint" id="volume-insight"></p>
+        <p class="chart-sample-note" id="volume-chart-note"></p>
+        <div class="chart-container">
+          <canvas id="volumeChart"></canvas>
+        </div>
+      </section>
+
+      <section class="panel reveal-on-scroll" id="annual-rankings-section" hidden>
+        <h2 class="section-title" data-i18n="annual_rankings_title"></h2>
+        <p class="hint hint-info" id="annual-rankings-hint"></p>
+        <div class="annual-rankings">
+          <div>
+            <h3 data-i18n="annual_rankings_expensive"></h3>
+            <div class="table-wrap">
+              <table class="data-table" id="expensive-nh-table">
+                <thead>
+                  <tr>
+                    <th data-i18n="annual_nh_col_name"></th>
+                    <th data-i18n="annual_nh_col_psm"></th>
+                    <th data-i18n="annual_nh_col_median_sale"></th>
+                    <th data-i18n="th_confidence"></th>
+                  </tr>
+                </thead>
+                <tbody id="expensive-nh-body"></tbody>
+              </table>
+            </div>
+          </div>
+          <div>
+            <h3 data-i18n="annual_rankings_affordable"></h3>
+            <div class="table-wrap">
+              <table class="data-table" id="affordable-nh-table">
+                <thead>
+                  <tr>
+                    <th data-i18n="annual_nh_col_name"></th>
+                    <th data-i18n="annual_nh_col_psm"></th>
+                    <th data-i18n="annual_nh_col_median_sale"></th>
+                    <th data-i18n="th_confidence"></th>
+                  </tr>
+                </thead>
+                <tbody id="affordable-nh-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel reveal-on-scroll" id="annual-insights-section">
+        <h2 class="section-title" data-i18n="annual_insights_title"></h2>
+        <p class="hint hint-info" data-i18n="annual_insights_hint"></p>
+
+        <div class="insights-callouts" id="insights-callouts"></div>
+
+        <div class="stats-block">
+          <h3 class="section-title section-title-sm" data-i18n="annual_insights_property_types"></h3>
+          <p class="hint" id="insights-top-type-city"></p>
+          <div class="stats-table-card">
+            <div class="table-wrap">
+              <table class="data-table" id="property-type-nh-table">
+                <thead>
+                  <tr>
+                    <th data-i18n="annual_nh_col_name"></th>
+                    <th data-i18n="annual_insights_col_property_type"></th>
+                    <th data-i18n="listings"></th>
+                  </tr>
+                </thead>
+                <tbody id="property-type-nh-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel reveal-on-scroll" id="annual-segments-section">
+        <h2 class="section-title" data-i18n="annual_segments_title"></h2>
+        <p class="hint hint-info" data-i18n="annual_segments_hint"></p>
+        <div class="annual-rankings">
+          <div>
+            <h3 data-i18n="annual_seg_bedrooms"></h3>
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th data-i18n="annual_insights_col_segment"></th>
+                    <th data-i18n="listings"></th>
+                    <th data-i18n="annual_nh_col_psm"></th>
+                    <th data-i18n="annual_nh_col_median_sale"></th>
+                    <th data-i18n="annual_nh_col_rent"></th>
+                  </tr>
+                </thead>
+                <tbody id="segments-bedroom-body"></tbody>
+              </table>
+            </div>
+          </div>
+          <div>
+            <h3 data-i18n="annual_seg_size"></h3>
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th data-i18n="annual_insights_col_segment"></th>
+                    <th data-i18n="listings"></th>
+                    <th data-i18n="annual_nh_col_psm"></th>
+                    <th data-i18n="annual_nh_col_median_sale"></th>
+                    <th data-i18n="annual_nh_col_rent"></th>
+                  </tr>
+                </thead>
+                <tbody id="segments-size-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <ul class="conclusions-list" id="segments-reco-list"></ul>
+      </section>
+
+      <section class="panel reveal-on-scroll" id="annual-nh-profiles-section">
+        <h2 class="section-title" data-i18n="annual_insights_nh_profiles_title"></h2>
+        <p class="hint hint-info" data-i18n="annual_insights_nh_profiles_hint"></p>
+        <div class="stats-table-card">
+          <div class="table-wrap">
+            <table class="data-table" id="nh-profiles-table">
+              <thead>
+                <tr>
+                  <th data-i18n="annual_nh_col_name"></th>
+                  <th data-i18n="annual_insights_col_top_bedroom"></th>
+                  <th data-i18n="annual_insights_col_top_size"></th>
+                  <th data-i18n="listings"></th>
+                </tr>
+              </thead>
+              <tbody id="nh-profiles-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel reveal-on-scroll" id="annual-picks-section">
+        <h2 class="section-title" data-i18n="annual_insights_picks_title"></h2>
+        <div class="annual-rankings">
+          <div>
+            <h3 data-i18n="annual_insights_best_yield"></h3>
+            <div class="table-wrap">
+              <table class="data-table" id="best-yield-table">
+                <thead>
+                  <tr>
+                    <th data-i18n="annual_nh_col_name"></th>
+                    <th data-i18n="annual_insights_col_yield"></th>
+                    <th data-i18n="annual_nh_col_rent"></th>
+                    <th data-i18n="annual_nh_col_median_sale"></th>
+                  </tr>
+                </thead>
+                <tbody id="best-yield-body"></tbody>
+              </table>
+            </div>
+          </div>
+          <div>
+            <h3 data-i18n="annual_insights_best_live"></h3>
+            <div class="table-wrap">
+              <table class="data-table" id="best-live-table">
+                <thead>
+                  <tr>
+                    <th data-i18n="annual_nh_col_name"></th>
+                    <th data-i18n="annual_nh_col_psm"></th>
+                    <th data-i18n="annual_nh_col_median_sale"></th>
+                  </tr>
+                </thead>
+                <tbody id="best-live-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel reveal-on-scroll">
+        <h2 class="section-title" data-i18n="annual_sale_price_title"></h2>
+        <p class="hint" id="price-insight"></p>
+        <div class="chart-container">
+          <canvas id="priceChart"></canvas>
+        </div>
+      </section>
+
+      <section class="panel reveal-on-scroll">
+        <h2 class="section-title" data-i18n="annual_rent_price_title"></h2>
+        <p class="hint" id="rent-insight"></p>
+        <p class="chart-sample-note" id="rent-chart-note"></p>
+        <div class="chart-container">
+          <canvas id="rentChart"></canvas>
+        </div>
+      </section>
+
+      <section class="panel reveal-on-scroll">
+        <h2 class="section-title" data-i18n="annual_nh_table_title"></h2>
+        <p class="hint hint-info" data-i18n="annual_nh_table_hint"></p>
+        <div class="stats-table-card">
+          <div class="table-wrap">
+            <table class="data-table" id="nh-table">
+              <thead>
+                <tr>
+                  <th data-i18n="annual_nh_col_name"></th>
+                  <th data-i18n="listings"></th>
+                  <th data-i18n="annual_nh_col_psm"></th>
+                  <th data-i18n="annual_nh_col_rent"></th>
+                </tr>
+              </thead>
+              <tbody id="nh-table-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel reveal-on-scroll">
+        <h2 class="section-title" data-i18n="annual_nh_title"></h2>
+        <p class="hint" id="nh-insight"></p>
+        <div class="chart-container">
+          <canvas id="nhChart"></canvas>
+        </div>
+      </section>
+
+      <section class="panel reveal-on-scroll annual-methodology">
+        <details open>
+          <summary class="section-title" data-i18n="annual_formulas_title"></summary>
+          <p class="hint hint-info" data-i18n="annual_formulas_hint"></p>
+          <ul class="formula-list" id="formula-list"></ul>
+        </details>
+      </section>
+
+      <section class="panel reveal-on-scroll annual-methodology">
+        <details>
+          <summary class="section-title" data-i18n="annual_methodology_title"></summary>
+          <p class="methodology-text" id="methodology-text"></p>
+          <p class="methodology-technical" id="methodology-technical" hidden></p>
+          <p class="annual-generated" id="annual-generated-at" hidden></p>
+        </details>
+      </section>
+      </div>
+    </main>
+
+    <div id="site-footer"></div>
+  </div>
+
+  <script src="/static/i18n.js?v=45"></script>
+  <script src="/static/format.js?v=10"></script>
+  <script src="/static/theme.js?v=1"></script>
+  <script src="/static/confidence.js?v=3"></script>
+  <script src="/static/site.js?v=31"></script>
+  <script src="/static/annual.js?v=14"></script>
+</body>
+</html>

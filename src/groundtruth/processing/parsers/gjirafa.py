@@ -26,7 +26,9 @@ def _detail_field(tree: HTMLParser, label: str) -> str | None:
         lbl = _text(lbl_node)
         if lbl and label.lower() in lbl.lower():
             field = lbl_node.next
-            while field is not None and "display-field" not in (field.attributes.get("class") or ""):
+            while field is not None and "display-field" not in (
+                field.attributes.get("class") or ""
+            ):
                 field = field.next
             if field is not None:
                 if label.lower().startswith("çmim") or label.lower().startswith("cmim"):
@@ -40,8 +42,8 @@ def parse_listing_html(html: str, url: str) -> dict[str, Any]:
     """Parse a Gjirafa detail page into a structured raw payload."""
     tree = HTMLParser(html)
 
-    listing_id_match = re.search(r"/banesa-(\d+)", url)
-    listing_slug = listing_id_match.group(0).lstrip("/") if listing_id_match else url.rstrip("/").split("/")[-1]
+    listing_id_match = re.search(r"/Shpallje/Patundshmeri/([^/?#]+)", url, re.IGNORECASE)
+    listing_slug = listing_id_match.group(1) if listing_id_match else url.rstrip("/").split("/")[-1]
 
     listing_type_raw = _field_by_label(tree, "Lloji i shpalljes") or ""
     listing_type = "rent" if "qira" in listing_type_raw.lower() else "sale"

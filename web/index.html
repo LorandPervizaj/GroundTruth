@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Metrik - Prishtina housing market intelligence</title>
+  <meta name="description" content="Search Prishtina neighborhoods, districts, streets, and complexes with rent, sale, inventory, sample size, and confidence metrics." />
+  <meta property="og:title" content="Metrik - Prishtina housing market intelligence" />
+  <meta property="og:description" content="Evidence-based Prishtina market profiles with sample size and confidence on every metric." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="/favicon.svg" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/static/style.css?v=46" />
+</head>
+<body data-page-title="home_title">
+  <div class="page page-wide">
+    <div id="site-nav"></div>
+
+    <main id="main-content">
+    <header class="hero">
+      <h1 class="hero-title" data-i18n="home_hero">Kupto tregun e apartamenteve në Prishtinë për 30 sekonda.</h1>
+      <p class="hero-sub" data-i18n="home_sub">Kërko çdo lagje, rrugë ose kompleks për mesataret, ndarjet dhe listimet e fundit, pastaj vlerëso pronën tënde.</p>
+      <div class="home-trust-strip" id="home-trust-strip">
+        <div class="trust-stat">
+          <span class="trust-stat-value" id="trust-listings">-</span>
+          <span class="trust-stat-label" data-i18n="hp_trust_listings">listime të përditësuara</span>
+        </div>
+        <div class="trust-stat">
+          <span class="trust-stat-value" id="trust-updated">-</span>
+          <span class="trust-stat-label" data-i18n="hp_trust_updated">përditësuar</span>
+        </div>
+      </div>
+    </header>
+
+    <section class="panel hero-search">
+      <div class="metrik-search metrik-search--hero" id="home-search">
+        <label for="market-search" class="metrik-search-label" data-i18n="search_label">Kërko</label>
+        <p class="metrik-search-kicker" data-i18n="search_types">Lagje · Zonë · Kompleks</p>
+        <div class="metrik-search-control">
+          <span class="metrik-search-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" focusable="false"><path d="M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 16l5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          </span>
+          <input
+            type="search"
+            id="market-search"
+            class="metrik-search-input"
+            data-i18n-placeholder="search_placeholder"
+            autocomplete="off"
+          />
+          <ul class="metrik-search-results hidden" id="search-results" role="listbox"></ul>
+        </div>
+        <p class="metrik-search-hint hint" id="search-hint" data-i18n="search_hint_min">Shkruaj të paktën 2 shkronja</p>
+        <p class="home-find-cta-wrap">
+          <a class="home-find-cta" href="/find" data-i18n="home_find_cta">Nuk e di lagjen? Gjej lagje sipas buxhetit →</a>
+        </p>
+        <div id="popular-markets" class="popular-markets"></div>
+      </div>
+    </section>
+
+    <section class="panel story-flow" aria-label="How it works">
+      <h2 class="section-title" data-i18n="how_it_works">Si funksionon</h2>
+      <ol class="flow-steps">
+        <li><strong data-i18n="flow_1">Kërko</strong> Ulpiana</li>
+        <li data-i18n="flow_2">Shiko mesataret dhe €/m²</li>
+        <li data-i18n="flow_3">Ndarja sipas dhomave</li>
+        <li data-i18n="flow_4">Ndarja sipas madhësisë</li>
+        <li data-i18n="flow_5">Listimet e fundit</li>
+        <li><strong data-i18n="flow_6">Vlerëso pronën tënde</strong></li>
+      </ol>
+    </section>
+
+    <section class="panel insight-panel" id="latest-insight">
+      <h2 class="section-title" data-i18n="latest_insight">Vështrimi i fundit i tregut</h2>
+      <div id="insight-content">
+        <p class="insight-headline" id="insight-headline" data-i18n="insight_annual_teaser">Raporti vjetor i tregut, statistika dhe trende për 12 muajt e fundit.</p>
+        <a class="btn-secondary insight-link" id="insight-link" href="/statistics" data-i18n="read_annual_report">Lexo raportin vjetor</a>
+      </div>
+    </section>
+    </main>
+
+    <div id="site-footer"></div>
+  </div>
+  <script src="/static/i18n.js?v=45"></script>
+  <script src="/static/format.js?v=10"></script>
+  <script src="/static/site.js?v=31"></script>
+  <script src="/static/search.js?v=1"></script>
+  <script src="/static/home.js?v=8"></script>
+</body>
+</html>

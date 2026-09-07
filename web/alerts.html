@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Metrik - Price alerts</title>
+  <meta name="description" content="Save Prishtina neighborhoods and register for Metrik price alerts." />
+  <meta property="og:title" content="Metrik - Price alerts" />
+  <meta property="og:description" content="Follow neighborhoods and register for transparent market alerts." />
+  <meta property="og:type" content="website" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/static/style.css?v=46" />
+</head>
+<body data-page-title="alerts_title">
+  <div class="page">
+    <div id="site-nav"></div>
+    <header class="hero hero-compact">
+      <h1 class="hero-title" data-i18n="alerts_title"></h1>
+      <p class="hero-sub" data-i18n="alerts_sub"></p>
+    </header>
+    <main>
+      <section class="panel">
+        <h2 class="section-title" data-i18n="alerts_watchlist_title"></h2>
+        <p class="hint hint-info" data-i18n="alerts_watchlist_hint"></p>
+        <ul id="watchlist-items" class="conclusions-list"></ul>
+        <p id="watchlist-empty" class="hint" data-i18n="alerts_watchlist_empty"></p>
+      </section>
+
+      <section class="panel form-panel">
+        <h2 class="section-title" data-i18n="alerts_email_title"></h2>
+        <p class="hint hint-info" data-i18n="alerts_email_hint"></p>
+        <form id="alert-form">
+          <div class="field">
+            <label for="alert-neighborhood" data-i18n="neighborhood"></label>
+            <select id="alert-neighborhood" required></select>
+          </div>
+          <div class="field">
+            <label for="alert-listing-type" data-i18n="alerts_listing_type"></label>
+            <select id="alert-listing-type">
+              <option value="both" data-i18n="alerts_type_both"></option>
+              <option value="rent" data-i18n="valuate_rent"></option>
+              <option value="sale" data-i18n="valuate_sale"></option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="alert-max-price" data-i18n="alerts_max_price"></label>
+            <input id="alert-max-price" type="number" min="50" max="5000000" step="10" />
+          </div>
+          <div class="field">
+            <label for="alert-email" data-i18n="alerts_email"></label>
+            <input id="alert-email" type="email" maxlength="200" autocomplete="email" required />
+          </div>
+          <button type="button" class="btn-secondary" id="watchlist-add" data-i18n="alerts_save_local"></button>
+          <button type="submit" class="btn-primary" data-i18n="alerts_submit"></button>
+        </form>
+        <p id="alert-status" class="hint" role="status"></p>
+      </section>
+    </main>
+    <div id="site-footer"></div>
+  </div>
+  <script src="/static/i18n.js?v=45"></script>
+  <script src="/static/format.js?v=10"></script>
+  <script src="/static/site.js?v=31"></script>
+  <script src="/static/watchlist.js"></script>
+  <script src="/static/alerts.js"></script>
+</body>
+</html>

@@ -7,6 +7,30 @@ on:
     branches: [master, main]
 
 jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        run: uv python install 3.13
+
+      - name: Install dependencies (frozen lockfile)
+        run: uv sync --all-extras --frozen
+
+      - name: Dependency audit (pip-audit)
+        run: uv run pip-audit
+
+      - name: Secret scan (gitleaks)
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   test:
     runs-on: ubuntu-latest
     services:
@@ -38,11 +62,38 @@ jobs:
       - name: Set up Python
         run: uv python install 3.13
 
-      - name: Install dependencies
-        run: uv sync --all-extras
+      - name: Install dependencies (frozen lockfile)
+        run: uv sync --all-extras --frozen
+
+      - name: Lint deploy-critical code
+        run: uv run ruff check --ignore B008 src/groundtruth/api/app.py src/groundtruth/release.py src/groundtruth/services/product_submissions.py src/groundtruth/models/product.py scripts/build_release_artifacts.py scripts/verify_release_artifacts.py scripts/profile_public_api.py
+
+      - name: Repository-wide lint and formatting
+        run: |
+          uv run ruff check src tests scripts
+          uv run ruff format --check src tests scripts
+
+      - name: Apply migrations
+        run: uv run alembic upgrade head
 
       - name: Parser regression + CI gates
         run: uv run pytest tests/test_parser_ci_gates.py tests/test_neighborhood_extraction.py tests/test_price_regression.py tests/test_parser_kpis.py -q
 
+      - name: Release artifact verify (when present)
+        run: |
+          if [ -f reports/generated/lookup_cache/manifest.json ]; then
+            uv run groundtruth release verify-artifacts
+          else
+            echo "Skipping release verify — no local lookup cache artifacts"
+          fi
+
       - name: Full test suite
-        run: uv run pytest -q
+        run: uv run pytest -q --cov=groundtruth --cov-report=term-missing:skip-covered --cov-report=xml
+
+      - name: Install Chromium for browser smoke tests
+        run: uv run playwright install --with-deps chromium
+
+      - name: Public website browser smoke tests
+        env:
+          RUN_E2E: "1"
+        run: uv run pytest tests/e2e -q

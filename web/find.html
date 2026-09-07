@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Metrik - Gjej lagjen</title>
+  <meta name="description" content="Find Prishtina neighborhoods that match your rent or purchase budget, bedroom count, and apartment size." />
+  <meta property="og:title" content="Metrik - Gjej lagjen" />
+  <meta property="og:description" content="Budget-based neighborhood recommendations for renters and buyers in Prishtina." />
+  <meta property="og:type" content="website" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/static/style.css?v=46" />
+</head>
+<body data-page-title="find_title">
+  <div class="page page-wide compare-page find-page">
+    <div id="site-nav"></div>
+
+    <div class="compare-workspace">
+      <header class="compare-header">
+        <h1 class="hero-title" data-i18n="find_title"></h1>
+        <p class="hero-sub" data-i18n="find_sub"></p>
+      </header>
+
+      <div class="compare-input-col find-discovery-col">
+        <section class="panel compare-form-panel find-discovery-panel" id="find-discovery-panel">
+          <div class="find-discovery-kicker" data-i18n="find_discovery_kicker"></div>
+          <div class="mode-toggle" role="tablist">
+            <button type="button" class="mode-btn active" data-mode="rent" role="tab" aria-selected="true" data-i18n="find_mode_rent"></button>
+            <button type="button" class="mode-btn" data-mode="sale" role="tab" aria-selected="false" data-i18n="find_mode_sale"></button>
+          </div>
+          <form id="find-form" class="compare-form find-discovery-form">
+            <div class="find-slider-field">
+              <div class="find-slider-head">
+                <label for="budget-slider" id="find-budget-label" data-i18n="find_budget_rent"></label>
+                <output id="budget-slider-out" class="find-slider-value" for="budget-slider">€500</output>
+              </div>
+              <input type="range" id="budget-slider" class="find-range find-range--budget" min="100" max="2000" step="10" value="500" aria-describedby="find-budget-suffix" />
+              <input type="hidden" id="max-budget" name="max_budget_eur" value="500" />
+              <span class="find-slider-hint" id="find-budget-suffix">€/muaj</span>
+            </div>
+
+            <div class="find-slider-field">
+              <div class="find-slider-head">
+                <label data-i18n="find_size_range"></label>
+                <output id="area-slider-out" class="find-slider-value">70–90 m²</output>
+              </div>
+              <div class="find-dual-range" id="area-range-wrap">
+                <input type="range" id="min-area-slider" class="find-range find-range--area-min" min="20" max="200" step="5" value="70" />
+                <input type="range" id="max-area-slider" class="find-range find-range--area-max" min="20" max="200" step="5" value="90" />
+              </div>
+              <input type="hidden" id="min-area" name="min_area_sqm" value="70" />
+              <input type="hidden" id="max-area" name="max_area_sqm" value="90" />
+            </div>
+
+            <div class="find-size-presets" id="find-size-presets" role="group" data-i18n-aria-label="find_size_presets_label">
+              <button type="button" class="find-preset-btn" data-min="20" data-max="50">20–50</button>
+              <button type="button" class="find-preset-btn" data-min="50" data-max="70">50–70</button>
+              <button type="button" class="find-preset-btn active" data-min="70" data-max="90">70–90</button>
+              <button type="button" class="find-preset-btn" data-min="90" data-max="120">90–120</button>
+              <button type="button" class="find-preset-btn" data-min="120" data-max="200">120+</button>
+            </div>
+
+            <details class="metrik-search-advanced find-advanced">
+              <summary data-i18n="find_advanced_filters"></summary>
+              <div class="metrik-search-advanced-body">
+                <div class="field-row">
+                  <div class="field">
+                    <label for="min-psm" id="find-min-psm-label" data-i18n="find_min_psm_rent"></label>
+                    <div class="input-suffix">
+                      <input type="number" id="min-psm" name="min_price_psm_eur" min="0" step="0.1" placeholder="4" />
+                      <span id="find-psm-suffix">€/m²</span>
+                    </div>
+                  </div>
+                  <div class="field">
+                    <label for="max-psm" id="find-max-psm-label" data-i18n="find_max_psm_rent"></label>
+                    <div class="input-suffix">
+                      <input type="number" id="max-psm" name="max_price_psm_eur" min="0" step="0.1" placeholder="12" />
+                      <span id="find-psm-suffix-max">€/m²</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="field">
+                  <label for="bedrooms" data-i18n="bedrooms"></label>
+                  <select id="bedrooms" name="bedrooms">
+                    <option value="" selected data-i18n="valuate_any_beds"></option>
+                    <option value="0" data-i18n="studio"></option>
+                    <option value="1" data-i18n="bed_1"></option>
+                    <option value="2" data-i18n="bed_2"></option>
+                    <option value="3" data-i18n="bed_3"></option>
+                    <option value="4" data-i18n="bed_4"></option>
+                    <option value="5" data-i18n="bed_5"></option>
+                  </select>
+                </div>
+              </div>
+            </details>
+            <button type="submit" class="btn-primary compare-submit" id="find-submit" data-i18n="find_submit"></button>
+          </form>
+          <p class="hint compare-form-hint" id="find-hint" data-i18n="find_hint_live"></p>
+        </section>
+
+        <section class="panel compare-help-panel">
+          <h2 class="section-title section-title-sm" data-i18n="find_how_title"></h2>
+          <ol class="compare-help-steps">
+            <li><span class="compare-help-step-num">1</span><span data-i18n="find_help_1"></span></li>
+            <li><span class="compare-help-step-num">2</span><span data-i18n="find_help_2"></span></li>
+            <li><span class="compare-help-step-num">3</span><span data-i18n="find_help_3"></span></li>
+          </ol>
+        </section>
+      </div>
+
+      <div class="compare-output-col" id="find-output-col">
+        <section id="find-preview" class="compare-preview">
+          <div class="compare-cards compare-cards-preview find-cards-preview">
+            <article class="compare-nh-card compare-nh-card-preview find-nh-card">
+              <span class="compare-nh-card-kicker" data-i18n="find_preview_card"></span>
+              <p class="compare-nh-card-name compare-placeholder-text">Ulpiana</p>
+              <div class="find-fit-bar find-fit-bar-preview" aria-hidden="true"><span style="width: 72%"></span></div>
+              <dl class="compare-nh-stats">
+                <div><dt data-i18n="find_col_median"></dt><dd class="compare-placeholder-text">€420/muaj</dd></div>
+                <div><dt data-i18n="find_col_matches"></dt><dd class="compare-placeholder-text">18 (64%)</dd></div>
+                <div><dt data-i18n="find_col_headroom"></dt><dd class="compare-placeholder-text">€80</dd></div>
+              </dl>
+            </article>
+            <article class="compare-nh-card compare-nh-card-preview find-nh-card">
+              <span class="compare-nh-card-kicker" data-i18n="find_preview_card"></span>
+              <p class="compare-nh-card-name compare-placeholder-text">Dardania</p>
+              <div class="find-fit-bar find-fit-bar-preview" aria-hidden="true"><span style="width: 58%"></span></div>
+              <dl class="compare-nh-stats">
+                <div><dt data-i18n="find_col_median"></dt><dd class="compare-placeholder-text">€380/muaj</dd></div>
+                <div><dt data-i18n="find_col_matches"></dt><dd class="compare-placeholder-text">12 (48%)</dd></div>
+                <div><dt data-i18n="find_col_headroom"></dt><dd class="compare-placeholder-text">€120</dd></div>
+              </dl>
+            </article>
+          </div>
+          <p class="hint compare-preview-cta" data-i18n="find_empty_cta"></p>
+        </section>
+
+        <section id="find-results" class="hidden find-results">
+          <p class="hint find-results-summary" id="find-results-summary"></p>
+          <div class="compare-cards find-cards" id="find-cards"></div>
+          <section class="panel compare-table-panel find-table-panel">
+            <h2 class="section-title section-title-sm" data-i18n="find_details_title"></h2>
+            <div class="table-wrap">
+              <table class="data-table find-table" id="find-results-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th data-i18n="neighborhood"></th>
+                    <th data-i18n="find_col_fit"></th>
+                    <th data-i18n="find_col_matches"></th>
+                    <th data-i18n="find_col_median"></th>
+                    <th data-i18n="find_col_headroom"></th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="find-results-body"></tbody>
+              </table>
+            </div>
+          </section>
+        </section>
+
+        <section class="panel error-panel hidden" id="find-error">
+          <p id="find-error-msg"></p>
+        </section>
+
+        <section class="panel find-empty-panel hidden" id="find-empty">
+          <p class="hint" data-i18n="find_empty"></p>
+        </section>
+      </div>
+    </div>
+
+    <div id="site-footer"></div>
+  </div>
+
+  <script src="/static/i18n.js?v=45"></script>
+  <script src="/static/format.js?v=10"></script>
+  <script src="/static/confidence.js?v=3"></script>
+  <script src="/static/site.js?v=31"></script>
+  <script src="/static/find.js?v=6"></script>
+</body>
+</html>

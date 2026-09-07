@@ -79,7 +79,9 @@ def build_parser_kpi_report(
     duplicate_candidates: int,
 ) -> ParserKPIReport:
     coverage = coverage_from_field_rates(field_rates)
-    invalid_rate = round(100.0 * validation_failed / normalized_count, 1) if normalized_count else 0.0
+    invalid_rate = (
+        round(100.0 * validation_failed / normalized_count, 1) if normalized_count else 0.0
+    )
     duplicate_rate = (
         round(100.0 * duplicate_candidates / normalized_count, 1) if normalized_count else 0.0
     )

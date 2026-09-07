@@ -12,6 +12,7 @@ venv/
 # Environment
 .env
 .env.local
+.env.production
 
 # IDE
 .vscode/
@@ -19,9 +20,12 @@ venv/
 *.swp
 *.swo
 
-# Testing
+# Testing / linters
 .pytest_cache/
+.ruff_cache/
+.mypy_cache/
 .coverage
+coverage.xml
 htmlcov/
 
 # Training data collected at runtime (keep structure)
@@ -50,6 +54,27 @@ Thumbs.db
 # Generated reports (never beside source code)
 reports/generated/**
 !reports/generated/.gitkeep
+reports/lighthouse-*.json
+backups/
+
+# Local research probes and temporary investigation notes
+scratch/
+scripts/_*.py
+_*.txt
+/test.py
 
 # Jupyter
 .ipynb_checkpoints/
+
+# Informal / quarantined sources (may contain contact data in captures)
+data/sources/facebook/**
+data/sources/facebook-groups/**
+!data/sources/facebook/README.md
+!data/sources/facebook-groups/README.md
+
+# Runtime product logs (user emails, feedback text)
+data/product/*.jsonl
+
+# Dedup review registers (regenerate locally; see data/deduplication/README.md)
+data/deduplication/*.csv
+!data/deduplication/README.md

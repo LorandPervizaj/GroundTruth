@@ -121,9 +121,7 @@ class CanonicalProperty(Base, TimestampMixin):
         nullable=False,
     )
 
-    neighborhood: Mapped[Neighborhood | None] = relationship(
-        back_populates="canonical_properties"
-    )
+    neighborhood: Mapped[Neighborhood | None] = relationship(back_populates="canonical_properties")
     street: Mapped[Street | None] = relationship(back_populates="canonical_properties")
     complex: Mapped[Complex | None] = relationship(back_populates="canonical_properties")
     building: Mapped[Building | None] = relationship(back_populates="canonical_properties")

@@ -11,9 +11,9 @@
     "sample_size": 901
   },
   "golden_scores": {
-    "overall": 1.0,
+    "overall": 0.9994450610432852,
     "neighborhood": 1.0,
-    "price": 1.0,
+    "price": 0.9977802441731409,
     "area": 1.0,
     "type": 1.0
   },

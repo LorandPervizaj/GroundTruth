@@ -3,12 +3,12 @@
 import enum
 
 
-class ListingType(str, enum.Enum):
+class ListingType(enum.StrEnum):
     SALE = "sale"
     RENT = "rent"
 
 
-class PropertyType(str, enum.Enum):
+class PropertyType(enum.StrEnum):
     APARTMENT = "apartment"
     HOUSE = "house"
     STUDIO = "studio"
@@ -20,14 +20,14 @@ class PropertyType(str, enum.Enum):
     OTHER = "other"
 
 
-class Currency(str, enum.Enum):
+class Currency(enum.StrEnum):
     EUR = "EUR"
     USD = "USD"
     CHF = "CHF"
     UNKNOWN = "UNKNOWN"
 
 
-class HeatingType(str, enum.Enum):
+class HeatingType(enum.StrEnum):
     CENTRAL = "central"
     GAS = "gas"
     ELECTRIC = "electric"
@@ -37,20 +37,20 @@ class HeatingType(str, enum.Enum):
     UNKNOWN = "unknown"
 
 
-class BuildingAgeCategory(str, enum.Enum):
+class BuildingAgeCategory(enum.StrEnum):
     NEW = "new"
     MODERN = "modern"
     OLD = "old"
     UNKNOWN = "unknown"
 
 
-class PipelineStage(str, enum.Enum):
+class PipelineStage(enum.StrEnum):
     PARSE = "parse"
     NORMALIZE = "normalize"
     VALIDATE = "validate"
 
 
-class ScrapeRunStatus(str, enum.Enum):
+class ScrapeRunStatus(enum.StrEnum):
     PENDING = "pending"
     RUNNING = "running"
     COMPLETED = "completed"
@@ -58,7 +58,7 @@ class ScrapeRunStatus(str, enum.Enum):
     CANCELLED = "cancelled"
 
 
-class PropertyEventType(str, enum.Enum):
+class PropertyEventType(enum.StrEnum):
     """Lifecycle events for a canonical property."""
 
     LISTED = "listed"

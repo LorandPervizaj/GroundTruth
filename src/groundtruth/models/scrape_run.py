@@ -44,8 +44,6 @@ class ScrapeRun(Base):
 
     raw_listings: Mapped[list[RawListing]] = relationship(back_populates="scrape_run")
     parsed_listings: Mapped[list[ParsedListing]] = relationship(back_populates="scrape_run")
-    normalized_listings: Mapped[list[NormalizedListing]] = relationship(
-        back_populates="scrape_run"
-    )
+    normalized_listings: Mapped[list[NormalizedListing]] = relationship(back_populates="scrape_run")
     etl_metrics: Mapped[list[EtlMetrics]] = relationship(back_populates="scrape_run")
     invalid_listings: Mapped[list[InvalidListing]] = relationship(back_populates="scrape_run")

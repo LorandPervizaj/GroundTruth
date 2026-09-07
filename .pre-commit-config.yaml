@@ -1,0 +1,24 @@
+repos:
+  - repo: local
+    hooks:
+      - id: ruff
+        name: Ruff Python checks
+        entry: uv run ruff check
+        language: system
+        types: [python]
+      - id: ruff-format
+        name: Ruff formatting
+        entry: uv run ruff format --check
+        language: system
+        types: [python]
+      - id: python-compile
+        name: Compile Python source
+        entry: uv run python -m compileall -q
+        language: system
+        pass_filenames: false
+        files: ^(src|tests)/
+      - id: javascript-syntax
+        name: Check JavaScript syntax
+        entry: uv run python scripts/check_js_syntax.py
+        language: system
+        files: ^web/static/.*\.js$

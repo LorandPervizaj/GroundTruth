@@ -34,7 +34,7 @@ from groundtruth.models.enums import (
 
 if TYPE_CHECKING:
     from groundtruth.models.canonical import ListingSource
-    from groundtruth.models.reference import Building, Complex, Neighborhood, Street
+    from groundtruth.models.reference import Building, Complex, District, Neighborhood, Street
     from groundtruth.models.scrape_run import ScrapeRun
 
 
@@ -125,6 +125,11 @@ class ParsedListing(Base):
         nullable=True,
         index=True,
     )
+    district_id: Mapped[int | None] = mapped_column(
+        ForeignKey("districts.id", ondelete="SET NULL"),
+        nullable=True,
+        index=True,
+    )
     street_id: Mapped[int | None] = mapped_column(
         ForeignKey("streets.id", ondelete="SET NULL"),
         nullable=True,
@@ -177,6 +182,7 @@ class ParsedListing(Base):
     raw_listing: Mapped[RawListing] = relationship(back_populates="parsed_listings")
     scrape_run: Mapped[ScrapeRun] = relationship(back_populates="parsed_listings")
     neighborhood: Mapped[Neighborhood | None] = relationship(back_populates="parsed_listings")
+    district: Mapped[District | None] = relationship(back_populates="parsed_listings")
     street: Mapped[Street | None] = relationship(back_populates="parsed_listings")
     complex: Mapped[Complex | None] = relationship(back_populates="parsed_listings")
     building: Mapped[Building | None] = relationship(back_populates="parsed_listings")
@@ -232,6 +238,11 @@ class NormalizedListing(Base):
     city: Mapped[str | None] = mapped_column(String(100), nullable=True, index=True)
     neighborhood_id: Mapped[int | None] = mapped_column(
         ForeignKey("neighborhoods.id", ondelete="SET NULL"),
+        nullable=True,
+        index=True,
+    )
+    district_id: Mapped[int | None] = mapped_column(
+        ForeignKey("districts.id", ondelete="SET NULL"),
         nullable=True,
         index=True,
     )
@@ -295,9 +306,8 @@ class NormalizedListing(Base):
     parsed_listing: Mapped[ParsedListing] = relationship(back_populates="normalized_listings")
     scrape_run: Mapped[ScrapeRun] = relationship(back_populates="normalized_listings")
     neighborhood: Mapped[Neighborhood | None] = relationship(back_populates="normalized_listings")
+    district: Mapped[District | None] = relationship(back_populates="normalized_listings")
     street: Mapped[Street | None] = relationship(back_populates="normalized_listings")
     complex: Mapped[Complex | None] = relationship(back_populates="normalized_listings")
     building: Mapped[Building | None] = relationship(back_populates="normalized_listings")
-    listing_sources: Mapped[list[ListingSource]] = relationship(
-        back_populates="normalized_listing"
-    )
+    listing_sources: Mapped[list[ListingSource]] = relationship(back_populates="normalized_listing")

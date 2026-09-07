@@ -78,9 +78,7 @@ class PriceNormalizer(Processor[Decimal | float | int | str | None, Decimal | No
         return cleaned
 
     def _parse_decimal(self, text: str) -> Decimal | None:
-        parsed = self._parse_numeric_token(
-            text.replace("€", "").replace("EUR", "").strip()
-        )
+        parsed = self._parse_numeric_token(text.replace("€", "").replace("EUR", "").strip())
         if parsed is None:
             return None
         try:

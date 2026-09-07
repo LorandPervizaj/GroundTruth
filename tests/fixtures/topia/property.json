@@ -1,0 +1,10 @@
+{
+  "id": "t1",
+  "name": "Apartment",
+  "type": "Apartment",
+  "business_type": "rent",
+  "price": 500,
+  "gross_area": 70,
+  "bed_room": 2,
+  "city": "Prishtina"
+}

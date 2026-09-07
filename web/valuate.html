@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Metrik - Market valuation</title>
+  <meta name="description" content="Property-specific rent or sale valuation from comparable listings, confidence range, and market context." />
+  <meta property="og:title" content="Metrik - Market valuation" />
+  <meta property="og:description" content="Evidence-backed apartment valuation with comparables, confidence, and asking-price comparison." />
+  <meta property="og:type" content="website" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/static/style.css?v=46" />
+</head>
+<body data-page-title="valuate_title">
+  <div class="page page-wide valuate-page">
+    <div id="site-nav"></div>
+
+    <div class="valuate-workspace">
+      <header class="valuate-header">
+        <h1 class="hero-title" data-i18n="valuate_hero"></h1>
+        <p class="hero-sub" id="hero-sub"></p>
+        <p class="hint hint-limited" data-i18n="valuate_validation_warning"></p>
+      </header>
+
+      <div class="valuate-input-col">
+        <section class="panel valuate-form-panel">
+          <div class="valuate-form-kicker" data-i18n="valuate_form_kicker"></div>
+          <div class="mode-toggle" role="tablist">
+            <button type="button" class="mode-btn active" data-mode="rent" role="tab" aria-selected="true" data-i18n="valuate_rent"></button>
+            <button type="button" class="mode-btn" data-mode="sale" role="tab" aria-selected="false" data-i18n="valuate_sale"></button>
+          </div>
+          <form id="estimate-form" class="valuate-discovery-form">
+            <div class="field">
+              <label for="neighborhood-input" data-i18n="neighborhood"></label>
+              <div class="metrik-search metrik-search--field combo" id="neighborhood-combo">
+                <div class="metrik-search-control">
+                  <span class="metrik-search-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" focusable="false"><path d="M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 16l5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                  </span>
+                  <input type="text" id="neighborhood-input" class="metrik-search-input" data-i18n-placeholder="valuate_nh_ph" autocomplete="off" required />
+                  <ul class="metrik-search-results hidden" id="neighborhood-list" role="listbox"></ul>
+                </div>
+              </div>
+              <input type="hidden" id="neighborhood" name="neighborhood" />
+              <p class="hint" id="nh-hint" data-i18n="valuate_nh_loading"></p>
+            </div>
+
+            <div class="metrik-slider-field">
+              <div class="metrik-slider-head">
+                <label for="area-slider" data-i18n="area_sqm"></label>
+                <output id="area-slider-out" class="metrik-slider-value" for="area-slider">78 m²</output>
+              </div>
+              <input type="range" id="area-slider" class="metrik-range" min="20" max="200" step="1" value="78" />
+              <input type="hidden" id="area" name="area" value="78" required />
+            </div>
+
+            <div class="field">
+              <label for="bedrooms" data-i18n="bedrooms"></label>
+              <select id="bedrooms" name="bedrooms">
+                <option value="" selected data-i18n="valuate_any_beds"></option>
+                <option value="0" data-i18n="studio"></option>
+                <option value="1" data-i18n="bed_1"></option>
+                <option value="2" data-i18n="bed_2"></option>
+                <option value="3" data-i18n="bed_3"></option>
+                <option value="4" data-i18n="bed_4"></option>
+                <option value="5" data-i18n="bed_5"></option>
+              </select>
+            </div>
+
+            <details class="metrik-search-advanced valuate-advanced">
+              <summary data-i18n="valuate_compare_asking"></summary>
+              <div class="metrik-search-advanced-body">
+                <div class="metrik-slider-field">
+                  <div class="metrik-slider-head">
+                    <label for="asking-slider" id="asking-label"></label>
+                    <output id="asking-slider-out" class="metrik-slider-value" for="asking-slider">—</output>
+                  </div>
+                  <input type="range" id="asking-slider" class="metrik-range" min="80" max="2500" step="10" value="720" />
+                  <input type="hidden" id="asking-price" value="" />
+                  <div class="metrik-slider-head">
+                    <span class="metrik-slider-hint" id="asking-suffix">€/muaj</span>
+                    <button type="button" class="metrik-slider-clear" id="asking-clear" data-i18n="valuate_clear_asking"></button>
+                  </div>
+                </div>
+              </div>
+            </details>
+
+            <button type="submit" class="btn-primary" id="submit-btn"></button>
+          </form>
+        </section>
+
+        <section id="error" class="panel error-panel hidden">
+          <h2 id="error-title" data-i18n="could_not_estimate"></h2>
+          <p id="error-msg"></p>
+          <p class="hint" id="error-hint" data-i18n="error_hint"></p>
+        </section>
+
+        <section class="panel valuate-help-panel">
+          <h2 class="section-title section-title-sm" data-i18n="valuate_how_it_works"></h2>
+          <ol class="valuate-help-steps">
+            <li>
+              <span class="valuate-help-step-num">1</span>
+              <span data-i18n="valuate_help_step_1"></span>
+            </li>
+            <li>
+              <span class="valuate-help-step-num">2</span>
+              <span data-i18n="valuate_help_step_2"></span>
+            </li>
+            <li>
+              <span class="valuate-help-step-num">3</span>
+              <span data-i18n="valuate_help_step_3"></span>
+            </li>
+          </ol>
+        </section>
+      </div>
+
+      <div class="valuate-output-col" id="valuate-output-col">
+        <section id="valuate-empty" class="valuate-results valuate-preview">
+          <section class="panel valuate-appraisal-card valuate-appraisal-card-preview">
+            <div class="valuate-appraisal-header">
+              <span class="valuate-appraisal-kicker" data-i18n="valuate_market_estimate"></span>
+              <span class="valuate-confidence-badge valuate-badge-placeholder" data-i18n="valuate_preview_pending"></span>
+            </div>
+            <div class="property-summary-chips valuate-summary-inline" id="property-summary-preview"></div>
+            <div class="valuate-appraisal-body">
+              <span class="label" data-i18n="valuate_suggested_value"></span>
+              <p class="estimate valuate-estimate valuate-placeholder-value" id="preview-estimate">€—</p>
+              <p class="valuate-preview-cta" data-i18n="valuate_empty_cta"></p>
+              <p class="valuate-range-kicker" data-i18n="valuate_reasonable_range_label"></p>
+              <p class="interval valuate-placeholder-line" id="preview-range">€— – €—</p>
+              <p class="valuate-based-on valuate-preview-based" data-i18n="valuate_preview_based"></p>
+            </div>
+          </section>
+
+          <section class="panel valuate-evidence-card">
+            <h2 class="section-title section-title-sm" data-i18n="valuate_preview_includes"></h2>
+            <div class="valuate-preview-features">
+              <div class="valuate-preview-feature">
+                <span class="valuate-preview-feature-icon" aria-hidden="true">◎</span>
+                <span data-i18n="valuate_preview_feat_comps"></span>
+              </div>
+              <div class="valuate-preview-feature">
+                <span class="valuate-preview-feature-icon" aria-hidden="true">↔</span>
+                <span data-i18n="valuate_preview_feat_range"></span>
+              </div>
+              <div class="valuate-preview-feature">
+                <span class="valuate-preview-feature-icon" aria-hidden="true">△</span>
+                <span data-i18n="valuate_preview_feat_compare"></span>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel valuate-context-card">
+            <h2 class="section-title section-title-sm" data-i18n="valuate_context_title"></h2>
+            <div class="market-context-strip">
+              <div class="market-context-item market-context-item-dim">
+                <span class="market-context-label" data-i18n="valuate_context_nh_median"></span>
+                <span class="market-context-value valuate-placeholder-text">—</span>
+              </div>
+              <div class="market-context-item market-context-item-highlight market-context-item-dim">
+                <span class="market-context-label" data-i18n="valuate_context_your_estimate"></span>
+                <span class="market-context-value valuate-placeholder-text">—</span>
+              </div>
+              <div class="market-context-item market-context-item-dim">
+                <span class="market-context-label" data-i18n="valuate_context_position_label"></span>
+                <span class="market-context-value valuate-placeholder-text" data-i18n="valuate_preview_position"></span>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel valuate-comp-preview">
+            <h2 class="section-title section-title-sm" data-i18n="valuate_comp_preview_title"></h2>
+            <div class="comp-preview-grid">
+              <div class="comp-preview-card comp-preview-card-skeleton">
+                <span class="comp-preview-skel-price"></span>
+                <span class="comp-preview-skel-meta"></span>
+              </div>
+              <div class="comp-preview-card comp-preview-card-skeleton">
+                <span class="comp-preview-skel-price"></span>
+                <span class="comp-preview-skel-meta"></span>
+              </div>
+              <div class="comp-preview-card comp-preview-card-skeleton">
+                <span class="comp-preview-skel-price"></span>
+                <span class="comp-preview-skel-meta"></span>
+              </div>
+            </div>
+            <p class="hint valuate-preview-comp-hint" data-i18n="valuate_preview_comp_hint"></p>
+          </section>
+
+          <section class="panel valuate-drivers-card">
+            <h2 class="section-title section-title-sm" data-i18n="valuate_value_drivers"></h2>
+            <div class="evidence-chips evidence-chips-muted">
+              <span class="evidence-chip" data-i18n="factor_area_weighted"></span>
+              <span class="evidence-chip" data-i18n="factor_nh_comps"></span>
+              <span class="evidence-chip" data-i18n="why_size_weighted"></span>
+            </div>
+          </section>
+        </section>
+
+        <section id="results" class="hidden valuate-results">
+          <section class="panel valuate-appraisal-card">
+            <div class="valuate-appraisal-header">
+              <span class="valuate-appraisal-kicker" data-i18n="valuate_market_estimate"></span>
+              <span class="valuate-confidence-badge" id="confidence-badge"></span>
+            </div>
+            <div class="property-summary-chips valuate-summary-inline" id="property-summary"></div>
+            <div class="valuate-appraisal-body">
+              <span class="label" id="fair-estimate-label"></span>
+              <p class="estimate valuate-estimate" id="estimate-value" aria-live="polite">—</p>
+              <p class="price-psm hidden" id="price-psm-line"></p>
+              <p class="valuate-range-kicker" data-i18n="valuate_reasonable_range_label"></p>
+              <p class="interval" id="range-line"></p>
+              <p class="valuate-based-on" id="based-on-line"></p>
+            </div>
+          </section>
+
+          <section id="compare-block" class="panel valuate-delta-card hidden">
+            <h2 class="section-title section-title-sm" data-i18n="valuate_market_delta_title"></h2>
+            <p class="market-delta-pct" id="market-delta-pct"></p>
+            <p class="market-delta-amt" id="market-delta-amt"></p>
+            <div class="compare-top">
+              <div class="compare-stat">
+                <span class="compare-label" id="compare-asking-label"></span>
+                <span class="compare-value">€<span id="neg-listing"></span><span class="val-suffix">/muaj</span></span>
+              </div>
+              <div class="compare-stat compare-stat-fair">
+                <span class="compare-label" id="compare-fair-label"></span>
+                <span class="compare-value">€<span id="compare-fair"></span><span class="val-suffix">/muaj</span></span>
+              </div>
+              <div class="compare-badge-wrap">
+                <span class="compare-badge" id="compare-badge"></span>
+              </div>
+            </div>
+            <p class="compare-range">
+              <span data-i18n="reasonable_range"></span>:
+              €<span id="neg-lo"></span>-<span id="neg-hi"></span><span class="val-suffix">/muaj</span>
+            </p>
+            <p id="assessment" class="assessment-note"></p>
+          </section>
+
+          <section class="panel valuate-evidence-card">
+            <h2 class="section-title section-title-sm" data-i18n="valuate_how_estimated"></h2>
+            <div id="why-checks" class="evidence-chips"></div>
+          </section>
+
+          <section class="panel valuate-context-card">
+            <h2 class="section-title section-title-sm" data-i18n="valuate_context_title"></h2>
+            <div class="market-context-strip">
+              <div class="market-context-item">
+                <span class="market-context-label" data-i18n="valuate_context_nh_median"></span>
+                <span class="market-context-value" id="context-median">-</span>
+              </div>
+              <div class="market-context-item market-context-item-highlight">
+                <span class="market-context-label" data-i18n="valuate_context_your_estimate"></span>
+                <span class="market-context-value" id="context-yours">-</span>
+              </div>
+              <div class="market-context-item">
+                <span class="market-context-label" data-i18n="valuate_context_position_label"></span>
+                <span class="market-context-value" id="context-position">-</span>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel valuate-next-steps hidden" id="valuate-next-steps">
+            <h2 class="section-title section-title-sm" data-i18n="valuate_next_steps_title"></h2>
+            <p class="hint" id="valuate-next-steps-lead"></p>
+            <div class="valuate-next-steps-actions">
+              <a class="btn-secondary valuate-next-btn" id="valuate-next-compare" href="/compare" data-i18n="valuate_next_steps_compare"></a>
+              <a class="btn-secondary valuate-next-btn" id="valuate-next-rent-yield" href="/rent-yield" data-i18n="valuate_next_steps_rent_yield"></a>
+              <a class="btn-secondary valuate-next-btn" id="valuate-next-stats" href="/statistics" data-i18n="valuate_next_steps_stats"></a>
+            </div>
+          </section>
+
+          <section class="panel valuate-comp-preview" id="comp-preview-section" hidden>
+            <h2 class="section-title section-title-sm" data-i18n="valuate_comp_preview_title"></h2>
+            <div id="comp-preview" class="comp-preview-grid"></div>
+          </section>
+
+          <section class="panel valuate-drivers-card" id="drivers-section" hidden>
+            <h2 class="section-title section-title-sm" data-i18n="valuate_value_drivers"></h2>
+            <div id="value-drivers" class="evidence-chips evidence-chips-muted"></div>
+          </section>
+
+          <details class="panel accordion" id="details-comparables">
+            <summary><span id="comparables-summary-label" data-i18n="comparables"></span> <span class="badge" id="comp-count"></span></summary>
+            <p class="hint hint-info" data-i18n="comp_hint" data-info-attach="#details-comparables summary"></p>
+            <ol id="comparables" class="comparables"></ol>
+          </details>
+
+          <details class="panel accordion" id="details-methodology">
+            <summary data-i18n="methodology"></summary>
+            <dl class="meta">
+              <dt data-i18n="method"></dt><dd id="method"></dd>
+              <dt data-i18n="dataset"></dt><dd>Metrik <span id="dataset"></span></dd>
+              <dt data-i18n="factors"></dt><dd id="factors"></dd>
+              <dt data-i18n="excluded"></dt><dd id="excluded"></dd>
+            </dl>
+          </details>
+
+          <details class="panel accordion" id="details-limitations">
+            <summary data-i18n="limitations"></summary>
+            <ul id="limitations" class="limitations"></ul>
+          </details>
+        </section>
+      </div>
+    </div>
+
+    <div id="site-footer"></div>
+  </div>
+  <script src="/static/i18n.js?v=45"></script>
+  <script src="/static/format.js?v=10"></script>
+  <script src="/static/site.js?v=31"></script>
+  <script src="/static/app.js?v=6"></script>
+</body>
+</html>

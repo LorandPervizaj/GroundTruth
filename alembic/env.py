@@ -13,7 +13,8 @@ from groundtruth.models.lineage import DataLineage  # noqa: F401
 from groundtruth.models.events import PropertyEvent  # noqa: F401
 from groundtruth.models.market import MarketSnapshot  # noqa: F401
 from groundtruth.models.pipeline import NormalizedListing, ParsedListing, RawListing  # noqa: F401
-from groundtruth.models.reference import Building, Complex, Neighborhood, Street  # noqa: F401
+from groundtruth.models.product import ProductSubmission  # noqa: F401
+from groundtruth.models.reference import Building, Complex, District, Neighborhood, Street  # noqa: F401
 from groundtruth.models.scrape_run import ScrapeRun  # noqa: F401
 
 config = context.config

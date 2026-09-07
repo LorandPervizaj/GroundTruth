@@ -15,8 +15,12 @@ def rent_stats(df: pd.DataFrame, group_col: str = "neighborhood_id") -> pd.DataF
         return pd.DataFrame()
 
     grouped = rent_df.groupby(group_col)
-    return grouped["rent_price"].agg(
-        rent_inventory="count",
-        median_rent="median",
-        mean_rent="mean",
-    ).reset_index()
+    return (
+        grouped["rent_price"]
+        .agg(
+            rent_inventory="count",
+            median_rent="median",
+            mean_rent="mean",
+        )
+        .reset_index()
+    )

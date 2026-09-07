@@ -45,9 +45,7 @@ class DuplicateScorer:
             bathrooms_score=exact_similarity(candidate.bathrooms, reference.bathrooms),
             building_score=id_similarity(candidate.building_id, reference.building_id),
             street_score=id_similarity(candidate.street_id, reference.street_id),
-            neighborhood_score=id_similarity(
-                candidate.neighborhood_id, reference.neighborhood_id
-            ),
+            neighborhood_score=id_similarity(candidate.neighborhood_id, reference.neighborhood_id),
             description_score=text_similarity(
                 candidate.description_cleaned,
                 reference.description_cleaned,

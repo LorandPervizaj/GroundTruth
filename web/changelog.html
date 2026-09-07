@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Metrik - Changelog</title>
+  <meta name="description" content="Metrik product, methodology, source, parser, and data-quality changes." />
+  <meta property="og:title" content="Metrik - Changelog" />
+  <meta property="og:description" content="A transparent record of changes to Metrik's product and evidence pipeline." />
+  <meta property="og:type" content="website" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/static/style.css?v=46" />
+</head>
+<body data-page-title="changelog_title">
+  <div class="page">
+    <div id="site-nav"></div>
+    <header class="hero hero-compact">
+      <h1 class="hero-title" data-i18n="changelog_hero"></h1>
+      <p class="hero-sub" data-i18n="changelog_sub"></p>
+    </header>
+    <main>
+      <section class="panel">
+        <div class="mode-toggle" id="changelog-filters" role="group" aria-label="Changelog categories">
+          <button class="mode-btn active" type="button" data-category="" data-i18n="changelog_cat_all"></button>
+          <button class="mode-btn" type="button" data-category="product" data-i18n="changelog_cat_product"></button>
+          <button class="mode-btn" type="button" data-category="data_quality" data-i18n="changelog_cat_data_quality"></button>
+          <button class="mode-btn" type="button" data-category="source" data-i18n="changelog_cat_source"></button>
+          <button class="mode-btn" type="button" data-category="parser" data-i18n="changelog_cat_parser"></button>
+          <button class="mode-btn" type="button" data-category="methodology" data-i18n="changelog_cat_methodology"></button>
+        </div>
+        <p class="hint" id="changelog-status" role="status"></p>
+        <div id="changelog-list"></div>
+      </section>
+    </main>
+    <div id="site-footer"></div>
+  </div>
+  <script src="/static/i18n.js?v=45"></script>
+  <script src="/static/format.js?v=10"></script>
+  <script src="/static/site.js?v=31"></script>
+  <script src="/static/changelog.js"></script>
+</body>
+</html>

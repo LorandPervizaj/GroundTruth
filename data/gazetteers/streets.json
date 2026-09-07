@@ -1,15 +1,17 @@
 [
-  {"id": 1, "name": "Rruga Muharrem Fejza", "slug": "muharrem-fejza", "neighborhood_slug": "dardania", "aliases": ["Muharrem Fejza", "Rr. Muharrem Fejza", "Rr Muharrem Fejza"]},
-  {"id": 2, "name": "Rruga B", "slug": "rruga-b", "neighborhood_slug": "dardania", "aliases": ["Rr. B", "Rr B", "rruga B"]},
+  {"id": 1, "name": "Rruga Muharrem Fejza", "slug": "muharrem-fejza", "neighborhood_slug": "mati", "aliases": ["Muharrem Fejza", "Rr. Muharrem Fejza", "Rr Muharrem Fejza", "rr Muharrem Fejza", "Muharrem Fejzes"]},
+  {"id": 2, "name": "Rruga B", "slug": "rruga-b", "neighborhood_slug": "lakrishte", "aliases": ["Rr. B", "Rr B", "rruga B", "Rrugen B", "Rruga B", "Rrugen B_2+1", "Rruga B_2+1", "te Rruga B", "te rruga B", "perballë Royal Mall", "perballe Royal Mall", "mbrapa Royal Mall", "afër Royal Mall", "afer Royal Mall", "pranë Royal Mall"]},
+  {"id": 17, "name": "Rruga A", "slug": "rruga-a", "neighborhood_slug": "lakrishte", "aliases": ["Rr. A", "Rr A", "Rrugen A", "Rruga A", "te Rruga A", "dalje te rruga A", "rruga A", "dalje te Rruga A"]},
   {"id": 3, "name": "Rruga C", "slug": "rruga-c", "neighborhood_slug": "lakrishte", "aliases": ["Rr. C", "Rr C", "Rrugen C", "Rruga C", "Rrugen C_2+1", "te Rruga C"]},
-  {"id": 13, "name": "Rruga B", "slug": "rruga-b-lakrishte", "neighborhood_slug": "lakrishte", "aliases": ["Rr. B", "Rrugen B", "Rruga B", "Rrugen B_2+1", "Rruga B_2+1", "te Rruga B", "te rruga B"]},
-  {"id": 4, "name": "Rruga Nëna Terezë", "slug": "nena-tereza", "neighborhood_slug": "qendra", "aliases": ["Nëna Terezë", "Nena Tereza", "Mother Teresa"]},
+  {"id": 4, "name": "Rruga Nëna Terezë", "slug": "nena-tereza", "neighborhood_slug": "qendra", "aliases": ["Nëna Terezë", "Nena Tereza", "Mother Teresa", "Sheshi Nënë Tereza"]},
   {"id": 5, "name": "Rruga e Pejtonit", "slug": "rruga-pejtonit", "neighborhood_slug": "pejton", "aliases": ["Rr. e Pejtonit", "Pejtonit"]},
-  {"id": 6, "name": "Rruga e Dardanisë", "slug": "rruga-dardanise", "neighborhood_slug": "dardania", "aliases": ["Rr. e Dardanisë", "Dardanise"]},
+  {"id": 6, "name": "Rruga e Dardanisë", "slug": "rruga-dardanise", "neighborhood_slug": "dardania", "aliases": ["Rr. e Dardanisë", "Dardanise", "Rruga e Dardanise"]},
   {"id": 7, "name": "Rruga e Emshirit", "slug": "rruga-emshirit", "neighborhood_slug": "emshir", "aliases": ["Rr. e Emshirit", "Emshirit"]},
-  {"id": 8, "name": "Rruga e Spitalit", "slug": "rruga-spitalit", "neighborhood_slug": "spitali", "aliases": ["Rr. e Spitalit", "Spitalit"]},
-  {"id": 9, "name": "Rruga e Ulpianës", "slug": "rruga-ulpianes", "neighborhood_slug": "ulpiana", "aliases": ["Rr. e Ulpianës", "Ulpianes"]},
+  {"id": 8, "name": "Rruga e Spitalit", "slug": "rruga-spitalit", "neighborhood_slug": "spitali", "aliases": ["Rr. e Spitalit", "Spitalit", "Lagjja e spitalit"]},
+  {"id": 9, "name": "Rruga e Ulpianës", "slug": "rruga-ulpianes", "neighborhood_slug": "ulpiana", "aliases": ["Rr. e Ulpianës", "Ulpianes", "Rruga e Ulpianes"]},
   {"id": 10, "name": "Rruga Garibaldi", "slug": "garibaldi", "neighborhood_slug": "qendra", "aliases": ["Garibaldi", "Rr. Garibaldi"]},
   {"id": 11, "name": "Rruga e Veternikut", "slug": "rruga-veternikut", "neighborhood_slug": "veternik", "aliases": ["Veternikut", "Rr. Veternikut"]},
-  {"id": 12, "name": "Rruga e Dragodanit", "slug": "rruga-dragodanit", "neighborhood_slug": "dragodan", "aliases": ["Dragodanit", "Rr. Dragodanit"]}
+  {"id": 12, "name": "Rruga e Dragodanit", "slug": "rruga-dragodanit", "neighborhood_slug": "arberia", "aliases": ["Dragodanit", "Rr. Dragodanit", "Rruga e Dragodanit"]},
+  {"id": 15, "name": "Rruga Ndue Përlleshi", "slug": "ndue-perlleshi", "neighborhood_slug": "mati", "aliases": ["Ndue Përlleshi", "Ndue Perlleshi", "Rr. Ndue Përlleshi", "Rruga Ndue Perlleshi"]},
+  {"id": 16, "name": "Rruga Sokol Sopi", "slug": "sokol-sopi", "neighborhood_slug": "mati", "aliases": ["Sokol Sopi", "Rr. Sokol Sopi"]}
 ]

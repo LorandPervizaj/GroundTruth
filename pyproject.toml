@@ -1,7 +1,7 @@
 [project]
 name = "groundtruth"
 version = "0.1.0"
-description = "GroundTruth — Kosovo residential real estate market intelligence platform"
+description = "GroundTruth — research pipeline and datasets behind Metrik (Kosovo residential market intelligence)"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
@@ -30,6 +30,9 @@ dependencies = [
     "typer>=0.12",
     "geopy>=2.4",
     "orjson>=3.9",
+    "brotli>=1.1",
+    "pyyaml>=6.0",
+    "reportlab>=4.1",
 ]
 
 [project.optional-dependencies]
@@ -38,6 +41,15 @@ dev = [
     "pytest-asyncio>=0.23",
     "ruff>=0.3",
     "black>=24.2",
+    "pip-audit>=2.7",
+    "pre-commit>=4.6.1",
+    "pytest-cov>=7.1.0",
+]
+web = [
+    "fastapi>=0.110",
+    "uvicorn[standard]>=0.27",
+    "slowapi>=0.1.9",
+    "sentry-sdk[fastapi]>=2.0",
 ]
 
 [project.scripts]
@@ -54,6 +66,10 @@ packages = ["src/groundtruth"]
 testpaths = ["tests"]
 pythonpath = ["src"]
 asyncio_mode = "auto"
+markers = [
+    "rate_limit: enable API rate limiting for security smoke tests",
+    "e2e: browser-level public product tests",
+]
 
 [tool.ruff]
 target-version = "py312"
@@ -62,6 +78,10 @@ src = ["src", "tests"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "SIM"]
+ignore = [
+    "B008", # FastAPI/Typer dependency and option declarations intentionally call factories.
+    "E501", # Ruff formatter owns layout; URLs and user-facing strings may remain long.
+]
 
 [tool.black]
 line-length = 100

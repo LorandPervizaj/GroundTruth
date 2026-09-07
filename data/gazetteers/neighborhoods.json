@@ -1,51 +1,847 @@
 [
-  {"id": 1, "name": "Dardania", "slug": "dardania", "city": "Prishtina", "centroid_lat": 42.6580, "centroid_lng": 21.1640, "aliases": ["Dardani", "Dardanisë", "Dardanise", "Dardania 1+1", "ne Dardania", "lagjen Dardania", "ne Dardani"]},
-  {"id": 2, "name": "Lakrishte", "slug": "lakrishte", "city": "Prishtina", "centroid_lat": 42.6700, "centroid_lng": 21.1780, "aliases": ["Lakriste", "Lakrishtes", "Lakrisht"]},
-  {"id": 3, "name": "Sunny Hill", "slug": "sunny-hill", "city": "Prishtina", "centroid_lat": 42.6450, "centroid_lng": 21.1550, "aliases": ["Kodra e Diellit", "Kodra e Diellit", "Sunny Hill"]},
-  {"id": 4, "name": "Arbëria", "slug": "arberia", "city": "Prishtina", "centroid_lat": 42.6520, "centroid_lng": 21.1480, "aliases": ["Arberia", "Arbëri", "Arberi", "Arbëria", "Arberia 1+1", "Arberia 2+1", "te Arberia", "ne Arberi"]},
-  {"id": 5, "name": "Ulpiana", "slug": "ulpiana", "city": "Prishtina", "centroid_lat": 42.6610, "centroid_lng": 21.1720, "aliases": ["Ulpianë", "Ulpiane", "Ulpiane 1+1", "Ulpiane 2+1", "te Ulpiana"]},
-  {"id": 6, "name": "Qendra", "slug": "qendra", "city": "Prishtina", "centroid_lat": 42.6629, "centroid_lng": 21.1655, "aliases": ["Qendër", "Qender", "Qendres", "Center", "Centrum", "Qender 2+1", "ne Qender"]},
-  {"id": 7, "name": "Bregu i Diellit", "slug": "bregu-i-diellit", "city": "Prishtina", "centroid_lat": 42.6480, "centroid_lng": 21.1600, "aliases": ["Breg i Diellit", "Bregu i Diellit", "Bregun e diellit", "Bregun e Diellit", "Bregun e Dielit", "BREGUN E DIELLIT", "Bregu i Diellit"]},
-  {"id": 8, "name": "Veternik", "slug": "veternik", "city": "Prishtina", "centroid_lat": 42.6350, "centroid_lng": 21.1300, "aliases": ["Veterniku", "Veternikut", "Veterrnik", "Veternik Ne Spitalin Amerikan"]},
-  {"id": 9, "name": "Kalabri", "slug": "kalabri", "city": "Fushë Kosovë", "centroid_lat": 42.6380, "centroid_lng": 21.0950, "aliases": ["Kalabria", "Kalabris"]},
-  {"id": 10, "name": "Hajvali", "slug": "hajvali", "city": "Fushë Kosovë", "centroid_lat": 42.6250, "centroid_lng": 21.0800, "aliases": ["Hajvalia", "Hajvalit"]},
-  {"id": 11, "name": "Emshir", "slug": "emshir", "city": "Prishtina", "centroid_lat": 42.6550, "centroid_lng": 21.1400, "aliases": ["Emsir", "Emshiri", "Emshirit", "te Emshiri", "te emshiri", "Emshir 2+1", "ne Emshir"]},
-  {"id": 12, "name": "Spitali", "slug": "spitali", "city": "Prishtina", "centroid_lat": 42.6670, "centroid_lng": 21.1580, "aliases": ["Spitalit", "Lagja e Spitalit", "Lagjen e Spitalit", "Lagjes se Spitalit", "Lagje te Spitalit", "lagje te spitalit", "Lagje te spitalit", "Spitalit 2+1", "te Spitali", "te spitali", "Spital"]},
-  {"id": 13, "name": "Pejton", "slug": "pejton", "city": "Prishtina", "centroid_lat": 42.6640, "centroid_lng": 21.1610, "aliases": ["Pejtone", "Pejtonit"]},
-  {"id": 14, "name": "Dragodan", "slug": "dragodan", "city": "Prishtina", "centroid_lat": 42.6680, "centroid_lng": 21.1530, "aliases": ["Dragodani", "Dragodanit"]},
-  {"id": 15, "name": "Aktash", "slug": "aktash", "city": "Prishtina", "centroid_lat": 42.6720, "centroid_lng": 21.1680, "aliases": ["Aktashi", "Aktasit"]},
-  {"id": 16, "name": "Taukbahçe", "slug": "taukbahce", "city": "Prishtina", "centroid_lat": 42.6590, "centroid_lng": 21.1690, "aliases": ["Taukbahce", "Taukbahçe", "Tauk Bahce"]},
-  {"id": 17, "name": "Velania", "slug": "velania", "city": "Prishtina", "centroid_lat": 42.6510, "centroid_lng": 21.1750, "aliases": ["Velanisë", "Velanise", "Velanis"]},
-  {"id": 18, "name": "Kodra e Trimave", "slug": "kodra-e-trimave", "city": "Prishtina", "centroid_lat": 42.6560, "centroid_lng": 21.1820, "aliases": ["Kodra e Trimave", "Kodres e Trimave", "Trimat"]},
-  {"id": 19, "name": "Mati", "slug": "mati", "city": "Prishtina", "centroid_lat": 42.6690, "centroid_lng": 21.1760, "aliases": ["Mati 1", "Mati 2", "Mati 1 2+1", "Mati 1 3+1", "te Mati", "Kompleksi Mati", "ne Mati 1"]},
-  {"id": 20, "name": "Sofalia", "slug": "sofalia", "city": "Prishtina", "centroid_lat": 42.6740, "centroid_lng": 21.1850, "aliases": ["Sofalisë", "Sofalise", "Sofalis"]},
-  {"id": 21, "name": "Sharri", "slug": "sharri", "city": "Prishtina", "centroid_lat": 42.6630, "centroid_lng": 21.1880, "aliases": ["Sharr", "Sharrit", "Sharrin"]},
-  {"id": 22, "name": "Toplane", "slug": "toplane", "city": "Prishtina", "centroid_lat": 42.6600, "centroid_lng": 21.1520, "aliases": ["Toplan", "Toplanes", "Toplanit"]},
-  {"id": 23, "name": "Kurrizi", "slug": "kurrizi", "city": "Prishtina", "centroid_lat": 42.6570, "centroid_lng": 21.1860, "aliases": ["Kurriz", "Kurrizit"]},
-  {"id": 24, "name": "Kolonija", "slug": "kolonija", "city": "Prishtina", "centroid_lat": 42.6540, "centroid_lng": 21.1780, "aliases": ["Kolonije", "Kolonisë", "Kolonise"]},
-  {"id": 25, "name": "Gërmia", "slug": "germia", "city": "Prishtina", "centroid_lat": 42.6780, "centroid_lng": 21.1920, "aliases": ["Germia", "Gërmisë", "Germise"]},
-  {"id": 26, "name": "Matiçan", "slug": "matican", "city": "Prishtina", "centroid_lat": 42.6760, "centroid_lng": 21.1800, "aliases": ["Matican", "Maticani", "Maticanit"]},
-  {"id": 27, "name": "Tophane", "slug": "tophane", "city": "Prishtina", "centroid_lat": 42.6615, "centroid_lng": 21.1490, "aliases": ["Tophanes", "Tophanit", "Tophane 2+1"]},
-  {"id": 28, "name": "Kishnicë", "slug": "kishnice", "city": "Prishtina", "centroid_lat": 42.6490, "centroid_lng": 21.1920, "aliases": ["Kishnice", "Kishnicës", "Kishnices"]},
-  {"id": 29, "name": "Rilindja", "slug": "rilindja", "city": "Prishtina", "centroid_lat": 42.6660, "centroid_lng": 21.1740, "aliases": ["Rilindjes", "Rilindje"]},
-  {"id": 30, "name": "Dodona", "slug": "dodona", "city": "Prishtina", "centroid_lat": 42.6530, "centroid_lng": 21.1620, "aliases": ["Dodonës", "Dodonas", "Dodon"]},
-  {"id": 31, "name": "Remizë", "slug": "remize", "city": "Prishtina", "centroid_lat": 42.6470, "centroid_lng": 21.1680, "aliases": ["Remize", "Remizës", "Remizes"]},
-  {"id": 32, "name": "Bardhosh", "slug": "bardhosh", "city": "Prishtina", "centroid_lat": 42.6810, "centroid_lng": 21.1650, "aliases": ["Bardhoshi", "Bardhoshit"]},
-  {"id": 33, "name": "Llukar", "slug": "llukar", "city": "Prishtina", "centroid_lat": 42.6840, "centroid_lng": 21.1580, "aliases": ["Llukari", "Llukarit", "Lukar"]},
-  {"id": 34, "name": "Pristina e Re", "slug": "prishtina-e-re", "city": "Prishtina", "centroid_lat": 42.6420, "centroid_lng": 21.1720, "aliases": ["Prishtina e Re", "Prishtine e Re", "Prishtina e re", "te Prishtina e re", "New Prishtina"]},
-  {"id": 48, "name": "Parku i Qytetit", "slug": "parku-i-qytetit", "city": "Prishtina", "centroid_lat": 42.6610, "centroid_lng": 21.1560, "aliases": ["Parku i qytetit", "te Parku i qytetit", "Park i Qytetit"]},
-  {"id": 49, "name": "Llullat", "slug": "llullat", "city": "Prishtina", "centroid_lat": 42.6685, "centroid_lng": 21.1755, "aliases": ["4 Llullat", "te 4 Llullat", "te llullat", "Llullat"]},
-  {"id": 35, "name": "Kalabria", "slug": "kalabria", "city": "Prishtina", "centroid_lat": 42.6400, "centroid_lng": 21.1680, "aliases": ["Kalabrisë", "Kalabrise", "Kalabri Prishtine"]},
-  {"id": 36, "name": "Kodra e Diellit 2", "slug": "kodra-e-diellit-2", "city": "Prishtina", "centroid_lat": 42.6430, "centroid_lng": 21.1580, "aliases": ["Kodra e Diellit II", "Kodra 2", "Kodra e Diellit 2"]},
-  {"id": 37, "name": "Qafa", "slug": "qafa", "city": "Prishtina", "centroid_lat": 42.6650, "centroid_lng": 21.1630, "aliases": ["Qafës", "Qafes", "Qafa e Prishtines", "te Qafa", "Qafa_2+1", "te Qafa_2+1"]},
-  {"id": 38, "name": "Bledi", "slug": "bledi", "city": "Prishtina", "centroid_lat": 42.6710, "centroid_lng": 21.1620, "aliases": ["Bledit", "Bled"]},
-  {"id": 39, "name": "Perparimi", "slug": "perparimi", "city": "Prishtina", "centroid_lat": 42.6585, "centroid_lng": 21.1710, "aliases": ["Përparimi", "Perparim", "Përparim"]},
-  {"id": 40, "name": "Taslixhe", "slug": "taslixhe", "city": "Prishtina", "centroid_lat": 42.6525, "centroid_lng": 21.1540, "aliases": ["Taslixhes", "Tasligje", "Tasligjë", "ne Tasligje"]},
-  {"id": 46, "name": "Muhaxhere", "slug": "muhaxhere", "city": "Prishtina", "centroid_lat": 42.6565, "centroid_lng": 21.1670, "aliases": ["Muhaxherë", "Muhaxherve", "Muhaxhereve", "Muhaxherëve", "Lagjia e Muhaxherëve", "Lagjia e Muhaxhereve", "Lagje te Muhaxherve", "lagje te muhaxherve", "Muhaxhereve 2+1", "ne Muhaxhere"]},
-  {"id": 47, "name": "Sllovenia Sport", "slug": "sllovenia-sport", "city": "Prishtina", "centroid_lat": 42.6645, "centroid_lng": 21.1700, "aliases": ["Sllovenia Sporti", "te Sllovenia Sport", "Slovenia Sport"]},
-  {"id": 41, "name": "Bregu i Zi", "slug": "bregu-i-zi", "city": "Prishtina", "centroid_lat": 42.6465, "centroid_lng": 21.1525, "aliases": ["Breg i Zi", "Bregu i Zi"]},
-  {"id": 42, "name": "Fushë Kosovë", "slug": "fushe-kosove", "city": "Fushë Kosovë", "centroid_lat": 42.6300, "centroid_lng": 21.0900, "aliases": ["Fushe Kosove", "Fushë Kosovë", "Fushë Kosova", "Kosovo Polje", "ne Fushe Kosove"]},
-  {"id": 43, "name": "Prizren", "slug": "prizren", "city": "Prizren", "centroid_lat": 42.2139, "centroid_lng": 20.7397, "aliases": ["Prizreni", "Prizrenit"]},
-  {"id": 44, "name": "Peja", "slug": "peja", "city": "Peja", "centroid_lat": 42.6592, "centroid_lng": 20.2883, "aliases": ["Pejë", "Peje", "Pec"]},
-  {"id": 45, "name": "Gjakovë", "slug": "gjakove", "city": "Gjakovë", "centroid_lat": 42.3803, "centroid_lng": 20.4308, "aliases": ["Gjakova", "Gjakove", "Djakovica"]}
+  {
+    "id": 1,
+    "name": "Dardania",
+    "slug": "dardania",
+    "city": "Prishtina",
+    "centroid_lat": 42.658,
+    "centroid_lng": 21.164,
+    "aliases": [
+      "Dardani",
+      "Dardanisë",
+      "Dardanise",
+      "Dardania 1+1",
+      "ne Dardania",
+      "lagjen Dardania",
+      "ne Dardani"
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Lakrishte",
+    "slug": "lakrishte",
+    "city": "Prishtina",
+    "centroid_lat": 42.67,
+    "centroid_lng": 21.178,
+    "aliases": [
+      "Lakriste",
+      "Lakrishtes",
+      "Lakrisht",
+      "Lakërishta",
+      "Pejton - Lakërishta",
+      "BL Pejton-Lakërishta"
+    ],
+    "canonical_slug": "pejton-lakrishte"
+  },
+  {
+    "id": 3,
+    "name": "Sunny Hill",
+    "slug": "sunny-hill",
+    "city": "Prishtina",
+    "centroid_lat": 42.645,
+    "centroid_lng": 21.155,
+    "aliases": [
+      "Kodra e Diellit",
+      "Kodra e Diellit",
+      "Sunny Hill"
+    ]
+  },
+  {
+    "id": 4,
+    "name": "Arbëria",
+    "slug": "arberia",
+    "city": "Prishtina",
+    "centroid_lat": 42.652,
+    "centroid_lng": 21.148,
+    "aliases": [
+      "Arberia",
+      "Arbëri",
+      "Arberi",
+      "te Arberia",
+      "ne Arberi",
+      "Arbëria 1",
+      "Arbëria 2",
+      "Arberia 1",
+      "Arberia 2",
+      "BL Arbëria 1",
+      "BL Arbëria 2",
+      "Arberia 1+1",
+      "Arberia 2+1",
+      "te Arberia",
+      "ne Arberi",
+      "Dragodan",
+      "Dragodani",
+      "Dragodanit",
+      "ne Dragodan",
+      "te Dragodan",
+      "Lagja e Dragodanit",
+      "Lagjja e Dragodanit"
+    ]
+  },
+  {
+    "id": 5,
+    "name": "Ulpiana",
+    "slug": "ulpiana",
+    "city": "Prishtina",
+    "centroid_lat": 42.661,
+    "centroid_lng": 21.172,
+    "aliases": [
+      "Ulpianë",
+      "Ulpiane",
+      "Lagjja Ulpiana",
+      "Ulpiana",
+      "Ulpiane 1+1",
+      "Ulpiane 2+1",
+      "te Ulpiana"
+    ]
+  },
+  {
+    "id": 6,
+    "name": "Qendra",
+    "slug": "qendra",
+    "city": "Prishtina",
+    "centroid_lat": 42.6629,
+    "centroid_lng": 21.1655,
+    "aliases": [
+      "Qendër",
+      "Qender",
+      "Qendres",
+      "Center",
+      "Centrum",
+      "Qender 2+1",
+      "ne Qender"
+    ]
+  },
+  {
+    "id": 7,
+    "name": "Bregu i Diellit",
+    "slug": "bregu-i-diellit",
+    "city": "Prishtina",
+    "centroid_lat": 42.648,
+    "centroid_lng": 21.16,
+    "aliases": [
+      "Breg i Diellit",
+      "Bregu i Diellit",
+      "Bregun e diellit",
+      "Bregun e Diellit",
+      "Bregun e Dielit",
+      "BREGUN E DIELLIT",
+      "Bregu i Diellit"
+    ]
+  },
+  {
+    "id": 8,
+    "name": "Veternik",
+    "slug": "veternik",
+    "city": "Prishtina",
+    "centroid_lat": 42.635,
+    "centroid_lng": 21.13,
+    "aliases": [
+      "Veterniku",
+      "Veternikut",
+      "Veterrnik",
+      "Veternik Ne Spitalin Amerikan"
+    ]
+  },
+  {
+    "id": 9,
+    "name": "Kalabri",
+    "slug": "kalabri",
+    "city": "Fushë Kosovë",
+    "centroid_lat": 42.638,
+    "centroid_lng": 21.095,
+    "aliases": [
+      "Kalabris",
+      "Kalabri Fushe Kosove"
+    ]
+  },
+  {
+    "id": 10,
+    "name": "Hajvali",
+    "slug": "hajvali",
+    "city": "Prishtina",
+    "centroid_lat": 42.625,
+    "centroid_lng": 21.08,
+    "aliases": [
+      "Hajvalia",
+      "Hajvalit"
+    ]
+  },
+  {
+    "id": 11,
+    "name": "Emshir",
+    "slug": "emshir",
+    "city": "Prishtina",
+    "centroid_lat": 42.655,
+    "centroid_lng": 21.14,
+    "aliases": [
+      "Emsir",
+      "Emshiri",
+      "Emshirit",
+      "te Emshiri",
+      "te emshiri",
+      "Emshir 2+1",
+      "ne Emshir",
+      "Kalabria",
+      "Kalabrisë",
+      "Kalabrise",
+      "Kalabri Prishtine",
+      "ne Kalabria",
+      "te Kalabria",
+      "Lagja Kalabria"
+    ]
+  },
+  {
+    "id": 12,
+    "name": "Spitali",
+    "slug": "spitali",
+    "city": "Prishtina",
+    "centroid_lat": 42.667,
+    "centroid_lng": 21.158,
+    "aliases": [
+      "Spitalit",
+      "Lagja e Spitalit",
+      "Lagjja e Spitalit",
+      "Lagjen e Spitalit",
+      "Lagjes se Spitalit",
+      "Lagje te Spitalit",
+      "lagje te spitalit",
+      "Lagje te spitalit",
+      "Spitalit 2+1",
+      "te Spitali",
+      "te spitali",
+      "Spital",
+      "Lagjja e spitalit"
+    ]
+  },
+  {
+    "id": 13,
+    "name": "Pejton",
+    "slug": "pejton",
+    "city": "Prishtina",
+    "centroid_lat": 42.664,
+    "centroid_lng": 21.161,
+    "aliases": [
+      "Pejtone",
+      "Pejtonit"
+    ],
+    "canonical_slug": "pejton-lakrishte"
+  },
+  {
+    "id": 14,
+    "name": "Dragodan",
+    "slug": "dragodan",
+    "city": "Prishtina",
+    "centroid_lat": 42.668,
+    "centroid_lng": 21.153,
+    "aliases": [
+      "Dragodani",
+      "Dragodanit"
+    ],
+    "canonical_slug": "arberia",
+    "notes": "Merged into Arbëria — same market area per local usage"
+  },
+  {
+    "id": 15,
+    "name": "Aktash",
+    "slug": "aktash",
+    "city": "Prishtina",
+    "centroid_lat": 42.672,
+    "centroid_lng": 21.168,
+    "aliases": [
+      "Aktashi",
+      "Aktasit"
+    ],
+    "canonical_slug": "aktash-muhaxhere"
+  },
+  {
+    "id": 16,
+    "name": "Taukbahçe",
+    "slug": "taukbahce",
+    "city": "Prishtina",
+    "centroid_lat": 42.659,
+    "centroid_lng": 21.169,
+    "aliases": [
+      "Taukbahce",
+      "Taukbahçe",
+      "Tauk Bahce"
+    ]
+  },
+  {
+    "id": 17,
+    "name": "Velania",
+    "slug": "velania",
+    "city": "Prishtina",
+    "centroid_lat": 42.651,
+    "centroid_lng": 21.175,
+    "aliases": [
+      "Velanisë",
+      "Velanise",
+      "Velanis"
+    ]
+  },
+  {
+    "id": 18,
+    "name": "Kodra e Trimave",
+    "slug": "kodra-e-trimave",
+    "city": "Prishtina",
+    "centroid_lat": 42.656,
+    "centroid_lng": 21.182,
+    "aliases": [
+      "Kodra e Trimave",
+      "Kodres e Trimave",
+      "Trimat"
+    ],
+    "canonical_slug": "vranjevc-kodra-trimave"
+  },
+  {
+    "id": 19,
+    "name": "Mati 1",
+    "slug": "mati",
+    "city": "Prishtina",
+    "centroid_lat": 42.669,
+    "centroid_lng": 21.176,
+    "aliases": [
+      "Mati",
+      "Mati I",
+      "Mati 1 - Jugu",
+      "BL Mati 1",
+      "Lagjja Mati 1",
+      "te Mati 1",
+      "ne Mati 1",
+      "Kompleksi Mati",
+      "MAT 1"
+    ],
+    "canonical_slug": "matiqan"
+  },
+  {
+    "id": 52,
+    "name": "Mati 2",
+    "slug": "mati-2",
+    "city": "Prishtina",
+    "centroid_lat": 42.671,
+    "centroid_lng": 21.178,
+    "aliases": [
+      "Mati II",
+      "Mati 2 - Veriu",
+      "BL Mati 2",
+      "Mati 1 - Veri",
+      "te Mati 2",
+      "ne Mati 2"
+    ],
+    "canonical_slug": "matiqan"
+  },
+  {
+    "id": 53,
+    "name": "Mati 3",
+    "slug": "mati-3",
+    "city": "Prishtina",
+    "centroid_lat": 42.673,
+    "centroid_lng": 21.18,
+    "aliases": [
+      "Mati i Vjetër",
+      "Mati i Vjeter",
+      "Mati i Vieter",
+      "BL Mati 3",
+      "Matiqan",
+      "Matiçan"
+    ],
+    "canonical_slug": "matiqan"
+  },
+  {
+    "id": 20,
+    "name": "Sofalia",
+    "slug": "sofalia",
+    "city": "Prishtina",
+    "centroid_lat": 42.674,
+    "centroid_lng": 21.185,
+    "aliases": [
+      "Sofalisë",
+      "Sofalise",
+      "Sofalis"
+    ]
+  },
+  {
+    "id": 21,
+    "name": "Sharri",
+    "slug": "sharri",
+    "city": "Prishtina",
+    "centroid_lat": 42.663,
+    "centroid_lng": 21.188,
+    "aliases": [
+      "Sharr",
+      "Sharrit",
+      "Sharrin"
+    ]
+  },
+  {
+    "id": 22,
+    "name": "Toplane",
+    "slug": "toplane",
+    "city": "Prishtina",
+    "centroid_lat": 42.66,
+    "centroid_lng": 21.152,
+    "aliases": [
+      "Toplan",
+      "Toplanes",
+      "Toplanit"
+    ]
+  },
+  {
+    "id": 23,
+    "name": "Kurrizi",
+    "slug": "kurrizi",
+    "city": "Prishtina",
+    "centroid_lat": 42.657,
+    "centroid_lng": 21.186,
+    "aliases": [
+      "Kurriz",
+      "Kurrizit"
+    ]
+  },
+  {
+    "id": 24,
+    "name": "Kolonija",
+    "slug": "kolonija",
+    "city": "Prishtina",
+    "centroid_lat": 42.654,
+    "centroid_lng": 21.178,
+    "aliases": [
+      "Kolonije",
+      "Kolonisë",
+      "Kolonise"
+    ]
+  },
+  {
+    "id": 25,
+    "name": "Gërmia",
+    "slug": "germia",
+    "city": "Prishtina",
+    "centroid_lat": 42.678,
+    "centroid_lng": 21.192,
+    "aliases": [
+      "Germia",
+      "Gërmisë",
+      "Germise"
+    ]
+  },
+  {
+    "id": 26,
+    "name": "Matiçan",
+    "slug": "matican",
+    "city": "Prishtina",
+    "centroid_lat": 42.676,
+    "centroid_lng": 21.18,
+    "aliases": [
+      "Matican",
+      "Maticani",
+      "Maticanit"
+    ],
+    "canonical_slug": "matiqan"
+  },
+  {
+    "id": 27,
+    "name": "Tophane",
+    "slug": "tophane",
+    "city": "Prishtina",
+    "centroid_lat": 42.6615,
+    "centroid_lng": 21.149,
+    "aliases": [
+      "Tophanes",
+      "Tophanit",
+      "Tophane 2+1"
+    ]
+  },
+  {
+    "id": 28,
+    "name": "Kishnicë",
+    "slug": "kishnice",
+    "city": "Prishtina",
+    "centroid_lat": 42.649,
+    "centroid_lng": 21.192,
+    "aliases": [
+      "Kishnice",
+      "Kishnicës",
+      "Kishnices"
+    ]
+  },
+  {
+    "id": 29,
+    "name": "Rilindja",
+    "slug": "rilindja",
+    "city": "Prishtina",
+    "centroid_lat": 42.666,
+    "centroid_lng": 21.174,
+    "aliases": [
+      "Rilindjes",
+      "Rilindje"
+    ]
+  },
+  {
+    "id": 30,
+    "name": "Dodona",
+    "slug": "dodona",
+    "city": "Prishtina",
+    "centroid_lat": 42.653,
+    "centroid_lng": 21.162,
+    "aliases": [
+      "Dodonës",
+      "Dodonas",
+      "Dodon"
+    ],
+    "canonical_slug": "llullat-dodona"
+  },
+  {
+    "id": 31,
+    "name": "Remizë",
+    "slug": "remize",
+    "city": "Prishtina",
+    "centroid_lat": 42.647,
+    "centroid_lng": 21.168,
+    "aliases": [
+      "Remize",
+      "Remizës",
+      "Remizes"
+    ]
+  },
+  {
+    "id": 32,
+    "name": "Bardhosh",
+    "slug": "bardhosh",
+    "city": "Prishtina",
+    "centroid_lat": 42.681,
+    "centroid_lng": 21.165,
+    "aliases": [
+      "Bardhoshi",
+      "Bardhoshit"
+    ]
+  },
+  {
+    "id": 33,
+    "name": "Llukar",
+    "slug": "llukar",
+    "city": "Prishtina",
+    "centroid_lat": 42.684,
+    "centroid_lng": 21.158,
+    "aliases": [
+      "Llukari",
+      "Llukarit",
+      "Lukar"
+    ]
+  },
+  {
+    "id": 34,
+    "name": "Pristina e Re",
+    "slug": "prishtina-e-re",
+    "city": "Prishtina",
+    "centroid_lat": 42.642,
+    "centroid_lng": 21.172,
+    "aliases": [
+      "Prishtina e Re",
+      "Prishtine e Re",
+      "Prishtina e re",
+      "te Prishtina e re",
+      "New Prishtina"
+    ]
+  },
+  {
+    "id": 48,
+    "name": "Parku i Qytetit",
+    "slug": "parku-i-qytetit",
+    "city": "Prishtina",
+    "centroid_lat": 42.661,
+    "centroid_lng": 21.156,
+    "aliases": [
+      "Parku i qytetit",
+      "te Parku i qytetit",
+      "Park i Qytetit"
+    ]
+  },
+  {
+    "id": 49,
+    "name": "Llullat",
+    "slug": "llullat",
+    "city": "Prishtina",
+    "centroid_lat": 42.6685,
+    "centroid_lng": 21.1755,
+    "aliases": [
+      "4 Llullat",
+      "te 4 Llullat",
+      "te llullat",
+      "Llullat"
+    ],
+    "canonical_slug": "llullat-dodona"
+  },
+  {
+    "id": 35,
+    "name": "Kalabria",
+    "slug": "kalabria",
+    "city": "Prishtina",
+    "centroid_lat": 42.64,
+    "centroid_lng": 21.168,
+    "aliases": [
+      "Kalabrisë",
+      "Kalabrise",
+      "Kalabri Prishtine"
+    ],
+    "canonical_slug": "emshir",
+    "notes": "Merged into Emshir — same market area per local usage"
+  },
+  {
+    "id": 36,
+    "name": "Kodra e Diellit 2",
+    "slug": "kodra-e-diellit-2",
+    "city": "Prishtina",
+    "centroid_lat": 42.643,
+    "centroid_lng": 21.158,
+    "aliases": [
+      "Kodra e Diellit II",
+      "Kodra 2",
+      "Kodra e Diellit 2"
+    ]
+  },
+  {
+    "id": 37,
+    "name": "Qafa",
+    "slug": "qafa",
+    "city": "Prishtina",
+    "centroid_lat": 42.665,
+    "centroid_lng": 21.163,
+    "aliases": [
+      "Qafës",
+      "Qafes",
+      "Qafa e Prishtines",
+      "te Qafa",
+      "Qafa_2+1",
+      "te Qafa_2+1"
+    ]
+  },
+  {
+    "id": 38,
+    "name": "Bledi",
+    "slug": "bledi",
+    "city": "Prishtina",
+    "centroid_lat": 42.671,
+    "centroid_lng": 21.162,
+    "aliases": [
+      "Bledit",
+      "Bled"
+    ]
+  },
+  {
+    "id": 39,
+    "name": "Perparimi",
+    "slug": "perparimi",
+    "city": "Prishtina",
+    "centroid_lat": 42.6585,
+    "centroid_lng": 21.171,
+    "aliases": [
+      "Përparimi",
+      "Perparim",
+      "Përparim"
+    ]
+  },
+  {
+    "id": 40,
+    "name": "Taslixhe",
+    "slug": "taslixhe",
+    "city": "Prishtina",
+    "centroid_lat": 42.6525,
+    "centroid_lng": 21.154,
+    "aliases": [
+      "Taslixhes",
+      "Tasligje",
+      "Tasligjë",
+      "ne Tasligje"
+    ]
+  },
+  {
+    "id": 46,
+    "name": "Muhaxhere",
+    "slug": "muhaxhere",
+    "city": "Prishtina",
+    "centroid_lat": 42.6565,
+    "centroid_lng": 21.167,
+    "aliases": [
+      "Muhaxherë",
+      "Muhaxherve",
+      "Muhaxhereve",
+      "Muhaxherëve",
+      "Lagjia e Muhaxherëve",
+      "Lagjia e Muhaxhereve",
+      "Lagje te Muhaxherve",
+      "lagje te muhaxherve",
+      "Muhaxhereve 2+1",
+      "ne Muhaxhere"
+    ],
+    "canonical_slug": "aktash-muhaxhere"
+  },
+  {
+    "id": 47,
+    "name": "Sllovenia Sport",
+    "slug": "sllovenia-sport",
+    "city": "Prishtina",
+    "centroid_lat": 42.6645,
+    "centroid_lng": 21.17,
+    "aliases": [
+      "Sllovenia Sporti",
+      "te Sllovenia Sport",
+      "Slovenia Sport"
+    ]
+  },
+  {
+    "id": 41,
+    "name": "Bregu i Zi",
+    "slug": "bregu-i-zi",
+    "city": "Prishtina",
+    "centroid_lat": 42.6465,
+    "centroid_lng": 21.1525,
+    "aliases": [
+      "Breg i Zi",
+      "Bregu i Zi"
+    ]
+  },
+  {
+    "id": 42,
+    "name": "Fushë Kosovë",
+    "slug": "fushe-kosove",
+    "city": "Fushë Kosovë",
+    "centroid_lat": 42.63,
+    "centroid_lng": 21.09,
+    "aliases": [
+      "Fushe Kosove",
+      "Fushë Kosovë",
+      "Fushë Kosova",
+      "Kosovo Polje",
+      "ne Fushe Kosove"
+    ]
+  },
+  {
+    "id": 43,
+    "name": "Prizren",
+    "slug": "prizren",
+    "city": "Prizren",
+    "centroid_lat": 42.2139,
+    "centroid_lng": 20.7397,
+    "aliases": [
+      "Prizreni",
+      "Prizrenit"
+    ]
+  },
+  {
+    "id": 44,
+    "name": "Peja",
+    "slug": "peja",
+    "city": "Peja",
+    "centroid_lat": 42.6592,
+    "centroid_lng": 20.2883,
+    "aliases": [
+      "Pejë",
+      "Peje",
+      "Pec"
+    ]
+  },
+  {
+    "id": 45,
+    "name": "Gjakovë",
+    "slug": "gjakove",
+    "city": "Gjakovë",
+    "centroid_lat": 42.3803,
+    "centroid_lng": 20.4308,
+    "aliases": [
+      "Gjakova",
+      "Gjakove",
+      "Djakovica"
+    ]
+  },
+  {
+    "id": 54,
+    "name": "Matiqan",
+    "slug": "matiqan",
+    "city": "Prishtina",
+    "centroid_lat": 42.671,
+    "centroid_lng": 21.178,
+    "aliases": [
+      "Mati",
+      "Matiçan",
+      "Matican",
+      "Matiqan"
+    ]
+  },
+  {
+    "id": 55,
+    "name": "Pejton / Lakrishte",
+    "slug": "pejton-lakrishte",
+    "city": "Prishtina",
+    "centroid_lat": 42.667,
+    "centroid_lng": 21.17,
+    "aliases": [
+      "Pejton",
+      "Lakrishte"
+    ]
+  },
+  {
+    "id": 56,
+    "name": "Marigona Residence",
+    "slug": "marigona-residence",
+    "city": "Prishtina",
+    "centroid_lat": 42.628,
+    "centroid_lng": 21.12,
+    "aliases": []
+  },
+  {
+    "id": 57,
+    "name": "Marigona Hill",
+    "slug": "marigona-hill",
+    "city": "Prishtina",
+    "centroid_lat": 42.626,
+    "centroid_lng": 21.118,
+    "aliases": []
+  },
+  {
+    "id": 58,
+    "name": "Kolovice",
+    "slug": "kolovice",
+    "city": "Prishtina",
+    "centroid_lat": 42.654,
+    "centroid_lng": 21.178,
+    "aliases": [
+      "Kolovica"
+    ]
+  },
+  {
+    "id": 59,
+    "name": "Aktash / Muhaxherë",
+    "slug": "aktash-muhaxhere",
+    "city": "Prishtina",
+    "centroid_lat": 42.672,
+    "centroid_lng": 21.168,
+    "aliases": [
+      "Muhaxherë",
+      "Lagjja e Muhaxherve"
+    ]
+  },
+  {
+    "id": 60,
+    "name": "4 Lullat / Dodona",
+    "slug": "llullat-dodona",
+    "city": "Prishtina",
+    "centroid_lat": 42.653,
+    "centroid_lng": 21.162,
+    "aliases": [
+      "Llullat",
+      "4 Lullat"
+    ]
+  },
+  {
+    "id": 61,
+    "name": "Vranjevc / Kodra e Trimave",
+    "slug": "vranjevc-kodra-trimave",
+    "city": "Prishtina",
+    "centroid_lat": 42.656,
+    "centroid_lng": 21.182,
+    "aliases": [
+      "Vranjevc"
+    ]
+  }
 ]

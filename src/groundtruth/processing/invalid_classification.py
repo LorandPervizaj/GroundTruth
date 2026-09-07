@@ -20,19 +20,53 @@ def classify_invalid_listing(invalid: InvalidListing) -> str:
         return "parser_bug"
 
     if "price_too_low" in codes and listing_type == "sale" and sale_price is not None:
-        if sale_price < 2_000:
+        if sale_price < 3_000:
             return "website_inconsistency"
         if sale_price < 10_000 and area and area > 20:
             return "parser_bug"
 
-    if "price_per_sqm_too_low" in codes and listing_type == "sale" and sale_price and area:
-        if sale_price < 10_000:
-            return "website_inconsistency"
+    if (
+        "price_per_sqm_too_low" in codes
+        and listing_type == "sale"
+        and sale_price
+        and area
+        and sale_price < 10_000
+    ):
+        return "website_inconsistency"
+
+    if (
+        "price_per_sqm_too_high" in codes
+        and listing_type == "rent"
+        and rent_price
+        and area
+        and rent_price >= 3_000
+    ):
+        return "website_inconsistency"
+
+    if (
+        "price_per_sqm_too_low" in codes
+        and listing_type == "rent"
+        and rent_price
+        and area
+        and rent_price <= 100
+    ):
+        return "website_inconsistency"
+
+    if "likely_rent_as_sale" in codes or "conflicting_prices" in codes:
+        return "website_inconsistency"
+
+    if "price_per_sqm_inconsistent" in codes:
+        return "parser_bug"
 
     if "area_too_small" in codes and area is not None and area <= 1:
         return "website_inconsistency"
 
-    if "price_too_low" in codes and listing_type == "rent" and rent_price is not None and rent_price < 10:
+    if (
+        "price_too_low" in codes
+        and listing_type == "rent"
+        and rent_price is not None
+        and rent_price < 10
+    ):
         return "genuinely_invalid"
 
     if "normalize_error" in codes or "parse_error" in codes:

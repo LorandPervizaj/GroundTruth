@@ -1,5 +1,22 @@
 # Architecture
 
+**GroundTruth** is the research/engineering codebase; **Metrik** is the public product built from its frozen datasets and analytics.
+
+## Evidence trail (publish path)
+
+```text
+Crawl → raw_listings (immutable)
+     → parsed_listings (parser_version)
+     → normalized_listings + data_lineage
+     → golden eval gate (data/golden/)
+     → post-ETL audit (corpus report, etl errors)
+     → claims registry (data/claims/registry.csv)
+     → dataset freeze (data/datasets/dataset_v*.json)
+     → Metrik API + static pages
+```
+
+See also [DATASET_V2_FREEZE.md](DATASET_V2_FREEZE.md).
+
 ## Stack
 
 ```
@@ -10,7 +27,7 @@ PostgreSQL 16 + PostGIS
 Docker (postgres + pgAdmin only)
 ```
 
-No Redis. Single machine, single user, scheduled scraping.
+No Redis. Single private research host; scheduled ingest under [CRAWL_POLICY.md](CRAWL_POLICY.md). The public Metrik deploy does not run collectors.
 
 ## Pipeline Stages
 

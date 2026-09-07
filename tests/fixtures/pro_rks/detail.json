@@ -1,0 +1,12 @@
+{
+  "property": {
+    "slug": "test-1",
+    "title": "Banese me qira",
+    "forRent": true,
+    "forSale": false,
+    "rentPrice": 450,
+    "surfaceM2": 78,
+    "numberOfBedRooms": 2,
+    "city": {"name": "Prishtina"}
+  }
+}

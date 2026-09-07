@@ -52,9 +52,7 @@ class PipelineService:
         scrape_run_id: int,
     ):
         """Persist parsed listing linked to raw source."""
-        entity = self._parsed_repo.create_from_schema(
-            schema, raw_listing_id, scrape_run_id
-        )
+        entity = self._parsed_repo.create_from_schema(schema, raw_listing_id, scrape_run_id)
         logger.info(
             "parsed_listing_stored",
             parsed_listing_id=entity.id,

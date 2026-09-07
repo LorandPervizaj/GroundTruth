@@ -1,13 +1,13 @@
 """Abstract base classes for processing components."""
 
 from abc import ABC, abstractmethod
-from typing import Generic, TypeVar
+from typing import TypeVar
 
 InputT = TypeVar("InputT")
 OutputT = TypeVar("OutputT")
 
 
-class Processor(ABC, Generic[InputT, OutputT]):
+class Processor[InputT, OutputT](ABC):
     """Base interface for all processors. Each must be independently unit-testable."""
 
     @abstractmethod

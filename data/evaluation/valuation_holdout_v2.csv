@@ -1,0 +1,61 @@
+holdout_id,source_website,source_listing_id,valuation_type,municipality,neighborhood,neighborhood_id,area_sqm,bedrooms,property_type,actual_price_eur,stratum,frozen_at,notes
+vh2-0001,gjirafa,banesa-60644,rent,Prishtina,Emshir,,55.0,,APARTMENT,300.00,high_confidence,2026-07-24,golden_v1 verified label; re-export from corpus for LOO keys
+vh2-0002,gjirafa,banesa-78324,rent,Prishtina,Ulpiana,,65.0,,APARTMENT,350.00,high_confidence,2026-07-24,golden_v1 verified label; re-export from corpus for LOO keys
+vh2-0003,gjirafa,banesa-30007,rent,Prishtina,Arberia,,90.0,,APARTMENT,500.00,high_confidence,2026-07-24,golden_v1 verified label; re-export from corpus for LOO keys
+vh2-0004,gjirafa,banesa-77053,rent,Prishtina,Ulpiana,,38.0,,APARTMENT,250.00,high_confidence,2026-07-24,golden_v1 verified label; re-export from corpus for LOO keys
+vh2-0005,gjirafa,banesa-68993,rent,Prishtina,Qafa,,65.0,,APARTMENT,300.00,high_confidence,2026-07-24,golden_v1 verified label; re-export from corpus for LOO keys
+vh2-0006,gjirafa,banesa-75109,rent,Prishtina,Lakrishtë,,55.0,,APARTMENT,280.00,high_confidence,2026-07-24,golden_v1 verified label; re-export from corpus for LOO keys
+vh2-0007,gjirafa,banesa-81031,rent,Prishtina,Dodona,,100.0,,APARTMENT,400.00,high_confidence,2026-07-24,golden_v1 verified label; re-export from corpus for LOO keys
+vh2-0008,gjirafa,banesa-60512,rent,Prishtina,Emshir,,77.0,,APARTMENT,400.00,high_confidence,2026-07-24,golden_v1 verified label; re-export from corpus for LOO keys
+vh2-0009,gjirafa,banesa-61077,rent,Prishtina,Lakrishte,,65.0,,APARTMENT,300.00,high_confidence,2026-07-24,golden_v1 verified label; re-export from corpus for LOO keys
+vh2-0010,gjirafa,banesa-78323,rent,Prishtina,Dardania,,65.0,,APARTMENT,300.00,high_confidence,2026-07-24,golden_v1 verified label; re-export from corpus for LOO keys
+vh2-0011,gjirafa,banesa-80206,rent,Prishtina,Arbëri,,60.0,,APARTMENT,300.00,random,2026-07-24,golden_v1 verified label; re-export from corpus for LOO keys
+vh2-0012,gjirafa,banesa-54320,rent,Prishtina,Spitalit,,90.0,,APARTMENT,300.00,random,2026-07-24,golden_v1 verified label; re-export from corpus for LOO keys
+vh2-0013,gjirafa,banesa-9604,rent,Prishtina,Breg te Diellit,,60.0,,APARTMENT,200.00,random,2026-07-24,golden_v1 verified label; re-export from corpus for LOO keys
+vh2-0014,gjirafa,banesa-47330,rent,Prishtina,Qafa,,88.0,,APARTMENT,300.00,random,2026-07-24,golden_v1 verified label; re-export from corpus for LOO keys
+vh2-0015,gjirafa,banesa-60523,rent,Prishtina,Spitalit,,80.0,,APARTMENT,320.00,random,2026-07-24,golden_v1 verified label; re-export from corpus for LOO keys
+vh2-0016,gjirafa,banesa-59838,rent,Prishtina,Dodona,,65.0,,APARTMENT,250.00,random,2026-07-24,golden_v1 verified label; re-export from corpus for LOO keys
+vh2-0017,gjirafa,banesa-59424,rent,Prishtina,Bregu i Diellit,,90.0,,APARTMENT,400.00,random,2026-07-24,golden_v1 verified label; re-export from corpus for LOO keys
+vh2-0018,gjirafa,banesa-89799,rent,Prishtina,Arberi,,65.0,,APARTMENT,320.00,random,2026-07-24,golden_v1 verified label; re-export from corpus for LOO keys
+vh2-0019,gjirafa,banesa-78568,rent,Prishtina,Dardania,,80.0,,APARTMENT,400.00,random,2026-07-24,golden_v1 verified label; re-export from corpus for LOO keys
+vh2-0020,gjirafa,banesa-56331,rent,Prishtina,Aktash,,80.0,,APARTMENT,200.00,random,2026-07-24,golden_v1 verified label; re-export from corpus for LOO keys
+vh2-0021,gjirafa,banesa-42962,sale,Prishtina,Tophane,,113.0,,APARTMENT,115000.00,high_confidence,2026-07-24,golden_v1 verified label; re-export from corpus for LOO keys
+vh2-0022,gjirafa,banesa-53980,sale,Prishtina,Emshir,,63.0,,APARTMENT,60000.00,high_confidence,2026-07-24,golden_v1 verified label; re-export from corpus for LOO keys
+vh2-0023,gjirafa,banesa-49741,sale,Prishtina,Arberia,,116.0,,APARTMENT,125000.00,invalid,2026-07-24,golden_v1 verified label; re-export from corpus for LOO keys
+vh2-0024,gjirafa,banesa-52175,sale,Prishtina,Emshir,,109.0,,APARTMENT,85000.00,invalid,2026-07-24,golden_v1 verified label; re-export from corpus for LOO keys
+vh2-0025,gjirafa,banesa-73819,sale,Prishtina,Spitalit,,65.0,,APARTMENT,125000.00,invalid,2026-07-24,golden_v1 verified label; re-export from corpus for LOO keys
+vh2-0026,gjirafa,banesa-79380,sale,Prishtina,Bregun e diellit,,80.0,,APARTMENT,130000.00,invalid,2026-07-24,golden_v1 verified label; re-export from corpus for LOO keys
+vh2-0027,gjirafa,banesa-81013,sale,Prishtina,Mati 1,,111.0,,APARTMENT,139000.00,invalid,2026-07-24,golden_v1 verified label; re-export from corpus for LOO keys
+vh2-0028,gjirafa,banesa-82395,sale,Prishtina,Dardania,,60.0,,APARTMENT,200000.00,invalid,2026-07-24,golden_v1 verified label; re-export from corpus for LOO keys
+vh2-0029,gjirafa,banesa-41635,sale,Prishtina,Bregu i diellit,,107.0,,APARTMENT,103000.00,invalid,2026-07-24,golden_v1 verified label; re-export from corpus for LOO keys
+vh2-0030,gjirafa,banesa-84093,sale,Prishtina,Tophane,,34.0,,APARTMENT,130000.00,invalid,2026-07-24,golden_v1 verified label; re-export from corpus for LOO keys
+vh2-0031,gjirafa,banesa-41687,sale,Prishtina,Bregu i diellit,,86.0,,APARTMENT,125000.00,invalid,2026-07-24,golden_v1 verified label; re-export from corpus for LOO keys
+vh2-0032,gjirafa,banesa-51489,sale,Prishtina,Arberi,,78.0,,APARTMENT,100000.00,invalid,2026-07-24,golden_v1 verified label; re-export from corpus for LOO keys
+vh2-0033,gjirafa,banesa-32966,sale,Prishtina,Bregu i Diellit,,135.0,,APARTMENT,140000.00,low_confidence,2026-07-24,golden_v1 verified label; re-export from corpus for LOO keys
+vh2-0034,gjirafa,banesa-58382,sale,Prishtina,BREGUN E DIELLIT,,108.0,,APARTMENT,120000.00,low_confidence,2026-07-24,golden_v1 verified label; re-export from corpus for LOO keys
+vh2-0035,gjirafa,banesa-30274,sale,Prishtina,Qafa,,57.0,,APARTMENT,175000.00,low_confidence,2026-07-24,golden_v1 verified label; re-export from corpus for LOO keys
+vh2-0036,gjirafa,banesa-82132,sale,Prishtina,Arbëri,,71.0,,APARTMENT,175000.00,low_confidence,2026-07-24,golden_v1 verified label; re-export from corpus for LOO keys
+vh2-0037,gjirafa,banesa-61608,sale,Prishtina,ARBERI,,91.0,,APARTMENT,110000.00,low_confidence,2026-07-24,golden_v1 verified label; re-export from corpus for LOO keys
+vh2-0038,gjirafa,banesa-60579,sale,Prishtina,ARBERI,,91.0,,APARTMENT,120000.00,low_confidence,2026-07-24,golden_v1 verified label; re-export from corpus for LOO keys
+vh2-0039,gjirafa,banesa-77124,sale,Prishtina,Arbëri,,85.0,,APARTMENT,110000.00,low_confidence,2026-07-24,golden_v1 verified label; re-export from corpus for LOO keys
+vh2-0040,gjirafa,banesa-58381,sale,Prishtina,EMSHIR,,109.0,,APARTMENT,130000.00,low_confidence,2026-07-24,golden_v1 verified label; re-export from corpus for LOO keys
+vh2-0041,gjirafa,banesa-81839,sale,Prishtina,Muhaxherëve,,62.0,,APARTMENT,130000.00,low_confidence,2026-07-24,golden_v1 verified label; re-export from corpus for LOO keys
+vh2-0042,gjirafa,banesa-81721,sale,Prishtina,Prishtina e Re,,90.0,,APARTMENT,115000.00,low_confidence,2026-07-24,golden_v1 verified label; re-export from corpus for LOO keys
+vh2-0043,gjirafa,banesa-68211,sale,Prishtina,Bregu i Diellit,,107.0,,APARTMENT,90000.00,random,2026-07-24,golden_v1 verified label; re-export from corpus for LOO keys
+vh2-0044,gjirafa,banesa-52199,sale,Prishtina,Ulpiane,,52.0,,APARTMENT,120000.00,random,2026-07-24,golden_v1 verified label; re-export from corpus for LOO keys
+vh2-0045,gjirafa,banesa-81023,sale,Prishtina,Bregu i Diellit,,40.0,,APARTMENT,45000.00,random,2026-07-24,golden_v1 verified label; re-export from corpus for LOO keys
+vh2-0046,gjirafa,banesa-8568,sale,Prishtina,Breg te Diellit,,64.0,,APARTMENT,50000.00,random,2026-07-24,golden_v1 verified label; re-export from corpus for LOO keys
+vh2-0047,gjirafa,banesa-53630,sale,Prishtina,Bregu i Diellit,,48.0,,APARTMENT,68000.00,random,2026-07-24,golden_v1 verified label; re-export from corpus for LOO keys
+vh2-0048,gjirafa,banesa-80436,sale,Prishtina,Spitalit,,134.0,,APARTMENT,130000.00,random,2026-07-24,golden_v1 verified label; re-export from corpus for LOO keys
+vh2-0049,gjirafa,banesa-50196,sale,Prishtina,Qafa,,47.0,,APARTMENT,120000.00,random,2026-07-24,golden_v1 verified label; re-export from corpus for LOO keys
+vh2-0050,gjirafa,banesa-30971,sale,Prishtina,Arberia,,45.0,,APARTMENT,50000.00,random,2026-07-24,golden_v1 verified label; re-export from corpus for LOO keys
+vh2-0051,gjirafa,banesa-42966,sale,Prishtina,Mati 1,,58.0,,APARTMENT,85000.00,random,2026-07-24,golden_v1 verified label; re-export from corpus for LOO keys
+vh2-0052,gjirafa,banesa-13145,sale,Prishtina,Mati 1,,112.0,,APARTMENT,80000.00,random,2026-07-24,golden_v1 verified label; re-export from corpus for LOO keys
+vh2-0053,gjirafa,banesa-74373,rent,Prishtina,Muhaxhereve,,60.0,,APARTMENT,350.00,random,2026-07-24,golden_v1 verified label; re-export from corpus for LOO keys
+vh2-0054,gjirafa,banesa-56578,rent,Prishtina,Qender,,75.0,,APARTMENT,270.00,random,2026-07-24,golden_v1 verified label; re-export from corpus for LOO keys
+vh2-0055,gjirafa,banesa-56891,rent,Prishtina,Pejton,,138.0,,APARTMENT,700.00,random,2026-07-24,golden_v1 verified label; re-export from corpus for LOO keys
+vh2-0056,gjirafa,banesa-78359,rent,Prishtina,Ulpiana,,55.0,,APARTMENT,320.00,random,2026-07-24,golden_v1 verified label; re-export from corpus for LOO keys
+vh2-0057,gjirafa,banesa-59815,rent,Prishtina,Qender,,85.0,,APARTMENT,400.00,random,2026-07-24,golden_v1 verified label; re-export from corpus for LOO keys
+vh2-0058,gjirafa,banesa-60869,rent,Prishtina,Spitalit,,53.0,,APARTMENT,250.00,random,2026-07-24,golden_v1 verified label; re-export from corpus for LOO keys
+vh2-0059,gjirafa,banesa-49432,rent,Prishtina,Bregu i Diellit,,40.0,,APARTMENT,180.00,random,2026-07-24,golden_v1 verified label; re-export from corpus for LOO keys
+vh2-0060,gjirafa,banesa-60214,rent,Prishtina,Aktash,,93.0,,APARTMENT,450.00,random,2026-07-24,golden_v1 verified label; re-export from corpus for LOO keys

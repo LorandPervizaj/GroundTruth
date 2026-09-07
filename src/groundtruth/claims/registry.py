@@ -3,10 +3,10 @@
 from __future__ import annotations
 
 import csv
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Literal
+from typing import Any, Literal
 
 from groundtruth.config import PROJECT_ROOT
 from groundtruth.methodology.version import METHODOLOGY_VERSION
@@ -14,14 +14,34 @@ from groundtruth.methodology.version import METHODOLOGY_VERSION
 REGISTRY_PATH = PROJECT_ROOT / "data" / "claims" / "registry.csv"
 
 ClaimType = Literal["fact", "interpretation", "negative", "method"]
+ClaimStructure = Literal["descriptive", "structural", "method"]
 ClaimStatus = Literal["draft", "reviewed", "published", "superseded", "retracted"]
+
+MaturityLevel = Literal["M0", "M1", "M2", "M3", "M4"]
+ImpactLevel = Literal["very_low", "low", "medium", "high", "very_high"]
 
 FIELDNAMES = [
     "claim_id",
     "statement",
     "claim_type",
+    "claim_structure",
+    "half_life",
+    "evidence_grade",
+    "causal_level",
+    "maturity",
+    "impact",
+    "retest_interval",
+    "research_hours",
+    "estimate",
+    "lower_ci",
+    "upper_ci",
+    "confidence_level",
+    "depends_on",
+    "observation_date",
     "etl_run_id",
     "etl_date",
+    "etl_version",
+    "raw_crawl_hash",
     "parser_version",
     "methodology_version",
     "notebook_path",
@@ -38,13 +58,40 @@ FIELDNAMES = [
 ]
 
 
+EvidenceGrade = Literal["A", "B", "C", "D", "E"]
+CausalLevel = Literal["C0", "C1", "C2", "C3"]
+
+CAUSAL_LEVEL_MEANINGS: dict[str, str] = {
+    "C0": "descriptive only",
+    "C1": "adjusted association",
+    "C2": "quasi-experimental",
+    "C3": "replicated intervention evidence",
+}
+
+
 @dataclass
 class Claim:
     claim_id: str
     statement: str
     claim_type: ClaimType = "fact"
+    claim_structure: ClaimStructure = "descriptive"
+    half_life: str = ""
+    evidence_grade: EvidenceGrade = "C"
+    causal_level: CausalLevel = "C0"
+    maturity: MaturityLevel = "M0"
+    impact: ImpactLevel = "medium"
+    retest_interval: str = ""
+    research_hours: str = ""
+    estimate: str = ""
+    lower_ci: str = ""
+    upper_ci: str = ""
+    confidence_level: str = ""
+    depends_on: str = ""
+    observation_date: str = ""
     etl_run_id: str = ""
     etl_date: str = ""
+    etl_version: str = ""
+    raw_crawl_hash: str = ""
     parser_version: str = ""
     methodology_version: str = METHODOLOGY_VERSION
     notebook_path: str = ""
@@ -61,6 +108,35 @@ class Claim:
 
     def to_row(self) -> dict[str, str]:
         return {k: str(getattr(self, k) or "") for k in FIELDNAMES}
+
+    def to_api_dict(self) -> dict[str, Any]:
+        """Structured claim for machine reasoning (not RAG over prose)."""
+        trace = self.to_reasoning_trace()
+        return {**trace, "statement": self.statement, "claim_type": self.claim_type}
+
+    def to_reasoning_trace(self, *, policy_id: str | None = None) -> dict[str, Any]:
+        """Graph-friendly trace for downstream agents — not an isolated fact string."""
+        estimate = float(self.estimate) if self.estimate else None
+        lower = float(self.lower_ci) if self.lower_ci else None
+        upper = float(self.upper_ci) if self.upper_ci else None
+        deps = [x.strip() for x in self.depends_on.split(";") if x.strip()]
+        return {
+            "claim": self.claim_id,
+            "depends_on": deps,
+            "evidence": self.evidence_grade,
+            "causal": self.causal_level,
+            "maturity": self.maturity,
+            "structure": self.claim_structure,
+            "policy": policy_id,
+            "estimate": estimate,
+            "uncertainty": {"lower": lower, "upper": upper}
+            if lower is not None and upper is not None
+            else None,
+            "retest": self.retest_interval or self.half_life or None,
+            "n": int(self.n) if self.n.isdigit() else self.n or None,
+            "methodology_version": self.methodology_version,
+            "status": self.status,
+        }
 
     @classmethod
     def from_row(cls, row: dict[str, str]) -> Claim:

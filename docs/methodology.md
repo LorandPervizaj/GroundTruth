@@ -4,7 +4,7 @@ How we know what we know. If someone challenges a chart, this document should an
 
 **Methodology version:** `1.0.0` (semantic — independent from parser)  
 **Parser:** `parser-v1.3.0`  
-**Primary source:** Gjirafa Real Estate (listime.gjirafa.com)
+**Primary sources:** Public Kosovo listing portals (see active corpus in `/api/meta`)
 
 Every published report must state: *Generated using Methodology v1.0.0.*
 
@@ -14,7 +14,7 @@ Every published report must state: *Generated using Methodology v1.0.0.*
 
 ### What this dataset is
 
-- **Prishtina apartment rentals** scraped from Gjirafa, as of the latest ETL run.
+- **Prishtina apartment rentals** aggregated from public listing portals, as of the latest ETL run.
 - ~2,400 unique listings (deduped by `source_listing_id`, latest observation).
 - ~90% rent, ~10% sale; ~99.6% Prishtina; ~99.8% apartments.
 
@@ -42,10 +42,11 @@ The second metric reflects parser quality; the first reflects source + parser co
 
 | Parameter | Value |
 |-----------|-------|
-| Source | Gjirafa (`source_website = gjirafa`) |
-| Crawl policy | Frozen during parser validation; resume only after publication milestone |
-| Raw storage | Immutable `raw_listings` with `content_hash` |
+| Sources | Public Kosovo residential listing portals (multi-source active corpus) |
+| Crawl policy | Conservative — see [CRAWL_POLICY.md](CRAWL_POLICY.md) (delays, autothrottle, skip-existing, private operator only) |
+| Raw storage | Immutable `raw_listings` with `content_hash` (local research DB — not public) |
 | Duplicate crawls | Same `source_listing_id` may have multiple `raw_listing_id`; analysis uses latest |
+| Facebook | Manual import only — no automated Marketplace scrape ([FB_MARKETPLACE.md](FB_MARKETPLACE.md)) |
 
 ---
 
@@ -105,13 +106,12 @@ Logged to `reports/generated/benchmark_log.csv`.
 
 - 901 stratified auto-labels in `data/golden/golden_v1.csv`
 - Evaluated by `scripts/evaluate_golden_dataset.py`
-- **Independent verification required:** `data/golden/golden_v1_manual_review_100.csv`
 
-Automated 100% accuracy confirms internal consistency, not independent ground truth.
+Automated accuracy confirms internal consistency, not independent ground truth.
 
 ### Forensic audit (Phase C)
 
-`scripts/audit_dataset.py` — missingness, cardinality, impossible values, distributions, duplicates, confidence bins, source bias.
+Post-ETL audits write artifacts under `reports/generated/` (corpus, skew, annual report).
 
 ---
 
@@ -121,7 +121,7 @@ Automated 100% accuracy confirms internal consistency, not independent ground tr
 
 Per-listing score from normalization match quality (neighborhood, street, complex, building match types). Used for weighting and calibration — **not** a substitute for sample size.
 
-**Calibration protocol:** Sample 20 listings per confidence bin (0.5–0.6, …, 0.9–1.0). Record correctness in `RESEARCH.md`. Recalibrate before public use if bins do not monotonically predict accuracy.
+**Calibration protocol:** Sample 20 listings per confidence bin (0.5–0.6, …, 0.9–1.0). Recalibrate before public use if bins do not monotonically predict accuracy.
 
 ### Dataset confidence (slice-level)
 
@@ -205,13 +205,7 @@ Every publishable statement is registered in `data/claims/registry.csv`. **Claim
 | `status` | draft / reviewed / published / superseded / retracted |
 | `superseded_by` | New claim ID if replaced |
 
-When a claim changes, **supersede** it (`scripts/manage_claims.py supersede`) — e.g. GT-005 → GT-019. Historical claims remain.
-
-```bash
-uv run python scripts/manage_claims.py register --statement "..." --fingerprint-dataset
-uv run python scripts/manage_claims.py supersede --old-id GT-002 --statement "..."
-uv run python scripts/manage_claims.py fingerprint
-```
+When a claim changes, **supersede** it in `data/claims/registry.csv` — historical claims remain. Export public claims with `scripts/export_claims_api.py`.
 
 ---
 
@@ -281,8 +275,6 @@ Register negative findings (no effect) as `claim_type=negative` to avoid revisit
 
 ## References
 
-- `docs/PRINCIPLES.md` — operating rules
-- `docs/PHASES.md` — execution roadmap
-- `RESEARCH.md` — research ledger
+- `docs/architecture.md` — pipeline layout
 - `data/claims/registry.csv` — claim registry
 - `CHANGELOG.md` — parser version history

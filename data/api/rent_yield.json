@@ -1,0 +1,160 @@
+{
+  "rows": [
+    {
+      "neighborhood_name": "Veternik",
+      "slug": "veternik",
+      "median_rent_eur": 450.0,
+      "median_sale_eur": 125000.0,
+      "median_rent_psm": 6.0,
+      "median_sale_psm": 1250.0,
+      "gross_yield_pct": 4.32,
+      "rent_listings": 220,
+      "sale_listings": 494,
+      "estimate_ready": true
+    },
+    {
+      "neighborhood_name": "Arbëria",
+      "slug": "arberia",
+      "median_rent_eur": 480.0,
+      "median_sale_eur": 140000.0,
+      "median_rent_psm": 6.0,
+      "median_sale_psm": 1570.0,
+      "gross_yield_pct": 4.11,
+      "rent_listings": 387,
+      "sale_listings": 162,
+      "estimate_ready": true
+    },
+    {
+      "neighborhood_name": "Matiqan",
+      "slug": "matiqan",
+      "median_rent_eur": 420.0,
+      "median_sale_eur": 125000.0,
+      "median_rent_psm": 5.0,
+      "median_sale_psm": 1390.0,
+      "gross_yield_pct": 4.03,
+      "rent_listings": 746,
+      "sale_listings": 689,
+      "estimate_ready": true
+    },
+    {
+      "neighborhood_name": "Tophane",
+      "slug": "tophane",
+      "median_rent_eur": 450.0,
+      "median_sale_eur": 135000.0,
+      "median_rent_psm": 5.0,
+      "median_sale_psm": 1610.0,
+      "gross_yield_pct": 4.0,
+      "rent_listings": 154,
+      "sale_listings": 85,
+      "estimate_ready": true
+    },
+    {
+      "neighborhood_name": "Ulpiana",
+      "slug": "ulpiana",
+      "median_rent_eur": 330.0,
+      "median_sale_eur": 105000.0,
+      "median_rent_psm": 5.0,
+      "median_sale_psm": 2390.0,
+      "gross_yield_pct": 3.77,
+      "rent_listings": 296,
+      "sale_listings": 171,
+      "estimate_ready": true
+    },
+    {
+      "neighborhood_name": "Emshir",
+      "slug": "emshir",
+      "median_rent_eur": 380.0,
+      "median_sale_eur": 125000.0,
+      "median_rent_psm": 5.0,
+      "median_sale_psm": 1480.0,
+      "gross_yield_pct": 3.65,
+      "rent_listings": 201,
+      "sale_listings": 210,
+      "estimate_ready": true
+    },
+    {
+      "neighborhood_name": "4 Lullat / Dodona",
+      "slug": "llullat-dodona",
+      "median_rent_eur": 350.0,
+      "median_sale_eur": 118000.0,
+      "median_rent_psm": 5.0,
+      "median_sale_psm": 1580.0,
+      "gross_yield_pct": 3.56,
+      "rent_listings": 157,
+      "sale_listings": 35,
+      "estimate_ready": true
+    },
+    {
+      "neighborhood_name": "Bregu i Diellit",
+      "slug": "bregu-i-diellit",
+      "median_rent_eur": 350.0,
+      "median_sale_eur": 122000.0,
+      "median_rent_psm": 5.0,
+      "median_sale_psm": 1700.0,
+      "gross_yield_pct": 3.44,
+      "rent_listings": 332,
+      "sale_listings": 204,
+      "estimate_ready": true
+    },
+    {
+      "neighborhood_name": "Dardania",
+      "slug": "dardania",
+      "median_rent_eur": 350.0,
+      "median_sale_eur": 125000.0,
+      "median_rent_psm": 6.0,
+      "median_sale_psm": 1950.0,
+      "gross_yield_pct": 3.36,
+      "rent_listings": 239,
+      "sale_listings": 131,
+      "estimate_ready": true
+    },
+    {
+      "neighborhood_name": "Aktash / Muhaxherë",
+      "slug": "aktash-muhaxhere",
+      "median_rent_eur": 430.0,
+      "median_sale_eur": 155000.0,
+      "median_rent_psm": 6.0,
+      "median_sale_psm": 1850.0,
+      "gross_yield_pct": 3.33,
+      "rent_listings": 364,
+      "sale_listings": 149,
+      "estimate_ready": true
+    },
+    {
+      "neighborhood_name": "Qendra",
+      "slug": "qendra",
+      "median_rent_eur": 400.0,
+      "median_sale_eur": 150000.0,
+      "median_rent_psm": 6.0,
+      "median_sale_psm": 1900.0,
+      "gross_yield_pct": 3.2,
+      "rent_listings": 398,
+      "sale_listings": 159,
+      "estimate_ready": true
+    },
+    {
+      "neighborhood_name": "Spitali",
+      "slug": "spitali",
+      "median_rent_eur": 350.0,
+      "median_sale_eur": 135000.0,
+      "median_rent_psm": 4.0,
+      "median_sale_psm": 1420.0,
+      "gross_yield_pct": 3.11,
+      "rent_listings": 269,
+      "sale_listings": 112,
+      "estimate_ready": true
+    },
+    {
+      "neighborhood_name": "Pejton / Lakrishte",
+      "slug": "pejton-lakrishte",
+      "median_rent_eur": 500.0,
+      "median_sale_eur": 196000.0,
+      "median_rent_psm": 6.0,
+      "median_sale_psm": 2300.0,
+      "gross_yield_pct": 3.06,
+      "rent_listings": 190,
+      "sale_listings": 65,
+      "estimate_ready": true
+    }
+  ]
+}

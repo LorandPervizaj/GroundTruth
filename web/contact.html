@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Metrik - Contact and reports</title>
+  <meta name="description" content="Contact Metrik, report a data issue, or submit a public listing for review." />
+  <meta property="og:title" content="Metrik - Contact and reports" />
+  <meta property="og:description" content="Contact Metrik, report data problems, or submit public listings for review." />
+  <meta property="og:type" content="website" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/static/style.css?v=46" />
+</head>
+<body data-page-title="contact_title">
+  <div class="page page-wide">
+    <div id="site-nav"></div>
+
+    <header class="hero hero-compact">
+      <h1 class="hero-title" data-i18n="contact_title"></h1>
+      <p class="hero-sub" data-i18n="contact_sub"></p>
+    </header>
+
+    <section class="panel form-panel">
+      <div class="mode-toggle contact-tabs" role="tablist" aria-label="Contact options">
+        <button type="button" class="mode-btn active" data-tab="contact" role="tab" aria-selected="true" aria-controls="contact-form" data-i18n="contact_tab_contact"></button>
+        <button type="button" class="mode-btn" data-tab="report" role="tab" aria-selected="false" aria-controls="report-form" data-i18n="contact_tab_report"></button>
+        <button type="button" class="mode-btn" data-tab="listing" role="tab" aria-selected="false" aria-controls="listing-form" data-i18n="contact_tab_listing"></button>
+      </div>
+
+      <form class="contact-pane" id="contact-form" data-pane="contact" role="tabpanel">
+        <div class="field-row">
+          <div class="field">
+            <label for="contact-name" data-i18n="contact_name"></label>
+            <input id="contact-name" required maxlength="120" autocomplete="name" />
+          </div>
+          <div class="field">
+            <label for="contact-email" data-i18n="contact_email"></label>
+            <input id="contact-email" required type="email" maxlength="200" autocomplete="email" />
+          </div>
+        </div>
+        <div class="field">
+          <label for="contact-topic" data-i18n="contact_topic"></label>
+          <select id="contact-topic">
+            <option value="general" data-i18n="contact_topic_general"></option>
+            <option value="data" data-i18n="contact_topic_data"></option>
+            <option value="partnership" data-i18n="contact_topic_partnership"></option>
+            <option value="press" data-i18n="contact_topic_press"></option>
+            <option value="other" data-i18n="contact_topic_other"></option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="contact-message" data-i18n="contact_message"></label>
+          <textarea id="contact-message" required minlength="10" maxlength="2000" rows="6"></textarea>
+        </div>
+        <button type="submit" class="btn-primary" data-i18n="contact_send"></button>
+      </form>
+
+      <form class="contact-pane hidden" id="report-form" data-pane="report" role="tabpanel">
+        <div class="field">
+          <label for="report-issue" data-i18n="report_issue"></label>
+          <select id="report-issue">
+            <option value="wrong_price" data-i18n="feedback_issue_wrong_price"></option>
+            <option value="wrong_location" data-i18n="feedback_issue_wrong_location"></option>
+            <option value="wrong_area" data-i18n="feedback_issue_wrong_area"></option>
+            <option value="duplicate" data-i18n="feedback_issue_duplicate"></option>
+            <option value="outdated" data-i18n="feedback_issue_outdated"></option>
+            <option value="missing_market" data-i18n="report_issue_missing_market"></option>
+            <option value="bug" data-i18n="report_issue_bug"></option>
+            <option value="other" data-i18n="feedback_issue_other"></option>
+          </select>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="report-page-url" data-i18n="report_page_url"></label>
+            <input id="report-page-url" type="url" maxlength="500" placeholder="https://..." />
+          </div>
+          <div class="field">
+            <label for="report-listing-url" data-i18n="report_listing_url"></label>
+            <input id="report-listing-url" type="url" maxlength="500" placeholder="https://..." />
+          </div>
+        </div>
+        <div class="field">
+          <label for="report-email" data-i18n="contact_email_optional"></label>
+          <input id="report-email" type="email" maxlength="200" autocomplete="email" />
+        </div>
+        <div class="field">
+          <label for="report-message" data-i18n="report_message"></label>
+          <textarea id="report-message" required minlength="10" maxlength="2000" rows="6"></textarea>
+        </div>
+        <button type="submit" class="btn-primary" data-i18n="report_send"></button>
+      </form>
+
+      <form class="contact-pane hidden" id="listing-form" data-pane="listing" role="tabpanel">
+        <h2 class="section-title section-title-sm" data-i18n="contact_tab_listing"></h2>
+        <p class="hint hint-info" data-i18n="listing_submit_hint"></p>
+        <div class="field-row">
+          <div class="field">
+            <label for="listing-type" data-i18n="alerts_listing_type"></label>
+            <select id="listing-type">
+              <option value="rent" data-i18n="listing_rent"></option>
+              <option value="sale" data-i18n="listing_sale"></option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="listing-property-type" data-i18n="listing_property_type"></label>
+            <select id="listing-property-type">
+              <option value="apartment" data-i18n="ptype_apartment"></option>
+              <option value="house" data-i18n="ptype_house"></option>
+              <option value="land" data-i18n="ptype_land"></option>
+              <option value="commercial" data-i18n="ptype_commercial"></option>
+              <option value="other" data-i18n="feedback_issue_other"></option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label for="listing-url" data-i18n="listing_url"></label>
+          <input id="listing-url" type="url" maxlength="500" placeholder="https://..." />
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="listing-source" data-i18n="listing_source"></label>
+            <input id="listing-source" maxlength="80" data-i18n-placeholder="contact_listing_source_ph" />
+          </div>
+          <div class="field">
+            <label for="listing-email" data-i18n="contact_email_optional"></label>
+            <input id="listing-email" type="email" maxlength="200" autocomplete="email" />
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="listing-neighborhood" data-i18n="neighborhood"></label>
+            <input id="listing-neighborhood" maxlength="120" />
+          </div>
+          <div class="field">
+            <label for="listing-street" data-i18n="street_optional"></label>
+            <input id="listing-street" maxlength="160" />
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="listing-price" data-i18n="listing_price"></label>
+            <input id="listing-price" type="number" min="1" max="10000000" step="1" />
+          </div>
+          <div class="field">
+            <label for="listing-area" data-i18n="area_sqm"></label>
+            <input id="listing-area" type="number" min="1" max="5000" step="1" />
+          </div>
+        </div>
+        <div class="field">
+          <label for="listing-bedrooms" data-i18n="bedrooms"></label>
+          <input id="listing-bedrooms" type="number" min="0" max="20" step="1" />
+        </div>
+        <div class="field">
+          <label for="listing-notes" data-i18n="listing_notes"></label>
+          <textarea id="listing-notes" maxlength="1500" rows="5"></textarea>
+        </div>
+        <button type="submit" class="btn-primary" data-i18n="listing_send"></button>
+      </form>
+
+      <p id="contact-status" class="hint contact-status hidden" role="status"></p>
+    </section>
+
+    <div id="site-footer"></div>
+  </div>
+  <script src="/static/i18n.js?v=45"></script>
+  <script src="/static/format.js?v=10"></script>
+  <script src="/static/site.js?v=31"></script>
+  <script src="/static/contact.js?v=1"></script>
+</body>
+</html>

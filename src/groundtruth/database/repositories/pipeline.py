@@ -95,7 +95,9 @@ class ParsedListingRepository(BaseRepository[ParsedListing]):
         return self.add(entity)
 
     def exists_for_raw(self, raw_listing_id: int) -> bool:
-        stmt = select(ParsedListing.id).where(ParsedListing.raw_listing_id == raw_listing_id).limit(1)
+        stmt = (
+            select(ParsedListing.id).where(ParsedListing.raw_listing_id == raw_listing_id).limit(1)
+        )
         return self._session.scalars(stmt).first() is not None
 
 

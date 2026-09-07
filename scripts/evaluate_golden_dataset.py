@@ -14,7 +14,6 @@ from groundtruth.golden.evaluate import (
     GOLDEN_DIR,
     evaluate_golden_file,
     latest_golden_file,
-    load_baseline,
 )
 from groundtruth.services.parsing import PARSER_VERSION
 
@@ -29,7 +28,16 @@ def _append_score(version: str, evaluation) -> None:
     with SCORES_PATH.open("a", newline="", encoding="utf-8") as fh:
         writer = csv.DictWriter(
             fh,
-            fieldnames=["recorded_at", "parser_version", "golden_version", "score", "neighborhood", "price", "area", "overall"],
+            fieldnames=[
+                "recorded_at",
+                "parser_version",
+                "golden_version",
+                "score",
+                "neighborhood",
+                "price",
+                "area",
+                "overall",
+            ],
         )
         if write_header:
             writer.writeheader()
@@ -54,7 +62,9 @@ def evaluate(
     """Score parser against a versioned golden dataset."""
     path = Path(input_file) if input_file else latest_golden_file()
     if path is None or not path.exists():
-        console.print("[yellow]No golden dataset found. Label golden_v1_candidates.csv first.[/yellow]")
+        console.print(
+            "[yellow]No golden dataset found. Label golden_v1_candidates.csv first.[/yellow]"
+        )
         raise typer.Exit(0)
 
     result = evaluate_golden_file(path)
@@ -62,7 +72,9 @@ def evaluate(
         console.print(f"[yellow]No verified rows in {path}[/yellow]")
         raise typer.Exit(0)
 
-    table = Table(title=f"Golden evaluation — {path.name} (parser {PARSER_VERSION}, n={result.total})")
+    table = Table(
+        title=f"Golden evaluation — {path.name} (parser {PARSER_VERSION}, n={result.total})"
+    )
     table.add_column("Field")
     table.add_column("Accuracy", justify="right")
     for field, value in result.as_dict().items():

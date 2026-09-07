@@ -1,0 +1,148 @@
+{
+  "schema": "groundtruth.reasoning/v1",
+  "count": 7,
+  "claims": [
+    {
+      "claim": "GT-000",
+      "depends_on": [],
+      "evidence": "C",
+      "causal": "C0",
+      "maturity": "M1",
+      "structure": "descriptive",
+      "policy": null,
+      "estimate": null,
+      "uncertainty": null,
+      "retest": "annual",
+      "n": 2404,
+      "methodology_version": "1.0.0",
+      "status": "published"
+    },
+    {
+      "claim": "GT-001",
+      "depends_on": [
+        "GT-000"
+      ],
+      "evidence": "C",
+      "causal": "C0",
+      "maturity": "M1",
+      "structure": "descriptive",
+      "policy": null,
+      "estimate": 90.3,
+      "uncertainty": null,
+      "retest": "etl_snapshot",
+      "n": 2404,
+      "methodology_version": "1.0.0",
+      "status": "published"
+    },
+    {
+      "claim": "GT-003",
+      "depends_on": [
+        "GT-002"
+      ],
+      "evidence": "C",
+      "causal": "C0",
+      "maturity": "M1",
+      "structure": "descriptive",
+      "policy": null,
+      "estimate": 2.4,
+      "uncertainty": null,
+      "retest": "parser_release",
+      "n": 11823,
+      "methodology_version": "1.0.0",
+      "status": "published"
+    },
+    {
+      "claim": "GT-005",
+      "depends_on": [],
+      "evidence": "B",
+      "causal": "C0",
+      "maturity": "M2",
+      "structure": "method",
+      "policy": null,
+      "estimate": null,
+      "uncertainty": null,
+      "retest": "parser_release",
+      "n": 1828,
+      "methodology_version": "1.0.0",
+      "status": "published"
+    },
+    {
+      "claim": "GT-006",
+      "depends_on": [
+        "GT-005"
+      ],
+      "evidence": "C",
+      "causal": "C1",
+      "maturity": "M1",
+      "structure": "structural",
+      "policy": null,
+      "estimate": 4.18,
+      "uncertainty": null,
+      "retest": "quarterly",
+      "n": 1309,
+      "methodology_version": "1.0.0",
+      "status": "published"
+    },
+    {
+      "claim": "GT-007",
+      "depends_on": [
+        "GT-004"
+      ],
+      "evidence": "C",
+      "causal": "C1",
+      "maturity": "M1",
+      "structure": "structural",
+      "policy": null,
+      "estimate": null,
+      "uncertainty": null,
+      "retest": "quarterly",
+      "n": 1823,
+      "methodology_version": "1.0.0",
+      "status": "published"
+    },
+    {
+      "claim": "GT-008",
+      "depends_on": [
+        "GT-002"
+      ],
+      "evidence": "B",
+      "causal": "C0",
+      "maturity": "M2",
+      "structure": "descriptive",
+      "policy": null,
+      "estimate": 92.0,
+      "uncertainty": null,
+      "retest": "parser_release",
+      "n": 100,
+      "methodology_version": "1.0.0",
+      "status": "published"
+    }
+  ],
+  "edges": [
+    {
+      "from": "GT-000",
+      "to": "GT-001",
+      "type": "depends_on"
+    },
+    {
+      "from": "GT-002",
+      "to": "GT-003",
+      "type": "depends_on"
+    },
+    {
+      "from": "GT-005",
+      "to": "GT-006",
+      "type": "depends_on"
+    },
+    {
+      "from": "GT-004",
+      "to": "GT-007",
+      "type": "depends_on"
+    },
+    {
+      "from": "GT-002",
+      "to": "GT-008",
+      "type": "depends_on"
+    }
+  ]
+}

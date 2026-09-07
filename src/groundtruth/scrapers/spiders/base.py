@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import hashlib
 from abc import abstractmethod
 from collections.abc import Iterable
 from datetime import UTC, datetime
@@ -12,6 +11,8 @@ import scrapy
 from scrapy.http import Response
 
 from groundtruth.logging import get_logger
+from groundtruth.scrapers.errors import ScrapeErrorCode
+from groundtruth.scrapers.hashing import content_hash
 from groundtruth.scrapers.items import ListingItem
 
 logger = get_logger(__name__)
@@ -48,6 +49,19 @@ class BaseRealEstateSpider(scrapy.Spider):
         super().__init__(*args, **kwargs)
         if not self.source_website:
             raise ValueError(f"{self.__class__.__name__} must define source_website")
+        self.error_code_counts: dict[str, int] = {}
+
+    def record_error(
+        self,
+        code: ScrapeErrorCode,
+        *,
+        count_as_error: bool = True,
+    ) -> None:
+        """Increment typed error taxonomy (+ optional scrape_runs.errors_count)."""
+        key = code.value
+        self.error_code_counts[key] = self.error_code_counts.get(key, 0) + 1
+        if count_as_error:
+            self.errors_count += 1
 
     # ------------------------------------------------------------------
     # Abstract hooks — implement per source
@@ -87,12 +101,13 @@ class BaseRealEstateSpider(scrapy.Spider):
         try:
             yield from parser(response)
         except Exception as exc:
-            self.errors_count += 1
+            self.record_error(ScrapeErrorCode.PARSE_EXCEPTION)
             logger.error(
                 "parse_error",
                 spider=self.name,
                 url=response.url,
                 error=str(exc),
+                code=ScrapeErrorCode.PARSE_EXCEPTION.value,
                 exc_info=True,
             )
 
@@ -112,8 +127,7 @@ class BaseRealEstateSpider(scrapy.Spider):
         item["original_url"] = original_url
         item["raw_payload"] = raw_payload
         item["raw_html"] = raw_html
-        content = str(raw_payload) + (raw_html or "")
-        item["content_hash"] = hashlib.sha256(content.encode("utf-8")).hexdigest()
+        item["content_hash"] = content_hash(raw_payload=raw_payload, raw_html=raw_html)
         item["scraped_at"] = datetime.now(UTC).isoformat()
         self.listings_found += 1
         return item

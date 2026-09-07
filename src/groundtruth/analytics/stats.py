@@ -60,6 +60,73 @@ def summarize(values: pd.Series | np.ndarray) -> SummaryStats | None:
     )
 
 
+def comparable_area_weights(
+    areas: pd.Series | np.ndarray,
+    target_area: float,
+    *,
+    bandwidth_m2: float = 10.0,
+) -> np.ndarray:
+    """Gaussian weights by area distance — closer listings count more."""
+    arr = np.asarray(areas, dtype=float)
+    if bandwidth_m2 <= 0:
+        return np.ones_like(arr)
+    return np.exp(-0.5 * ((arr - target_area) / bandwidth_m2) ** 2)
+
+
+def weighted_average(
+    values: pd.Series | np.ndarray,
+    weights: pd.Series | np.ndarray,
+) -> float | None:
+    """Weighted arithmetic mean; returns None if no positive weight."""
+    v = np.asarray(values, dtype=float)
+    w = np.asarray(weights, dtype=float)
+    mask = np.isfinite(v) & np.isfinite(w) & (w > 0)
+    if not mask.any():
+        return None
+    v, w = v[mask], w[mask]
+    total = w.sum()
+    if total <= 0:
+        return None
+    return float(np.dot(v, w) / total)
+
+
+def bootstrap_weighted_mean_ci(
+    values: pd.Series | np.ndarray,
+    weights: pd.Series | np.ndarray,
+    *,
+    n_resamples: int = 5000,
+    ci: float = 0.95,
+    seed: int = 42,
+) -> tuple[float, float, float] | None:
+    """Bootstrap percentile CI for a weighted mean. Returns (mean, lo, hi)."""
+    v = pd.Series(values).dropna().to_numpy(dtype=float)
+    w = pd.Series(weights).dropna().to_numpy(dtype=float)
+    if len(v) == 0 or len(v) != len(w):
+        return None
+    w = np.clip(w, 0, None)
+    if w.sum() <= 0:
+        w = np.ones_like(w)
+    mean = weighted_average(v, w)
+    if mean is None:
+        return None
+    p = w / w.sum()
+    rng = np.random.default_rng(seed)
+    idx = rng.choice(len(v), size=(n_resamples, len(v)), replace=True, p=p)
+    sampled_values = v[idx]
+    sampled_weights = w[idx]
+    totals = sampled_weights.sum(axis=1)
+    valid = totals > 0
+    if not valid.any():
+        return None
+    boot_means = (sampled_values[valid] * sampled_weights[valid]).sum(axis=1) / totals[valid]
+    alpha = (1 - ci) / 2
+    return (
+        mean,
+        float(np.quantile(boot_means, alpha)),
+        float(np.quantile(boot_means, 1 - alpha)),
+    )
+
+
 def bootstrap_median_ci(
     values: pd.Series | np.ndarray,
     *,

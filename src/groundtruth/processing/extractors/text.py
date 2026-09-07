@@ -4,6 +4,7 @@ import re
 from dataclasses import dataclass, field
 
 from groundtruth.processing.base import Processor
+from groundtruth.processing.extractors.bedrooms import extract_bedrooms_from_text
 
 
 @dataclass
@@ -34,18 +35,23 @@ class TextExtractor(Processor[str | None, ExtractedFields]):
         if floor_match:
             result.floor = int(floor_match.group(1))
 
-        bedroom_match = re.search(r"(\d+)\s*dhom", lower)
-        if bedroom_match:
-            result.bedrooms = int(bedroom_match.group(1))
+        result.bedrooms = extract_bedrooms_from_text(value)
 
-        if "mobiluar" in lower or "e mobiluar" in lower:
+        if re.search(r"pa\s+mobil", lower):
+            result.is_furnished = False
+        elif re.search(
+            r"(?:e\s+)?mobiluar|mobilimi|te\s+mobiluar|mobilimi\s+komplet",
+            lower,
+        ):
             result.is_furnished = True
         if "ashensor" in lower:
             result.has_elevator = True
         if "parking" in lower or "garazh" in lower:
             result.has_parking = True
 
-        complex_match = re.search(r"kompleks(?:in|i)?\s+(?:e\s+)?([A-Za-z0-9\s]+)", value, re.IGNORECASE)
+        complex_match = re.search(
+            r"kompleks(?:in|i)?\s+(?:e\s+)?([A-Za-z0-9\s]+)", value, re.IGNORECASE
+        )
         if complex_match:
             result.complex_name = complex_match.group(1).strip()
 

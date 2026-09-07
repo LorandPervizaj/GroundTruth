@@ -54,6 +54,7 @@ class GazetteerService:
         """Load all gazetteer files from disk."""
         files = {
             "neighborhoods": "neighborhoods.json",
+            "districts": "districts.json",
             "streets": "streets.json",
             "complexes": "complexes.json",
             "buildings": "building_aliases.json",
@@ -74,11 +75,44 @@ class GazetteerService:
     def match_neighborhood(self, name: str, city: str | None = None) -> GazetteerMatch | None:
         """Match a neighborhood name. Deterministic first, then fuzzy."""
         self._ensure_loaded()
-        return self._match_entry(
+        match = self._match_entry(
             self._data["neighborhoods"],
             name,
             filter_key="city",
             filter_value=city,
+        )
+        return self._resolve_canonical("neighborhoods", match)
+
+    def _entry_by_slug(self, entity_type: str, slug: str) -> dict[str, Any] | None:
+        self._ensure_loaded()
+        for entry in self._data.get(entity_type, []):
+            if entry.get("slug") == slug:
+                return entry
+        return None
+
+    def _resolve_canonical(
+        self,
+        entity_type: str,
+        match: GazetteerMatch | None,
+    ) -> GazetteerMatch | None:
+        """Follow canonical_slug redirects for merged neighborhoods."""
+        if match is None:
+            return None
+        entry = self._entry_by_slug(entity_type, match.slug)
+        if not entry:
+            return match
+        canonical_slug = entry.get("canonical_slug")
+        if not canonical_slug or canonical_slug == match.slug:
+            return match
+        target = self._entry_by_slug(entity_type, canonical_slug)
+        if not target:
+            return match
+        return GazetteerMatch(
+            id=target.get("id"),
+            name=target["name"],
+            slug=target["slug"],
+            match_type=match.match_type,
+            score=match.score,
         )
 
     def match_street(

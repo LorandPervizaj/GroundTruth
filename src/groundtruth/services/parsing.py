@@ -9,29 +9,72 @@ from typing import Any
 
 from groundtruth.gazetteers.loader import GazetteerService
 from groundtruth.models.enums import ListingType, PropertyType
+from groundtruth.models.pipeline import RawListing
+from groundtruth.processing.extractors.bedrooms import sanitize_bedrooms
+from groundtruth.processing.extractors.text import TextExtractor
+from groundtruth.processing.normalizers.area import AreaNormalizer
+from groundtruth.processing.normalizers.price import PriceNormalizer
 from groundtruth.processing.validation import (
     MAX_SALE_PRICE,
     MIN_PRICE_PER_SQM,
     MIN_SALE_PRICE,
 )
-from groundtruth.models.pipeline import RawListing
-from groundtruth.processing.extractors.text import TextExtractor
-from groundtruth.processing.normalizers.area import AreaNormalizer
-from groundtruth.processing.normalizers.price import PriceNormalizer
+from groundtruth.provenance.extract import extract_by_rules, neighborhood_postprocess
+from groundtruth.provenance.models import ProvenanceCollector
+from groundtruth.provenance.rules import (
+    AREA_DESC_FALLBACK,
+    AREA_REJECT_PLACEHOLDER,
+    AREA_STRUCTURED,
+    NH_DESCRIPTION_RULES,
+    NH_TEXT_EXTRACT,
+    NH_TITLE_RULES,
+    PRICE_DESC_FALLBACK,
+    PRICE_PLACEHOLDER_OVERRIDE,
+    PRICE_SALE_DESC_FALLBACK,
+    PRICE_SALE_SHORTHAND,
+    PRICE_STRUCTURED,
+    TYPE_RAW_FIELD,
+    TYPE_TITLE_INFER,
+)
 from groundtruth.schemas.pipeline import ParsedListingSchema
+from groundtruth.services.merrjep_parsing import MerrJepParsingService
+from groundtruth.services.myrealestate_parsing import MyRealEstateParsingService
+from groundtruth.services.pro_rks_parsing import ProRksParsingService
+from groundtruth.services.topia_parsing import TopiaParsingService
+from groundtruth.services.vision_parsing import VisionParsingService
+from groundtruth.versions import PARSER_VERSIONS
 
 _SUSPICIOUS_PRICE = Decimal("10")
 
-PARSER_VERSION = "1.3.0"
+PARSER_VERSION = PARSER_VERSIONS["gjirafa"]
 
 # Release criteria for v1.3.0: invalid <3%, neighborhood >95%, area >95%, price 100%, golden >97%
 
 # Strings that are never neighborhoods — usually parser false-positives from descriptions.
-_NEIGHBORHOOD_BLOCKLIST = frozenset({
-    "facebook", "instagram", "whatsapp", "numrin", "numri", "kontaktoni", "kontakto",
-    "teresi", "komplet", "mobiluar", "shitje", "katin", "perdhese", "perdhes",
-    "viber", "telegram", "smart", "estate", "youtube", "tiktok",
-})
+_NEIGHBORHOOD_BLOCKLIST = frozenset(
+    {
+        "facebook",
+        "instagram",
+        "whatsapp",
+        "numrin",
+        "numri",
+        "kontaktoni",
+        "kontakto",
+        "teresi",
+        "komplet",
+        "mobiluar",
+        "shitje",
+        "katin",
+        "perdhese",
+        "perdhes",
+        "viber",
+        "telegram",
+        "smart",
+        "estate",
+        "youtube",
+        "tiktok",
+    }
+)
 
 _CATEGORY_MAP: list[tuple[str, PropertyType]] = [
     ("banes", PropertyType.APARTMENT),
@@ -53,63 +96,194 @@ class ParsingService:
         self._text = TextExtractor()
         self._gazetteer = GazetteerService()
         self._gazetteer.load()
+        self._merrjep = MerrJepParsingService()
+        self._pro_rks = ProRksParsingService()
+        self._vision = VisionParsingService()
+        self._topia = TopiaParsingService()
+        self._myrealestate = MyRealEstateParsingService()
 
     def parse_raw(self, raw: RawListing) -> ParsedListingSchema:
         """Parse a raw listing based on its source website."""
         if raw.source_website == "gjirafa":
             return self._parse_gjirafa(raw)
+        if raw.source_website == "merrjep":
+            return self._parse_merrjep(raw)
+        if raw.source_website == "pro-rks":
+            return self._parse_pro_rks(raw)
+        if raw.source_website == "vision":
+            return self._parse_vision(raw)
+        if raw.source_website == "topia":
+            return self._parse_topia(raw)
+        if raw.source_website == "myrealestate":
+            return self._parse_myrealestate(raw)
         raise ValueError(f"No parser for source: {raw.source_website}")
+
+    def _parse_topia(self, raw: RawListing) -> ParsedListingSchema:
+        payload = dict(raw.raw_payload or {})
+        prishtina_only = bool(payload.get("prishtina_only", True))
+        schema = self._topia.parse_payload(
+            payload,
+            url=raw.original_url,
+            raw_listing_id=raw.id,
+            scrape_run_id=raw.scrape_run_id,
+            spider_version=raw.spider_version,
+            prishtina_only=prishtina_only,
+        )
+        if schema is None:
+            raise ValueError("Topia listing filtered (non-residential or outside Prishtina)")
+        return schema
+
+    def _parse_myrealestate(self, raw: RawListing) -> ParsedListingSchema:
+        payload = dict(raw.raw_payload or {})
+        prishtina_only = bool(payload.get("prishtina_only", True))
+        schema = self._myrealestate.parse_payload(
+            payload,
+            url=raw.original_url,
+            raw_listing_id=raw.id,
+            scrape_run_id=raw.scrape_run_id,
+            spider_version=raw.spider_version,
+            prishtina_only=prishtina_only,
+            raw_html=raw.raw_html,
+        )
+        if schema is None:
+            raise ValueError(
+                "MY Real Estate listing filtered (non-residential or outside Prishtina)"
+            )
+        return schema
+
+    def _parse_vision(self, raw: RawListing) -> ParsedListingSchema:
+        payload = dict(raw.raw_payload or {})
+        prishtina_only = bool(payload.get("prishtina_only", True))
+        schema = self._vision.parse_payload(
+            payload,
+            url=raw.original_url,
+            raw_listing_id=raw.id,
+            scrape_run_id=raw.scrape_run_id,
+            spider_version=raw.spider_version,
+            prishtina_only=prishtina_only,
+        )
+        if schema is None:
+            raise ValueError(
+                "Vision listing filtered (non-residential or outside Prishtina district)"
+            )
+        return schema
+
+    def _parse_pro_rks(self, raw: RawListing) -> ParsedListingSchema:
+        schema = self._pro_rks.parse_payload(
+            dict(raw.raw_payload or {}),
+            url=raw.original_url,
+            raw_listing_id=raw.id,
+            scrape_run_id=raw.scrape_run_id,
+            spider_version=raw.spider_version,
+        )
+        if schema.listing_date is None and raw.scraped_at is not None:
+            schema = schema.model_copy(update={"listing_date": raw.scraped_at.date()})
+        return schema
+
+    def _parse_merrjep(self, raw: RawListing) -> ParsedListingSchema:
+        payload = dict(raw.raw_payload or {})
+        raw_html = getattr(raw, "raw_html", None)
+        if raw_html:
+            if not payload.get("published_date"):
+                from groundtruth.processing.parsers.merrjep_dates import extract_published_info
+
+                info = extract_published_info(raw_html)
+                published = info.get("published_date")
+                if published is not None:
+                    payload["published_date"] = published.isoformat()
+                    payload["published_date_raw"] = info.get("published_date_raw")
+                    payload["published_time_raw"] = info.get("published_time_raw")
+            if not payload.get("price_html"):
+                from groundtruth.processing.parsers.merrjep import extract_html_price
+
+                price_html = extract_html_price(raw_html)
+                if price_html is not None:
+                    payload["price_html"] = price_html
+        schema, _ = self._merrjep.parse_payload(
+            payload,
+            url=raw.original_url,
+            raw_listing_id=raw.id,
+        )
+        schema.scrape_run_id = raw.scrape_run_id
+        schema.spider_version = raw.spider_version
+        return schema
 
     def _parse_gjirafa(self, raw: RawListing) -> ParsedListingSchema:
         payload = raw.raw_payload or {}
         description = payload.get("description")
+        title = payload.get("title")
         extracted = self._text.process(description)
+        prov = ProvenanceCollector(parser_version=PARSER_VERSION)
 
-        listing_type = self._map_listing_type(payload.get("listing_type"))
-        listing_type = self._infer_listing_type(payload.get("title"), listing_type)
+        listing_type, _ = self._resolve_listing_type(payload, title, prov)
         price_raw = payload.get("price_raw")
         sale_price: Decimal | None = None
         rent_price: Decimal | None = None
         if listing_type == ListingType.SALE:
-            sale_price = self._resolve_price(price_raw, description)
+            sale_price, _ = self._resolve_price(price_raw, description, prov, field="sale_price")
         elif listing_type == ListingType.RENT:
-            rent_price = self._resolve_price(price_raw, description)
+            rent_price, _ = self._resolve_price(price_raw, description, prov, field="rent_price")
         else:
-            if payload.get("listing_type") == "rent" or "qira" in str(
-                payload.get("listing_type_raw", "")
-            ).lower():
-                rent_price = self._resolve_price(price_raw, description)
+            if (
+                payload.get("listing_type") == "rent"
+                or "qira" in str(payload.get("listing_type_raw", "")).lower()
+            ):
+                rent_price, _ = self._resolve_price(
+                    price_raw, description, prov, field="rent_price"
+                )
                 listing_type = ListingType.RENT
+                prov.record(
+                    "listing_type",
+                    listing_type.value,
+                    rule_id=TYPE_RAW_FIELD,
+                    source="listing_type_raw",
+                    source_text=str(payload.get("listing_type_raw", "")),
+                    confidence_contribution=0.10,
+                )
             else:
-                sale_price = self._resolve_price(price_raw, description)
+                sale_price, _ = self._resolve_price(
+                    price_raw, description, prov, field="sale_price"
+                )
 
-        area_sqm = self._area.normalize(payload.get("area_raw"), description)
-        if area_sqm is not None and (area_sqm < 10 or area_sqm > 500):
-            area_sqm = self._area.normalize(None, description)
+        area_sqm, _ = self._resolve_area(payload.get("area_raw"), description, prov)
         if listing_type == ListingType.SALE and sale_price is not None:
-            sale_price = self._fixup_sale_price(sale_price, area_sqm, description)
-        bedrooms = self._parse_int(payload.get("bedrooms_raw")) or extracted.bedrooms
+            sale_price, _ = self._fixup_sale_price(sale_price, area_sqm, description, prov)
+        bedrooms = sanitize_bedrooms(
+            self._parse_int(payload.get("bedrooms_raw")) or extracted.bedrooms,
+            area_sqm=area_sqm,
+            price=float(rent_price or sale_price) if (rent_price or sale_price) else None,
+        )
         neighborhood_raw = self._clean_neighborhood(
-            self._neighborhood_from_title(payload.get("title"))
-            or self._neighborhood_from_description(description)
-            or extracted.neighborhood
+            self._neighborhood_from_title(title, prov)
+            or self._neighborhood_from_description(description, prov)
+            or self._neighborhood_from_text(extracted.neighborhood, description, prov)
         )
-        street_raw = self._street_from_title(payload.get("title")) or self._street_from_neighborhood_raw(
-            neighborhood_raw
-        )
+        street_raw = self._street_from_title(
+            payload.get("title")
+        ) or self._street_from_neighborhood_raw(neighborhood_raw)
         if not street_raw and neighborhood_raw:
             promoted_nh, promoted_street = self._maybe_promote_to_street(neighborhood_raw)
             if promoted_street:
                 street_raw = promoted_street
                 neighborhood_raw = promoted_nh
-        if street_raw and neighborhood_raw and neighborhood_raw.lower().startswith(("rrug", "rruga")):
+        if (
+            street_raw
+            and neighborhood_raw
+            and neighborhood_raw.lower().startswith(("rrug", "rruga"))
+        ):
             neighborhood_raw = None
 
         complex_raw = extracted.complex_name or self._complex_from_title(payload.get("title"))
-        if not complex_raw and neighborhood_raw:
-            if self._gazetteer.match_complex(neighborhood_raw, neighborhood_slug=None):
-                complex_raw = neighborhood_raw
-                neighborhood_raw = None
+        if (
+            not complex_raw
+            and neighborhood_raw
+            and self._gazetteer.match_complex(
+                neighborhood_raw,
+                neighborhood_slug=None,
+            )
+        ):
+            complex_raw = neighborhood_raw
+            neighborhood_raw = None
 
         return ParsedListingSchema(
             parser_version=PARSER_VERSION,
@@ -138,47 +312,147 @@ class ParsingService:
             description_original=description,
             image_urls=payload.get("image_urls") or [],
             extra_fields={
-                "title": payload.get("title"),
+                "title": title,
                 "category_raw": payload.get("category"),
                 "listing_type_raw": payload.get("listing_type_raw"),
                 "country_raw": payload.get("country_raw"),
+                "provenance": prov.to_dict(),
             },
         )
+
+    def _resolve_listing_type(
+        self,
+        payload: dict[str, Any],
+        title: str | None,
+        prov: ProvenanceCollector,
+    ) -> tuple[ListingType | None, str | None]:
+        listing_type = self._map_listing_type(payload.get("listing_type"))
+        rule_id: str | None = TYPE_RAW_FIELD if listing_type else None
+        inferred = self._infer_listing_type(title, listing_type)
+        if inferred != listing_type and inferred is not None:
+            listing_type = inferred
+            rule_id = TYPE_TITLE_INFER
+        if listing_type is not None and rule_id:
+            prov.record(
+                "listing_type",
+                listing_type.value,
+                rule_id=rule_id,
+                source="title" if rule_id == TYPE_TITLE_INFER else "listing_type",
+                source_text=title
+                if rule_id == TYPE_TITLE_INFER
+                else str(payload.get("listing_type", "")),
+                confidence_contribution=0.10,
+            )
+        return listing_type, rule_id
 
     def _resolve_price(
         self,
         price_raw: str | None,
         description: str | None,
-    ) -> Decimal | None:
+        prov: ProvenanceCollector | None = None,
+        *,
+        field: str = "rent_price",
+    ) -> tuple[Decimal | None, str | None]:
         """Parse structured price first; fall back when missing or placeholder (e.g. 1 EUR)."""
         price = self._price.normalize(price_raw, None)
         desc_price = self._price.normalize(None, description) if description else None
+        rule_id: str | None = None
+        result: Decimal | None
         if price is None:
-            return desc_price
-        if price <= _SUSPICIOUS_PRICE and desc_price is not None and desc_price > price:
-            return desc_price
-        return price
+            result = desc_price
+            rule_id = PRICE_DESC_FALLBACK if desc_price else None
+            source = "description"
+            source_text = description
+        elif price <= _SUSPICIOUS_PRICE and desc_price is not None and desc_price > price:
+            result = desc_price
+            rule_id = PRICE_PLACEHOLDER_OVERRIDE
+            source = "description"
+            source_text = description
+        else:
+            result = price
+            rule_id = PRICE_STRUCTURED
+            source = "price_raw"
+            source_text = price_raw
+        if prov and result is not None and rule_id:
+            prov.record(
+                field,
+                result,
+                rule_id=rule_id,
+                source=source,
+                source_text=source_text,
+                confidence_contribution=0.20,
+            )
+        return result, rule_id
+
+    def _resolve_area(
+        self,
+        area_raw: str | None,
+        description: str | None,
+        prov: ProvenanceCollector,
+    ) -> tuple[float | None, str | None]:
+        area_sqm = self._area.normalize(area_raw, description)
+        rule_id = AREA_STRUCTURED if area_raw and area_sqm is not None else None
+        source = "area_raw"
+        source_text = area_raw
+        if area_sqm is not None and (area_sqm < 10 or area_sqm > 500):
+            area_sqm = self._area.normalize(None, description)
+            rule_id = AREA_REJECT_PLACEHOLDER if area_raw else AREA_DESC_FALLBACK
+            source = "description"
+            source_text = description
+        elif area_sqm is not None and not area_raw:
+            rule_id = AREA_DESC_FALLBACK
+            source = "description"
+            source_text = description
+        if area_sqm is not None and rule_id:
+            prov.record(
+                "area_sqm",
+                area_sqm,
+                rule_id=rule_id,
+                source=source,
+                source_text=source_text,
+                confidence_contribution=0.15,
+            )
+        return area_sqm, rule_id
 
     def _fixup_sale_price(
         self,
         price: Decimal,
         area_sqm: float | None,
         description: str | None,
-    ) -> Decimal:
+        prov: ProvenanceCollector | None = None,
+    ) -> tuple[Decimal, str | None]:
         """Correct Gjirafa sale shorthand (e.g. 1,300 EUR → 130,000) and description fallback."""
         if area_sqm is None or area_sqm <= 0:
-            return price
+            return price, None
         area = Decimal(str(area_sqm))
         if price / area >= MIN_PRICE_PER_SQM:
-            return price
+            return price, None
         desc_price = self._price.normalize(None, description) if description else None
         if desc_price is not None and desc_price > price and desc_price / area >= MIN_PRICE_PER_SQM:
-            return desc_price
+            if prov:
+                prov.record(
+                    "sale_price",
+                    desc_price,
+                    rule_id=PRICE_SALE_DESC_FALLBACK,
+                    source="description",
+                    source_text=description,
+                    confidence_contribution=0.20,
+                )
+            return desc_price, PRICE_SALE_DESC_FALLBACK
         if Decimal("500") <= price <= Decimal("9999"):
             scaled = price * 100
             if MIN_SALE_PRICE <= scaled <= MAX_SALE_PRICE and scaled / area >= MIN_PRICE_PER_SQM:
-                return scaled
-        return price
+                if prov:
+                    prov.record(
+                        "sale_price",
+                        scaled,
+                        rule_id=PRICE_SALE_SHORTHAND,
+                        source="price_raw",
+                        source_text=str(price),
+                        confidence_contribution=0.20,
+                    )
+                return scaled, PRICE_SALE_SHORTHAND
+        return price, None
 
     def extract_neighborhood(self, title: str | None, description: str | None = None) -> str | None:
         """Public hook for neighborhood extraction — used by tests and golden dataset eval."""
@@ -188,6 +462,25 @@ class ParsingService:
             or self._neighborhood_from_description(description)
             or extracted.neighborhood
         )
+
+    def _neighborhood_from_text(
+        self,
+        value: str | None,
+        description: str | None,
+        prov: ProvenanceCollector | None = None,
+    ) -> str | None:
+        if not value:
+            return None
+        if prov:
+            prov.record(
+                "neighborhood_raw",
+                value,
+                rule_id=NH_TEXT_EXTRACT,
+                source="description",
+                source_text=description,
+                confidence_contribution=0.15,
+            )
+        return value
 
     def _clean_neighborhood(self, value: str | None) -> str | None:
         if not value:
@@ -273,8 +566,7 @@ class ParsingService:
             return current
         lower = title.lower()
         if any(
-            needle in lower
-            for needle in ("me qira", " me qira ", "leshohet", "leshoj", "me qera")
+            needle in lower for needle in ("me qira", " me qira ", "leshohet", "leshoj", "me qera")
         ):
             return ListingType.RENT
         if "ne shitje" in lower or "për shitje" in lower or "per shitje" in lower:
@@ -328,63 +620,46 @@ class ParsingService:
         }
         return mapping.get(city.strip().lower(), city.strip())
 
-    def _neighborhood_from_title(self, title: str | None) -> str | None:
-        if not title:
-            return None
-        street_prefix = re.match(
-            r"^([A-Za-zÀ-ÿ][A-Za-zÀ-ÿ0-9\s]+),\s*rrug",
+    def _neighborhood_from_title(
+        self,
+        title: str | None,
+        prov: ProvenanceCollector | None = None,
+    ) -> str | None:
+        value, match, rule_id = extract_by_rules(
             title,
-            re.IGNORECASE,
+            NH_TITLE_RULES,
+            postprocess=neighborhood_postprocess,
         )
-        if street_prefix:
-            return street_prefix.group(1).strip()
-        patterns = (
-            r"(?:ne|në)\s+lagjen\s+e\s+(.+)",
-            r"(?:ne|në)\s+lagjen\s+(.+)",
-            r"(?:ne|në)\s+[Ll]agje\s+te\s+(.+)",
-            r"me\s+qira\s+(?:ne|në)\s+(.+)",
-            r"me\s+qira\s+te\s+(.+)",
-            r"me\s+qera\s+(.+?)(?:\s*$|_)",
-            r"leshohet\s+me\s+qira\s+(?:banesa\s+)?(?:ne|në|te)\s+(.+)",
-            r"leshohet\s+me\s+qira\s+banesa\s+te\s+(.+)",
-            r"(?:ne|në)\s+[Ss]hitje\s+(?:ne|në\s+)?(.+)",
-            r"ne\s+shitje\s+te\s+(.+)",
-            r"shitet\s+banese\s+te\s+(.+)",
-            r"shitet\s+banesa\s+te\s+(.+)",
-            r"shitet\s+banesa\s+ne\s+(?:lagjen\s+)?(.+)",
-            r"(?i)shitet.*?ne\s+(.+)",
-            r"(?:me\s+qira|shitje)\s+te\s+(.+)",
-            r"ne\s+shitje\s+ne\s+(.+)",
-            r"te\s+(Prishtina e Re|Prishtine e Re|Prishtina e re)",
-            r"(?:me\s+qira|shpallje)\s+(?:ne|në)\s+(.+)",
-            r"me\s+qira\s+(.+?)(?:\s*$|_)",
-            r"(?:ne|në)\s+([A-Za-zÀ-ÿ][A-Za-zÀ-ÿ\s]+?)(?:\s*/|\s*$)",
-        )
-        for pattern in patterns:
-            match = re.search(pattern, title, re.IGNORECASE)
-            if match:
-                value = match.group(1).strip()
-                if "lagjen" in value.lower():
-                    sub = re.search(r"lagjen\s+(.+)", value, re.IGNORECASE)
-                    if sub:
-                        value = sub.group(1).strip()
-                return value
-        return None
+        if value and prov and rule_id and match:
+            prov.record(
+                "neighborhood_raw",
+                value,
+                rule_id=rule_id,
+                source="title",
+                source_text=title,
+                match=match,
+                confidence_contribution=0.25,
+            )
+        return value
 
-    def _neighborhood_from_description(self, description: str | None) -> str | None:
-        if not description:
-            return None
-        patterns = (
-            r"leshohet\s+me\s+qira\s+banesa\s+(?:ne|në|te)\s+([A-Za-zÀ-ÿ0-9\s]+)",
-            r"me\s+qira\s+(?:banesa\s+)?(?:ne|në|te)\s+([A-Za-zÀ-ÿ0-9\s]+)",
-            r"(?:ne|në)\s+lagjen\s+e\s+([A-Za-zÀ-ÿ0-9\s]+)",
-            r"(?:ne|në)\s+lagjen\s+([A-Za-zÀ-ÿ0-9\s]+)",
-            r"(?:ne|në)\s+lagje\s+te\s+([A-Za-zÀ-ÿ0-9\s]+)",
+    def _neighborhood_from_description(
+        self,
+        description: str | None,
+        prov: ProvenanceCollector | None = None,
+    ) -> str | None:
+        value, match, rule_id = extract_by_rules(
+            description,
+            NH_DESCRIPTION_RULES,
+            postprocess=neighborhood_postprocess,
         )
-        for pattern in patterns:
-            match = re.search(pattern, description, re.IGNORECASE)
-            if match:
-                candidate = match.group(1).strip()
-                if len(candidate) > 2:
-                    return candidate
-        return None
+        if value and prov and rule_id and match:
+            prov.record(
+                "neighborhood_raw",
+                value,
+                rule_id=rule_id,
+                source="description",
+                source_text=description,
+                match=match,
+                confidence_contribution=0.25,
+            )
+        return value

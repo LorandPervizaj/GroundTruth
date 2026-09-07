@@ -18,7 +18,7 @@ import pandas as pd
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
-from groundtruth.models.enums import HeatingType, ListingType
+from groundtruth.models.enums import HeatingType
 from groundtruth.models.pipeline import NormalizedListing, RawListing
 from groundtruth.models.reference import Building, Complex, Neighborhood
 
@@ -123,13 +123,13 @@ def missingness_matrix(df: pd.DataFrame) -> pd.DataFrame:
     ]
     rows = []
     n = len(df)
-    for field in fields:
-        if field not in df.columns:
+    for field_name in fields:
+        if field_name not in df.columns:
             continue
-        missing = df[field].isna() | (df[field] == "")
+        missing = df[field_name].isna() | (df[field_name] == "")
         rows.append(
             {
-                "field": field,
+                "field": field_name,
                 "missing_count": int(missing.sum()),
                 "missing_percent": round(100.0 * missing.sum() / n, 1) if n else 0.0,
                 "present_count": int((~missing).sum()),
@@ -166,8 +166,18 @@ def impossible_values(df: pd.DataFrame) -> pd.DataFrame:
         ("area > 1000", df["area_sqm"].notna() & (df["area_sqm"] > 1000)),
         ("bedrooms > 20", df["bedrooms"].notna() & (df["bedrooms"] > 20)),
         ("bathrooms > 15", df["bathrooms"].notna() & (df["bathrooms"] > 15)),
-        ("rent_per_sqm > 100", (df["listing_type"] == "rent") & df["price_per_sqm"].notna() & (df["price_per_sqm"] > 100)),
-        ("sale_per_sqm < 100", (df["listing_type"] == "sale") & df["price_per_sqm"].notna() & (df["price_per_sqm"] < 100)),
+        (
+            "rent_per_sqm > 100",
+            (df["listing_type"] == "rent")
+            & df["price_per_sqm"].notna()
+            & (df["price_per_sqm"] > 100),
+        ),
+        (
+            "sale_per_sqm < 100",
+            (df["listing_type"] == "sale")
+            & df["price_per_sqm"].notna()
+            & (df["price_per_sqm"] < 100),
+        ),
     ]
     rows = []
     for rule, mask in checks:
@@ -201,7 +211,10 @@ def zscore_anomalies(df: pd.DataFrame, column: str, z: float = 3.0) -> pd.DataFr
         return pd.DataFrame()
     scores = (series - series.mean()) / series.std()
     mask = scores.abs() >= z
-    out = df.loc[series.index[mask], ["source_listing_id", "listing_type", column, "neighborhood", "original_url"]].copy()
+    out = df.loc[
+        series.index[mask],
+        ["source_listing_id", "listing_type", column, "neighborhood", "original_url"],
+    ].copy()
     out["z_score"] = scores[mask].values
     out["field"] = column
     return out
@@ -255,14 +268,60 @@ def confidence_calibration(df: pd.DataFrame) -> pd.DataFrame:
 def source_bias(df: pd.DataFrame) -> pd.DataFrame:
     rows = []
     n = len(df)
-    rows.append({"dimension": "listing_type", "value": "rent", "count": int((df["listing_type"] == "rent").sum()), "percent": round(100 * (df["listing_type"] == "rent").mean(), 1)})
-    rows.append({"dimension": "listing_type", "value": "sale", "count": int((df["listing_type"] == "sale").sum()), "percent": round(100 * (df["listing_type"] == "sale").mean(), 1)})
-    prishtina = df["city"].str.lower().isin(["prishtina", "prishtine"]) if "city" in df.columns else pd.Series(False, index=df.index)
-    rows.append({"dimension": "city", "value": "prishtina", "count": int(prishtina.sum()), "percent": round(100 * prishtina.mean(), 1)})
-    rows.append({"dimension": "city", "value": "other", "count": int((~prishtina).sum()), "percent": round(100 * (~prishtina).mean(), 1)})
+    rows.append(
+        {
+            "dimension": "listing_type",
+            "value": "rent",
+            "count": int((df["listing_type"] == "rent").sum()),
+            "percent": round(100 * (df["listing_type"] == "rent").mean(), 1),
+        }
+    )
+    rows.append(
+        {
+            "dimension": "listing_type",
+            "value": "sale",
+            "count": int((df["listing_type"] == "sale").sum()),
+            "percent": round(100 * (df["listing_type"] == "sale").mean(), 1),
+        }
+    )
+    prishtina = (
+        df["city"].str.lower().isin(["prishtina", "prishtine"])
+        if "city" in df.columns
+        else pd.Series(False, index=df.index)
+    )
+    rows.append(
+        {
+            "dimension": "city",
+            "value": "prishtina",
+            "count": int(prishtina.sum()),
+            "percent": round(100 * prishtina.mean(), 1),
+        }
+    )
+    rows.append(
+        {
+            "dimension": "city",
+            "value": "other",
+            "count": int((~prishtina).sum()),
+            "percent": round(100 * (~prishtina).mean(), 1),
+        }
+    )
     apt = df["property_type"] == "apartment"
-    rows.append({"dimension": "property_type", "value": "apartment", "count": int(apt.sum()), "percent": round(100 * apt.mean(), 1)})
-    rows.append({"dimension": "property_type", "value": "non_apartment", "count": int((~apt).sum()), "percent": round(100 * (~apt).mean(), 1)})
+    rows.append(
+        {
+            "dimension": "property_type",
+            "value": "apartment",
+            "count": int(apt.sum()),
+            "percent": round(100 * apt.mean(), 1),
+        }
+    )
+    rows.append(
+        {
+            "dimension": "property_type",
+            "value": "non_apartment",
+            "count": int((~apt).sum()),
+            "percent": round(100 * (~apt).mean(), 1),
+        }
+    )
     if "price_per_sqm" in df.columns:
         rent_df = df[df["listing_type"] == "rent"]
         if not rent_df.empty and rent_df["price_per_sqm"].notna().any():

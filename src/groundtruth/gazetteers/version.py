@@ -9,6 +9,7 @@ from groundtruth.config import get_settings
 
 _GAZETTEER_FILES = (
     "neighborhoods.json",
+    "districts.json",
     "streets.json",
     "complexes.json",
     "building_aliases.json",

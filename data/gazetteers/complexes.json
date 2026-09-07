@@ -1,13 +1,418 @@
 [
-  {"id": 1, "name": "Mati 1", "slug": "mati-1", "neighborhood_slug": "mati", "aliases": ["Mati I", "Kompleksi Mati 1", "te Mati 1", "Mati 1"]},
-  {"id": 2, "name": "BS Group", "slug": "bs-group", "neighborhood_slug": "lakrishte", "aliases": ["Kompleksi BS Group", "BS Group Kompleks"]},
-  {"id": 3, "name": "Green Hill", "slug": "green-hill", "neighborhood_slug": "sunny-hill", "aliases": ["Green Hill Residence", "Kompleksi Green Hill"]},
-  {"id": 4, "name": "Arbëria Residence", "slug": "arberia-residence", "neighborhood_slug": "arberia", "aliases": ["Arberia Residence", "Kompleksi Arbëria"]},
-  {"id": 5, "name": "Lesna Residence", "slug": "lesna-residence", "neighborhood_slug": "lakrishte", "aliases": ["Lesna", "Kompleksi Lesna", "Lesna Residence"]},
-  {"id": 6, "name": "Mati 2", "slug": "mati-2", "neighborhood_slug": "mati", "aliases": ["Mati II", "Kompleksi Mati 2", "te Mati 2"]},
-  {"id": 7, "name": "Dardania Residence", "slug": "dardania-residence", "neighborhood_slug": "dardania", "aliases": ["Kompleksi Dardania", "Dardania Residences"]},
-  {"id": 8, "name": "Ulpiana Residence", "slug": "ulpiana-residence", "neighborhood_slug": "ulpiana", "aliases": ["Kompleksi Ulpiana", "Ulpiana Res"]},
-  {"id": 9, "name": "Sunny Hill Residence", "slug": "sunny-hill-residence", "neighborhood_slug": "sunny-hill", "aliases": ["SH Residence", "Sunny Hill Res"]},
-  {"id": 10, "name": "Emshir Residence", "slug": "emshir-residence", "neighborhood_slug": "emshir", "aliases": ["Kompleksi Emshir", "Emshir Res"]},
-  {"id": 11, "name": "Royal City", "slug": "royal-city", "neighborhood_slug": "lakrishte", "aliases": ["Royal City Prishtina", "ne Royal City", "te Royal City"]}
+  {
+    "id": 1,
+    "name": "Mati 1",
+    "slug": "mati-1",
+    "neighborhood_slug": "mati",
+    "aliases": [
+      "Mati I",
+      "Kompleksi Mati 1",
+      "te Mati 1",
+      "Mati 1",
+      "Kompleksi Mati"
+    ]
+  },
+  {
+    "id": 2,
+    "name": "BS Group",
+    "slug": "bs-group",
+    "neighborhood_slug": "lakrishte",
+    "aliases": [
+      "Kompleksi BS Group",
+      "BS Group Kompleks"
+    ]
+  },
+  {
+    "id": 3,
+    "name": "Green Hill",
+    "slug": "green-hill",
+    "neighborhood_slug": "sunny-hill",
+    "aliases": [
+      "Green Hill Residence",
+      "Kompleksi Green Hill"
+    ]
+  },
+  {
+    "id": 4,
+    "name": "Arbëria Residence",
+    "slug": "arberia-residence",
+    "neighborhood_slug": "arberia",
+    "aliases": [
+      "Arberia Residence",
+      "Kompleksi Arbëria",
+      "Arbëria Res"
+    ]
+  },
+  {
+    "id": 5,
+    "name": "Lesna Residence",
+    "slug": "lesna-residence",
+    "neighborhood_slug": "lakrishte",
+    "aliases": [
+      "Lesna",
+      "Kompleksi Lesna",
+      "Lesna Residence"
+    ]
+  },
+  {
+    "id": 6,
+    "name": "Mati 2",
+    "slug": "mati-2",
+    "neighborhood_slug": "matiqan",
+    "aliases": [
+      "Mati II",
+      "Kompleksi Mati 2",
+      "te Mati 2"
+    ],
+    "district_slug": null
+  },
+  {
+    "id": 7,
+    "name": "Dardania Residence",
+    "slug": "dardania-residence",
+    "neighborhood_slug": "dardania",
+    "aliases": [
+      "Kompleksi Dardania",
+      "Dardania Residences"
+    ]
+  },
+  {
+    "id": 8,
+    "name": "Ulpiana Residence",
+    "slug": "ulpiana-residence",
+    "neighborhood_slug": "ulpiana",
+    "aliases": [
+      "Kompleksi Ulpiana",
+      "Ulpiana Res"
+    ]
+  },
+  {
+    "id": 9,
+    "name": "Sunny Hill Residence",
+    "slug": "sunny-hill-residence",
+    "neighborhood_slug": "sunny-hill",
+    "aliases": [
+      "SH Residence",
+      "Sunny Hill Res"
+    ]
+  },
+  {
+    "id": 10,
+    "name": "Emshir Residence",
+    "slug": "emshir-residence",
+    "neighborhood_slug": "emshir",
+    "aliases": [
+      "Kompleksi Emshir",
+      "Emshir Res"
+    ]
+  },
+  {
+    "id": 12,
+    "name": "VA Residence 4",
+    "slug": "va-residence-4",
+    "neighborhood_slug": "mati",
+    "aliases": [
+      "VA Residence",
+      "VA Res 4",
+      "Kompleksi VA Residence"
+    ]
+  },
+  {
+    "id": 13,
+    "name": "Pika Comfort",
+    "slug": "pika-comfort",
+    "neighborhood_slug": "mati",
+    "aliases": [
+      "Kompleksi Pika Comfort",
+      "4A Pika",
+      "Pika Comfort Complex"
+    ]
+  },
+  {
+    "id": 14,
+    "name": "Cima 2",
+    "slug": "cima-2",
+    "neighborhood_slug": "mati",
+    "aliases": [
+      "Cima 2 Complex",
+      "Kompleksi Cima 2",
+      "CIMA 2"
+    ]
+  },
+  {
+    "id": 15,
+    "name": "Garden Building",
+    "slug": "garden-building",
+    "neighborhood_slug": "lakrishte",
+    "aliases": [
+      "Pozhegu Brother's",
+      "Pozhegu Brothers",
+      "Kompleksi Garden Building"
+    ]
+  },
+  {
+    "id": 100,
+    "name": "Royal Mall",
+    "slug": "royal-mall",
+    "neighborhood_slug": "matiqan",
+    "aliases": [
+      "Kompleksi Royal Mall",
+      "Royal Mall",
+      "afer Royal Mall",
+      "afër Royal Mall",
+      "mbrapa Royal Mall",
+      "ne Royal Mall",
+      "perballe Royal Mall",
+      "perballë Royal Mall",
+      "pranë Royal Mall",
+      "te Royal Mall"
+    ],
+    "district_slug": "rruga-b"
+  },
+  {
+    "id": 101,
+    "name": "Maxi 24",
+    "slug": "maxi-24",
+    "neighborhood_slug": "matiqan",
+    "district_slug": "rruga-b",
+    "aliases": [
+      "Maxi",
+      "Maxi 24"
+    ]
+  },
+  {
+    "id": 102,
+    "name": "Fivestar",
+    "slug": "fivestar",
+    "neighborhood_slug": "matiqan",
+    "district_slug": "rruga-b",
+    "aliases": [
+      "Five Star",
+      "Fivestar"
+    ]
+  },
+  {
+    "id": 103,
+    "name": "Tregtia",
+    "slug": "tregtia",
+    "neighborhood_slug": "matiqan",
+    "district_slug": "rruga-c",
+    "aliases": []
+  },
+  {
+    "id": 104,
+    "name": "Rethi i Matit",
+    "slug": "rethi-i-matit",
+    "neighborhood_slug": "matiqan",
+    "district_slug": "rruga-c",
+    "aliases": [
+      "Rrethi i Matit"
+    ]
+  },
+  {
+    "id": 105,
+    "name": "Banesat e Kuqe",
+    "slug": "banesat-e-kuqe",
+    "neighborhood_slug": "bregu-i-diellit",
+    "district_slug": null,
+    "aliases": []
+  },
+  {
+    "id": 106,
+    "name": "Banesat e Bardha",
+    "slug": "banesat-e-bardha",
+    "neighborhood_slug": "bregu-i-diellit",
+    "district_slug": null,
+    "aliases": [
+      "Banesat e Bardhe"
+    ]
+  },
+  {
+    "id": 107,
+    "name": "Banesat e Hint",
+    "slug": "banesat-e-hint",
+    "neighborhood_slug": "bregu-i-diellit",
+    "district_slug": null,
+    "aliases": [
+      "Banesat e Hinta"
+    ]
+  },
+  {
+    "id": 108,
+    "name": "Te Standardi",
+    "slug": "te-standardi",
+    "neighborhood_slug": "bregu-i-diellit",
+    "district_slug": null,
+    "aliases": []
+  },
+  {
+    "id": 109,
+    "name": "Ontex",
+    "slug": "ontex",
+    "neighborhood_slug": "bregu-i-diellit",
+    "district_slug": null,
+    "aliases": []
+  },
+  {
+    "id": 110,
+    "name": "Banesat e Reja",
+    "slug": "banesat-e-reja",
+    "neighborhood_slug": "bregu-i-diellit",
+    "district_slug": null,
+    "aliases": []
+  },
+  {
+    "id": 111,
+    "name": "Banesat e Arabëve",
+    "slug": "banesat-e-arabeve",
+    "neighborhood_slug": "emshir",
+    "district_slug": null,
+    "aliases": [
+      "Banesat E arabve"
+    ]
+  },
+  {
+    "id": 112,
+    "name": "Gardeni",
+    "slug": "gardeni",
+    "neighborhood_slug": "emshir",
+    "district_slug": null,
+    "aliases": []
+  },
+  {
+    "id": 114,
+    "name": "Prishtina Stars",
+    "slug": "prishtina-stars",
+    "neighborhood_slug": "emshir",
+    "district_slug": null,
+    "aliases": []
+  },
+  {
+    "id": 115,
+    "name": "Narteli",
+    "slug": "narteli",
+    "neighborhood_slug": "pejton-lakrishte",
+    "district_slug": null,
+    "aliases": []
+  },
+  {
+    "id": 116,
+    "name": "Benidona",
+    "slug": "benidona",
+    "neighborhood_slug": "pejton-lakrishte",
+    "district_slug": null,
+    "aliases": []
+  },
+  {
+    "id": 117,
+    "name": "Dugagjini Center",
+    "slug": "dugagjini-center",
+    "neighborhood_slug": "pejton-lakrishte",
+    "district_slug": null,
+    "aliases": []
+  },
+  {
+    "id": 118,
+    "name": "Prishtina City Center",
+    "slug": "prishtina-city-center",
+    "neighborhood_slug": "pejton-lakrishte",
+    "district_slug": null,
+    "aliases": []
+  },
+  {
+    "id": 119,
+    "name": "Bagolina / Derand Hotel",
+    "slug": "bagolina-derand",
+    "neighborhood_slug": "pejton-lakrishte",
+    "district_slug": null,
+    "aliases": [
+      "Bagolina",
+      "Derand Hotel"
+    ]
+  },
+  {
+    "id": 120,
+    "name": "Banesat e Gjelbra",
+    "slug": "banesat-e-gjelbra",
+    "neighborhood_slug": "dardania",
+    "district_slug": null,
+    "aliases": [
+      "Banesat e gjelberta"
+    ]
+  },
+  {
+    "id": 121,
+    "name": "Eliabi",
+    "slug": "eliabi",
+    "neighborhood_slug": "dardania",
+    "district_slug": null,
+    "aliases": []
+  },
+  {
+    "id": 122,
+    "name": "Ivy Residence",
+    "slug": "ivy-residence",
+    "neighborhood_slug": "aktash-muhaxhere",
+    "district_slug": null,
+    "aliases": [
+      "Ivy Reisdence"
+    ]
+  },
+  {
+    "id": 123,
+    "name": "Olive Bakery",
+    "slug": "olive-bakery",
+    "neighborhood_slug": "aktash-muhaxhere",
+    "district_slug": null,
+    "aliases": []
+  },
+  {
+    "id": 124,
+    "name": "Sonder",
+    "slug": "sonder",
+    "neighborhood_slug": "aktash-muhaxhere",
+    "district_slug": null,
+    "aliases": []
+  },
+  {
+    "id": 125,
+    "name": "Royal City",
+    "slug": "royal-city",
+    "neighborhood_slug": "spitali",
+    "aliases": [
+      "Kompleksi Royal City",
+      "Royal City",
+      "Royal City Prishtina",
+      "Royal Residence",
+      "ne Royal City",
+      "te Royal City"
+    ],
+    "district_slug": null
+  },
+  {
+    "id": 126,
+    "name": "Beni Dona",
+    "slug": "beni-dona",
+    "neighborhood_slug": "ulpiana",
+    "district_slug": null,
+    "aliases": []
+  },
+  {
+    "id": 127,
+    "name": "Laburatora",
+    "slug": "laburatora",
+    "neighborhood_slug": "ulpiana",
+    "district_slug": null,
+    "aliases": []
+  },
+  {
+    "id": 128,
+    "name": "Interex",
+    "slug": "interex",
+    "neighborhood_slug": "ulpiana",
+    "district_slug": null,
+    "aliases": [
+      "Interksi"
+    ]
+  }
 ]

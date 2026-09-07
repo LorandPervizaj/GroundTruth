@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from datetime import date
 
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from groundtruth.logging import get_logger
@@ -15,7 +16,7 @@ logger = get_logger(__name__)
 
 def record_listing_observations(
     session: Session,
-    listings: list[NormalizedListing],
+    listings: list[NormalizedListing] | None = None,
     *,
     observed_date: date | None = None,
 ) -> int:
@@ -25,9 +26,14 @@ def record_listing_observations(
         synchronize_session=False
     )
 
-    latest: dict[str, NormalizedListing] = {}
-    for listing in sorted(listings, key=lambda row: row.id):
-        latest[listing.source_listing_id] = listing
+    if listings is None:
+        session.expire_all()
+        listings = list(session.scalars(select(NormalizedListing).order_by(NormalizedListing.id)))
+
+    latest: dict[tuple[str, str], NormalizedListing] = {}
+    for listing in listings:
+        key = (listing.source_website, listing.source_listing_id)
+        latest[key] = listing
 
     count = 0
     for listing in latest.values():

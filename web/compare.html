@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Metrik - Compare neighborhoods</title>
+  <meta name="description" content="Compare Prishtina neighborhoods side by side by rent, sale, inventory, and sample confidence." />
+  <meta property="og:title" content="Metrik - Compare neighborhoods" />
+  <meta property="og:description" content="Side-by-side Prishtina neighborhood market comparison with confidence metrics." />
+  <meta property="og:type" content="website" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/static/style.css?v=46" />
+</head>
+<body data-page-title="compare_title">
+  <div class="page page-wide compare-page">
+    <div id="site-nav"></div>
+    <div id="insights-subnav"></div>
+
+    <div class="compare-workspace">
+      <header class="compare-header">
+        <h1 class="hero-title" data-i18n="compare_title"></h1>
+        <p class="hero-sub" data-i18n="compare_sub"></p>
+        <p class="data-freshness compare-freshness" id="compare-freshness" hidden></p>
+      </header>
+
+      <div class="compare-input-col">
+        <section class="panel compare-form-panel">
+          <h2 class="section-title section-title-sm" data-i18n="compare_pick_title"></h2>
+          <form id="compare-form" class="compare-form">
+            <div class="compare-pickers" id="compare-pickers"></div>
+            <button type="submit" class="btn-primary compare-submit" data-i18n="compare_btn"></button>
+          </form>
+          <p class="hint compare-form-hint" id="compare-hint" data-i18n="compare_hint"></p>
+        </section>
+
+        <section class="panel compare-help-panel">
+          <h2 class="section-title section-title-sm" data-i18n="compare_how_it_works"></h2>
+          <ol class="compare-help-steps">
+            <li>
+              <span class="compare-help-step-num">1</span>
+              <span data-i18n="compare_help_step_1"></span>
+            </li>
+            <li>
+              <span class="compare-help-step-num">2</span>
+              <span data-i18n="compare_help_step_2"></span>
+            </li>
+            <li>
+              <span class="compare-help-step-num">3</span>
+              <span data-i18n="compare_help_step_3"></span>
+            </li>
+          </ol>
+        </section>
+      </div>
+
+      <div class="compare-output-col" id="compare-output-col">
+        <section id="compare-empty" class="compare-preview">
+          <div class="compare-cards compare-cards-preview">
+            <article class="compare-nh-card compare-nh-card-preview">
+              <span class="compare-nh-card-kicker" data-i18n="compare_preview_card"></span>
+              <p class="compare-nh-card-name compare-placeholder-text">—</p>
+              <dl class="compare-nh-stats">
+                <div><dt data-i18n="pulse_median_rent"></dt><dd class="compare-placeholder-text">—</dd></div>
+                <div><dt data-i18n="pulse_median_sale"></dt><dd class="compare-placeholder-text">—</dd></div>
+                <div><dt data-i18n="pulse_listings"></dt><dd class="compare-placeholder-text">—</dd></div>
+              </dl>
+            </article>
+            <article class="compare-nh-card compare-nh-card-preview">
+              <span class="compare-nh-card-kicker" data-i18n="compare_preview_card"></span>
+              <p class="compare-nh-card-name compare-placeholder-text">—</p>
+              <dl class="compare-nh-stats">
+                <div><dt data-i18n="pulse_median_rent"></dt><dd class="compare-placeholder-text">—</dd></div>
+                <div><dt data-i18n="pulse_median_sale"></dt><dd class="compare-placeholder-text">—</dd></div>
+                <div><dt data-i18n="pulse_listings"></dt><dd class="compare-placeholder-text">—</dd></div>
+              </dl>
+            </article>
+            <article class="compare-nh-card compare-nh-card-preview">
+              <span class="compare-nh-card-kicker" data-i18n="compare_preview_card"></span>
+              <p class="compare-nh-card-name compare-placeholder-text">—</p>
+              <dl class="compare-nh-stats">
+                <div><dt data-i18n="pulse_median_rent"></dt><dd class="compare-placeholder-text">—</dd></div>
+                <div><dt data-i18n="pulse_median_sale"></dt><dd class="compare-placeholder-text">—</dd></div>
+                <div><dt data-i18n="pulse_listings"></dt><dd class="compare-placeholder-text">—</dd></div>
+              </dl>
+            </article>
+          </div>
+          <section class="panel compare-table-panel compare-table-panel-preview">
+            <h2 class="section-title section-title-sm" data-i18n="compare_details_title"></h2>
+            <p class="hint compare-preview-cta" data-i18n="compare_empty_cta"></p>
+          </section>
+        </section>
+
+        <section id="compare-results" class="hidden compare-results">
+          <div class="compare-cards" id="compare-cards"></div>
+          <section class="panel compare-table-panel">
+            <h2 class="section-title section-title-sm" data-i18n="compare_details_title"></h2>
+            <div class="table-wrap">
+              <table class="data-table compare-table" id="compare-table">
+                <thead>
+                  <tr id="compare-head-row">
+                    <th data-i18n="compare_metric"></th>
+                  </tr>
+                </thead>
+                <tbody id="compare-body"></tbody>
+              </table>
+            </div>
+          </section>
+        </section>
+
+        <section class="panel error-panel hidden" id="compare-error">
+          <p id="compare-error-msg"></p>
+        </section>
+      </div>
+    </div>
+
+    <div id="site-footer"></div>
+  </div>
+  <script src="/static/i18n.js?v=45"></script>
+  <script src="/static/format.js?v=10"></script>
+  <script src="/static/confidence.js?v=1"></script>
+  <script src="/static/site.js?v=31"></script>
+  <script src="/static/compare.js?v=3"></script>
+</body>
+</html>

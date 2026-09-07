@@ -1,7 +1,6 @@
 """Tests for independent parser KPI reporting."""
 
 from groundtruth.processing.parser_kpis import (
-    ParserCoverageKPIs,
     build_parser_kpi_report,
     coverage_from_field_rates,
 )

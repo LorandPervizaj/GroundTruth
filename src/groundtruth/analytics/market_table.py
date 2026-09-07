@@ -27,7 +27,11 @@ def build_neighborhood_market_table(df: pd.DataFrame) -> pd.DataFrame:
 
     sale_df = df[df["listing_type"] == "sale"]
     rent_df = df[df["listing_type"] == "rent"]
-    yields = gross_rental_yield(sale_df, rent_df) if not sale_df.empty and not rent_df.empty else pd.DataFrame()
+    yields = (
+        gross_rental_yield(sale_df, rent_df)
+        if not sale_df.empty and not rent_df.empty
+        else pd.DataFrame()
+    )
 
     size_stats = (
         sale_df.groupby("neighborhood_id")["area_sqm"]

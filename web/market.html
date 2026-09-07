@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Metrik - Market profile</title>
+  <meta name="description" content="Neighborhood market profile with rent, sale, inventory, recent listings, confidence, and sample size." />
+  <meta property="og:title" content="Metrik - Market profile" />
+  <meta property="og:description" content="Evidence-based market profiles for Prishtina neighborhoods and micro-markets." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="/favicon.svg" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/static/style.css?v=47" />
+</head>
+<body data-page-title="market_title">
+  <div class="page page-wide page-market">
+    <div id="site-nav"></div>
+
+    <section class="panel market-toolbar">
+      <div class="metrik-search metrik-search--compact" id="header-search-wrap">
+        <label for="header-search" class="metrik-search-label sr-only" data-i18n="market_search_label"></label>
+        <div class="metrik-search-control">
+          <span class="metrik-search-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" focusable="false"><path d="M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 16l5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          </span>
+          <input
+            type="search"
+            id="header-search"
+            class="metrik-search-input"
+            data-i18n-placeholder="market_search_ph"
+            autocomplete="off"
+          />
+          <ul class="metrik-search-results hidden" id="header-search-results" role="listbox"></ul>
+        </div>
+      </div>
+      <div id="popular-markets" class="popular-markets"></div>
+    </section>
+
+    <nav class="breadcrumb" id="breadcrumb" aria-label="Breadcrumb"></nav>
+
+    <section id="loading" class="panel loading-skeleton" aria-busy="true" aria-live="polite">
+      <div class="skeleton-pulse" aria-hidden="true"></div>
+      <p class="hint" data-i18n="market_loading"></p>
+    </section>
+
+    <section id="load-error" class="panel hidden">
+      <p class="hint" data-i18n="market_load_error"></p>
+      <p><button type="button" class="btn-secondary" id="market-retry" data-i18n="retry"></button></p>
+    </section>
+
+    <section id="insufficient" class="panel insufficient-panel hidden">
+      <div class="pulse-header">
+        <h2 id="market-title"></h2>
+        <span id="insufficient-badge" class="confidence-badge confidence-insufficient">-</span>
+      </div>
+      <p id="insufficient-msg" class="insufficient-lead" data-i18n="insufficient_msg"></p>
+      <p class="insufficient-detail" id="insufficient-detail"></p>
+      <div class="insufficient-actions">
+        <a class="btn-secondary" id="insufficient-parent-link" href="#" data-i18n="view_parent"></a>
+        <a class="btn-link" href="/valuate" data-i18n="advanced_valuation"></a>
+      </div>
+      <div id="insufficient-recent-wrap" class="hidden">
+        <h3 class="section-title" data-i18n="recent_listings"></h3>
+        <ul id="insufficient-recent" class="recent-list"></ul>
+      </div>
+      <div class="insufficient-valuate">
+        <h3 class="section-title" data-i18n="estimate_apartment"></h3>
+        <form id="insufficient-valuate-form">
+          <input type="hidden" id="insufficient-valuate-nh" />
+          <div class="field">
+            <label data-i18n="neighborhood"></label>
+            <input type="text" id="insufficient-valuate-nh-display" readonly class="readonly-field" />
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label for="insufficient-valuate-area" data-i18n="area_sqm"></label>
+              <input type="number" id="insufficient-valuate-area" min="20" max="200" step="1" required placeholder="78" />
+            </div>
+            <div class="field">
+              <label for="insufficient-valuate-beds" data-i18n="bedrooms"></label>
+              <select id="insufficient-valuate-beds">
+                <option value="" data-i18n="any"></option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+              </select>
+            </div>
+          </div>
+          <button type="submit" class="btn-primary" data-i18n="estimate_rent"></button>
+        </form>
+        <p id="insufficient-valuate-result" class="hint hidden"></p>
+      </div>
+    </section>
+
+    <div id="market-content" class="hidden">
+     <div class="market-layout">
+      <main class="market-main">
+      <section class="panel pulse-panel">
+        <div class="pulse-header">
+          <div class="pulse-title-block">
+            <h2 id="display-name"></h2>
+            <div id="market-analysis-disclaimer" class="market-analysis-disclaimer hidden" role="status">
+              <span id="market-analysis-disclaimer-badge" class="confidence-badge confidence-insufficient"></span>
+              <p id="market-analysis-disclaimer-text" class="market-analysis-disclaimer-text"></p>
+            </div>
+            <button type="button" class="btn-secondary market-report-btn" id="market-report-btn" hidden data-i18n="market_report_data_error"></button>
+          </div>
+          <span id="price-tier-badge" class="price-tier-badge hidden"></span>
+        </div>
+        <p id="low-confidence-note" class="low-confidence-note hidden"></p>
+        <div class="pulse-grid pulse-grid-five">
+          <div class="pulse-card">
+            <span class="pulse-label" data-i18n="pulse_sale_psm"></span>
+            <span class="pulse-value" id="pulse-sale-psm">-</span>
+          </div>
+          <div class="pulse-card">
+            <span class="pulse-label" data-i18n="pulse_rent_psm"></span>
+            <span class="pulse-value" id="pulse-rent-psm">-</span>
+          </div>
+          <div class="pulse-card">
+            <span class="pulse-label" data-i18n="pulse_median_sale"></span>
+            <span class="pulse-value" id="pulse-median-sale">-</span>
+          </div>
+          <div class="pulse-card">
+            <span class="pulse-label" data-i18n="pulse_median_rent"></span>
+            <span class="pulse-value" id="pulse-median-rent">-</span>
+          </div>
+          <div class="pulse-card">
+            <span class="pulse-label" data-i18n="pulse_listings"></span>
+            <span class="pulse-value" id="pulse-inventory">-</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel hidden" id="children-section">
+        <h3 class="section-title" data-i18n="sub_markets"></h3>
+        <p class="hint hint-info" data-i18n="sub_markets_hint"></p>
+        <ul id="children-list" class="chip-list"></ul>
+      </section>
+
+      <section class="panel hidden" id="sale-type-section">
+        <h3 class="section-title" data-i18n="sales_by_type"></h3>
+        <p class="hint hint-info" data-i18n="sales_by_type_hint"></p>
+        <div class="table-wrap">
+          <table class="data-table" id="sale-type-table">
+            <thead>
+              <tr>
+                <th data-i18n="th_type"></th>
+                <th data-i18n="th_avg_psm"></th>
+                <th data-i18n="th_median_price"></th>
+                <th data-i18n="th_median_area"></th>
+                <th data-i18n="th_listings"></th>
+                <th data-i18n="th_confidence"></th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel typical-panel hidden" id="typical-section">
+        <h3 class="section-title" data-i18n="typical_apartment"></h3>
+        <div class="typical-grid">
+          <div class="typical-stat">
+            <span class="typical-value" id="typical-area">-</span>
+            <span class="typical-label" data-i18n="size"></span>
+          </div>
+          <div class="typical-stat">
+            <span class="typical-value" id="typical-beds">-</span>
+            <span class="typical-label" data-i18n="bedrooms"></span>
+          </div>
+          <div class="typical-stat typical-price">
+            <span class="typical-value" id="typical-price">-</span>
+            <span class="typical-label" data-i18n="median_sale_price"></span>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" id="bedroom-section">
+        <h3 class="section-title" data-i18n="by_bedrooms"></h3>
+        <p class="table-scroll-hint" data-i18n="swipe_hint"></p>
+        <div class="table-wrap">
+          <table class="data-table" id="bedroom-table">
+            <thead>
+              <tr>
+                <th></th>
+                <th data-i18n="th_avg_sale"></th>
+                <th data-i18n="th_avg_rent"></th>
+                <th data-i18n="th_median_rent"></th>
+                <th data-i18n="th_listings"></th>
+                <th data-i18n="th_confidence"></th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel" id="size-section">
+        <h3 class="section-title" data-i18n="by_size"></h3>
+        <p class="table-scroll-hint" data-i18n="swipe_hint"></p>
+        <div class="table-wrap">
+          <table class="data-table" id="size-table">
+            <thead>
+              <tr>
+                <th data-i18n="th_band"></th>
+                <th data-i18n="th_avg_sale"></th>
+                <th data-i18n="th_avg_rent"></th>
+                <th data-i18n="th_median_rent"></th>
+                <th data-i18n="th_listings"></th>
+                <th data-i18n="th_confidence"></th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel" id="recent-listings-section">
+        <h3 class="section-title" data-i18n="recent_listings"></h3>
+        <div class="recent-list-curtain" id="recent-listings-curtain">
+          <ul id="recent-listings" class="recent-list"></ul>
+        </div>
+      </section>
+
+      <section class="panel valuate-cta-panel" id="valuate-cta">
+        <h3 class="section-title" data-i18n="estimate_apartment"></h3>
+        <p class="valuate-cta-lead" id="valuate-cta-lead"></p>
+        <a class="btn-primary valuate-cta-btn" id="valuate-cta-btn" href="/valuate" data-i18n="valuate_cta_btn"></a>
+        <p class="hint valuate-cta-foot" data-i18n="valuate_cta_foot"></p>
+      </section>
+
+      </main>
+
+      <aside class="market-rail">
+        <section class="panel rail-panel" id="rail-city" hidden>
+          <h3 class="rail-title" data-i18n="city_comparison_title"></h3>
+          <table class="city-compare-table">
+            <thead>
+              <tr>
+                <th></th>
+                <th class="city-col" data-i18n="city_col_here"></th>
+                <th class="city-col" data-i18n="city_col_city"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row" data-i18n="city_row_sale"></th>
+                <td id="city-here-sale">-</td>
+                <td id="city-city-sale">-</td>
+              </tr>
+              <tr>
+                <th scope="row" data-i18n="city_row_rent"></th>
+                <td id="city-here-rent">-</td>
+                <td id="city-city-rent">-</td>
+              </tr>
+            </tbody>
+          </table>
+          <p class="city-premium" id="city-premium"></p>
+        </section>
+
+        <section class="panel rail-panel" id="rail-percentiles" hidden>
+          <h3 class="rail-title" data-i18n="percentile_title"></h3>
+          <div class="percentile-row">
+            <span class="percentile-label" data-i18n="percentile_cheapest"></span>
+            <span class="percentile-value" id="pct-p10">-</span>
+          </div>
+          <div class="percentile-row percentile-row-median">
+            <span class="percentile-label" data-i18n="percentile_median"></span>
+            <span class="percentile-value" id="pct-p50">-</span>
+          </div>
+          <div class="percentile-row">
+            <span class="percentile-label" data-i18n="percentile_top10"></span>
+            <span class="percentile-value" id="pct-p90">-</span>
+          </div>
+          <p class="rail-foot hint-info" id="pct-hint" data-info-attach="#rail-percentiles .rail-title"></p>
+        </section>
+
+        <section class="panel rail-panel" id="rail-confidence" hidden>
+          <h3 class="rail-title" data-i18n="conf_panel_title"></h3>
+          <span id="rail-confidence-badge" class="confidence-badge"></span>
+          <p class="rail-body" id="rail-confidence-body"></p>
+          <p class="rail-foot" data-i18n="conf_panel_thresholds"></p>
+          <p class="rail-foot"><a href="/methodology" class="btn-link" data-i18n="conf_panel_method"></a></p>
+        </section>
+      </aside>
+     </div>
+    </div>
+
+    <section id="not-found" class="panel error-panel hidden">
+      <h2 data-i18n="not_found"></h2>
+      <p data-i18n="not_found_msg"></p>
+      <a href="/" data-i18n="back_search"></a>
+    </section>
+
+    <div id="site-footer"></div>
+  </div>
+  <script src="/static/i18n.js?v=45"></script>
+  <script src="/static/format.js?v=10"></script>
+  <script src="/static/confidence.js?v=4"></script>
+  <script src="/static/site.js?v=31"></script>
+  <script src="/static/feedback.js?v=4"></script>
+  <script src="/static/search.js?v=1"></script>
+  <script src="/static/lookup.js?v=7"></script>
+</body>
+</html>

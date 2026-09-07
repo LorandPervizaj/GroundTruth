@@ -60,6 +60,7 @@ class ParsedListingSchema(BaseModel):
     building_raw: str | None = None
 
     neighborhood_id: int | None = None
+    district_id: int | None = None
     street_id: int | None = None
     complex_id: int | None = None
     building_id: int | None = None
@@ -112,6 +113,7 @@ class NormalizedListingSchema(BaseModel):
 
     city: str | None = None
     neighborhood_id: int | None = None
+    district_id: int | None = None
     street_id: int | None = None
     complex_id: int | None = None
     building_id: int | None = None

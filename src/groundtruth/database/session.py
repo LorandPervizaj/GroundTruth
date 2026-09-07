@@ -17,7 +17,10 @@ def get_engine(settings: Settings | None = None) -> Engine:
     return create_engine(
         str(settings.database_url),
         pool_pre_ping=True,
+        pool_size=settings.database_pool_size,
+        max_overflow=settings.database_max_overflow,
         echo=settings.is_development and False,
+        connect_args={"connect_timeout": 5},
     )
 
 
@@ -39,3 +42,7 @@ def get_session() -> Generator[Session, None, None]:
         raise
     finally:
         session.close()
+
+
+# FastAPI Depends alias
+get_db = get_session

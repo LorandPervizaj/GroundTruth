@@ -3,9 +3,11 @@
 from __future__ import annotations
 
 import time
+from datetime import date
 from decimal import Decimal
 from typing import Any
 
+from dateutil.relativedelta import relativedelta
 from sqlalchemy.orm import Session
 
 from groundtruth.database.repositories import (
@@ -15,22 +17,26 @@ from groundtruth.database.repositories import (
     ParsedListingRepository,
     RawListingRepository,
 )
+from groundtruth.gazetteers.version import compute_gazetteer_version
 from groundtruth.logging import get_logger
 from groundtruth.models.enums import HeatingType, ListingType, PipelineStage
+from groundtruth.models.lineage import DataLineage
 from groundtruth.models.pipeline import NormalizedListing, RawListing
 from groundtruth.processing.confidence import ConfidenceScorer
-from groundtruth.models.lineage import DataLineage
 from groundtruth.processing.neighborhood_failures import log_neighborhood_failure
 from groundtruth.processing.parser_kpis import build_parser_kpi_report
 from groundtruth.processing.validation import ListingValidator
 from groundtruth.schemas.etl import EtlMetricsSchema, FieldExtractionRates, InvalidListingSchema
-from groundtruth.schemas.pipeline import NormalizedListingSchema
-from groundtruth.gazetteers.version import compute_gazetteer_version
 from groundtruth.services.normalization import NORMALIZATION_VERSION, NormalizationService
-from groundtruth.services.parsing import PARSER_VERSION, ParsingService
+from groundtruth.services.parsing import ParsingService
 from groundtruth.services.pipeline import PipelineService
+from groundtruth.versions import PARSER_VERSIONS
 
 logger = get_logger(__name__)
+
+
+def parser_version_for_source(source: str) -> str:
+    return PARSER_VERSIONS.get(source, PARSER_VERSIONS["gjirafa"])
 
 
 class EtlService:
@@ -56,9 +62,16 @@ class EtlService:
         source: str | None = None,
         skip_existing: bool = True,
         reprocess: bool = False,
+        max_age_months: int = 0,
+        max_age_days: int = 0,
     ) -> EtlMetricsSchema:
         """Process raw listings through parse → normalize → validate."""
         started = time.perf_counter()
+        cutoff_date: date | None = None
+        if max_age_days > 0:
+            cutoff_date = date.today() - relativedelta(days=max_age_days - 1)
+        elif max_age_months > 0:
+            cutoff_date = date.today() - relativedelta(months=max_age_months)
 
         if reprocess:
             self._clear_processed(source=source, scrape_run_id=scrape_run_id)
@@ -74,6 +87,7 @@ class EtlService:
         counters = {
             "parsed_success": 0,
             "parsed_failed": 0,
+            "skipped_age": 0,
             "normalized_success": 0,
             "normalized_failed": 0,
             "validation_failed": 0,
@@ -91,6 +105,15 @@ class EtlService:
             if parsed_schema is None:
                 continue
 
+            if cutoff_date is not None and not self._within_listing_window(
+                parsed_schema.listing_date,
+                cutoff_date,
+                scraped_at=raw.scraped_at.date() if raw.scraped_at else None,
+                source_website=raw.source_website,
+            ):
+                counters["skipped_age"] += 1
+                continue
+
             parsed_entity = self._pipeline.store_parsed(
                 parsed_schema,
                 raw_listing_id=raw.id,
@@ -102,6 +125,17 @@ class EtlService:
                 normalized_schema.scraped_at = raw.scraped_at
                 is_valid = True
                 validation = self._validator.validate(normalized_schema)
+                if factors.location_invalid:
+                    from groundtruth.schemas.etl import ValidationIssue
+
+                    validation.issues.append(
+                        ValidationIssue(
+                            code="invalid_location",
+                            field="complex_id",
+                            message=factors.location_invalid_reason or "Ambiguous location",
+                        )
+                    )
+                    validation.is_valid = False
                 if not validation.is_valid:
                     is_valid = False
                     counters["validation_failed"] += 1
@@ -153,7 +187,7 @@ class EtlService:
                         "normalized_listing_id": normalized_entity.id,
                         "raw_listing_id": raw.id,
                         "parsed_listing_id": parsed_entity.id,
-                        "parser_version": PARSER_VERSION,
+                        "parser_version": parsed_schema.parser_version,
                         "normalization_version": NORMALIZATION_VERSION,
                         "gazetteer_version": gazetteer_version,
                     }
@@ -190,7 +224,7 @@ class EtlService:
         metrics = EtlMetricsSchema(
             scrape_run_id=scrape_run_id,
             source=source_name,
-            parser_version=PARSER_VERSION,
+            parser_version=parser_version_for_source(source_name),
             normalization_version=NORMALIZATION_VERSION,
             gazetteer_version=gazetteer_version,
             total_scraped=len(raw_listings),
@@ -213,8 +247,26 @@ class EtlService:
             )
         self._session.commit()
 
-        logger.info("etl_run_complete", metrics=metrics.model_dump(mode="json"))
+        logger.info(
+            "etl_run_complete",
+            metrics=metrics.model_dump(mode="json"),
+            skipped_age=counters["skipped_age"],
+            cutoff_date=cutoff_date.isoformat() if cutoff_date else None,
+        )
         return metrics
+
+    @staticmethod
+    def _within_listing_window(
+        listing_date: date | None,
+        cutoff_date: date,
+        *,
+        scraped_at: date | None = None,
+        source_website: str | None = None,
+    ) -> bool:
+        effective = listing_date
+        if effective is None and source_website == "pro-rks" and scraped_at is not None:
+            effective = scraped_at
+        return effective is not None and effective >= cutoff_date
 
     def _clear_processed(
         self,
@@ -252,6 +304,8 @@ class EtlService:
         invalid_query = self._session.query(InvalidListing)
         if scrape_run_id is not None:
             invalid_query = invalid_query.filter(InvalidListing.scrape_run_id == scrape_run_id)
+        elif raw_ids:
+            invalid_query = invalid_query.filter(InvalidListing.raw_listing_id.in_(raw_ids))
         invalid_query.delete(synchronize_session=False)
         self._session.flush()
 
@@ -306,9 +360,7 @@ class EtlService:
             if listing.heating_type is not None and listing.heating_type != HeatingType.UNKNOWN
         )
         furnished_count = sum(1 for listing in listings if listing.is_furnished is not None)
-        description_count = sum(
-            1 for listing in listings if listing.description_original
-        )
+        description_count = sum(1 for listing in listings if listing.description_original)
         listing_type_count = sum(1 for listing in listings if listing.listing_type is not None)
 
         return FieldExtractionRates(
@@ -327,7 +379,11 @@ class EtlService:
         signatures: list[tuple[Any, ...]] = []
         duplicates = 0
         for listing in listings:
-            price = listing.rent_price if listing.listing_type == ListingType.RENT else listing.sale_price
+            price = (
+                listing.rent_price
+                if listing.listing_type == ListingType.RENT
+                else listing.sale_price
+            )
             if price is None or listing.area_sqm is None:
                 continue
             sig = (

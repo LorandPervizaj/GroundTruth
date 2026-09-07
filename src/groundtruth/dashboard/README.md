@@ -1,15 +1,11 @@
-# Dashboard (Phase 4)
+# Dashboard notes
 
-Frontend will be a separate Node.js/React application consuming the REST API.
+The live Metrik UI is static HTML/JS under `web/`, served by the FastAPI app.
 
-Planned features:
+Any future map or browse UI must stay within the **public allowlist**:
 
-- Property search with filters (budget, size, bedrooms)
-- Map view with listing markers
-- Neighborhood comparison charts
-- Residential complex premium analysis
-- Budget calculator ("What can €150k buy?")
-- Rental yield calculator
-- Links to original listing sources
+- Aggregated neighborhood / market metrics
+- Sample size and confidence
+- Links that send users to the **original public portal URL** (no hosted copies of listing text, photos, or contact blocks)
 
-Do not implement until Phase 4.
+Do **not** build a scraped listings mirror, contact directory, or downloadable dump of portal content. See `docs/DATA_HANDLING.md` and `docs/CRAWL_POLICY.md`.

@@ -1,6 +1,6 @@
 """Base repository with common CRUD operations."""
 
-from typing import Generic, TypeVar
+from typing import TypeVar
 
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -10,7 +10,7 @@ from groundtruth.models.base import Base
 ModelT = TypeVar("ModelT", bound=Base)
 
 
-class BaseRepository(Generic[ModelT]):
+class BaseRepository[ModelT: Base]:
     """Generic repository implementing basic persistence operations."""
 
     model: type[ModelT]
