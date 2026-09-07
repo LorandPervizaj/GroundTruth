@@ -16,6 +16,17 @@ def test_security_headers_on_api() -> None:
         assert res.headers.get("X-Frame-Options") == "DENY"
 
 
+def test_public_get_cache_headers() -> None:
+    from groundtruth.api.app import app
+
+    with TestClient(app) as client:
+        res = client.get("/api/meta")
+        assert res.status_code == 200
+        cache = res.headers.get("Cache-Control", "")
+        assert "max-age=" in cache
+        assert "public" in cache
+
+
 def test_production_rejects_dev_database_password(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("APP_ENV", "production")
     monkeypatch.setenv(

@@ -9,7 +9,7 @@
   <meta property="og:description" content="Side-by-side Prishtina neighborhood market comparison with confidence metrics." />
   <meta property="og:type" content="website" />
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="/static/style.css?v=46" />
+  <link rel="stylesheet" href="/static/style.css?v=48" />
 </head>
 <body data-page-title="compare_title">
   <div class="page page-wide compare-page">
@@ -53,7 +53,7 @@
       </div>
 
       <div class="compare-output-col" id="compare-output-col">
-        <section id="compare-empty" class="compare-preview">
+        <section id="compare-empty" class="compare-preview is-skeleton-loading" aria-busy="true">
           <div class="compare-cards compare-cards-preview">
             <article class="compare-nh-card compare-nh-card-preview">
               <span class="compare-nh-card-kicker" data-i18n="compare_preview_card"></span>
@@ -114,10 +114,11 @@
 
     <div id="site-footer"></div>
   </div>
-  <script src="/static/i18n.js?v=45"></script>
-  <script src="/static/format.js?v=10"></script>
-  <script src="/static/confidence.js?v=1"></script>
-  <script src="/static/site.js?v=31"></script>
-  <script src="/static/compare.js?v=3"></script>
+  <script defer src="/static/i18n.js?v=45"></script>
+  <script defer src="/static/api-cache.js?v=1"></script>
+  <script defer src="/static/format.js?v=10"></script>
+  <script defer src="/static/confidence.js?v=1"></script>
+  <script defer src="/static/site.js?v=32"></script>
+  <script defer src="/static/compare.js?v=4"></script>
 </body>
 </html>

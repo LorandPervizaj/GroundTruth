@@ -162,6 +162,12 @@ function setSubmitState() {
 
 function updateFormState() {
   setSubmitState();
+  const empty = document.getElementById("compare-empty");
+  if (empty) {
+    const skeletonOn = marketsLoading || compareLoading;
+    empty.classList.toggle("is-skeleton-loading", skeletonOn);
+    empty.setAttribute("aria-busy", skeletonOn ? "true" : "false");
+  }
   if (!marketsReady) {
     setHint(marketsLoading ? t("compare_loading") : t("compare_markets_unavailable"), {
       tone: marketsLoading ? "hint" : "error",
@@ -252,6 +258,7 @@ function renderTable(data) {
 
   error?.classList.add("hidden");
   section.classList.remove("hidden");
+  section.classList.add("content-fade-in");
   setCompareEmptyVisible(false);
 
   const cols = data.neighborhoods;
@@ -374,9 +381,17 @@ async function fetchMarkets(timeoutMs = 60000) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   try {
-    const res = await fetch("/api/markets", { signal: controller.signal });
-    if (!res.ok) throw new Error("markets failed");
-    const rows = await res.json();
+    let rows;
+    if (window.MetrikApiCache) {
+      rows = await window.MetrikApiCache.getJson("/api/markets", {
+        ttlMs: 120_000,
+        fetchInit: { signal: controller.signal },
+      });
+    } else {
+      const res = await fetch("/api/markets", { signal: controller.signal });
+      if (!res.ok) throw new Error("markets failed");
+      rows = await res.json();
+    }
     if (!Array.isArray(rows) || !rows.length) throw new Error("empty markets");
     marketOptions = rows
       .filter((row) => row?.slug && row?.name)

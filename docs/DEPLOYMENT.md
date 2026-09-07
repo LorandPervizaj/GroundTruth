@@ -136,15 +136,17 @@ Production checklist (Sprint 1):
 
 Never use the development database password on a reachable host.
 
-## 9. Monitoring
+## 10. First go-live checklist
 
-Minimum monitors:
+- [x] Release artifacts build/verify CLI (`groundtruth release build-artifacts`)
+- [x] Prod compose + nginx configs in repo
+- [x] Public docs posture (aggregates only; crawlers off public host)
+- [ ] VPS/VM provisioned; DNS A/AAAA for domain
+- [ ] `.env.production` on host (strong secrets, real `PUBLIC_BASE_URL`, `HEALTH_CHECK_TOKEN`)
+- [ ] TLS certificates mounted / LB termination
+- [ ] Copy verified `lookup_cache/` + `annual_report.json` onto host
+- [ ] `alembic upgrade head` then `docker compose -f docker-compose.prod.yml --env-file .env.production up -d --build`
+- [ ] `/api/ready` healthy; smoke home, market, statistics, rent-yield
+- [ ] Weekly backup cron + restore drill once
+- [ ] Keep research crawlers on the private ETL machine only
 
-- `/api/ready` returns `ok: true`
-- `/api/health/perf` reports loaded caches and p95 latency
-- 5xx rate
-- 429 rate
-- dataset freshness age from `/api/meta`
-- disk space on Postgres and artifact volumes
-
-Use JSON logs in production and configure host log rotation.

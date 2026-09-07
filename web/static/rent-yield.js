@@ -23,6 +23,7 @@ function formatPct(value) {
 function renderRows(rows) {
   const body = document.getElementById("yield-body");
   if (!body) return;
+  body.removeAttribute("aria-busy");
 
   if (!rows.length) {
     body.innerHTML = `<tr><td colspan="6">${t("rent_yield_empty")}</td></tr>`;
@@ -46,20 +47,25 @@ function renderRows(rows) {
       </tr>`;
     })
     .join("");
+  body.classList.add("content-fade-in");
 }
 
 async function loadRentYield() {
+  const body = document.getElementById("yield-body");
+  if (body) body.setAttribute("aria-busy", "true");
   try {
-    const res = await fetch("/api/rent-yield");
-    if (!res.ok) throw new Error("fetch failed");
-    const data = await res.json();
+    const data = window.MetrikApiCache
+      ? await window.MetrikApiCache.getJson("/api/rent-yield", { ttlMs: 60_000 })
+      : await (await fetch("/api/rent-yield")).json();
     if (data.cached) {
       setStatus(t("rent_yield_cached"));
     }
     renderRows(data.rows || []);
   } catch {
-    const body = document.getElementById("yield-body");
-    if (body) body.innerHTML = `<tr><td colspan="6">${t("error_generic")}</td></tr>`;
+    if (body) {
+      body.removeAttribute("aria-busy");
+      body.innerHTML = `<tr><td colspan="6">${t("error_generic")}</td></tr>`;
+    }
     setStatus(t("rent_yield_load_error"), "warn");
   }
 }

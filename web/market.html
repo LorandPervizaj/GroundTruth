@@ -10,7 +10,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:image" content="/favicon.svg" />
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="/static/style.css?v=47" />
+  <link rel="stylesheet" href="/static/style.css?v=48" />
 </head>
 <body data-page-title="market_title">
   <div class="page page-wide page-market">
@@ -38,8 +38,17 @@
 
     <nav class="breadcrumb" id="breadcrumb" aria-label="Breadcrumb"></nav>
 
-    <section id="loading" class="panel loading-skeleton" aria-busy="true" aria-live="polite">
-      <div class="skeleton-pulse" aria-hidden="true"></div>
+    <section id="loading" class="panel loading-skeleton loading-skeleton--market" aria-busy="true" aria-live="polite">
+      <div class="skel-line skel-line--lg" aria-hidden="true"></div>
+      <div class="skel-kpi-grid" aria-hidden="true">
+        <div class="skel-kpi"></div>
+        <div class="skel-kpi"></div>
+        <div class="skel-kpi"></div>
+        <div class="skel-kpi"></div>
+      </div>
+      <div class="skel-line skel-line--md" aria-hidden="true"></div>
+      <div class="skel-line skel-line--sm" aria-hidden="true"></div>
+      <div class="skel-chart" aria-hidden="true"></div>
       <p class="hint" data-i18n="market_loading"></p>
     </section>
 
@@ -295,12 +304,13 @@
 
     <div id="site-footer"></div>
   </div>
-  <script src="/static/i18n.js?v=45"></script>
-  <script src="/static/format.js?v=10"></script>
-  <script src="/static/confidence.js?v=4"></script>
-  <script src="/static/site.js?v=31"></script>
-  <script src="/static/feedback.js?v=4"></script>
-  <script src="/static/search.js?v=1"></script>
-  <script src="/static/lookup.js?v=7"></script>
+  <script defer src="/static/i18n.js?v=45"></script>
+  <script defer src="/static/api-cache.js?v=1"></script>
+  <script defer src="/static/format.js?v=10"></script>
+  <script defer src="/static/confidence.js?v=4"></script>
+  <script defer src="/static/site.js?v=32"></script>
+  <script defer src="/static/feedback.js?v=4"></script>
+  <script defer src="/static/search.js?v=1"></script>
+  <script defer src="/static/lookup.js?v=8"></script>
 </body>
 </html>

@@ -9,7 +9,7 @@
   <meta property="og:description" content="Neighborhood gross rental yield from median rent and sale prices." />
   <meta property="og:type" content="website" />
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="/static/style.css?v=46" />
+  <link rel="stylesheet" href="/static/style.css?v=48" />
 </head>
 <body data-page-title="rent_yield_title">
   <div class="page page-wide">
@@ -36,8 +36,13 @@
               <th data-i18n="rent_yield_col_sale_n"></th>
             </tr>
           </thead>
-          <tbody id="yield-body">
-            <tr><td colspan="6" data-i18n="loading"></td></tr>
+          <tbody id="yield-body" aria-busy="true">
+            <tr class="skel-row" aria-hidden="true"><td colspan="6"><span class="skel-line skel-line--md"></span></td></tr>
+            <tr class="skel-row" aria-hidden="true"><td colspan="6"><span class="skel-line skel-line--sm"></span></td></tr>
+            <tr class="skel-row" aria-hidden="true"><td colspan="6"><span class="skel-line skel-line--md"></span></td></tr>
+            <tr class="skel-row" aria-hidden="true"><td colspan="6"><span class="skel-line skel-line--sm"></span></td></tr>
+            <tr class="skel-row" aria-hidden="true"><td colspan="6"><span class="skel-line skel-line--md"></span></td></tr>
+            <tr class="sr-only"><td colspan="6" data-i18n="loading"></td></tr>
           </tbody>
         </table>
       </div>
@@ -46,10 +51,11 @@
     <div id="site-footer"></div>
   </div>
 
-  <script src="/static/i18n.js?v=45"></script>
-  <script src="/static/format.js?v=10"></script>
-  <script src="/static/site.js?v=31"></script>
-  <script src="/static/rent-yield.js?v=3"></script>
+  <script defer src="/static/i18n.js?v=45"></script>
+  <script defer src="/static/api-cache.js?v=1"></script>
+  <script defer src="/static/format.js?v=10"></script>
+  <script defer src="/static/site.js?v=32"></script>
+  <script defer src="/static/rent-yield.js?v=4"></script>
 </body>
 </html>
 

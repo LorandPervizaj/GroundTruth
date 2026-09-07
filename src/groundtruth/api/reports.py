@@ -162,7 +162,7 @@ def _report_refresh_limit() -> str:
 
 
 @router.get("/annual_data")
-def get_annual_data(refresh: bool = Query(False)):
+def get_annual_data(response: Response, refresh: bool = Query(False)):
     # ?refresh=true bypasses cache but is dev-only; production uses ETL-scheduled export.
     if refresh:
         if not get_settings().is_development:
@@ -171,6 +171,8 @@ def get_annual_data(refresh: bool = Query(False)):
                 detail="Cache refresh not available via query param",
             )
         return _annual_data_payload(force_refresh=True)
+    response.headers["Cache-Control"] = "public, max-age=60"
+    response.headers["Vary"] = "Accept-Encoding"
     return _annual_data_payload()
 
 

@@ -562,12 +562,18 @@ async function apiFetch(url, options = {}, timeoutMs = 30000) {
 async function loadNeighborhoods() {
   const hint = document.getElementById("nh-hint");
   try {
-    const res = await apiFetch("/api/neighborhoods");
-    if (!res.ok) {
-      hint.textContent = t("valuate_nh_load_error");
-      return;
+    let rows;
+    if (window.MetrikApiCache) {
+      rows = await window.MetrikApiCache.getJson("/api/neighborhoods", { ttlMs: 120_000 });
+    } else {
+      const res = await apiFetch("/api/neighborhoods");
+      if (!res.ok) {
+        hint.textContent = t("valuate_nh_load_error");
+        return;
+      }
+      rows = await res.json();
     }
-    neighborhoodData = normalizeNeighborhoodOptions(await res.json());
+    neighborhoodData = normalizeNeighborhoodOptions(rows);
   } catch (err) {
     const aborted = err && err.name === "AbortError";
     hint.textContent = aborted
@@ -1050,6 +1056,11 @@ document.getElementById("estimate-form").addEventListener("submit", async (e) =>
   document.getElementById("error").classList.add("hidden");
   document.getElementById("results").classList.add("hidden");
   setValuateEmptyVisible(true);
+  const emptyPanel = document.getElementById("valuate-empty");
+  if (emptyPanel) {
+    emptyPanel.classList.add("is-skeleton-loading");
+    emptyPanel.setAttribute("aria-busy", "true");
+  }
   resetValuationOutput();
 
   try {
@@ -1120,6 +1131,10 @@ document.getElementById("estimate-form").addEventListener("submit", async (e) =>
   } finally {
     submitBtn.disabled = false;
     submitBtn.textContent = submitLabel;
+    if (emptyPanel) {
+      emptyPanel.classList.remove("is-skeleton-loading");
+      emptyPanel.setAttribute("aria-busy", "false");
+    }
   }
 });
 

@@ -330,6 +330,11 @@ async function submitFind(e) {
   setSubmitState();
   const hint = document.getElementById("find-hint");
   if (hint) hint.textContent = t("find_working");
+  const preview = document.getElementById("find-preview");
+  if (preview) {
+    preview.classList.add("is-skeleton-loading");
+    preview.setAttribute("aria-busy", "true");
+  }
 
   try {
     const res = await fetch("/api/budget-match", {
@@ -352,6 +357,10 @@ async function submitFind(e) {
     findLoading = false;
     setSubmitState();
     if (hint) hint.textContent = t("find_hint_live");
+    if (preview) {
+      preview.classList.remove("is-skeleton-loading");
+      preview.setAttribute("aria-busy", "false");
+    }
   }
 }
 

@@ -623,6 +623,7 @@ function renderMarketData(data) {
 
   document.getElementById("insufficient")?.classList.add("hidden");
   document.getElementById("market-content")?.classList.remove("hidden");
+  document.getElementById("market-content")?.classList.add("content-fade-in");
   renderPulse(data);
   renderChildren(data);
   renderSaleByPropertyType(data.sale_by_property_type);

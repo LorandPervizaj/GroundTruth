@@ -37,6 +37,11 @@ function renderTrustStripFromMeta(meta) {
   const updatedEl = document.getElementById("trust-updated");
   if (!listingsEl || !updatedEl) return;
 
+  listingsEl.classList.remove("skel-chip");
+  updatedEl.classList.remove("skel-chip");
+  listingsEl.removeAttribute("aria-hidden");
+  updatedEl.removeAttribute("aria-hidden");
+
   if (meta.active_listings) {
     animateCount(listingsEl, Number(meta.active_listings));
   }
@@ -54,6 +59,10 @@ function renderTrustStripStatic() {
   const updatedEl = document.getElementById("trust-updated");
 
   if (!listingsEl || !updatedEl) return;
+  listingsEl.classList.remove("skel-chip");
+  updatedEl.classList.remove("skel-chip");
+  listingsEl.removeAttribute("aria-hidden");
+  updatedEl.removeAttribute("aria-hidden");
   animateCount(listingsEl, STATIC_TRUST_FALLBACK.active_listings);
   updatedEl.textContent = fmt.dateShort(STATIC_TRUST_FALLBACK.updated_at);
   strip.hidden = false;

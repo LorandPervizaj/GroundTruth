@@ -16,8 +16,8 @@
       "2026-09"
     ],
     "rent": [
-      111,
-      443,
+      94,
+      444,
       81,
       79,
       210,
@@ -25,13 +25,13 @@
       116,
       150,
       224,
-      1362,
-      1404,
+      1364,
+      1406,
       1943,
       18
     ],
     "sale": [
-      65,
+      52,
       117,
       71,
       125,
@@ -39,7 +39,7 @@
       145,
       124,
       146,
-      358,
+      359,
       1445,
       355,
       830,
@@ -63,7 +63,7 @@
       "2026-09"
     ],
     "values": [
-      1420,
+      1400,
       1380,
       1310,
       1500,
@@ -71,14 +71,14 @@
       1450,
       1320,
       1400,
-      1430,
+      1420,
       1400,
       null,
       1410,
       1400
     ],
     "raw_values": [
-      1420,
+      1400,
       1380,
       1310,
       1500,
@@ -86,14 +86,14 @@
       1450,
       1320,
       1400,
-      1430,
+      1420,
       1400,
       1890,
       1410,
       1400
     ],
     "counts": [
-      65,
+      52,
       117,
       71,
       125,
@@ -101,7 +101,7 @@
       145,
       124,
       146,
-      358,
+      359,
       1445,
       355,
       830,
@@ -149,7 +149,7 @@
       480
     ],
     "raw_values": [
-      550,
+      530,
       400,
       500,
       450,
@@ -164,8 +164,8 @@
       480
     ],
     "counts": [
-      111,
-      443,
+      94,
+      444,
       81,
       79,
       210,
@@ -173,8 +173,8 @@
       116,
       150,
       224,
-      1362,
-      1404,
+      1364,
+      1406,
       1943,
       18
     ],
@@ -182,8 +182,8 @@
       {
         "month": "2025-09",
         "reason": "thin_sample_spike",
-        "n": 111,
-        "raw_median": 550
+        "n": 94,
+        "raw_median": 525
       },
       {
         "month": "2026-02",
@@ -209,11 +209,11 @@
   "top_neighborhoods": [
     {
       "name": "Matiqan",
-      "count": 1859
+      "count": 1855
     },
     {
       "name": "Veternik",
-      "count": 931
+      "count": 927
     },
     {
       "name": "Qendra",
@@ -221,31 +221,31 @@
     },
     {
       "name": "Arbëria",
-      "count": 670
+      "count": 666
     },
     {
       "name": "Bregu i Diellit",
-      "count": 641
+      "count": 639
     }
   ],
   "neighborhood_highlights": [
     {
       "neighborhood": "Matiqan",
       "slug": "matiqan",
-      "inventory": 1859,
-      "sale_n": 774,
-      "rent_n": 1068,
+      "inventory": 1855,
+      "sale_n": 772,
+      "rent_n": 1066,
       "sale_confidence": "high",
       "rent_confidence": "high",
-      "median_price_per_sqm": 1400,
+      "median_price_per_sqm": 1390,
       "median_rent": 500
     },
     {
       "neighborhood": "Veternik",
       "slug": "veternik",
-      "inventory": 931,
-      "sale_n": 590,
-      "rent_n": 332,
+      "inventory": 927,
+      "sale_n": 589,
+      "rent_n": 330,
       "sale_confidence": "high",
       "rent_confidence": "high",
       "median_price_per_sqm": 1240,
@@ -265,9 +265,9 @@
     {
       "neighborhood": "Arbëria",
       "slug": "arberia",
-      "inventory": 670,
+      "inventory": 666,
       "sale_n": 190,
-      "rent_n": 476,
+      "rent_n": 472,
       "sale_confidence": "high",
       "rent_confidence": "high",
       "median_price_per_sqm": 1570,
@@ -276,12 +276,12 @@
     {
       "neighborhood": "Bregu i Diellit",
       "slug": "bregu-i-diellit",
-      "inventory": 641,
-      "sale_n": 226,
+      "inventory": 639,
+      "sale_n": 224,
       "rent_n": 411,
       "sale_confidence": "high",
       "rent_confidence": "high",
-      "median_price_per_sqm": 1650,
+      "median_price_per_sqm": 1620,
       "median_rent": 390
     }
   ],
@@ -289,20 +289,20 @@
     {
       "neighborhood": "Matiqan",
       "slug": "matiqan",
-      "inventory": 1859,
-      "sale_n": 774,
-      "rent_n": 1068,
+      "inventory": 1855,
+      "sale_n": 772,
+      "rent_n": 1066,
       "sale_confidence": "high",
       "rent_confidence": "high",
-      "median_price_per_sqm": 1400,
+      "median_price_per_sqm": 1390,
       "median_rent": 500
     },
     {
       "neighborhood": "Veternik",
       "slug": "veternik",
-      "inventory": 931,
-      "sale_n": 590,
-      "rent_n": 332,
+      "inventory": 927,
+      "sale_n": 589,
+      "rent_n": 330,
       "sale_confidence": "high",
       "rent_confidence": "high",
       "median_price_per_sqm": 1240,
@@ -322,9 +322,9 @@
     {
       "neighborhood": "Arbëria",
       "slug": "arberia",
-      "inventory": 670,
+      "inventory": 666,
       "sale_n": 190,
-      "rent_n": 476,
+      "rent_n": 472,
       "sale_confidence": "high",
       "rent_confidence": "high",
       "median_price_per_sqm": 1570,
@@ -333,20 +333,20 @@
     {
       "neighborhood": "Bregu i Diellit",
       "slug": "bregu-i-diellit",
-      "inventory": 641,
-      "sale_n": 226,
+      "inventory": 639,
+      "sale_n": 224,
       "rent_n": 411,
       "sale_confidence": "high",
       "rent_confidence": "high",
-      "median_price_per_sqm": 1650,
+      "median_price_per_sqm": 1620,
       "median_rent": 390
     },
     {
       "neighborhood": "Aktash / Muhaxherë",
       "slug": "aktash-muhaxhere",
-      "inventory": 615,
-      "sale_n": 165,
-      "rent_n": 444,
+      "inventory": 610,
+      "sale_n": 161,
+      "rent_n": 443,
       "sale_confidence": "high",
       "rent_confidence": "high",
       "median_price_per_sqm": 1850,
@@ -355,19 +355,19 @@
     {
       "neighborhood": "Ulpiana",
       "slug": "ulpiana",
-      "inventory": 568,
-      "sale_n": 177,
-      "rent_n": 386,
+      "inventory": 566,
+      "sale_n": 176,
+      "rent_n": 385,
       "sale_confidence": "high",
       "rent_confidence": "high",
       "median_price_per_sqm": 2390,
-      "median_rent": 390
+      "median_rent": 380
     },
     {
       "neighborhood": "Emshir",
       "slug": "emshir",
-      "inventory": 499,
-      "sale_n": 226,
+      "inventory": 498,
+      "sale_n": 225,
       "rent_n": 270,
       "sale_confidence": "high",
       "rent_confidence": "high",
@@ -410,7 +410,7 @@
       {
         "neighborhood": "Ulpiana",
         "slug": "ulpiana",
-        "n": 152,
+        "n": 151,
         "confidence": "high",
         "median_price_per_sqm": 2390,
         "median_sale_eur": 105000
@@ -468,7 +468,7 @@
       {
         "neighborhood": "Veternik",
         "slug": "veternik",
-        "n": 575,
+        "n": 574,
         "confidence": "high",
         "median_price_per_sqm": 1240,
         "median_sale_eur": 132000
@@ -476,53 +476,53 @@
       {
         "neighborhood": "Matiqan",
         "slug": "matiqan",
-        "n": 754,
+        "n": 752,
         "confidence": "high",
-        "median_price_per_sqm": 1400,
+        "median_price_per_sqm": 1390,
         "median_sale_eur": 128000
       }
     ],
     "min_sale_listings": 15
   },
-  "total_listings": 10536,
+  "total_listings": 10511,
   "kpis": {
-    "total_listings": 10536,
+    "total_listings": 10511,
     "total_sample": {
-      "n": 10536,
+      "n": 10511,
       "confidence": "high"
     },
-    "rent_count": 6287,
+    "rent_count": 6275,
     "rent_sample": {
-      "n": 6287,
+      "n": 6275,
       "confidence": "high"
     },
-    "sale_count": 3946,
+    "sale_count": 3934,
     "sale_sample": {
-      "n": 3946,
+      "n": 3934,
       "confidence": "high"
     },
     "rent_pct": 60,
     "median_sale_price_per_sqm": 1440,
     "median_sale_sample": {
-      "n": 3946,
+      "n": 3934,
       "confidence": "high"
     },
     "median_rent": 450,
     "median_rent_sample": {
-      "n": 6287,
+      "n": 6275,
       "confidence": "high"
     }
   },
   "sources": [],
   "coverage": {
     "price_pct": 97.1,
-    "area_pct": 78.1,
+    "area_pct": 78.0,
     "neighborhood_pct": 83.9,
-    "bedrooms_pct": 80.8
+    "bedrooms_pct": 80.7
   },
   "methodology": {
     "window_months": 12,
-    "cutoff_date": "2025-09-01",
+    "cutoff_date": "2025-09-07",
     "date_field": "listing_date",
     "deduped": true,
     "sources": [
@@ -590,8 +590,8 @@
   },
   "methodology_plain": {
     "plain": {
-      "sq": "Ky raport përmbledh listime aktive të banimit në Prishtinë nga portalet kryesore, publikuar brenda 12 muajve të fundit (nga 2025-09-01). Çdo listim numërohet një herë; çmimet janë medianë të çmimeve të kërkuara, jo transaksione. Përditësohet pas çdo cikli të përpunimit të të dhënave.",
-      "en": "This report summarizes active residential listings in Prishtina from portalet kryesore, published within the last 12 months (from 2025-09-01). Each listing is counted once; prices are medians of asking prices, not transactions. Updated after each data processing cycle."
+      "sq": "Ky raport përmbledh listime aktive të banimit në Prishtinë nga portalet kryesore, publikuar brenda 12 muajve të fundit (nga 2025-09-07). Çdo listim numërohet një herë; çmimet janë medianë të çmimeve të kërkuara, jo transaksione. Përditësohet pas çdo cikli të përpunimit të të dhënave.",
+      "en": "This report summarizes active residential listings in Prishtina from portalet kryesore, published within the last 12 months (from 2025-09-07). Each listing is counted once; prices are medians of asking prices, not transactions. Updated after each data processing cycle."
     },
     "technical": {
       "parsers": "1.3.1, 0.1.1-merrjep, 0.1.0-pro-rks, 0.1.0-vision, 0.1.0-topia, 0.1.0-myrealestate"
@@ -662,7 +662,7 @@
       },
       {
         "segment": "1 BR",
-        "listings": 2476,
+        "listings": 2472,
         "confidence": "high",
         "median_sale_price": 90000,
         "median_sale_psm": 1550,
@@ -671,7 +671,7 @@
       },
       {
         "segment": "2 BR",
-        "listings": 3235,
+        "listings": 3226,
         "confidence": "high",
         "median_sale_price": 120000,
         "median_sale_psm": 1360,
@@ -680,7 +680,7 @@
       },
       {
         "segment": "3 BR",
-        "listings": 1556,
+        "listings": 1549,
         "confidence": "high",
         "median_sale_price": 160000,
         "median_sale_psm": 1400,
@@ -689,18 +689,18 @@
       },
       {
         "segment": "4+ BR",
-        "listings": 214,
+        "listings": 211,
         "confidence": "high",
         "median_sale_price": 270000,
         "median_sale_psm": 1420,
-        "median_rent": 930,
+        "median_rent": 850,
         "median_area_sqm": 164.0
       }
     ],
     "by_size_band": [
       {
         "segment": "<50m²",
-        "listings": 528,
+        "listings": 527,
         "confidence": "high",
         "median_sale_price": 83000,
         "median_sale_psm": 2130,
@@ -709,16 +709,16 @@
       },
       {
         "segment": "50-79m²",
-        "listings": 2273,
+        "listings": 2263,
         "confidence": "high",
         "median_sale_price": 98000,
-        "median_sale_psm": 1490,
+        "median_sale_psm": 1480,
         "median_rent": 350,
         "median_area_sqm": 65.0
       },
       {
         "segment": "80-109m²",
-        "listings": 2499,
+        "listings": 2496,
         "confidence": "high",
         "median_sale_price": 124000,
         "median_sale_psm": 1350,
@@ -727,9 +727,9 @@
       },
       {
         "segment": "110m²+",
-        "listings": 1739,
+        "listings": 1730,
         "confidence": "high",
-        "median_sale_price": 208000,
+        "median_sale_price": 209000,
         "median_sale_psm": 1480,
         "median_rent": 800,
         "median_area_sqm": 134.0
@@ -757,12 +757,12 @@
         "types": [
           {
             "type": "APARTMENT",
-            "count": 8999,
+            "count": 8976,
             "pct": 85.4
           },
           {
             "type": "HOUSE",
-            "count": 653,
+            "count": 651,
             "pct": 6.2
           },
           {
@@ -793,7 +793,7 @@
         ],
         "top_type": "APARTMENT",
         "top_pct": 85.4,
-        "total": 10536
+        "total": 10511
       },
       "by_neighborhood": [
         {
@@ -801,14 +801,14 @@
           "slug": "matiqan",
           "top_property_type": "APARTMENT",
           "top_property_type_pct": 89.9,
-          "listings": 1859
+          "listings": 1855
         },
         {
           "neighborhood": "Veternik",
           "slug": "veternik",
           "top_property_type": "APARTMENT",
-          "top_property_type_pct": 83.9,
-          "listings": 931
+          "top_property_type_pct": 84.0,
+          "listings": 927
         },
         {
           "neighborhood": "Qendra",
@@ -821,36 +821,36 @@
           "neighborhood": "Arbëria",
           "slug": "arberia",
           "top_property_type": "APARTMENT",
-          "top_property_type_pct": 89.4,
-          "listings": 670
+          "top_property_type_pct": 89.3,
+          "listings": 666
         },
         {
           "neighborhood": "Bregu i Diellit",
           "slug": "bregu-i-diellit",
           "top_property_type": "APARTMENT",
           "top_property_type_pct": 93.9,
-          "listings": 641
+          "listings": 639
         },
         {
           "neighborhood": "Aktash / Muhaxherë",
           "slug": "aktash-muhaxhere",
           "top_property_type": "APARTMENT",
-          "top_property_type_pct": 92.2,
-          "listings": 615
+          "top_property_type_pct": 92.1,
+          "listings": 610
         },
         {
           "neighborhood": "Ulpiana",
           "slug": "ulpiana",
           "top_property_type": "APARTMENT",
-          "top_property_type_pct": 91.4,
-          "listings": 568
+          "top_property_type_pct": 91.3,
+          "listings": 566
         },
         {
           "neighborhood": "Emshir",
           "slug": "emshir",
           "top_property_type": "APARTMENT",
           "top_property_type_pct": 94.6,
-          "listings": 499
+          "listings": 498
         },
         {
           "neighborhood": "Dardania",
@@ -878,7 +878,7 @@
           "slug": "tophane",
           "top_property_type": "APARTMENT",
           "top_property_type_pct": 96.8,
-          "listings": 280
+          "listings": 279
         },
         {
           "neighborhood": "4 Lullat / Dodona",
@@ -906,7 +906,7 @@
     "common_segments": {
       "most_common_bedroom": {
         "segment": "2 BR",
-        "listings": 3235,
+        "listings": 3226,
         "confidence": "high",
         "median_sale_price": 120000,
         "median_sale_psm": 1360,
@@ -915,7 +915,7 @@
       },
       "most_common_size_band": {
         "segment": "80-109m²",
-        "listings": 2499,
+        "listings": 2496,
         "confidence": "high",
         "median_sale_price": 124000,
         "median_sale_psm": 1350,
@@ -933,7 +933,7 @@
       },
       "most_expensive_size_band": {
         "segment": "<50m²",
-        "listings": 528,
+        "listings": 527,
         "confidence": "high",
         "median_sale_price": 83000,
         "median_sale_psm": 2130,
@@ -945,14 +945,14 @@
       {
         "neighborhood": "Matiqan",
         "slug": "matiqan",
-        "listings": 1859,
+        "listings": 1855,
         "top_bedroom_segment": "2 BR",
         "top_size_band": "80-109m²"
       },
       {
         "neighborhood": "Veternik",
         "slug": "veternik",
-        "listings": 931,
+        "listings": 927,
         "top_bedroom_segment": "2 BR",
         "top_size_band": "110m²+"
       },
@@ -966,35 +966,35 @@
       {
         "neighborhood": "Arbëria",
         "slug": "arberia",
-        "listings": 670,
+        "listings": 666,
         "top_bedroom_segment": "2 BR",
         "top_size_band": "110m²+"
       },
       {
         "neighborhood": "Bregu i Diellit",
         "slug": "bregu-i-diellit",
-        "listings": 641,
+        "listings": 639,
         "top_bedroom_segment": "2 BR",
         "top_size_band": "50-79m²"
       },
       {
         "neighborhood": "Aktash / Muhaxherë",
         "slug": "aktash-muhaxhere",
-        "listings": 615,
+        "listings": 610,
         "top_bedroom_segment": "2 BR",
         "top_size_band": "80-109m²"
       },
       {
         "neighborhood": "Ulpiana",
         "slug": "ulpiana",
-        "listings": 568,
+        "listings": 566,
         "top_bedroom_segment": "1 BR",
         "top_size_band": "50-79m²"
       },
       {
         "neighborhood": "Emshir",
         "slug": "emshir",
-        "listings": 499,
+        "listings": 498,
         "top_bedroom_segment": "2 BR",
         "top_size_band": "80-109m²"
       },
@@ -1022,7 +1022,7 @@
       {
         "neighborhood": "Tophane",
         "slug": "tophane",
-        "listings": 280,
+        "listings": 279,
         "top_bedroom_segment": "1 BR",
         "top_size_band": "80-109m²"
       },
@@ -1064,20 +1064,10 @@
         "slug": "veternik",
         "gross_yield_pct": 4.56,
         "median_rent_eur": 500,
-        "median_sale_eur": 131000,
-        "sale_n": 590,
-        "rent_n": 332,
+        "median_sale_eur": 132000,
+        "sale_n": 589,
+        "rent_n": 330,
         "confidence": "high"
-      },
-      {
-        "neighborhood": "Tophane",
-        "slug": "tophane",
-        "gross_yield_pct": 4.0,
-        "median_rent_eur": 450,
-        "median_sale_eur": 135000,
-        "sale_n": 89,
-        "rent_n": 189,
-        "confidence": "medium"
       },
       {
         "neighborhood": "Ulpiana",
@@ -1085,9 +1075,19 @@
         "gross_yield_pct": 4.0,
         "median_rent_eur": 350,
         "median_sale_eur": 105000,
-        "sale_n": 177,
-        "rent_n": 386,
+        "sale_n": 176,
+        "rent_n": 385,
         "confidence": "high"
+      },
+      {
+        "neighborhood": "Tophane",
+        "slug": "tophane",
+        "gross_yield_pct": 3.93,
+        "median_rent_eur": 450,
+        "median_sale_eur": 138000,
+        "sale_n": 88,
+        "rent_n": 189,
+        "confidence": "medium"
       },
       {
         "neighborhood": "Emshir",
@@ -1095,7 +1095,7 @@
         "gross_yield_pct": 3.87,
         "median_rent_eur": 400,
         "median_sale_eur": 124000,
-        "sale_n": 226,
+        "sale_n": 225,
         "rent_n": 270,
         "confidence": "high"
       }
@@ -1128,7 +1128,7 @@
       {
         "neighborhood": "Veternik",
         "slug": "veternik",
-        "n": 575,
+        "n": 574,
         "confidence": "high",
         "median_price_per_sqm": 1240,
         "median_sale_eur": 132000
@@ -1136,9 +1136,9 @@
       {
         "neighborhood": "Matiqan",
         "slug": "matiqan",
-        "n": 754,
+        "n": 752,
         "confidence": "high",
-        "median_price_per_sqm": 1400,
+        "median_price_per_sqm": 1390,
         "median_sale_eur": 128000
       }
     ],
@@ -1154,7 +1154,7 @@
       {
         "neighborhood": "Ulpiana",
         "slug": "ulpiana",
-        "n": 152,
+        "n": 151,
         "confidence": "high",
         "median_price_per_sqm": 2390,
         "median_sale_eur": 105000
@@ -1374,6 +1374,6 @@
       ]
     }
   ],
-  "generated_at": "2026-09-01T12:07:15+00:00",
+  "generated_at": "2026-09-07T12:09:47+00:00",
   "data_revision": "173:2026-09-01T12:03:04.474795+00:00:2.0.0"
 }

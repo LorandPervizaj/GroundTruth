@@ -138,7 +138,11 @@ def _trusted_hosts() -> list[str]:
     from urllib.parse import urlparse
 
     hosts = ["localhost", "127.0.0.1"]
-    hostname = urlparse(get_settings().public_base_url).hostname
+    settings = get_settings()
+    if settings.is_development:
+        # Starlette TestClient default Host header.
+        hosts.append("testserver")
+    hostname = urlparse(settings.public_base_url).hostname
     if hostname and hostname not in hosts:
         hosts.append(hostname)
     return hosts
@@ -261,10 +265,17 @@ def _rate_limit(limit_key: str):
     return lambda: getattr(get_settings(), limit_key)
 
 
+def _set_public_cache(response: Response, *, max_age: int = 60) -> None:
+    """Allow short browser/CDN caching for stable aggregate GET payloads."""
+    response.headers["Cache-Control"] = f"public, max-age={max_age}"
+    response.headers["Vary"] = "Accept-Encoding"
+
+
 @app.get("/api/neighborhoods", response_model=list[NeighborhoodOption])
-def neighborhoods(session: DbSession) -> list[NeighborhoodOption]:
+def neighborhoods(response: Response, session: DbSession) -> list[NeighborhoodOption]:
     from groundtruth.services.lookup_cache import cache_is_loaded, get_cached_neighborhood_options
 
+    _set_public_cache(response, max_age=120)
     if cache_is_loaded():
         rows = get_cached_neighborhood_options()
         if rows:
@@ -279,7 +290,8 @@ def methodology_meta(session: DbSession) -> MethodologyPublic:
 
 
 @app.get("/api/meta", response_model=CorpusMeta)
-def corpus_meta(session: DbSession) -> CorpusMeta:
+def corpus_meta(response: Response, session: DbSession) -> CorpusMeta:
+    _set_public_cache(response, max_age=60)
     cached = corpus_meta_from_cache(session)
     if cached is not None:
         return cached
@@ -379,19 +391,21 @@ def coverage_analytics(
 
 
 @app.get("/api/markets", response_model=list[NeighborhoodMarketSummary])
-def markets(session: DbSession) -> list[NeighborhoodMarketSummary]:
+def markets(response: Response, session: DbSession) -> list[NeighborhoodMarketSummary]:
     from groundtruth.services.lookup_cache import cache_is_loaded, get_cached_markets
 
+    _set_public_cache(response, max_age=120)
     if cache_is_loaded():
         return get_cached_markets()
     return list_neighborhood_market_summaries(session)
 
 
 @app.get("/api/rent-yield")
-def rent_yield() -> dict:
+def rent_yield(response: Response) -> dict:
     """Neighborhood gross rent yield where rent and sale samples are sufficient."""
     from groundtruth.services.lookup_cache import cache_is_loaded
 
+    _set_public_cache(response, max_age=120)
     if cache_is_loaded():
         rows = build_rent_yield_from_lookup_cache()
         if rows:
@@ -514,12 +528,16 @@ def market_history(
 
 
 @app.get("/api/lookup/{entity_type}/{slug}")
-def market_lookup(session: DbSession, entity_type: EntityType, slug: str) -> dict:
+def market_lookup(
+    response: Response, session: DbSession, entity_type: EntityType, slug: str
+) -> dict:
     if entity_type not in ("neighborhood", "district", "street", "complex"):
         raise HTTPException(status_code=400, detail="Invalid entity type")
     result = resolve_market_lookup(session, entity_type, slug)
     if result is None:
         raise HTTPException(status_code=404, detail="Market segment not found")
+    response.headers["Cache-Control"] = "public, max-age=60"
+    response.headers["Vary"] = "Accept-Encoding"
     return result.model_dump()
 
 

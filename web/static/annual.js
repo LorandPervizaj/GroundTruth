@@ -38,6 +38,21 @@
   const fmtRent = (n) => (n == null ? "-" : `${fmt().euroRent(n)}${t("per_month_suffix")}`);
   const fmtPct = (n) => fmt().percent(n);
 
+  let chartLoader = null;
+  function ensureChartJs() {
+    if (window.Chart) return Promise.resolve();
+    if (chartLoader) return chartLoader;
+    chartLoader = new Promise((resolve, reject) => {
+      const script = document.createElement("script");
+      script.src = "/static/chart.umd.min.js?v=4.4.8";
+      script.async = true;
+      script.onload = () => resolve();
+      script.onerror = () => reject(new Error("Chart.js failed to load"));
+      document.head.appendChild(script);
+    });
+    return chartLoader;
+  }
+
   function renderDisclaimer() {
     const el = document.getElementById("annual-disclaimer");
     if (el) el.textContent = t("annual_disclaimer");
@@ -730,7 +745,7 @@
     });
   }
 
-  function renderAll({ animateCounts = false } = {}) {
+  async function renderAll({ animateCounts = false } = {}) {
     if (!reportData) return;
     renderPdfButtons();
     renderDisclaimer();
@@ -743,7 +758,12 @@
     renderNeighborhoodTable(reportData);
     renderMarketInsights(reportData);
     renderNeighborhoodRankings(reportData);
-    renderCharts(reportData);
+    try {
+      await ensureChartJs();
+      renderCharts(reportData);
+    } catch (error) {
+      console.error("annual_charts_unavailable", error);
+    }
     renderFormulas(reportData);
     renderMethodology(reportData);
     renderRefreshNote(reportData);
@@ -758,20 +778,33 @@
     const content = document.getElementById("annual-content");
     if (loading) loading.hidden = state !== "loading";
     if (error) error.hidden = state !== "error";
-    if (content) content.hidden = state !== "ready";
+    if (content) {
+      content.hidden = state !== "ready";
+      if (state === "ready") content.classList.add("content-fade-in");
+    }
   }
 
   async function loadReport({ silent = false } = {}) {
     if (!silent) setLoadState("loading");
     try {
-      const res = await fetch(`/api/reports/annual_data?_=${Date.now()}`, { cache: "no-store" });
-      if (!res.ok) throw new Error(`Annual report request failed: ${res.status}`);
-      const data = await res.json();
+      let data;
+      if (window.MetrikApiCache && !silent) {
+        data = await window.MetrikApiCache.getJson("/api/reports/annual_data", {
+          ttlMs: 45_000,
+          cacheKey: "annual_data",
+        });
+      } else {
+        const res = await fetch(`/api/reports/annual_data?_=${Date.now()}`, {
+          cache: silent ? "no-store" : "default",
+        });
+        if (!res.ok) throw new Error(`Annual report request failed: ${res.status}`);
+        data = await res.json();
+      }
       const revision = data.data_revision || data.generated_at;
       if (silent && revision && revision === lastDataRevision) return;
       lastDataRevision = revision;
       reportData = data;
-      renderAll({ animateCounts: !silent });
+      await renderAll({ animateCounts: !silent });
       setLoadState("ready");
     } catch (error) {
       console.error("annual_report_load_failed", error);
@@ -790,7 +823,7 @@
   document.addEventListener("metrik:langchange", () => {
     window.MetrikI18n.apply(document);
     renderPdfButtons();
-    renderAll({ animateCounts: true });
+    void renderAll({ animateCounts: true });
   });
 
   if (document.readyState === "loading") {
