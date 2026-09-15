@@ -164,3 +164,12 @@ Running stack uses `metrik-api:latest` (== `local-qa` digest `3125e827c3cb`) wit
 - Commit/push local working tree (no secrets)
 - Remote production promotion
 
+
+## Production promote close-out (2026-09-15)
+
+**Decision:** COMPLETE (see `docs/FINAL_PRODUCTION_VERIFICATION.md`).
+
+- Existing Azure Container App `ca-metrik-api` updated to `metrik-api@sha256:d65879dc1d09…` (commit `921510c`, revision `0000013`).
+- Rollback target: `metrik-api:9ac694d-webui` / `ca-metrik-api--0000011`.
+- Hotfix: analytics DuplicateSubmission no longer 500s repeat `/api/valuate`.
+- Operator gates (commit/push/promote) closed.
