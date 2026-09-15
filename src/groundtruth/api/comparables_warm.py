@@ -88,3 +88,25 @@ def start_background_comparables_warm() -> None:
         _state = ComparablesWarmState(started_at=time.perf_counter())
         _warm_thread = threading.Thread(target=_run_warm, name="comparables-warm", daemon=True)
         _warm_thread.start()
+
+
+def stop_background_comparables_warm(*, timeout: float = 5.0) -> None:
+    """Join the warm thread so process/test shutdown does not raise late exceptions.
+
+    Daemon threads can still emit `Exception in thread comparables-warm` after
+    pytest tears down the SQLAlchemy engine. Joining on lifespan shutdown (and in
+    tests) makes teardown deterministic. Safe to call when no thread is running.
+    """
+    global _warm_thread
+    thread: threading.Thread | None
+    with _lock:
+        thread = _warm_thread
+    if thread is None or not thread.is_alive():
+        return
+    thread.join(timeout=timeout)
+    if thread.is_alive():
+        logger.warning(
+            "comparables_warm_join_timeout",
+            timeout_sec=timeout,
+        )
+

@@ -100,3 +100,17 @@ def blocking_warm_corpus_cache() -> CorpusWarmState:
     """Synchronous warm (profiling / tests)."""
     _run_warm()
     return corpus_warm_state()
+
+
+def stop_background_corpus_warm(*, timeout: float = 5.0) -> None:
+    """Join the corpus warm thread for deterministic shutdown (tests + lifespan)."""
+    global _warm_thread
+    thread: threading.Thread | None
+    with _lock:
+        thread = _warm_thread
+    if thread is None or not thread.is_alive():
+        return
+    thread.join(timeout=timeout)
+    if thread.is_alive():
+        logger.warning("corpus_warm_join_timeout", timeout_sec=timeout)
+
