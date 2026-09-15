@@ -71,14 +71,45 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
             response.headers.setdefault("Content-Security-Policy-Report-Only", csp)
         else:
             response.headers.setdefault("Content-Security-Policy", csp)
+            # HSTS when TLS is terminated at Azure ingress / nginx (VPS).
+            if settings.public_base_url.lower().startswith("https://"):
+                response.headers.setdefault(
+                    "Strict-Transport-Security",
+                    "max-age=31536000; includeSubDomains",
+                )
         return response
 
 
 class MaxBodySizeMiddleware(BaseHTTPMiddleware):
     """Reject oversized POST/PUT/PATCH bodies before handlers run."""
 
+    _JSON_WRITE_PREFIXES = (
+        "/api/events",
+        "/api/feedback",
+        "/api/alerts",
+        "/api/contact",
+        "/api/public-report",
+        "/api/listing-submissions",
+    )
+
     async def dispatch(self, request: Request, call_next):
         if request.method in ("POST", "PUT", "PATCH"):
+            path = request.url.path
+            if any(path.startswith(prefix) for prefix in self._JSON_WRITE_PREFIXES):
+                content_type = (
+                    (request.headers.get("content-type") or "").split(";")[0].strip().lower()
+                )
+                if content_type != "application/json":
+                    log_api_abuse(
+                        reason="invalid_content_type",
+                        path=path,
+                        client_ip=get_remote_address(request),
+                        content_type=content_type or None,
+                    )
+                    return JSONResponse(
+                        status_code=415,
+                        content={"detail": "Content-Type must be application/json"},
+                    )
             raw = request.headers.get("content-length")
             if raw:
                 try:

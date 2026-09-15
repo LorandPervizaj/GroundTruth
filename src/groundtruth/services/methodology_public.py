@@ -6,8 +6,8 @@ from datetime import date
 
 from sqlalchemy.orm import Session
 
-from groundtruth.analytics.corpus_filters import ACTIVE_PARSER_VERSIONS
 from groundtruth.methodology.version import METHODOLOGY_CHANGELOG, METHODOLOGY_VERSION
+from groundtruth.portals.registry import public_parser_placeholders
 from groundtruth.schemas.methodology import MethodologyPublic
 from groundtruth.services.lookup import get_corpus_meta
 
@@ -24,7 +24,7 @@ def get_public_methodology(session: Session) -> MethodologyPublic:
         active_listings=meta.active_listings,
         raw_listings=meta.raw_listings,
         data_sources=[],
-        parser_versions=list(ACTIVE_PARSER_VERSIONS),
+        parser_versions=public_parser_placeholders(),
         dataset_version=meta.dataset_version,
         dataset_frozen_at=meta.dataset_frozen_at,
         dataset_fingerprint=meta.dataset_fingerprint,

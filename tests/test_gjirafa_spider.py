@@ -49,9 +49,7 @@ def test_house_rent_index_url() -> None:
 
 
 def test_commercial_and_office_index_urls() -> None:
-    commercial = build_gjirafa_index_url(
-        page=0, listing_type="sale", category="objekte-afariste"
-    )
+    commercial = build_gjirafa_index_url(page=0, listing_type="sale", category="objekte-afariste")
     office = build_gjirafa_index_url(page=0, listing_type="rent", category="zyre")
     assert "k=Objekte%20Afariste" in commercial
     assert "llshp=Shitet" in commercial

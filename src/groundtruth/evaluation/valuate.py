@@ -560,16 +560,18 @@ def assess_release_readiness(
     monotonic = report.get("confidence_monotonic")
     by_type = report.get("by_valuation_type") or {}
     rent_mdape = _mdape_from_report(report, "rent")
-    sale_mdape = _mdape_from_report(report, "sale") if "sale" in by_type or any(
-        row.get("valuation_type") == "sale" for row in (report.get("row_results") or [])
-    ) else None
+    sale_mdape = (
+        _mdape_from_report(report, "sale")
+        if "sale" in by_type
+        or any(row.get("valuation_type") == "sale" for row in (report.get("row_results") or []))
+        else None
+    )
     has_sale = sale_mdape is not None or "sale" in by_type
 
     if rent_mdape is None or float(rent_mdape) > max_rent_mdape_pct:
         failures.append(f"rent MdAPE must be <={max_rent_mdape_pct}% (actual: {rent_mdape})")
-    if has_sale:
-        if sale_mdape is None or float(sale_mdape) > max_sale_mdape_pct:
-            failures.append(f"sale MdAPE must be <={max_sale_mdape_pct}% (actual: {sale_mdape})")
+    if has_sale and (sale_mdape is None or float(sale_mdape) > max_sale_mdape_pct):
+        failures.append(f"sale MdAPE must be <={max_sale_mdape_pct}% (actual: {sale_mdape})")
     if evaluated < min_evaluated_rows:
         failures.append(f"evaluated rows must be >={min_evaluated_rows} (actual: {evaluated})")
     if coverage < min_coverage_pct:

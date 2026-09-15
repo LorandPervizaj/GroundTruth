@@ -145,7 +145,11 @@ def render_market_html(entity_type: str, slug: str, session: Session | None) -> 
         )
         html_out = html_out.replace("</head>", f"{script}</head>")
 
-    from groundtruth.services.web_shell import inject_site_footer, inject_sanitize_script, inject_static_asset_hashes
+    from groundtruth.services.web_shell import (
+        inject_sanitize_script,
+        inject_site_footer,
+        inject_static_asset_hashes,
+    )
 
     html_out = inject_static_asset_hashes(html_out)
     html_out = inject_sanitize_script(html_out)

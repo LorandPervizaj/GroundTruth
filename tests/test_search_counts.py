@@ -2,9 +2,7 @@
 
 from __future__ import annotations
 
-from unittest.mock import MagicMock, patch
-
-import pytest
+from unittest.mock import MagicMock
 
 from groundtruth.services.search import _MIN_SEARCH_LISTINGS, _listing_counts, search_market
 

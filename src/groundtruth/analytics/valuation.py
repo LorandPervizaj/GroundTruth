@@ -46,6 +46,22 @@ MODEL_VERSION = "1.1.0"
 AREA_WEIGHT_BANDWIDTH_M2 = 10.0
 PRODUCT_VERSION = "1.0"
 MIN_COMPARABLES = 30
+
+# ---------------------------------------------------------------------------
+# Bound layers (intentional, not accidental duplication)
+# 1) Ingestion validity: processing/validation.py (broad sanity for corpus entry)
+# 2) Active corpus: analytics/corpus_filters.py (parser/age/informal/invalid)
+# 3) Valuation comparability: constants below (stricter bands so extremes
+#    that passed ingestion do not distort comparable medians/estimates)
+# ---------------------------------------------------------------------------
+RENT_COMPARABLE_MIN_EUR = 80
+RENT_COMPARABLE_MAX_EUR = 2500
+RENT_COMPARABLE_MIN_AREA_SQM = 20
+RENT_COMPARABLE_MAX_AREA_SQM = 200
+SALE_COMPARABLE_MIN_EUR = 10_000
+SALE_COMPARABLE_MAX_EUR = 500_000
+SALE_COMPARABLE_MIN_AREA_SQM = 20
+SALE_COMPARABLE_MAX_AREA_SQM = 200
 INSUFFICIENT_EVIDENCE_MSG = (
     "There is currently insufficient evidence to produce a reliable estimate "
     "for this combination of neighborhood and apartment characteristics."
@@ -357,9 +373,9 @@ def rent_comparables_dataframe(
     rent = df[df["listing_type"] == "rent"].copy()
     rent = rent[
         rent["rent_price"].notna()
-        & rent["rent_price"].between(80, 2500)
+        & rent["rent_price"].between(RENT_COMPARABLE_MIN_EUR, RENT_COMPARABLE_MAX_EUR)
         & rent["area_sqm"].notna()
-        & rent["area_sqm"].between(20, 200)
+        & rent["area_sqm"].between(RENT_COMPARABLE_MIN_AREA_SQM, RENT_COMPARABLE_MAX_AREA_SQM)
         & rent["neighborhood_id"].notna()
     ]
     if rent.empty:
@@ -399,9 +415,9 @@ def sale_comparables_dataframe(
     sale = df[df["listing_type"] == "sale"].copy()
     sale = sale[
         sale["sale_price"].notna()
-        & sale["sale_price"].between(10000, 500000)
+        & sale["sale_price"].between(SALE_COMPARABLE_MIN_EUR, SALE_COMPARABLE_MAX_EUR)
         & sale["area_sqm"].notna()
-        & sale["area_sqm"].between(20, 200)
+        & sale["area_sqm"].between(SALE_COMPARABLE_MIN_AREA_SQM, SALE_COMPARABLE_MAX_AREA_SQM)
         & sale["neighborhood_id"].notna()
     ]
     if sale.empty:
@@ -774,3 +790,25 @@ def estimate_rent_valuation(session: Session, request: ValuationRequest) -> Valu
     if request.valuation_type != "rent":
         request = request.model_copy(update={"valuation_type": "rent"})
     return estimate_valuation(session, request)
+
+
+def compute_public_valuation(request: ValuationRequest) -> ValuationResult:
+    """Prefer in-memory comparables cache; fall back to a short-lived DB session."""
+    from groundtruth.database.session import get_session_factory
+
+    if comparables_cache_ready():
+        pair = copy_cached_comparables_pair()
+        if pair is not None:
+            rent_df, sale_df = pair
+            return estimate_valuation(
+                None,
+                request,
+                rent_comparables=rent_df,
+                sale_comparables=sale_df,
+            )
+
+    session = get_session_factory()()
+    try:
+        return estimate_valuation(session, request)
+    finally:
+        session.close()

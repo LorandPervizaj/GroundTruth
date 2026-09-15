@@ -84,17 +84,21 @@ def test_statistics_loads_self_hosted_chart_library(page: Page) -> None:
     assert "cdn.jsdelivr.net" not in page.content()
 
 
-def test_alerts_and_changelog_are_real_pages(page: Page) -> None:
+def test_alerts_page_is_real(page: Page) -> None:
     alerts = page.goto(f"{BASE_URL}/alerts")
     assert alerts is not None and alerts.status == 200
     assert page.locator("#alert-form").count() == 1
-    changelog = page.goto(f"{BASE_URL}/changelog")
-    assert changelog is not None and changelog.status == 200
-    page.wait_for_selector(".changelog-entry")
+
+
+def test_about_page_is_real(page: Page) -> None:
+    about = page.goto(f"{BASE_URL}/about")
+    assert about is not None and about.status == 200
+    page.wait_for_selector('[data-i18n="about_hero"]')
+    assert page.locator('a.nav-link[href="/about"]').count() >= 1
 
 
 def test_core_static_routes_have_canonical_metadata(page: Page) -> None:
-    for path in ("/valuate", "/find", "/compare", "/methodology"):
+    for path in ("/valuate", "/find", "/compare", "/methodology", "/about"):
         page.goto(f"{BASE_URL}{path}")
         assert page.locator('link[rel="canonical"]').get_attribute("href").endswith(path)
 

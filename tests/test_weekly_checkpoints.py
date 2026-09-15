@@ -29,6 +29,8 @@ def test_checkpoint_roundtrip(tmp_path, monkeypatch) -> None:
     assert loaded is not None
     assert loaded.sources["gjirafa-rent"].scrape_run_id == 42
     assert loaded.sources["gjirafa-rent"].crawl == "done"
+
+
 def test_checkpoint_resets_when_window_days_change(tmp_path, monkeypatch) -> None:
     monkeypatch.setattr("groundtruth.crawl.checkpoints.PROJECT_ROOT", tmp_path)
 
@@ -51,4 +53,3 @@ def test_checkpoint_resets_when_window_days_change(tmp_path, monkeypatch) -> Non
     assert loaded.sources["gjirafa-rent"].scrape_run_id is None
     assert loaded.sources["merrjep-rent"].spider == "merrjep"
     assert loaded.analytics == "pending"
-

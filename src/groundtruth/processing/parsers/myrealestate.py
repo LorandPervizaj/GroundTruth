@@ -101,8 +101,9 @@ def _normalize_price_token(raw: str) -> float | None:
     if not cleaned:
         return None
     # European thousands: 155.000 or 155,000 → 155000; decimals keep last separator.
-    if cleaned.count(".") > 1 or (cleaned.count(".") == 1 and cleaned.count(",") == 0 and
-                                  len(cleaned.split(".")[-1]) == 3):
+    if cleaned.count(".") > 1 or (
+        cleaned.count(".") == 1 and cleaned.count(",") == 0 and len(cleaned.split(".")[-1]) == 3
+    ):
         cleaned = cleaned.replace(".", "")
     cleaned = cleaned.replace(",", "")
     try:

@@ -20,6 +20,7 @@ from groundtruth.analytics.corpus_filters import (
     ACTIVE_CORPUS_WHERE,
     EFFECTIVE_LISTING_DATE_SQL,
     active_corpus_sql_params,
+    source_display_name,
 )
 from groundtruth.analytics.display_rounding import (
     round_area,
@@ -772,6 +773,8 @@ def _recent_listings(
         public_url = _safe_public_listing_url(row["original_url"])
         if public_url is None:
             continue
+        # Do not expose third-party brand domains in the public UI/API.
+        public_url = ""
 
         key = (str(row["source_website"]), str(row["source_listing_id"]))
         life = (lifecycle_map or {}).get(key, {})
@@ -785,7 +788,7 @@ def _recent_listings(
         obs_count = life.get("observation_count")
         parsed.append(
             RecentListing(
-                source=row["source_website"],
+                source=source_display_name(str(row["source_website"])),
                 source_listing_id=row["source_listing_id"],
                 url=public_url,
                 listing_type=str(row["listing_type"]).lower(),

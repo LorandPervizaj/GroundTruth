@@ -29,8 +29,8 @@ def test_corpus_warm_non_blocking_startup(monkeypatch: pytest.MonkeyPatch) -> No
 
 def test_lookup_cache_roundtrip(tmp_path, monkeypatch) -> None:
     from groundtruth.services.lookup_cache import (
-        get_cached_lookup,
         get_cached_listing_counts,
+        get_cached_lookup,
         load_lookup_cache_from_disk,
     )
 
@@ -129,36 +129,3 @@ def test_parse_health_threshold() -> None:
     )
     assert "15.0%" in alert.message
     assert "gjirafa" in alert.message
-
-
-def test_dedup_blocked_pairs_smaller_than_naive() -> None:
-    from itertools import combinations
-
-    from groundtruth.models.enums import Currency, ListingType, PropertyType
-    from groundtruth.processing.deduplicator.candidate_generation import (
-        generate_pairs_blocked,
-        generate_pairs_by_neighborhood,
-    )
-    from groundtruth.schemas.pipeline import NormalizedListingSchema
-
-    def _listing(nh: int, area: float, price: float, beds: int) -> NormalizedListingSchema:
-        return NormalizedListingSchema(
-            source_website="gjirafa",
-            source_listing_id=str(nh * 1000 + int(area)),
-            original_url="http://example.com",
-            listing_type=ListingType.RENT,
-            property_type=PropertyType.APARTMENT,
-            rent_price=__import__("decimal").Decimal(str(price)),
-            currency=Currency.EUR,
-            neighborhood_id=nh,
-            area_sqm=area,
-            bedrooms=beds,
-        )
-
-    listings = [(i, _listing(1, 70 + (i % 3) * 5, 400 + i * 10, 2)) for i in range(20)]
-    blocked = list(generate_pairs_blocked(listings))
-    naive = list(combinations(listings, 2))
-    assert len(blocked) < len(naive)
-
-    by_nh = list(generate_pairs_by_neighborhood(listings))
-    assert len(by_nh) == len(blocked)

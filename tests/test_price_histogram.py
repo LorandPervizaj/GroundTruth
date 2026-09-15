@@ -1,4 +1,4 @@
-"""Tests for €/m² price distribution histograms."""
+"""Tests for market price distribution histograms."""
 
 import pandas as pd
 
@@ -33,6 +33,22 @@ class TestPriceHistogram:
         assert out["listing_type"] == "sale"
         assert len(out["bins"]) >= 3
         assert out["confidence"] in ("low", "medium", "high")
+
+    def test_rent_bins_use_monthly_rent(self) -> None:
+        segment = pd.DataFrame(
+            {
+                "listing_type": ["rent"] * 12,
+                "price_per_sqm": [5.0] * 12,
+                "rent_price": [250, 300, 320, 350, 380, 400, 420, 450, 480, 500, 550, 600],
+                "area_sqm": [80.0] * 12,
+            }
+        )
+        out = segment_price_distribution(segment, "rent")
+        assert out["n"] == 12
+        assert out["listing_type"] == "rent"
+        assert len(out["bins"]) >= 3
+        # Monthly rent bands should be hundreds of euros, not single-digit €/m².
+        assert out["bins"][0]["bin_start"] >= 100
 
     def test_insufficient_sample(self) -> None:
         segment = pd.DataFrame(

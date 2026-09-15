@@ -1,15 +1,17 @@
-"""Duplicate detection: candidate generation, similarity, scoring, merge."""
+"""Duplicate detection: scoring and similarity (live path)."""
 
-from groundtruth.processing.deduplicator.candidate_generation import (
-    generate_pairs_by_neighborhood,
-    generate_pairs_by_price_band,
-)
-from groundtruth.processing.deduplicator.merge import DuplicateMerger
 from groundtruth.processing.deduplicator.scoring import DuplicateScorer
+from groundtruth.processing.deduplicator.similarity import (
+    exact_similarity,
+    id_similarity,
+    numeric_similarity,
+    text_similarity,
+)
 
 __all__ = [
-    "DuplicateMerger",
     "DuplicateScorer",
-    "generate_pairs_by_neighborhood",
-    "generate_pairs_by_price_band",
+    "exact_similarity",
+    "id_similarity",
+    "numeric_similarity",
+    "text_similarity",
 ]

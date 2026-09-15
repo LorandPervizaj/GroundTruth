@@ -125,10 +125,17 @@ def list_reports() -> ReportListResponse:
 
 @router.get("/files/{filename}")
 def get_report_file(filename: str):
-    if not _SAFE_FILENAME.match(filename):
+    # Reject path separators / traversal even if the ASGI stack partially decodes them.
+    if (
+        "/" in filename
+        or "\\" in filename
+        or ".." in filename
+        or not _SAFE_FILENAME.match(filename)
+    ):
         raise HTTPException(status_code=400, detail="Invalid filename")
-    path = _reports_dir() / filename
-    if not path.exists() or not path.is_file():
+    path = (_reports_dir() / filename).resolve()
+    root = _reports_dir().resolve()
+    if not str(path).startswith(str(root)) or not path.is_file():
         raise HTTPException(status_code=404, detail="Report not found")
     return PlainTextResponse(
         path.read_text(encoding="utf-8"),

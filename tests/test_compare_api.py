@@ -34,10 +34,8 @@ class TestCompareAPI:
             "/api/compare",
             params={"neighborhoods": "ulpiana,arberia"},
         )
-        if res.status_code == 404:
-            return
-        if res.status_code == 400:
-            return
+        if res.status_code in (400, 404):
+            pytest.skip("compare fixtures not seeded in this environment")
         assert res.status_code == 200
         data = res.json()
         assert len(data["neighborhoods"]) == 2

@@ -48,18 +48,37 @@ def inject_static_asset_hashes(html: str) -> str:
 
 
 def inject_accessibility_shell(html: str) -> str:
-    """Add a keyboard skip link and a stable main-content target."""
+    """Add a keyboard skip link and ensure main#main-content exists."""
     if 'id="main-content"' not in html:
         replacements = (
-            ("<main", '<main id="main-content"'),
-            ('<div class="valuate-workspace"', '<div id="main-content" class="valuate-workspace"'),
-            ('<div class="compare-workspace"', '<div id="main-content" class="compare-workspace"'),
-            ("<header", '<header id="main-content"'),
+            ("<main>", '<main id="main-content">'),
+            ('<main class="market-main">', '<main id="main-content" class="market-main">'),
+            ("<main ", '<main id="main-content" '),
+            (
+                '<div class="valuate-workspace">',
+                '<main id="main-content" class="valuate-workspace">',
+            ),
+            (
+                '<div class="compare-workspace">',
+                '<main id="main-content" class="compare-workspace">',
+            ),
         )
         for needle, replacement in replacements:
             if needle in html:
                 html = html.replace(needle, replacement, 1)
                 break
+        # If we promoted a workspace <div> to <main>, close before the footer.
+        footer = '<div id="site-footer"></div>'
+        for cls in ("valuate-workspace", "compare-workspace"):
+            marker = f'<main id="main-content" class="{cls}">'
+            if marker in html and footer in html:
+                prefix, sep, suffix = html.partition(footer)
+                if sep and prefix.rfind(marker) > prefix.rfind("</main>"):
+                    # Close the last </div> in prefix as </main>
+                    idx = prefix.rfind("</div>")
+                    if idx != -1:
+                        prefix = prefix[:idx] + "</main>" + prefix[idx + len("</div>") :]
+                        html = prefix + sep + suffix
 
     if 'class="skip-link"' not in html:
         body_match = re.search(r"<body[^>]*>", html)
@@ -67,6 +86,7 @@ def inject_accessibility_shell(html: str) -> str:
             skip_link = '<a class="skip-link" href="#main-content" data-i18n="skip_to_content"></a>'
             html = html[: body_match.end()] + skip_link + html[body_match.end() :]
     return html
+
 
 
 def inject_sanitize_script(html: str) -> str:

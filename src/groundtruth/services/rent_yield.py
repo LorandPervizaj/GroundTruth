@@ -11,6 +11,9 @@ from groundtruth.analytics.corpus import active_corpus_dataframe
 from groundtruth.analytics.market_table import build_neighborhood_market_table
 from groundtruth.analytics.valuation import MIN_COMPARABLES
 from groundtruth.config import PROJECT_ROOT, get_settings
+from groundtruth.logging import get_logger
+
+logger = get_logger(__name__)
 
 RENT_YIELD_CACHE = PROJECT_ROOT / "data" / "api" / "rent_yield.json"
 
@@ -37,9 +40,13 @@ def load_rent_yield_cache(path: Path | None = None) -> list[dict]:
 
 def write_rent_yield_cache(rows: list[dict], path: Path | None = None) -> None:
     cache_path = path or RENT_YIELD_CACHE
-    cache_path.parent.mkdir(parents=True, exist_ok=True)
-    payload = {"rows": rows}
-    cache_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+    try:
+        cache_path.parent.mkdir(parents=True, exist_ok=True)
+        payload = {"rows": rows}
+        cache_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+    except OSError as exc:
+        # Production mounts data/api read-only; still serve in-memory rows.
+        logger.warning("rent_yield_cache_write_skipped", path=str(cache_path), error=str(exc))
 
 
 def build_rent_yield_from_lookup_cache() -> list[dict]:

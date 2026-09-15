@@ -1,10 +1,21 @@
 """Contact/report/listing public submission endpoints."""
 
+import uuid
+
+import pytest
 from fastapi.testclient import TestClient
 
 from groundtruth.api.app import app
+from groundtruth.services.product_submissions import clear_submission_dedupe_cache
 
 client = TestClient(app)
+
+
+@pytest.fixture(autouse=True)
+def _clear_dedupe():
+    clear_submission_dedupe_cache()
+    yield
+    clear_submission_dedupe_cache()
 
 
 def test_contact_submission() -> None:
@@ -14,7 +25,7 @@ def test_contact_submission() -> None:
             "name": "Test User",
             "email": "test@example.com",
             "topic": "general",
-            "message": "I have a question about Metrik data.",
+            "message": f"I have a question about Metrik data. {uuid.uuid4()}",
         },
     )
     assert res.status_code == 200
@@ -27,7 +38,7 @@ def test_public_report_submission() -> None:
         json={
             "issue": "bug",
             "page_url": "http://example.com/valuate",
-            "message": "The valuation page did not respond.",
+            "message": f"The valuation page did not respond. {uuid.uuid4()}",
         },
     )
     assert res.status_code == 200
@@ -52,7 +63,7 @@ def test_listing_submission() -> None:
         json={
             "listing_type": "rent",
             "property_type": "apartment",
-            "listing_url": "https://example.com/listing/1",
+            "listing_url": f"https://example.com/listing/{uuid.uuid4()}",
             "neighborhood": "Ulpiana",
             "price_eur": 500,
             "area_sqm": 70,

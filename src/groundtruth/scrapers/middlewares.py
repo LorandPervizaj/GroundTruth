@@ -87,11 +87,7 @@ class AdaptiveRetryMiddleware(RetryMiddleware):
             return response
 
         if response.status in {403, 429}:
-            code = (
-                ScrapeErrorCode.HTTP_403
-                if response.status == 403
-                else ScrapeErrorCode.HTTP_429
-            )
+            code = ScrapeErrorCode.HTTP_403 if response.status == 403 else ScrapeErrorCode.HTTP_429
             record = getattr(spider, "record_error", None)
             if callable(record):
                 record(code, count_as_error=False)

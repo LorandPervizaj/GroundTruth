@@ -5,6 +5,7 @@ from fastapi.testclient import TestClient
 
 from groundtruth.api.app import app
 from groundtruth.api.security import limiter
+from groundtruth.services.product_submissions import clear_submission_dedupe_cache
 
 client = TestClient(app)
 
@@ -66,6 +67,14 @@ class TestInputCaps:
         )
         assert res.status_code in (413, 422)
 
+    def test_rejects_non_json_content_type(self) -> None:
+        res = client.post(
+            "/api/contact",
+            content=b"email=a@b.com&message=hi",
+            headers={"Content-Type": "application/x-www-form-urlencoded"},
+        )
+        assert res.status_code == 415
+
 
 @pytest.mark.rate_limit
 class TestRateLimits:
@@ -76,20 +85,30 @@ class TestRateLimits:
         from groundtruth.config import get_settings
 
         get_settings.cache_clear()
+        clear_submission_dedupe_cache()
         limiter.reset()
         yield
         limiter.reset()
+        clear_submission_dedupe_cache()
+        get_settings.cache_clear()
 
     def test_feedback_rate_limit(self) -> None:
-        for _ in range(3):
-            res = client.post("/api/feedback", json=_FEEDBACK_PAYLOAD)
+        for i in range(3):
+            res = client.post(
+                "/api/feedback",
+                json={**_FEEDBACK_PAYLOAD, "source_listing_id": f"sec-test-{i}"},
+            )
             assert res.status_code == 200
-        res = client.post("/api/feedback", json=_FEEDBACK_PAYLOAD)
+        res = client.post(
+            "/api/feedback",
+            json={**_FEEDBACK_PAYLOAD, "source_listing_id": "sec-test-final"},
+        )
         assert res.status_code == 429
 
     def test_alerts_rate_limit(self) -> None:
+        # Signup is disabled; endpoint still rate-limits before responding unavailable.
         for _ in range(2):
             res = client.post("/api/alerts", json=_ALERT_PAYLOAD)
-            assert res.status_code == 200
+            assert res.status_code == 503
         res = client.post("/api/alerts", json=_ALERT_PAYLOAD)
         assert res.status_code == 429

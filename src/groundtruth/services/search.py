@@ -291,3 +291,14 @@ def search_market(session: Session, query: str, limit: int = 10) -> SearchRespon
             break
 
     return SearchResponse(query=q, results=results[:limit])
+
+
+def run_public_search(q: str) -> SearchResponse:
+    """Session-scoped search used by the public API route."""
+    from groundtruth.database.session import get_session_factory
+
+    session = get_session_factory()()
+    try:
+        return search_market(session, q)
+    finally:
+        session.close()

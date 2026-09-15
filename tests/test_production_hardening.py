@@ -106,6 +106,57 @@ def test_production_rejects_api_docs_enabled(monkeypatch: pytest.MonkeyPatch) ->
         validate_production_settings(get_settings())
 
 
+def test_production_rejects_disabled_rate_limits(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("APP_ENV", "production")
+    monkeypatch.setenv(
+        "DATABASE_URL",
+        "postgresql+psycopg://app:secure-secret-here@localhost:5432/groundtruth",
+    )
+    monkeypatch.setenv("PRODUCT_WRITE_BACKEND", "database")
+    monkeypatch.setenv("HEALTH_CHECK_TOKEN", "a-secure-random-token-value-ok")
+    monkeypatch.setenv("FORWARDED_ALLOW_IPS", "172.16.0.0/12")
+    monkeypatch.setenv("API_REQUIRE_LOOKUP_CACHE", "true")
+    monkeypatch.setenv("API_RATE_LIMIT_ENABLED", "false")
+    from groundtruth.config import get_settings
+    from groundtruth.startup import validate_production_settings
+
+    get_settings.cache_clear()
+    with pytest.raises(SystemExit, match="API_RATE_LIMIT_ENABLED"):
+        validate_production_settings(get_settings())
+    get_settings.cache_clear()
+
+
+def test_production_rejects_missing_sentry_when_required(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("APP_ENV", "production")
+    monkeypatch.setenv(
+        "DATABASE_URL",
+        "postgresql+psycopg://app:secure-secret-here@localhost:5432/groundtruth",
+    )
+    monkeypatch.setenv("PRODUCT_WRITE_BACKEND", "database")
+    monkeypatch.setenv("HEALTH_CHECK_TOKEN", "a-secure-random-token-value-ok")
+    monkeypatch.setenv("FORWARDED_ALLOW_IPS", "172.16.0.0/12")
+    monkeypatch.setenv("REQUIRE_SENTRY_DSN", "true")
+    monkeypatch.delenv("SENTRY_DSN", raising=False)
+    from groundtruth.config import get_settings
+    from groundtruth.startup import validate_production_settings
+
+    get_settings.cache_clear()
+    with pytest.raises(SystemExit, match="SENTRY_DSN"):
+        validate_production_settings(get_settings())
+    get_settings.cache_clear()
+
+
+def test_liveness_health_is_public() -> None:
+    from groundtruth.api.app import app
+
+    with TestClient(app) as client:
+        res = client.get("/api/health")
+        assert res.status_code == 200
+        assert res.json().get("status") == "ok"
+
+
 def test_perf_health_locked_in_production_without_token(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("APP_ENV", "production")
     monkeypatch.setenv(

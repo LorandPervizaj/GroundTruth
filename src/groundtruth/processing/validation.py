@@ -7,6 +7,9 @@ from groundtruth.processing.extractors.property_type import HOUSE_MIN_AREA_SQM
 from groundtruth.schemas.etl import ValidationIssue, ValidationResult
 from groundtruth.schemas.pipeline import NormalizedListingSchema
 
+# Ingestion validity bounds (ListingValidator).
+# These are deliberately wider than valuation comparability filters in
+# analytics/valuation.py (RENT_COMPARABLE_* / SALE_COMPARABLE_*).
 # Area
 MIN_AREA_SQM = 15.0
 MAX_AREA_SQM = 1000.0

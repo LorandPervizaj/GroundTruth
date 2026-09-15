@@ -47,6 +47,24 @@ def validate_production_settings(settings: Settings) -> None:
     if settings.api_docs_enabled:
         errors.append("API_DOCS_ENABLED must be false in production")
 
+    if not settings.api_require_lookup_cache:
+        errors.append(
+            "API_REQUIRE_LOOKUP_CACHE must be true in production "
+            "(public Metrik must boot from verified release artifacts)"
+        )
+
+    if not settings.api_rate_limit_enabled:
+        errors.append(
+            "API_RATE_LIMIT_ENABLED must be true in production "
+            "(disabling rate limits exposes public write endpoints to abuse)"
+        )
+
+    if settings.require_sentry_dsn and not (settings.sentry_dsn or "").strip():
+        errors.append(
+            "SENTRY_DSN is required when REQUIRE_SENTRY_DSN=true "
+            "(set REQUIRE_SENTRY_DSN=false only for break-glass internal deploys)"
+        )
+
     if errors:
         for msg in errors:
             logger.critical("production_config_error: %s", msg)

@@ -8,7 +8,6 @@ import typer
 from rich.console import Console
 from rich.table import Table
 
-from groundtruth.config import PROJECT_ROOT
 from groundtruth.schemas.facebook import FacebookGroupSample
 
 console = Console()

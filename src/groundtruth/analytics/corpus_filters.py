@@ -7,8 +7,10 @@ from typing import Any
 
 from dateutil.relativedelta import relativedelta
 
+from groundtruth.portals.registry import source_display_names
 from groundtruth.versions import (
     ACTIVE_PARSER_VERSIONS,
+    FACEBOOK_PARSER_VERSION,  # noqa: F401 - re-exported for informal-tier tests
     PARSER_VERSIONS,
 )
 
@@ -21,17 +23,13 @@ VISION_PARSER_VERSION = PARSER_VERSIONS["vision"]
 TOPIA_PARSER_VERSION = PARSER_VERSIONS["topia"]
 MYREALESTATE_PARSER_VERSION = PARSER_VERSIONS["myrealestate"]
 
-SOURCE_DISPLAY_NAMES: dict[str, str] = {
-    "gjirafa": "Gjirafa",
-    "merrjep": "MerrJep",
-    "pro-rks": "Pro Real Estate",
-    "vision": "Vision Real Estate",
-    "topia": "Topia",
-    "myrealestate": "MY Real Estate",
-}
+# Compatibility re-export — authoritative definition is portals.registry.
+SOURCE_DISPLAY_NAMES: dict[str, str] = source_display_names()
 
 # Part B2 — informal Facebook tier; never blended into public medians.
 INFORMAL_SOURCE_WEBSITES: frozenset[str] = frozenset({"facebook", "facebook-groups"})
+
+# FACEBOOK_PARSER_VERSION re-exported from groundtruth.versions for informal-tier tests.
 
 
 def is_informal_source(source_website: str) -> bool:
@@ -39,20 +37,27 @@ def is_informal_source(source_website: str) -> bool:
 
 
 def source_display_name(source_website: str) -> str:
-    return SOURCE_DISPLAY_NAMES.get(source_website, source_website)
+    """Public placeholder label for a source key (never a commercial brand)."""
+    return SOURCE_DISPLAY_NAMES.get(source_website, "Portal")
 
 
 def active_sources_phrase(sources: list[dict[str, object]] | None = None) -> str:
-    """Human-readable source list for narratives (e.g. 'Gjirafa + MerrJep + Pro Real Estate')."""
-    if not sources:
-        return " + ".join(SOURCE_DISPLAY_NAMES.values())
-    names: list[str] = []
-    for row in sources:
-        key = str(row.get("source_website", ""))
-        label = source_display_name(key)
-        if label not in names:
-            names.append(label)
-    return " + ".join(names) if names else " + ".join(SOURCE_DISPLAY_NAMES.values())
+    """Generic public phrase — do not enumerate commercial portal brands."""
+    if sources:
+        keys = {
+            str(row.get("source_website", "")).strip()
+            for row in sources
+            if str(row.get("source_website", "")).strip()
+            and not is_informal_source(str(row.get("source_website", "")))
+        }
+        n = len(keys) if keys else len(SOURCE_DISPLAY_NAMES)
+    else:
+        n = len(SOURCE_DISPLAY_NAMES)
+    if n <= 0:
+        return "public listing portals"
+    if n == 1:
+        return "1 public listing portal"
+    return f"{n} public listing portals"
 
 
 # Pro-RKS API omits publish date — fall back to scrape date for corpus windowing.

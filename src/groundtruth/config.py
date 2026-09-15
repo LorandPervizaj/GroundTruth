@@ -25,6 +25,8 @@ class Settings(BaseSettings):
     log_level: str = "INFO"
     log_format: Literal["console", "json"] = "console"
     public_base_url: str = "http://127.0.0.1:8000"
+    # Comma-separated extra Host values for TrustedHostMiddleware (e.g. Azure FQDNs).
+    trusted_hosts: str = ""
     api_docs_enabled: bool = False
 
     # Database
@@ -63,6 +65,7 @@ class Settings(BaseSettings):
     # Observability
     sentry_dsn: str | None = None
     sentry_traces_sample_rate: float = 0.1
+    require_sentry_dsn: bool = False
     health_check_token: str | None = None
     forwarded_allow_ips: str = "127.0.0.1"
 
@@ -73,15 +76,19 @@ class Settings(BaseSettings):
     api_rate_limit_events: str = "60/hour"
     api_rate_limit_valuate: str = "30/hour"
     api_rate_limit_lang: str = "30/hour"
-    api_rate_limit_contact: str = "10/hour"
+    api_rate_limit_contact: str = "5/hour"
     api_rate_limit_report_refresh: str = "2/hour"
-    api_max_body_bytes: int = 32_768
+    api_max_body_bytes: int = 16_384
     api_search_max_length: int = 80
     api_search_timeout_sec: float = 5.0
     api_valuate_timeout_sec: float = 15.0
     valuation_public_enabled: bool = False
     api_compare_max_neighborhoods: int = 3
     api_require_lookup_cache: bool = True
+    # Email alert delivery is not implemented — keep signup closed until it is.
+    alerts_signup_enabled: bool = False
+    product_submission_dedupe_seconds: int = 300
+    run_migrations_on_start: bool = True
 
     # Parse health alerting (mid-week portal breakage)
     parse_failure_alert_threshold: float = 0.10

@@ -46,15 +46,18 @@ def test_get_report_file_whitelist(client, tmp_path, monkeypatch):
     assert bad.status_code == 400
 
     traversal = client.get("/api/reports/files/..%2Fetc%2Fpasswd.md")
-    assert traversal.status_code == 400
+    # 400 if the handler runs; 404 if the ASGI stack rejects the path segment.
+    assert traversal.status_code in (400, 404)
 
 
 def test_statistics_and_legacy_redirects(client):
     assert client.get("/statistics").status_code == 200
     assert client.get("/reports").status_code == 200
     assert client.get("/annual").status_code == 200
-    assert client.get("/about", follow_redirects=False).status_code == 308
-    assert client.get("/changelog", follow_redirects=False).status_code == 200
+    about = client.get("/about", follow_redirects=False)
+    assert about.status_code == 200
+    assert 'data-page-title="about_title"' in about.text
+    assert client.get("/changelog", follow_redirects=False).status_code == 404
     assert client.get("/alerts", follow_redirects=False).status_code == 200
     assert client.get("/find").status_code == 200
 

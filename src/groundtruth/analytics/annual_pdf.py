@@ -502,8 +502,15 @@ def build_annual_pdf_bytes(
         src_lines = [
             f"{source_display_name(str(row.get('source_website', '')))}: {_fmt_num(row.get('listings'))}"
             for row in sources
+            if str(row.get("source_website", "")).strip()
         ]
-        story.append(Paragraph(f"{_t('sources', lang)}: " + " · ".join(src_lines), styles["body"]))
+        if src_lines:
+            story.append(
+                Paragraph(
+                    f"{_t('sources', lang)}: " + " · ".join(src_lines),
+                    styles["body"],
+                )
+            )
     story.append(PageBreak())
 
     # —— Charts: activity on its own page ——
@@ -676,9 +683,11 @@ def build_annual_pdf_bytes(
 
     tech_parts: list[str] = []
     plain_tech = (payload.get("methodology_plain") or {}).get("technical") or {}
-    if plain_tech.get("parsers") or methodology.get("parser_versions"):
-        parsers = plain_tech.get("parsers") or ", ".join(methodology.get("parser_versions") or [])
-        tech_parts.append(f"Parsers: {parsers}")
+    if plain_tech.get("parsers"):
+        tech_parts.append(f"Parsers: {plain_tech['parsers']}")
+    elif methodology.get("parser_versions"):
+        n = len(methodology["parser_versions"])
+        tech_parts.append(f"Parsers: {n} active parser version(s)")
     if plain_tech.get("gazetteer") or methodology.get("gazetteer_version"):
         gaz = plain_tech.get("gazetteer") or methodology.get("gazetteer_version")
         tech_parts.append(f"Gazetteer version: {gaz}")

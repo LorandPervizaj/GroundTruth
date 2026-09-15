@@ -12,10 +12,12 @@ import pandas as pd
 from groundtruth.analytics.listing_fingerprint import coarse_block_key
 from groundtruth.config import get_settings
 from groundtruth.models.enums import Currency, ListingType, PropertyType
+from groundtruth.portals.registry import source_priority_order
 from groundtruth.processing.deduplicator.scoring import DuplicateScorer
 from groundtruth.schemas.pipeline import NormalizedListingSchema
 
-SOURCE_PRIORITY = ("gjirafa", "merrjep", "pro-rks", "vision", "topia", "myrealestate")
+# Compatibility re-export — authoritative order is portals.registry.
+SOURCE_PRIORITY = source_priority_order()
 
 
 @dataclass

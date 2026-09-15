@@ -11,9 +11,9 @@ from sqlalchemy import text
 from sqlalchemy.orm import Session
 
 from groundtruth.analytics.annual_report import build_annual_report_payload
-from groundtruth.analytics.corpus_filters import ACTIVE_PARSER_VERSIONS
 from groundtruth.config import PROJECT_ROOT
 from groundtruth.gazetteers.version import compute_gazetteer_version
+from groundtruth.portals.registry import public_parser_placeholders
 
 DEFAULT_ANNUAL_REPORT_PATH = PROJECT_ROOT / "data" / "api" / "annual_report.json"
 
@@ -62,7 +62,8 @@ def finalize_annual_report_payload(
     gazetteer_version = compute_gazetteer_version()
     methodology = dict(payload.get("methodology") or {})
     methodology["gazetteer_version"] = gazetteer_version
-    methodology["parser_versions"] = list(ACTIVE_PARSER_VERSIONS)
+    methodology["parser_versions"] = public_parser_placeholders()
+    methodology["sources"] = public_parser_placeholders()
     return {
         **payload,
         "generated_at": datetime.now(UTC).replace(microsecond=0).isoformat(),

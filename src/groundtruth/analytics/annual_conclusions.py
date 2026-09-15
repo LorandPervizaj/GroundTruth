@@ -8,7 +8,7 @@ from typing import Any, Literal
 
 import pandas as pd
 
-from groundtruth.analytics.corpus_filters import active_sources_phrase, source_display_name
+from groundtruth.analytics.corpus_filters import active_sources_phrase
 
 Trend = Literal["up", "down", "stable"]
 
@@ -386,14 +386,23 @@ def build_methodology_plain(
     generated_date: str | None = None,
 ) -> dict[str, Any]:
     """User-facing methodology — technical ids in a separate block."""
-    source_parts = []
-    for row in sources:
-        name = source_display_name(str(row.get("source_website", "")))
-        count = int(row.get("listings", 0))
-        source_parts.append(f"{name} ({count:,})")
-
-    sources_line_sq = ", ".join(source_parts) if source_parts else "portalet kryesore"
-    sources_line_en = sources_line_sq
+    total_listings = sum(int(row.get("listings", 0) or 0) for row in sources)
+    n_sources = len(
+        {
+            str(row.get("source_website", "")).strip()
+            for row in sources
+            if str(row.get("source_website", "")).strip()
+        }
+    )
+    if n_sources <= 0:
+        sources_line_sq = "portale publike të listimeve"
+        sources_line_en = "public listing portals"
+    elif n_sources == 1:
+        sources_line_sq = f"1 portal publik listimesh ({total_listings:,} listime)"
+        sources_line_en = f"1 public listing portal ({total_listings:,} listings)"
+    else:
+        sources_line_sq = f"{n_sources} portale publike listimesh ({total_listings:,} listime)"
+        sources_line_en = f"{n_sources} public listing portals ({total_listings:,} listings)"
 
     plain_sq = (
         f"Ky raport përmbledh listime aktive të banimit në Prishtinë nga {sources_line_sq}, "
@@ -409,8 +418,9 @@ def build_methodology_plain(
     )
 
     technical: dict[str, str] = {}
+    # Do not expose parser version strings that embed portal brand tokens.
     if parser_versions:
-        technical["parsers"] = ", ".join(parser_versions)
+        technical["parsers"] = f"{len(parser_versions)} active parser version(s)"
     if gazetteer_version:
         technical["gazetteer"] = gazetteer_version
     if generated_date:

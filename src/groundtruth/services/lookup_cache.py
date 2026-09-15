@@ -11,7 +11,9 @@ from typing import Any
 from sqlalchemy.orm import Session
 
 from groundtruth.analytics.annual_export import corpus_last_updated
+from groundtruth.claims.hashes import sha256_file
 from groundtruth.config import get_settings
+from groundtruth.datasets.manifest import frozen_dataset_fingerprint, frozen_dataset_version
 from groundtruth.gazetteers.canonical import resolve_neighborhood_slug, slugs_for_canonical
 from groundtruth.logging import get_logger
 from groundtruth.schemas.lookup import CorpusMeta, MarketLookup, NeighborhoodMarketSummary
@@ -176,18 +178,30 @@ def _write_lookup_entry(
     entity_type: str,
     slug: str,
     payload: dict[str, Any],
-    entries: list[dict[str, str]],
+    entries: list[dict[str, Any]],
 ) -> None:
     rel_dir = base / entity_type
     rel_dir.mkdir(exist_ok=True)
     rel_path = f"{entity_type}/{slug}.json"
-    (base / rel_path).write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
-    entries.append({"entity_type": entity_type, "slug": slug, "path": rel_path})
+    path = base / rel_path
+    path.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
+    entries.append(
+        {
+            "entity_type": entity_type,
+            "slug": slug,
+            "path": rel_path,
+            "sha256": sha256_file(path),
+        }
+    )
 
 
 def build_lookup_cache(session: Session) -> Path:
     """Precompute all market lookups for API fast-path. Called from weekly analytics."""
+    from groundtruth.analytics.annual_export import DEFAULT_ANNUAL_REPORT_PATH
     from groundtruth.analytics.valuation import (
+        COMPARABLES_META_FILE,
+        RENT_COMPARABLES_FILE,
+        SALE_COMPARABLES_FILE,
         list_neighborhood_options,
         persist_comparables_disk_cache,
         rent_comparables_dataframe,
@@ -206,7 +220,7 @@ def build_lookup_cache(session: Session) -> Path:
 
     revision = corpus_last_updated(session)
     revision_iso = revision.isoformat() if revision else None
-    entries: list[dict[str, str]] = []
+    entries: list[dict[str, Any]] = []
     built = 0
     seen_neighborhood_canonical: set[str] = set()
 
@@ -261,11 +275,29 @@ def build_lookup_cache(session: Session) -> Path:
     persist_comparables_disk_cache(base, rent_df, sale_df, revision_iso)
     seed_comparables_cache(revision, rent_df, sale_df)
     neighborhood_options = list_neighborhood_options(session)
+
+    artifact_hashes: dict[str, str] = {}
+    for filename in (COMPARABLES_META_FILE, RENT_COMPARABLES_FILE, SALE_COMPARABLES_FILE):
+        path = base / filename
+        if path.is_file():
+            artifact_hashes[filename] = sha256_file(path)
+
+    related_artifacts: dict[str, dict[str, str]] = {}
+    if DEFAULT_ANNUAL_REPORT_PATH.is_file():
+        related_artifacts["annual_report"] = {
+            "sha256": sha256_file(DEFAULT_ANNUAL_REPORT_PATH),
+        }
+
     manifest = {
         "built_at": datetime.now(UTC).isoformat(),
         "corpus_revision": revision_iso,
+        # Label from freeze manifest (metadata only — does not lock DB contents).
+        "dataset_version": frozen_dataset_version(),
+        "dataset_hash": frozen_dataset_fingerprint(),
         "entry_count": built,
         "entries": entries,
+        "artifact_hashes": artifact_hashes,
+        "related_artifacts": related_artifacts,
         "corpus_meta": corpus_meta.model_dump(mode="json"),
         "markets": [m.model_dump(mode="json") for m in markets],
         "neighborhood_options": neighborhood_options,
@@ -275,6 +307,19 @@ def build_lookup_cache(session: Session) -> Path:
     load_lookup_cache_from_disk()
     logger.info("lookup_cache_built", entries=built, path=str(manifest_path))
     return manifest_path
+
+
+def stamp_related_artifact_hash(*, key: str, path: Path) -> None:
+    """Update lookup manifest related_artifacts after a sibling artifact is written."""
+    base = lookup_cache_dir()
+    manifest_path = base / "manifest.json"
+    if not manifest_path.is_file() or not path.is_file():
+        return
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    related = dict(manifest.get("related_artifacts") or {})
+    related[key] = {"sha256": sha256_file(path)}
+    manifest["related_artifacts"] = related
+    manifest_path.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
 
 
 def resolve_market_lookup(

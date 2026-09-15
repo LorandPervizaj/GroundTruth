@@ -17,7 +17,6 @@ from groundtruth.analytics.annual_conclusions import (
 from groundtruth.analytics.annual_formulas import build_annual_formulas
 from groundtruth.analytics.corpus import _pct_present, active_corpus_dataframe
 from groundtruth.analytics.corpus_filters import (
-    ACTIVE_PARSER_VERSIONS,
     DEFAULT_MAX_AGE_MONTHS,
     active_corpus_cutoff_date,
 )
@@ -32,6 +31,7 @@ from groundtruth.analytics.market_metrics import (
 )
 from groundtruth.analytics.price_quality import monthly_medians_from_frame
 from groundtruth.analytics.sample_confidence import confidence_level, sample_meta
+from groundtruth.portals.registry import public_parser_placeholders
 
 
 def _month_key(series: pd.Series) -> pd.Series:
@@ -631,7 +631,7 @@ def build_annual_report_from_dataframe(
     methodology_meta = {
         "window_months": max_age_months,
         "cutoff_date": cutoff_date.isoformat(),
-        "parser_versions": list(ACTIVE_PARSER_VERSIONS),
+        "parser_versions": public_parser_placeholders(),
     }
     dashboard = build_dashboard_copy(
         ctx,
@@ -668,7 +668,7 @@ def build_annual_report_from_dataframe(
             "cutoff_date": cutoff_date.isoformat(),
             "date_field": "listing_date",
             "deduped": True,
-            "sources": list(ACTIVE_PARSER_VERSIONS),
+            "sources": public_parser_placeholders(),
             "sale_price_metric": "median_price_per_sqm",
             "rent_price_metric": "median_rent",
             "note": "Asking prices from portal listings; not closed transactions.",
@@ -751,7 +751,7 @@ def _empty_payload(*, cutoff_date: date, max_age_months: int) -> dict[str, Any]:
             "cutoff_date": cutoff_date.isoformat(),
             "date_field": "listing_date",
             "deduped": True,
-            "sources": list(ACTIVE_PARSER_VERSIONS),
+            "sources": public_parser_placeholders(),
             "sale_price_metric": "median_price_per_sqm",
             "rent_price_metric": "median_rent",
             "note": "Asking prices from portal listings; not closed transactions.",

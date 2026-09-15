@@ -13,6 +13,7 @@ from sqlalchemy import (
     Enum,
     Float,
     ForeignKey,
+    Index,
     Integer,
     Numeric,
     String,
@@ -196,6 +197,21 @@ class NormalizedListing(Base):
     """Cleaned, typed, gazetteer-matched listing ready for deduplication."""
 
     __tablename__ = "normalized_listings"
+    __table_args__ = (
+        # Hot path: DISTINCT ON (source_website, source_listing_id) ORDER BY id DESC
+        Index(
+            "ix_normalized_listings_corpus_hot",
+            "source_website",
+            "source_listing_id",
+            "id",
+            postgresql_ops={"id": "DESC"},
+        ),
+        Index(
+            "ix_normalized_listings_parser_listing_date",
+            "parser_version",
+            "listing_date",
+        ),
+    )
 
     id: Mapped[int] = mapped_column(primary_key=True)
     parsed_listing_id: Mapped[int] = mapped_column(
