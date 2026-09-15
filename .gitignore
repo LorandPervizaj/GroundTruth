@@ -54,6 +54,8 @@ Thumbs.db
 # Generated reports (never beside source code)
 reports/generated/**
 !reports/generated/.gitkeep
+!reports/generated/lookup_cache/
+!reports/generated/lookup_cache/.gitkeep
 reports/lighthouse-*.json
 backups/
 
@@ -78,3 +80,7 @@ data/product/*.jsonl
 # Dedup review registers (regenerate locally; see data/deduplication/README.md)
 data/deduplication/*.csv
 !data/deduplication/README.md
+
+# QA temporary artifacts
+.tmp/
+deploy/nginx/certs/*.pem
