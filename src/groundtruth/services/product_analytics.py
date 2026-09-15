@@ -5,7 +5,10 @@ from __future__ import annotations
 from starlette.requests import Request
 
 from groundtruth.schemas.product_analytics import ProductEvent
-from groundtruth.services.product_submissions import append_product_submission
+from groundtruth.services.product_submissions import (
+    DuplicateSubmission,
+    append_product_submission,
+)
 
 _DEFAULT_MUNICIPALITY = "Prishtina"
 
@@ -27,6 +30,14 @@ def enrich_product_event(event: ProductEvent, request: Request | None = None) ->
 
 
 def log_product_event(event: ProductEvent, request: Request | None = None) -> None:
-    append_product_submission(
-        "events", enrich_product_event(event, request).model_dump(exclude_none=True)
-    )
+    """Persist an anonymous product event.
+
+    DuplicateSubmission is swallowed: analytics dedupe must not fail the user request
+    (contact/alerts routes handle DuplicateSubmission explicitly instead).
+    """
+    try:
+        append_product_submission(
+            "events", enrich_product_event(event, request).model_dump(exclude_none=True)
+        )
+    except DuplicateSubmission:
+        return
