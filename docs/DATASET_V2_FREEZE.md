@@ -42,6 +42,8 @@ Incremental ETL after crawl chunks: `groundtruth etl run --source merrjep`
 - **Decision:** Ship v1 with analytics-layer dedup only; DB `canonical_properties` merge deferred
 - Active corpus analytics use one row per canonical group via `active_corpus_bundle()`
 
+**Freeze vs serve:** This manifest records counts and fingerprints of the research DB at freeze time. Public Metrik serves **release artifacts** rebuilt later from the current DB (`groundtruth release build-artifacts`). Re-run release build + `verify-artifacts` before deploy; do not assume the freeze file alone reconstructs lookup cache contents.
+
 ## Public product scope
 
 **Rent and sale** — reported separately (~60% rent / ~40% sale in normalized corpus). Thin segments use confidence tiers instead of guessed averages.
