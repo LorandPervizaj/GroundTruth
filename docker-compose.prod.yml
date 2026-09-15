@@ -1,4 +1,20 @@
 services:
+  migrate:
+    profiles: ["migrate"]
+    image: metrik-api:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - ${ENV_FILE:-.env.production}
+    environment:
+      APP_ENV: production
+      PRODUCT_WRITE_BACKEND: database
+    command: ["uv", "run", "alembic", "upgrade", "head"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+
   app:
     build:
       context: .
@@ -13,6 +29,8 @@ services:
       API_DOCS_ENABLED: "false"
       PRODUCT_WRITE_BACKEND: database
       REPORTS_GENERATED_DIR: /app/reports/generated
+      # Prefer false once migrations run via: docker compose --profile migrate run --rm migrate
+      RUN_MIGRATIONS_ON_START: ${RUN_MIGRATIONS_ON_START:-true}
     volumes:
       - ./reports/generated:/app/reports/generated:ro
       - ./data/api:/app/data/api:ro

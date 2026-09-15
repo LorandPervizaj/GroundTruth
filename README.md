@@ -39,7 +39,9 @@ Ingestion command details live in the operator guide: [docs/SCRAPERS.md](docs/SC
 ## Quick start (local Metrik)
 
 ```powershell
+# Local Metrik + research tooling
 uv sync --all-extras
+# Production image installs only: uv sync --extra web --frozen --no-dev
 copy .env.example .env
 docker compose up -d postgres
 uv run alembic upgrade head
@@ -58,10 +60,13 @@ web/               Metrik pages and static assets
 data/gazetteers/   Neighborhood / district / street / complex lookup
 data/golden/       Parser regression set (internal; may contain historical text)
 data/claims/       Published claims registry
-data/api/          Frozen public report JSON
+data/api/          Frozen public report JSON (e.g. annual / rent-yield)
+data/datasets/     Dataset freeze manifests (version labels + fingerprints)
 docs/              Architecture, methodology, deploy, data handling
 scripts/           Ops helpers for private research hosts
 ```
+
+**Live Metrik path:** crawl → raw → parse → normalize → active corpus → cross-dedup → release artifacts → API. DB `canonical_properties` merge remains deferred — see [docs/architecture.md](docs/architecture.md).
 
 ## Quality
 

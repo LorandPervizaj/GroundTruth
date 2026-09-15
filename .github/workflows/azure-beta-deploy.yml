@@ -1,0 +1,143 @@
+# Build, scan, push to ACR, and deploy Metrik Azure beta.
+# Requires GitHub Environment secrets (never commit values):
+#   AZURE_CREDENTIALS          (OIDC or service principal JSON)
+#   METRIK_AZURE_POSTGRES_PASSWORD
+#   METRIK_AZURE_HEALTH_CHECK_TOKEN
+#   METRIK_AZURE_ACR_NAME
+#   METRIK_AZURE_RESOURCE_GROUP
+# Optional:
+#   METRIK_AZURE_SENTRY_DSN
+#   METRIK_RELEASE_ARTIFACT_URL  (download verified lookup_cache tarball if not in repo)
+
+name: Azure beta deploy
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [master, main]
+    paths:
+      - "Dockerfile"
+      - "pyproject.toml"
+      - "uv.lock"
+      - "src/**"
+      - "web/**"
+      - "alembic/**"
+      - "data/api/**"
+      - "infra/azure/**"
+      - "scripts/azure/**"
+      - ".github/workflows/azure-beta-deploy.yml"
+
+concurrency:
+  group: azure-beta-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: azure-beta
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Ensure lookup_cache path exists
+        run: mkdir -p reports/generated/lookup_cache
+
+      - name: Download release artifacts (optional)
+        if: ${{ secrets.METRIK_RELEASE_ARTIFACT_URL != '' }}
+        env:
+          ARTIFACT_URL: ${{ secrets.METRIK_RELEASE_ARTIFACT_URL }}
+        run: |
+          curl -fsSL "$ARTIFACT_URL" -o /tmp/lookup_cache.tgz
+          tar -xzf /tmp/lookup_cache.tgz -C reports/generated/lookup_cache --strip-components=1
+
+      - name: Require release manifest for deploy
+        run: test -f reports/generated/lookup_cache/manifest.json
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        run: uv python install 3.13
+
+      - name: Install runtime deps for verify
+        run: uv sync --extra web --frozen --no-dev
+
+      - name: Verify release artifacts
+        run: uv run groundtruth release verify-artifacts
+
+      - name: Azure login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: ACR login
+        run: az acr login --name "${{ secrets.METRIK_AZURE_ACR_NAME }}"
+
+      - name: Build, scan tooling absence, push immutable tag
+        env:
+          ACR: ${{ secrets.METRIK_AZURE_ACR_NAME }}
+        run: |
+          set -euo pipefail
+          SHA="$(git rev-parse --short HEAD)"
+          LOGIN="$(az acr show -n "$ACR" --query loginServer -o tsv)"
+          IMAGE="${LOGIN}/metrik-api:${SHA}"
+          docker build -t "$IMAGE" -f Dockerfile .
+          docker run --rm --entrypoint uv "$IMAGE" run python -c \
+            "import importlib.util as u; assert u.find_spec('scrapy') is None; assert u.find_spec('playwright') is None; assert u.find_spec('fastapi') is not None"
+          docker push "$IMAGE"
+          echo "IMAGE=$IMAGE" >> "$GITHUB_ENV"
+
+      - name: Trivy scan
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: ${{ env.IMAGE }}
+          format: table
+          exit-code: "1"
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true
+
+      - name: Deploy Container App revision
+        env:
+          RG: ${{ secrets.METRIK_AZURE_RESOURCE_GROUP }}
+        run: |
+          set -euo pipefail
+          az containerapp update \
+            --name ca-metrik-api \
+            --resource-group "$RG" \
+            --image "$IMAGE"
+          FQDN="$(az containerapp show -n ca-metrik-api -g "$RG" --query properties.configuration.ingress.fqdn -o tsv)"
+          echo "APP_URL=https://${FQDN}" >> "$GITHUB_ENV"
+
+      - name: Wait for readiness
+        run: |
+          set -euo pipefail
+          for i in $(seq 1 36); do
+            code=$(curl -s -o /tmp/ready.json -w "%{http_code}" "$APP_URL/api/ready" || true)
+            echo "attempt=$i code=$code"
+            if [ "$code" = "200" ]; then
+              cat /tmp/ready.json
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "Readiness did not become 200" >&2
+          exit 1
+
+      - name: Smoke checks
+        run: |
+          set -euo pipefail
+          curl -fsS "$APP_URL/api/health" | tee /tmp/health.json
+          curl -fsS "$APP_URL/api/ready" | tee /tmp/ready.json
+          curl -fsS "$APP_URL/api/rent-yield" | tee /tmp/ry.json
+          code=$(curl -s -o /tmp/alerts.json -w "%{http_code}" -X POST "$APP_URL/api/alerts" \
+            -H 'content-type: application/json' \
+            -d '{"email":"beta@example.com","neighborhood_slug":"ulpiana"}')
+          echo "alerts_status=$code"
+          test "$code" = "503" -o "$code" = "429"

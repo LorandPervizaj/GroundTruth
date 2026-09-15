@@ -1,0 +1,21 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "environmentName": { "value": "beta" },
+    "nameSuffix": { "value": "CHANGE_ME" },
+    "location": { "value": "eastus2" },
+    "postgresAdminLogin": { "value": "metrik_admin" },
+    "postgresDatabaseName": { "value": "metrik" },
+    "postgresSkuName": { "value": "Standard_B1ms" },
+    "postgresStorageGb": { "value": 32 },
+    "postgresBackupRetentionDays": { "value": 7 },
+    "requireSentryDsn": { "value": false },
+    "forwardedAllowIps": {
+      "value": "10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,100.64.0.0/10"
+    },
+    "ingressIpAllowList": { "value": "" },
+    "containerImage": { "value": "REPLACE_AFTER_PUSH" },
+    "publicBaseUrl": { "value": "" }
+  }
+}

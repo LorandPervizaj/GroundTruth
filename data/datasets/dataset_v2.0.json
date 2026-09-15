@@ -1,7 +1,7 @@
 {
   "dataset_version": "v2.0",
   "frozen_at": "2026-06-12T21:04:20.473598+00:00",
-  "description": "GroundTruth Kosovo residential corpus \u2014 Gjirafa + MerrJep",
+  "description": "GroundTruth Kosovo residential corpus \u2014 multi-portal freeze",
   "sources": [
     {
       "source_website": "merrjep",

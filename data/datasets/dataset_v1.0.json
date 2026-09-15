@@ -1,7 +1,7 @@
 {
   "dataset_version": "v1.0",
   "frozen_at": "2026-06-09T13:44:45.060340+00:00",
-  "description": "GroundTruth Prishtina residential baseline \u2014 single source (Gjirafa), parser v1.3.1",
+  "description": "GroundTruth Prishtina residential baseline \u2014 single portal source, parser v1.3.1",
   "sources": [
     {
       "source_website": "gjirafa",
@@ -51,5 +51,5 @@
     "audit": "reports/generated/audit_2026-06-09/",
     "quarterly": "reports/generated/quarterly_report_v1_0_2026-06-09.md"
   },
-  "notes": "Do not mix pre-v1.3.1 normalized rows in comparative analysis. Next data increment should be MerrJep (source diversity), not more Gjirafa volume."
+  "notes": "Do not mix pre-v1.3.1 normalized rows in comparative analysis. Next data increment should add source diversity, not more volume from the initial portal."
 }

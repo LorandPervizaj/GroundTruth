@@ -1,3 +1,4 @@
+# Metrik production runtime — web API only (no Scrapy/Playwright research stack).
 FROM python:3.13-slim AS runtime
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -24,9 +25,14 @@ COPY data/product ./data/product
 COPY alembic.ini ./alembic.ini
 COPY alembic ./alembic
 COPY reports/templates ./reports/templates
+# Verified release lookup cache (Option A for Azure beta). Build context must include
+# a hashed release under reports/generated/lookup_cache before production push.
+# Local/CI builds without a release may copy an empty tree; the app fails closed at ready.
+COPY reports/generated/lookup_cache ./reports/generated/lookup_cache
 COPY scripts/docker-entrypoint.sh ./scripts/docker-entrypoint.sh
 
-RUN uv sync --all-extras --frozen --no-dev \
+# Install Metrik runtime (+ web) only — research tooling stays out of the public image.
+RUN uv sync --extra web --frozen --no-dev \
     && sed -i 's/\r$//' ./scripts/docker-entrypoint.sh \
     && chmod +x ./scripts/docker-entrypoint.sh
 
