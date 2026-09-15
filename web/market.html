@@ -10,7 +10,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:image" content="/favicon.svg" />
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="/static/style.css?v=48" />
+  <link rel="stylesheet" href="/static/style.css?v=55" />
 </head>
 <body data-page-title="market_title">
   <div class="page page-wide page-market">
@@ -103,7 +103,7 @@
 
     <div id="market-content" class="hidden">
      <div class="market-layout">
-      <main class="market-main">
+      <main id="main-content" class="market-main">
       <section class="panel pulse-panel">
         <div class="pulse-header">
           <div class="pulse-title-block">
@@ -117,14 +117,13 @@
           <span id="price-tier-badge" class="price-tier-badge hidden"></span>
         </div>
         <p id="low-confidence-note" class="low-confidence-note hidden"></p>
-        <div class="pulse-grid pulse-grid-five">
+        <div class="pulse-grid pulse-grid-four">
           <div class="pulse-card">
             <span class="pulse-label" data-i18n="pulse_sale_psm"></span>
             <span class="pulse-value" id="pulse-sale-psm">-</span>
-          </div>
-          <div class="pulse-card">
-            <span class="pulse-label" data-i18n="pulse_rent_psm"></span>
-            <span class="pulse-value" id="pulse-rent-psm">-</span>
+            <div class="pulse-spark-wrap" hidden>
+              <canvas id="spark-sale-psm" class="pulse-sparkline" aria-hidden="true"></canvas>
+            </div>
           </div>
           <div class="pulse-card">
             <span class="pulse-label" data-i18n="pulse_median_sale"></span>
@@ -133,10 +132,16 @@
           <div class="pulse-card">
             <span class="pulse-label" data-i18n="pulse_median_rent"></span>
             <span class="pulse-value" id="pulse-median-rent">-</span>
+            <div class="pulse-spark-wrap" hidden>
+              <canvas id="spark-median-rent" class="pulse-sparkline" aria-hidden="true"></canvas>
+            </div>
           </div>
           <div class="pulse-card">
             <span class="pulse-label" data-i18n="pulse_listings"></span>
             <span class="pulse-value" id="pulse-inventory">-</span>
+            <div class="pulse-spark-wrap" hidden>
+              <canvas id="spark-inventory" class="pulse-sparkline" aria-hidden="true"></canvas>
+            </div>
           </div>
         </div>
       </section>
@@ -194,7 +199,6 @@
               <tr>
                 <th></th>
                 <th data-i18n="th_avg_sale"></th>
-                <th data-i18n="th_avg_rent"></th>
                 <th data-i18n="th_median_rent"></th>
                 <th data-i18n="th_listings"></th>
                 <th data-i18n="th_confidence"></th>
@@ -214,7 +218,6 @@
               <tr>
                 <th data-i18n="th_band"></th>
                 <th data-i18n="th_avg_sale"></th>
-                <th data-i18n="th_avg_rent"></th>
                 <th data-i18n="th_median_rent"></th>
                 <th data-i18n="th_listings"></th>
                 <th data-i18n="th_confidence"></th>
@@ -222,6 +225,52 @@
             </thead>
             <tbody></tbody>
           </table>
+        </div>
+      </section>
+
+      <section class="panel hidden" id="market-history-section">
+        <h3 class="section-title" data-i18n="market_history_title"></h3>
+        <p class="hint hint-info" data-i18n="market_history_hint"></p>
+        <p class="chart-empty-msg hint" id="market-history-empty" hidden></p>
+        <div class="chart-pair" id="market-history-charts">
+          <div class="chart-panel">
+            <h4 class="chart-panel-title" data-i18n="market_history_sale"></h4>
+            <p class="chart-sample-note" id="history-sale-note"></p>
+            <div class="chart-container chart-container--sm">
+              <canvas id="historySaleChart"></canvas>
+            </div>
+          </div>
+          <div class="chart-panel">
+            <h4 class="chart-panel-title" data-i18n="market_history_rent"></h4>
+            <p class="chart-sample-note" id="history-rent-note"></p>
+            <div class="chart-container chart-container--sm">
+              <canvas id="historyRentChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel hidden" id="market-distribution-section">
+        <h3 class="section-title" data-i18n="market_distribution_title"></h3>
+        <p class="hint hint-info" data-i18n="market_distribution_hint"></p>
+        <p class="hint" data-i18n="market_distribution_asking_note"></p>
+        <div class="chart-pair" id="market-distribution-charts">
+          <div class="chart-panel" id="dist-sale-panel">
+            <h4 class="chart-panel-title" data-i18n="market_distribution_sale"></h4>
+            <p class="chart-sample-note" id="dist-sale-note"></p>
+            <div class="chart-container chart-container--sm" id="dist-sale-wrap">
+              <canvas id="distSaleChart"></canvas>
+              <p class="chart-empty-msg hint" hidden></p>
+            </div>
+          </div>
+          <div class="chart-panel" id="dist-rent-panel">
+            <h4 class="chart-panel-title" data-i18n="market_distribution_rent"></h4>
+            <p class="chart-sample-note" id="dist-rent-note"></p>
+            <div class="chart-container chart-container--sm" id="dist-rent-wrap">
+              <canvas id="distRentChart"></canvas>
+              <p class="chart-empty-msg hint" hidden></p>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -270,6 +319,20 @@
 
         <section class="panel rail-panel" id="rail-percentiles" hidden>
           <h3 class="rail-title" data-i18n="percentile_title"></h3>
+          <p class="rail-foot" data-i18n="percentile_asking_note"></p>
+          <div class="percentile-range" id="percentile-range" hidden aria-hidden="true">
+            <div class="percentile-track">
+              <span class="percentile-fill" id="pct-fill"></span>
+              <span class="percentile-marker percentile-marker--p10" id="pct-mark-p10"></span>
+              <span class="percentile-marker percentile-marker--p50" id="pct-mark-p50"></span>
+              <span class="percentile-marker percentile-marker--p90" id="pct-mark-p90"></span>
+            </div>
+            <div class="percentile-range-labels">
+              <span data-i18n="percentile_cheapest"></span>
+              <span data-i18n="percentile_median"></span>
+              <span data-i18n="percentile_top10"></span>
+            </div>
+          </div>
           <div class="percentile-row">
             <span class="percentile-label" data-i18n="percentile_cheapest"></span>
             <span class="percentile-value" id="pct-p10">-</span>
@@ -304,13 +367,15 @@
 
     <div id="site-footer"></div>
   </div>
-  <script defer src="/static/i18n.js?v=45"></script>
+  <script defer src="/static/i18n.js?v=51"></script>
   <script defer src="/static/api-cache.js?v=1"></script>
   <script defer src="/static/format.js?v=10"></script>
+  <script defer src="/static/theme.js?v=1"></script>
+  <script defer src="/static/charts.js?v=4"></script>
   <script defer src="/static/confidence.js?v=4"></script>
-  <script defer src="/static/site.js?v=32"></script>
+  <script defer src="/static/site.js?v=34"></script>
   <script defer src="/static/feedback.js?v=4"></script>
   <script defer src="/static/search.js?v=1"></script>
-  <script defer src="/static/lookup.js?v=8"></script>
+  <script defer src="/static/lookup.js?v=13"></script>
 </body>
 </html>

@@ -91,15 +91,22 @@ function setMode(mode) {
   const maxPsmLabel = document.getElementById("find-max-psm-label");
   const psmSuffix = document.getElementById("find-psm-suffix");
   const psmSuffixMax = document.getElementById("find-psm-suffix-max");
-  if (minPsmLabel) minPsmLabel.textContent = t(listingType === "rent" ? "find_min_psm_rent" : "find_min_psm_sale");
-  if (maxPsmLabel) maxPsmLabel.textContent = t(listingType === "rent" ? "find_max_psm_rent" : "find_max_psm_sale");
-  const psmUnit = listingType === "rent" ? `€/m²${t("per_month_suffix")}` : "€/m²";
-  if (psmSuffix) psmSuffix.textContent = psmUnit;
-  if (psmSuffixMax) psmSuffixMax.textContent = psmUnit;
+  const psmFilters = document.getElementById("find-psm-filters");
   const minPsm = document.getElementById("min-psm");
   const maxPsm = document.getElementById("max-psm");
-  if (minPsm) minPsm.placeholder = listingType === "rent" ? "4" : "800";
-  if (maxPsm) maxPsm.placeholder = listingType === "rent" ? "12" : "2000";
+  // Sale-only €/m² filters — rent mode uses monthly budget, not rent €/m².
+  if (psmFilters) psmFilters.hidden = listingType === "rent";
+  if (listingType === "rent") {
+    if (minPsm) minPsm.value = "";
+    if (maxPsm) maxPsm.value = "";
+  } else {
+    if (minPsmLabel) minPsmLabel.textContent = t("find_min_psm_sale");
+    if (maxPsmLabel) maxPsmLabel.textContent = t("find_max_psm_sale");
+    if (psmSuffix) psmSuffix.textContent = "€/m²";
+    if (psmSuffixMax) psmSuffixMax.textContent = "€/m²";
+    if (minPsm) minPsm.placeholder = "800";
+    if (maxPsm) maxPsm.placeholder = "2000";
+  }
   syncBudgetSlider();
 }
 
@@ -182,10 +189,8 @@ function renderCard(row) {
       ? window.MetrikFormat.area(row.median_area_sqm)
       : "—";
   const psmLine =
-    row.median_price_psm != null && row.median_price_psm > 0
-      ? listingType === "rent"
-        ? `${window.MetrikFormat.euroRentPsm(row.median_price_psm)}${t("per_month_suffix")}`
-        : window.MetrikFormat.euroSalePsm(row.median_price_psm)
+    listingType === "sale" && row.median_price_psm != null && row.median_price_psm > 0
+      ? window.MetrikFormat.euroSalePsm(row.median_price_psm)
       : null;
 
   return `
@@ -220,7 +225,7 @@ function renderCard(row) {
         </div>
         ${
           psmLine
-            ? `<div><dt>${listingType === "rent" ? t("pulse_rent_psm") : t("pulse_sale_psm")}</dt><dd>${psmLine}</dd></div>`
+            ? `<div><dt>${t("pulse_sale_psm")}</dt><dd>${psmLine}</dd></div>`
             : ""
         }
         ${
@@ -312,16 +317,16 @@ async function submitFind(e) {
   const budget = Number(document.getElementById("max-budget").value);
   const minAreaRaw = document.getElementById("min-area").value;
   const maxAreaRaw = document.getElementById("max-area").value;
-  const minPsmRaw = document.getElementById("min-psm")?.value;
-  const maxPsmRaw = document.getElementById("max-psm")?.value;
+  const minPsmRaw = listingType === "sale" ? document.getElementById("min-psm")?.value : "";
+  const maxPsmRaw = listingType === "sale" ? document.getElementById("max-psm")?.value : "";
   const bedsRaw = document.getElementById("bedrooms").value;
   const payload = {
     listing_type: listingType,
     max_budget_eur: budget,
     min_area_sqm: minAreaRaw ? Number(minAreaRaw) : null,
     max_area_sqm: maxAreaRaw ? Number(maxAreaRaw) : null,
-    min_price_psm_eur: minPsmRaw ? Number(minPsmRaw) : null,
-    max_price_psm_eur: maxPsmRaw ? Number(maxPsmRaw) : null,
+    min_price_psm_eur: listingType === "sale" && minPsmRaw ? Number(minPsmRaw) : null,
+    max_price_psm_eur: listingType === "sale" && maxPsmRaw ? Number(maxPsmRaw) : null,
     bedrooms: bedsRaw === "" ? null : Number(bedsRaw),
     top_n: 8,
   };

@@ -161,7 +161,11 @@
       }
       try {
         const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
-        if (!res.ok) return;
+        if (!res.ok) {
+          setHint(t("search_unavailable"));
+          close();
+          return;
+        }
         const data = await res.json();
         renderResults(data.results || [], query);
         track("search_performed", {

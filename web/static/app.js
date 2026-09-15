@@ -1089,21 +1089,28 @@ document.getElementById("estimate-form").addEventListener("submit", async (e) =>
       const insufficient = /insufficient evidence/i.test(detail);
       const dbUnavailable = /database unavailable/i.test(detail);
       const warming = res.status === 503 && !dbUnavailable && /still loading/i.test(detail);
+      const disabled =
+        /unavailable while release validation/i.test(detail) ||
+        (res.status === 403 && /unavailable/i.test(detail));
       showError(detail, {
-        title: dbUnavailable
-          ? t("valuate_db_unavailable")
-          : warming
-            ? t("valuate_still_loading")
-            : insufficient
-              ? t("valuate_insufficient_evidence")
-              : t("could_not_estimate"),
-        hint: dbUnavailable
-          ? t("valuate_db_unavailable_hint")
-          : warming
-            ? t("valuate_timeout_hint")
-            : insufficient
-              ? t("error_hint")
-              : null,
+        title: disabled
+          ? t("valuate_public_disabled")
+          : dbUnavailable
+            ? t("valuate_db_unavailable")
+            : warming
+              ? t("valuate_still_loading")
+              : insufficient
+                ? t("valuate_insufficient_evidence")
+                : t("could_not_estimate"),
+        hint: disabled
+          ? t("valuate_public_disabled_hint")
+          : dbUnavailable
+            ? t("valuate_db_unavailable_hint")
+            : warming
+              ? t("valuate_timeout_hint")
+              : insufficient
+                ? t("error_hint")
+                : null,
       });
       return;
     }

@@ -3,6 +3,8 @@
   const neighborhood = document.getElementById("alert-neighborhood");
   const listingType = document.getElementById("alert-listing-type");
   const status = document.getElementById("alert-status");
+  const emailPanel = document.getElementById("alert-email-panel");
+  const alertForm = document.getElementById("alert-form");
 
   function selectedNeighborhood() {
     const option = neighborhood.selectedOptions[0];
@@ -52,40 +54,46 @@
     }
   }
 
+  function showEmailUnavailable() {
+    if (emailPanel) {
+      emailPanel.classList.add("is-unavailable");
+    }
+    if (alertForm) {
+      alertForm.hidden = true;
+    }
+    const notice = document.getElementById("alert-unavailable");
+    if (notice) {
+      notice.hidden = false;
+      notice.textContent = t("alerts_unavailable");
+    }
+    status.textContent = "";
+  }
+
   document.getElementById("watchlist-add").addEventListener("click", () => {
     const selected = selectedNeighborhood();
     if (!selected) return;
     window.MetrikWatchlist.add(selected.slug, selected.name, listingType.value);
     renderWatchlist();
+    status.textContent = t("alerts_success");
   });
 
-  document.getElementById("alert-form").addEventListener("submit", async (event) => {
-    event.preventDefault();
-    const selected = selectedNeighborhood();
-    if (!selected) return;
-    const maxPrice = document.getElementById("alert-max-price").value;
-    const payload = {
-      email: document.getElementById("alert-email").value,
-      neighborhood_slug: selected.slug,
-      listing_type: listingType.value,
-      max_price_eur: maxPrice ? Number(maxPrice) : null,
-    };
-    try {
-      const response = await fetch("/api/alerts", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      if (!response.ok) throw new Error(`Alert signup failed: ${response.status}`);
-      window.MetrikWatchlist.add(selected.slug, selected.name, listingType.value);
-      renderWatchlist();
-      status.textContent = t("alerts_success");
-    } catch {
-      status.textContent = t("alerts_failed");
+  if (alertForm) {
+    alertForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      // Email signup is disabled until notifications exist — never claim success.
+      showEmailUnavailable();
+      status.textContent = t("alerts_unavailable");
+    });
+  }
+
+  document.addEventListener("metrik:langchange", () => {
+    renderWatchlist();
+    const notice = document.getElementById("alert-unavailable");
+    if (notice && !notice.hidden) {
+      notice.textContent = t("alerts_unavailable");
     }
   });
-
-  document.addEventListener("metrik:langchange", renderWatchlist);
   renderWatchlist();
   loadNeighborhoods();
+  showEmailUnavailable();
 })();

@@ -10,6 +10,7 @@ let marketsReady = false;
 let marketsLoading = false;
 let compareLoading = false;
 let lastCompareData = null;
+let yieldBySlug = null;
 
 function parseUrlSlugs() {
   const params = new URLSearchParams(window.location.search);
@@ -186,10 +187,6 @@ function fmtSalePsm(v) {
   return v == null ? "—" : window.MetrikFormat.euroSalePsm(v);
 }
 
-function fmtRentPsm(v) {
-  return v == null ? "—" : window.MetrikFormat.euroRentPsm(v);
-}
-
 function fmtRentMoney(v, suffix = "") {
   return v == null ? "—" : `${window.MetrikFormat.euroRent(v)}${suffix}`;
 }
@@ -202,6 +199,111 @@ function confidenceBadge(level) {
   const safeLevel = window.MetrikSanitize.confidenceClass(level);
   const label = esc(window.MetrikI18n.translateConfidence(safeLevel));
   return `<span class="confidence-badge confidence-${safeLevel}">${label}</span>`;
+}
+
+async function loadYieldIndex() {
+  if (yieldBySlug) return yieldBySlug;
+  try {
+    const data = window.MetrikApiCache
+      ? await window.MetrikApiCache.getJson("/api/rent-yield", { ttlMs: 60_000 })
+      : await (await fetch("/api/rent-yield")).json();
+    yieldBySlug = new Map();
+    for (const row of data.rows || []) {
+      if (row.slug) yieldBySlug.set(row.slug, row);
+    }
+  } catch {
+    yieldBySlug = new Map();
+  }
+  return yieldBySlug;
+}
+
+async function renderCompareCharts(neighborhoods) {
+  const section = document.getElementById("compare-charts-section");
+  const charts = window.MetrikCharts;
+  if (!section || !charts || !neighborhoods?.length) {
+    if (section) section.hidden = true;
+    return;
+  }
+
+  section.hidden = false;
+  await charts.ensureChartJs();
+  await loadYieldIndex();
+
+  const labels = neighborhoods.map((n) => n.display_name);
+  const pulses = neighborhoods.map((n) => n.pulse || {});
+  const theme = charts.theme();
+  const colors = [theme.primary, theme.tertiary, theme.secondary];
+
+  function paint(canvasId, values, formatValue, tickFormat) {
+    const canvas = document.getElementById(canvasId);
+    if (!canvas) return;
+    const hasAny = values.some((v) => v != null && Number.isFinite(Number(v)));
+    if (!hasAny) {
+      charts.destroy(canvas);
+      canvas.closest(".chart-panel")?.setAttribute("hidden", "");
+      return;
+    }
+    canvas.closest(".chart-panel")?.removeAttribute("hidden");
+    charts.createHorizontalBarChart(canvas, {
+      labels,
+      values: values.map((v) => (v == null ? null : Number(v))),
+      color: colors[0],
+      formatTick: tickFormat,
+      tooltipBuilder: (items) => {
+        const idx = items[0]?.dataIndex ?? 0;
+        return {
+          title: labels[idx] || "",
+          lines: [formatValue(values[idx])],
+        };
+      },
+    });
+    // Color each bar distinctly for neighborhoods
+    const chart = window.Chart?.getChart?.(canvas);
+    if (chart?.data?.datasets?.[0]) {
+      chart.data.datasets[0].backgroundColor = labels.map((_, i) => colors[i % colors.length]);
+      chart.update("none");
+    }
+  }
+
+  paint(
+    "compareSalePsmChart",
+    pulses.map((p) => p.average_sale_psm_eur),
+    (v) => fmtSalePsm(v),
+    (v) => window.MetrikFormat.euroSalePsm(v)
+  );
+  paint(
+    "compareMedianSaleChart",
+    pulses.map((p) => p.median_sale_eur),
+    (v) => fmtSaleMoney(v),
+    (v) => window.MetrikFormat.euroSale(v)
+  );
+  paint(
+    "compareMedianRentChart",
+    pulses.map((p) => p.median_rent_eur),
+    (v) => fmtRentMoney(v, t("per_month")),
+    (v) => window.MetrikFormat.euroRent(v)
+  );
+  paint(
+    "compareInventoryChart",
+    pulses.map((p) => p.active_listings),
+    (v) => String(v ?? "—"),
+    (v) => String(Math.round(v))
+  );
+
+  const yieldPanel = document.getElementById("compare-yield-panel");
+  const yields = neighborhoods.map((n) => yieldBySlug?.get(n.slug)?.gross_yield_pct ?? null);
+  if (yields.some((v) => v != null)) {
+    if (yieldPanel) yieldPanel.hidden = false;
+    paint(
+      "compareYieldChart",
+      yields,
+      (v) => (v == null ? "—" : `${Number(v).toFixed(1)}%`),
+      (v) => `${Number(v).toFixed(1)}%`
+    );
+  } else if (yieldPanel) {
+    yieldPanel.hidden = true;
+    charts.destroy(document.getElementById("compareYieldChart"));
+  }
 }
 
 function renderSummaryCards(neighborhoods) {
@@ -218,12 +320,16 @@ function renderSummaryCards(neighborhoods) {
           </div>
           <dl class="compare-nh-stats">
             <div>
-              <dt>${t("pulse_median_rent")}</dt>
-              <dd>${esc(fmtRentMoney(p.median_rent_eur, t("per_month")))}</dd>
+              <dt>${t("pulse_sale_psm")}</dt>
+              <dd>${esc(fmtSalePsm(p.average_sale_psm_eur))}</dd>
             </div>
             <div>
               <dt>${t("pulse_median_sale")}</dt>
               <dd>${esc(fmtSaleMoney(p.median_sale_eur))}</dd>
+            </div>
+            <div>
+              <dt>${t("pulse_median_rent")}</dt>
+              <dd>${esc(fmtRentMoney(p.median_rent_eur, t("per_month")))}</dd>
             </div>
             <div>
               <dt>${t("pulse_listings")}</dt>
@@ -264,6 +370,7 @@ function renderTable(data) {
   const cols = data.neighborhoods;
   const colCount = cols.length;
   renderSummaryCards(cols);
+  renderCompareCharts(cols);
 
   head.innerHTML = `<th>${esc(t("compare_metric"))}</th>${cols
     .map((n) => `<th class="compare-col-head">${esc(n.display_name)}</th>`)
@@ -273,7 +380,6 @@ function renderTable(data) {
   body.innerHTML = [
     groupRow(t("compare_group_prices"), colCount),
     metricRow(t("pulse_sale_psm"), pulses.map((p) => p.average_sale_psm_eur), { format: fmtSalePsm }),
-    metricRow(t("pulse_rent_psm"), pulses.map((p) => p.average_rent_psm_eur), { format: fmtRentPsm }),
     metricRow(t("pulse_median_sale"), pulses.map((p) => p.median_sale_eur), {
       format: (v) => fmtSaleMoney(v),
     }),

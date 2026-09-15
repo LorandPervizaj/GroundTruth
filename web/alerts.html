@@ -9,7 +9,7 @@
   <meta property="og:description" content="Follow neighborhoods and register for transparent market alerts." />
   <meta property="og:type" content="website" />
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="/static/style.css?v=48" />
+  <link rel="stylesheet" href="/static/style.css?v=52" />
 </head>
 <body data-page-title="alerts_title">
   <div class="page">
@@ -18,7 +18,7 @@
       <h1 class="hero-title" data-i18n="alerts_title"></h1>
       <p class="hero-sub" data-i18n="alerts_sub"></p>
     </header>
-    <main>
+    <main id="main-content">
       <section class="panel">
         <h2 class="section-title" data-i18n="alerts_watchlist_title"></h2>
         <p class="hint hint-info" data-i18n="alerts_watchlist_hint"></p>
@@ -27,41 +27,47 @@
       </section>
 
       <section class="panel form-panel">
+        <h2 class="section-title" data-i18n="alerts_add_title"></h2>
+        <p class="hint hint-info" data-i18n="alerts_watchlist_hint"></p>
+        <div class="field">
+          <label for="alert-neighborhood" data-i18n="neighborhood"></label>
+          <select id="alert-neighborhood" required></select>
+        </div>
+        <div class="field">
+          <label for="alert-listing-type" data-i18n="alerts_listing_type"></label>
+          <select id="alert-listing-type">
+            <option value="both" data-i18n="alerts_type_both"></option>
+            <option value="rent" data-i18n="valuate_rent"></option>
+            <option value="sale" data-i18n="valuate_sale"></option>
+          </select>
+        </div>
+        <button type="button" class="btn-primary" id="watchlist-add" data-i18n="alerts_save_local"></button>
+        <p id="alert-status" class="hint" role="status"></p>
+      </section>
+
+      <section class="panel form-panel" id="alert-email-panel">
         <h2 class="section-title" data-i18n="alerts_email_title"></h2>
         <p class="hint hint-info" data-i18n="alerts_email_hint"></p>
-        <form id="alert-form">
-          <div class="field">
-            <label for="alert-neighborhood" data-i18n="neighborhood"></label>
-            <select id="alert-neighborhood" required></select>
-          </div>
-          <div class="field">
-            <label for="alert-listing-type" data-i18n="alerts_listing_type"></label>
-            <select id="alert-listing-type">
-              <option value="both" data-i18n="alerts_type_both"></option>
-              <option value="rent" data-i18n="valuate_rent"></option>
-              <option value="sale" data-i18n="valuate_sale"></option>
-            </select>
-          </div>
+        <p id="alert-unavailable" class="hint hint-info" role="status" hidden></p>
+        <form id="alert-form" hidden>
           <div class="field">
             <label for="alert-max-price" data-i18n="alerts_max_price"></label>
             <input id="alert-max-price" type="number" min="50" max="5000000" step="10" />
           </div>
           <div class="field">
             <label for="alert-email" data-i18n="alerts_email"></label>
-            <input id="alert-email" type="email" maxlength="200" autocomplete="email" required />
+            <input id="alert-email" type="email" maxlength="200" autocomplete="email" />
           </div>
-          <button type="button" class="btn-secondary" id="watchlist-add" data-i18n="alerts_save_local"></button>
           <button type="submit" class="btn-primary" data-i18n="alerts_submit"></button>
         </form>
-        <p id="alert-status" class="hint" role="status"></p>
       </section>
     </main>
     <div id="site-footer"></div>
   </div>
-  <script defer src="/static/i18n.js?v=45"></script>
+  <script defer src="/static/i18n.js?v=51"></script>
   <script defer src="/static/api-cache.js?v=1"></script>
   <script defer src="/static/format.js?v=10"></script>
-  <script defer src="/static/site.js?v=32"></script>
+  <script defer src="/static/site.js?v=34"></script>
   <script defer src="/static/watchlist.js"></script>
   <script defer src="/static/alerts.js"></script>
 </body>

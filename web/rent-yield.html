@@ -9,7 +9,7 @@
   <meta property="og:description" content="Neighborhood gross rental yield from median rent and sale prices." />
   <meta property="og:type" content="website" />
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="/static/style.css?v=48" />
+  <link rel="stylesheet" href="/static/style.css?v=55" />
 </head>
 <body data-page-title="rent_yield_title">
   <div class="page page-wide">
@@ -21,9 +21,22 @@
       <p class="hero-sub" data-i18n="rent_yield_sub"></p>
       <p class="hint hint-info" data-i18n="rent_yield_hint" data-info-attach=".compare-header .hero-title"></p>
     </header>
+    <main id="main-content">
+
+    <section class="panel" id="yield-chart-section" hidden>
+      <h2 class="section-title section-title-sm" data-i18n="rent_yield_chart_title"></h2>
+      <p class="hint" data-i18n="rent_yield_chart_hint"></p>
+      <p class="chart-sample-note" id="yield-chart-note"></p>
+      <div class="chart-container chart-container--md" id="yield-chart-wrap">
+        <canvas id="yieldRankChart"></canvas>
+        <p class="chart-empty-msg hint" hidden></p>
+      </div>
+      <button type="button" class="btn-secondary btn-compact" id="yield-chart-toggle" hidden></button>
+    </section>
 
     <section class="panel">
       <div id="yield-status" class="hint" hidden></div>
+      <p id="yield-retry-wrap" class="hidden"><button type="button" class="btn-secondary" id="yield-retry" data-i18n="retry"></button></p>
       <div class="table-wrap">
         <table class="data-table" id="yield-table">
           <thead>
@@ -48,14 +61,18 @@
       </div>
     </section>
 
+    
+    </main>
     <div id="site-footer"></div>
   </div>
 
-  <script defer src="/static/i18n.js?v=45"></script>
+  <script defer src="/static/i18n.js?v=51"></script>
   <script defer src="/static/api-cache.js?v=1"></script>
   <script defer src="/static/format.js?v=10"></script>
-  <script defer src="/static/site.js?v=32"></script>
-  <script defer src="/static/rent-yield.js?v=4"></script>
+  <script defer src="/static/theme.js?v=1"></script>
+  <script defer src="/static/charts.js?v=4"></script>
+  <script defer src="/static/site.js?v=34"></script>
+  <script defer src="/static/rent-yield.js?v=6"></script>
 </body>
 </html>
-
+

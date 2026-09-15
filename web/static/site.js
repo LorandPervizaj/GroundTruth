@@ -25,13 +25,19 @@
   }
 
   const INSIGHTS_PATHS = ["/statistics", "/compare", "/rent-yield"];
+  const TOOLS_PATHS = ["/valuate", "/find"];
+
+  function pathMatchesGroup(paths) {
+    return paths.some((p) => path === p || path.startsWith(`${p}/`));
+  }
 
   function navClass(href) {
     if (href === "/" && (path === "/" || path.startsWith("/market"))) return " active";
-    if (href === "/statistics" && INSIGHTS_PATHS.some((p) => path === p || path.startsWith(`${p}/`))) {
+    if (href === "/statistics" && pathMatchesGroup(INSIGHTS_PATHS)) return " active";
+    if (href === "/valuate" && pathMatchesGroup(TOOLS_PATHS)) return " active";
+    if (href !== "/" && href !== "/statistics" && href !== "/valuate" && path.startsWith(href)) {
       return " active";
     }
-    if (href !== "/" && href !== "/statistics" && path.startsWith(href)) return " active";
     return "";
   }
 
@@ -39,6 +45,12 @@
     const base = href.replace(/\/$/, "");
     if (base === "/statistics" && (path === "/statistics" || path === "/statistics/")) return " active";
     if (base !== "/statistics" && (path === base || path.startsWith(`${base}/`))) return " active";
+    return "";
+  }
+
+  function toolsTabClass(href) {
+    const base = href.replace(/\/$/, "");
+    if (path === base || path.startsWith(`${base}/`)) return " active";
     return "";
   }
 
@@ -50,6 +62,17 @@
         <a href="/statistics" class="insights-tab${insightsTabClass("/statistics")}">${t("insights_subnav_annual")}</a>
         <a href="/compare" class="insights-tab${insightsTabClass("/compare")}">${t("insights_subnav_compare")}</a>
         <a href="/rent-yield" class="insights-tab${insightsTabClass("/rent-yield")}">${t("insights_subnav_rent_yield")}</a>
+      </nav>
+    `;
+  }
+
+  function renderToolsSubnav() {
+    const el = document.getElementById("tools-subnav");
+    if (!el) return;
+    el.innerHTML = `
+      <nav class="insights-subnav" aria-label="${t("tools_subnav_label")}">
+        <a href="/valuate" class="insights-tab${toolsTabClass("/valuate")}">${t("nav_valuate")}</a>
+        <a href="/find" class="insights-tab${toolsTabClass("/find")}">${t("nav_find")}</a>
       </nav>
     `;
   }
@@ -73,9 +96,9 @@
           <a class="nav-brand" href="/">${t("brand")}</a>
           <div class="nav-links">
             <a href="/" class="nav-link${navClass("/")}">${t("nav_markets")}</a>
-            <a href="/valuate" class="nav-link${navClass("/valuate")}">${t("nav_valuate")}</a>
-            <a href="/find" class="nav-link${navClass("/find")}">${t("nav_find")}</a>
+            <a href="/valuate" class="nav-link${navClass("/valuate")}">${t("nav_tools")}</a>
             <a href="/statistics" class="nav-link${navClass("/statistics")}">${t("nav_statistics")}</a>
+            <a href="/about" class="nav-link${navClass("/about")}">${t("nav_about")}</a>
             <a href="/contact" class="nav-link${navClass("/contact")}">${t("nav_contact")}</a>
           </div>
         </div>
@@ -431,6 +454,7 @@
   function renderAll() {
     renderNav();
     renderInsightsSubnav();
+    renderToolsSubnav();
     renderPopularMarkets();
     window.MetrikI18n.apply();
     initInfoTips();

@@ -151,29 +151,37 @@
     }
   }
 
+  function chartFontSize(token, fallback) {
+    const raw = getComputedStyle(document.documentElement).getPropertyValue(token).trim();
+    const px = parseFloat(raw);
+    return Number.isFinite(px) && px > 0 ? px : fallback;
+  }
+
   function chartOptions() {
     const theme = window.MetrikTheme?.chartTheme?.() || {};
     const label = theme.label || "#333";
     const tick = theme.tick || "#6b6b6b";
     const grid = theme.grid || "#e5e5e0";
+    const legendSize = chartFontSize("--chart-font", 13);
+    const tickSize = chartFontSize("--chart-font-sm", 11);
     return {
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
         legend: {
           position: "top",
-          labels: { font: { family: "inherit", size: 13 }, color: label },
+          labels: { font: { family: "inherit", size: legendSize }, color: label },
         },
       },
       scales: {
         y: {
           beginAtZero: true,
           grid: { color: grid },
-          ticks: { font: { family: "inherit" }, color: tick },
+          ticks: { font: { family: "inherit", size: tickSize }, color: tick },
         },
         x: {
           grid: { display: false },
-          ticks: { font: { family: "inherit" }, color: tick },
+          ticks: { font: { family: "inherit", size: tickSize }, color: tick },
         },
       },
     };
@@ -327,36 +335,130 @@
     const nhCtx = document.getElementById("nhChart");
     if (nhCtx) {
       if (nhChart) nhChart.destroy();
-      nhChart = new Chart(nhCtx, {
-        type: "bar",
-        data: {
-          labels: data.top_neighborhoods.map((n) => n.name),
-          datasets: [
-            {
-              label: t("listings"),
-              data: data.top_neighborhoods.map((n) => n.count),
-              backgroundColor: primary,
-              borderRadius: 4,
-            },
-          ],
-        },
-        options: {
-          ...opts,
-          indexAxis: "y",
-          scales: {
-            x: {
-              beginAtZero: true,
-              grid: { color: grid },
-              ticks: { font: { family: "inherit" }, color: tick },
-            },
-            y: {
-              grid: { display: false },
-              ticks: { font: { family: "inherit", weight: "500" }, color: label },
+      const rankingRows = [
+        ...(data.neighborhood_rankings?.expensive || []),
+      ]
+        .filter((r) => r.median_price_per_sqm != null)
+        .slice(0, 8);
+      const fallbackRows = (data.neighborhood_table || data.neighborhood_highlights || [])
+        .filter((r) => r.median_price_per_sqm != null)
+        .sort((a, b) => Number(b.median_price_per_sqm) - Number(a.median_price_per_sqm))
+        .slice(0, 8);
+      const rows = rankingRows.length ? rankingRows : fallbackRows;
+      if (rows.length) {
+        nhChart = new Chart(nhCtx, {
+          type: "bar",
+          data: {
+            labels: rows.map((n) => n.neighborhood || n.name),
+            datasets: [
+              {
+                label: t("annual_chart_median_psm"),
+                data: rows.map((n) => n.median_price_per_sqm),
+                backgroundColor: primary,
+                borderRadius: 4,
+              },
+            ],
+          },
+          options: {
+            ...opts,
+            indexAxis: "y",
+            scales: {
+              x: {
+                beginAtZero: false,
+                grid: { color: grid },
+                ticks: { font: { family: "inherit", size: chartFontSize("--chart-font-sm", 11) }, color: tick },
+              },
+              y: {
+                grid: { display: false },
+                ticks: { font: { family: "inherit", size: chartFontSize("--chart-font", 13), weight: "500" }, color: label },
+              },
             },
           },
+        });
+      }
+    }
+
+    renderRankingCharts(data);
+    renderSegmentCharts(data);
+  }
+
+  function renderRankingCharts(data) {
+    const charts = window.MetrikCharts;
+    const rankings = data.neighborhood_rankings;
+    if (!charts || !rankings) return;
+
+    function paint(canvasId, rows, chartRefName) {
+      const canvas = document.getElementById(canvasId);
+      if (!canvas) return;
+      const list = (rows || []).filter((r) => r.median_price_per_sqm != null);
+      if (!list.length) {
+        charts.destroy(canvas);
+        return;
+      }
+      charts.createHorizontalBarChart(canvas, {
+        labels: list.map((r) => r.neighborhood),
+        values: list.map((r) => r.median_price_per_sqm),
+        label: t("annual_chart_median_psm"),
+        formatTick: (v) => fmtSalePsm(v),
+        tooltipBuilder: (items) => {
+          const idx = items[0]?.dataIndex ?? 0;
+          const row = list[idx];
+          if (!row) return { title: "", lines: [] };
+          return {
+            title: row.neighborhood,
+            lines: [
+              `${t("annual_nh_col_psm")}: ${fmtSalePsm(row.median_price_per_sqm)}`,
+              `${t("annual_nh_col_median_sale")}: ${fmtEuroSale(row.median_sale_eur)}`,
+              t("chart_tooltip_n", { n: row.n ?? "—" }),
+              t("chart_tooltip_confidence", {
+                level: window.MetrikI18n.translateConfidence(row.confidence || "insufficient"),
+              }),
+            ],
+          };
         },
       });
     }
+
+    paint("expensiveNhChart", rankings.expensive);
+    paint("affordableNhChart", rankings.affordable);
+  }
+
+  function renderSegmentCharts(data) {
+    const charts = window.MetrikCharts;
+    const seg = data.apartment_segments || {};
+    if (!charts) return;
+
+    function paint(canvasId, rows) {
+      const canvas = document.getElementById(canvasId);
+      if (!canvas) return;
+      const list = (rows || []).filter((r) => r.median_sale_psm != null);
+      if (!list.length) {
+        charts.destroy(canvas);
+        return;
+      }
+      charts.createHorizontalBarChart(canvas, {
+        labels: list.map((r) => formatSegmentLabel(r.segment)),
+        values: list.map((r) => r.median_sale_psm),
+        label: t("annual_chart_median_psm"),
+        formatTick: (v) => fmtSalePsm(v),
+        tooltipBuilder: (items) => {
+          const idx = items[0]?.dataIndex ?? 0;
+          const row = list[idx];
+          if (!row) return { title: "", lines: [] };
+          return {
+            title: formatSegmentLabel(row.segment),
+            lines: [
+              `${t("annual_nh_col_psm")}: ${fmtSalePsm(row.median_sale_psm)}`,
+              `${t("listings")}: ${fmtNum(row.listings)}`,
+              `${t("annual_nh_col_rent")}: ${fmtRent(row.median_rent)}`,
+            ],
+          };
+        },
+      });
+    }
+
+    paint("bedroomSegmentChart", sortSegmentRows(seg.by_bedrooms, BEDROOM_SEGMENT_ORDER));
+    paint("sizeSegmentChart", sortSegmentRows(seg.by_size_band, SIZE_BAND_ORDER));
   }
 
   function nhLinkCell(row) {
@@ -713,8 +815,16 @@
       const tech = data.methodology_plain?.technical || {};
       const m = data.methodology || {};
       const parts = [];
+      // Never list raw parser version strings publicly (they can embed portal tokens).
       if (tech.parsers || m.parser_versions?.length) {
-        parts.push(t("annual_methodology_parsers", { v: tech.parsers || m.parser_versions.join(", ") }));
+        const count = m.parser_versions?.length
+          ? m.parser_versions.length
+          : null;
+        parts.push(
+          count
+            ? t("methodology_parsers_note_vague")
+            : t("annual_methodology_parsers", { v: String(tech.parsers || "") })
+        );
       }
       if (tech.gazetteer || m.gazetteer_version) {
         parts.push(t("annual_methodology_gazetteer", { v: tech.gazetteer || m.gazetteer_version }));

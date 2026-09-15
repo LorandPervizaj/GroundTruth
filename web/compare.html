@@ -9,14 +9,14 @@
   <meta property="og:description" content="Side-by-side Prishtina neighborhood market comparison with confidence metrics." />
   <meta property="og:type" content="website" />
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="/static/style.css?v=48" />
+  <link rel="stylesheet" href="/static/style.css?v=55" />
 </head>
 <body data-page-title="compare_title">
   <div class="page page-wide compare-page">
     <div id="site-nav"></div>
     <div id="insights-subnav"></div>
 
-    <div class="compare-workspace">
+    <main id="main-content" class="compare-workspace">
       <header class="compare-header">
         <h1 class="hero-title" data-i18n="compare_title"></h1>
         <p class="hero-sub" data-i18n="compare_sub"></p>
@@ -59,8 +59,9 @@
               <span class="compare-nh-card-kicker" data-i18n="compare_preview_card"></span>
               <p class="compare-nh-card-name compare-placeholder-text">—</p>
               <dl class="compare-nh-stats">
-                <div><dt data-i18n="pulse_median_rent"></dt><dd class="compare-placeholder-text">—</dd></div>
+                <div><dt data-i18n="pulse_sale_psm"></dt><dd class="compare-placeholder-text">—</dd></div>
                 <div><dt data-i18n="pulse_median_sale"></dt><dd class="compare-placeholder-text">—</dd></div>
+                <div><dt data-i18n="pulse_median_rent"></dt><dd class="compare-placeholder-text">—</dd></div>
                 <div><dt data-i18n="pulse_listings"></dt><dd class="compare-placeholder-text">—</dd></div>
               </dl>
             </article>
@@ -68,8 +69,9 @@
               <span class="compare-nh-card-kicker" data-i18n="compare_preview_card"></span>
               <p class="compare-nh-card-name compare-placeholder-text">—</p>
               <dl class="compare-nh-stats">
-                <div><dt data-i18n="pulse_median_rent"></dt><dd class="compare-placeholder-text">—</dd></div>
+                <div><dt data-i18n="pulse_sale_psm"></dt><dd class="compare-placeholder-text">—</dd></div>
                 <div><dt data-i18n="pulse_median_sale"></dt><dd class="compare-placeholder-text">—</dd></div>
+                <div><dt data-i18n="pulse_median_rent"></dt><dd class="compare-placeholder-text">—</dd></div>
                 <div><dt data-i18n="pulse_listings"></dt><dd class="compare-placeholder-text">—</dd></div>
               </dl>
             </article>
@@ -77,8 +79,9 @@
               <span class="compare-nh-card-kicker" data-i18n="compare_preview_card"></span>
               <p class="compare-nh-card-name compare-placeholder-text">—</p>
               <dl class="compare-nh-stats">
-                <div><dt data-i18n="pulse_median_rent"></dt><dd class="compare-placeholder-text">—</dd></div>
+                <div><dt data-i18n="pulse_sale_psm"></dt><dd class="compare-placeholder-text">—</dd></div>
                 <div><dt data-i18n="pulse_median_sale"></dt><dd class="compare-placeholder-text">—</dd></div>
+                <div><dt data-i18n="pulse_median_rent"></dt><dd class="compare-placeholder-text">—</dd></div>
                 <div><dt data-i18n="pulse_listings"></dt><dd class="compare-placeholder-text">—</dd></div>
               </dl>
             </article>
@@ -91,6 +94,42 @@
 
         <section id="compare-results" class="hidden compare-results">
           <div class="compare-cards" id="compare-cards"></div>
+          <section class="panel compare-charts-panel" id="compare-charts-section" hidden>
+            <h2 class="section-title section-title-sm" data-i18n="compare_charts_title"></h2>
+            <p class="hint" data-i18n="compare_charts_hint"></p>
+            <div class="compare-chart-grid">
+              <div class="chart-panel">
+                <h3 class="chart-panel-title" data-i18n="pulse_sale_psm"></h3>
+                <div class="chart-container chart-container--xs">
+                  <canvas id="compareSalePsmChart"></canvas>
+                </div>
+              </div>
+              <div class="chart-panel">
+                <h3 class="chart-panel-title" data-i18n="pulse_median_sale"></h3>
+                <div class="chart-container chart-container--xs">
+                  <canvas id="compareMedianSaleChart"></canvas>
+                </div>
+              </div>
+              <div class="chart-panel">
+                <h3 class="chart-panel-title" data-i18n="pulse_median_rent"></h3>
+                <div class="chart-container chart-container--xs">
+                  <canvas id="compareMedianRentChart"></canvas>
+                </div>
+              </div>
+              <div class="chart-panel">
+                <h3 class="chart-panel-title" data-i18n="pulse_listings"></h3>
+                <div class="chart-container chart-container--xs">
+                  <canvas id="compareInventoryChart"></canvas>
+                </div>
+              </div>
+              <div class="chart-panel" id="compare-yield-panel" hidden>
+                <h3 class="chart-panel-title" data-i18n="rent_yield_col_yield"></h3>
+                <div class="chart-container chart-container--xs">
+                  <canvas id="compareYieldChart"></canvas>
+                </div>
+              </div>
+            </div>
+          </section>
           <section class="panel compare-table-panel">
             <h2 class="section-title section-title-sm" data-i18n="compare_details_title"></h2>
             <div class="table-wrap">
@@ -110,15 +149,16 @@
           <p id="compare-error-msg"></p>
         </section>
       </div>
-    </div>
-
-    <div id="site-footer"></div>
+    </main>
+    <div id=\"site-footer\"></div>
   </div>
-  <script defer src="/static/i18n.js?v=45"></script>
+  <script defer src="/static/i18n.js?v=51"></script>
   <script defer src="/static/api-cache.js?v=1"></script>
   <script defer src="/static/format.js?v=10"></script>
+  <script defer src="/static/theme.js?v=1"></script>
+  <script defer src="/static/charts.js?v=4"></script>
   <script defer src="/static/confidence.js?v=1"></script>
-  <script defer src="/static/site.js?v=32"></script>
-  <script defer src="/static/compare.js?v=4"></script>
+  <script defer src="/static/site.js?v=34"></script>
+  <script defer src="/static/compare.js?v=7"></script>
 </body>
 </html>

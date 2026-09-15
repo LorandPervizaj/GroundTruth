@@ -9,13 +9,14 @@
   <meta property="og:description" content="Budget-based neighborhood recommendations for renters and buyers in Prishtina." />
   <meta property="og:type" content="website" />
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="/static/style.css?v=48" />
+  <link rel="stylesheet" href="/static/style.css?v=55" />
 </head>
 <body data-page-title="find_title">
   <div class="page page-wide compare-page find-page">
     <div id="site-nav"></div>
+    <div id="tools-subnav"></div>
 
-    <div class="compare-workspace">
+    <main id="main-content" class="compare-workspace">
       <header class="compare-header">
         <h1 class="hero-title" data-i18n="find_title"></h1>
         <p class="hero-sub" data-i18n="find_sub"></p>
@@ -63,18 +64,18 @@
             <details class="metrik-search-advanced find-advanced">
               <summary data-i18n="find_advanced_filters"></summary>
               <div class="metrik-search-advanced-body">
-                <div class="field-row">
+                <div class="field-row" id="find-psm-filters">
                   <div class="field">
-                    <label for="min-psm" id="find-min-psm-label" data-i18n="find_min_psm_rent"></label>
+                    <label for="min-psm" id="find-min-psm-label" data-i18n="find_min_psm_sale"></label>
                     <div class="input-suffix">
-                      <input type="number" id="min-psm" name="min_price_psm_eur" min="0" step="0.1" placeholder="4" />
+                      <input type="number" id="min-psm" name="min_price_psm_eur" min="0" step="1" placeholder="800" />
                       <span id="find-psm-suffix">€/m²</span>
                     </div>
                   </div>
                   <div class="field">
-                    <label for="max-psm" id="find-max-psm-label" data-i18n="find_max_psm_rent"></label>
+                    <label for="max-psm" id="find-max-psm-label" data-i18n="find_max_psm_sale"></label>
                     <div class="input-suffix">
-                      <input type="number" id="max-psm" name="max_price_psm_eur" min="0" step="0.1" placeholder="12" />
+                      <input type="number" id="max-psm" name="max_price_psm_eur" min="0" step="1" placeholder="2000" />
                       <span id="find-psm-suffix-max">€/m²</span>
                     </div>
                   </div>
@@ -167,16 +168,15 @@
           <p class="hint" data-i18n="find_empty"></p>
         </section>
       </div>
-    </div>
-
-    <div id="site-footer"></div>
+    </main>
+    <div id=\"site-footer\"></div>
   </div>
 
-  <script defer src="/static/i18n.js?v=45"></script>
+  <script defer src="/static/i18n.js?v=51"></script>
   <script defer src="/static/api-cache.js?v=1"></script>
   <script defer src="/static/format.js?v=10"></script>
   <script defer src="/static/confidence.js?v=3"></script>
-  <script defer src="/static/site.js?v=32"></script>
-  <script defer src="/static/find.js?v=7"></script>
+  <script defer src="/static/site.js?v=34"></script>
+  <script defer src="/static/find.js?v=8"></script>
 </body>
 </html>

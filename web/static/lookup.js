@@ -32,6 +32,7 @@ function fmtSalePsm(value) {
 }
 
 function fmtRentPsm(value) {
+  // Public product no longer surfaces rent €/m²; keep helper for safe no-ops.
   if (value == null || value === 0) return "—";
   return window.MetrikFormat.euroRentPsm(value);
 }
@@ -51,7 +52,9 @@ function fmtSaleMoney(value, suffix = "") {
 }
 
 let lastLookupData = null;
+let lastHistoryData = null;
 let marketLoadSeq = 0;
+let marketVizSeq = 0;
 
 function confTierLabel(level) {
   if (window.MetrikConfidence?.tierLabel) {
@@ -65,6 +68,7 @@ document.addEventListener("metrik:langchange", () => {
     renderPriceTier(lastLookupData);
     renderRail(lastLookupData);
     setupValuateCta(lastLookupData);
+    renderMarketVisuals(lastLookupData, lastHistoryData);
   }
 });
 
@@ -203,6 +207,7 @@ function renderPercentilePanel(data) {
   document.getElementById("pct-p10").textContent = fmtSalePsm(pc.p10_sale_psm);
   document.getElementById("pct-p50").textContent = fmtSalePsm(pc.p50_sale_psm);
   document.getElementById("pct-p90").textContent = fmtSalePsm(pc.p90_sale_psm);
+  renderPercentileRange(pc);
   const pctHint = document.getElementById("pct-hint");
   if (pctHint) {
     pctHint.classList.add("hint-info");
@@ -221,6 +226,35 @@ function renderPercentilePanel(data) {
     }
   }
   panel.hidden = false;
+}
+
+function renderPercentileRange(pc) {
+  const range = document.getElementById("percentile-range");
+  const fill = document.getElementById("pct-fill");
+  const markP10 = document.getElementById("pct-mark-p10");
+  const markP50 = document.getElementById("pct-mark-p50");
+  const markP90 = document.getElementById("pct-mark-p90");
+  if (!range || !fill || !markP10 || !markP50 || !markP90) return;
+
+  const p10 = Number(pc.p10_sale_psm);
+  const p50 = Number(pc.p50_sale_psm);
+  const p90 = Number(pc.p90_sale_psm);
+  if (![p10, p50, p90].every((n) => Number.isFinite(n)) || p90 <= p10) {
+    range.hidden = true;
+    range.setAttribute("aria-hidden", "true");
+    return;
+  }
+
+  const span = p90 - p10;
+  const medianPct = Math.min(100, Math.max(0, ((p50 - p10) / span) * 100));
+  fill.style.left = "0%";
+  fill.style.width = "100%";
+  markP10.style.left = "0%";
+  markP90.style.left = "100%";
+  markP50.style.left = `${medianPct}%`;
+  range.title = `${fmtSalePsm(p10)} → ${fmtSalePsm(p50)} → ${fmtSalePsm(p90)}`;
+  range.hidden = false;
+  range.setAttribute("aria-hidden", "false");
 }
 
 function renderCityPanel(data) {
@@ -309,12 +343,8 @@ function renderPulse(data) {
     }
   }
 
-  // Card 1: sale €/m². Card 2: rent €/m²/mo. Card 3: median sale. Card 4: median monthly rent.
+  // Sale €/m², median sale, monthly rent, inventory — no public rent €/m².
   document.getElementById("pulse-sale-psm").textContent = fmtSalePsm(p.average_sale_psm_eur);
-  document.getElementById("pulse-rent-psm").textContent =
-    p.average_rent_psm_eur == null
-      ? "-"
-      : `${fmtRentPsm(p.average_rent_psm_eur)}${t("per_month_suffix")}`;
   document.getElementById("pulse-median-sale").textContent = fmtSaleMoney(p.median_sale_eur);
   document.getElementById("pulse-median-rent").textContent = fmtRentMoney(
     p.median_rent_eur,
@@ -461,8 +491,7 @@ function fillTable(tableId, rows, labelKey) {
     tr.innerHTML = `
       <td>${esc(row[labelKey])}</td>
       <td>${esc(fmtSalePsm(row.average_sale_psm_eur))}</td>
-      <td>${esc(fmtRentPsm(row.average_rent_psm_eur))}</td>
-      <td>${esc(fmtRentMoney(row.median_rent_eur, "/mo"))}</td>
+      <td>${esc(fmtRentMoney(row.median_rent_eur, t("per_month_suffix")))}</td>
       <td>${esc(row.listings)}</td>
       <td>${window.MetrikConfidence.badge({ confidence: row.confidence }, { levelOnly: true })}</td>
     `;
@@ -555,6 +584,298 @@ function renderRecent(listings) {
   renderRecentList(listings, "recent-listings", null, { expandable: true });
 }
 
+function formatHistoryLabel(periodEnd) {
+  if (!periodEnd) return "";
+  try {
+    return window.MetrikFormat?.dateShort?.(periodEnd) || String(periodEnd).slice(0, 10);
+  } catch {
+    return String(periodEnd).slice(0, 10);
+  }
+}
+
+function confLabel(level) {
+  if (!level) return "";
+  return confTierLabel(level);
+}
+
+function avgSample(points, key) {
+  const vals = (points || []).map((p) => Number(p[key]) || 0).filter((n) => n > 0);
+  if (!vals.length) return 0;
+  return Math.round(vals.reduce((a, b) => a + b, 0) / vals.length);
+}
+
+function clearSparklines() {
+  for (const id of ["spark-sale-psm", "spark-median-rent", "spark-inventory"]) {
+    const canvas = document.getElementById(id);
+    if (!canvas) continue;
+    window.MetrikCharts?.destroy?.(canvas);
+    canvas.hidden = true;
+    canvas.closest(".pulse-spark-wrap")?.setAttribute("hidden", "");
+  }
+}
+
+async function renderSparklines(history) {
+  const charts = window.MetrikCharts;
+  if (!charts) {
+    clearSparklines();
+    return;
+  }
+  await charts.ensureChartJs();
+  const points = history?.points || [];
+  const theme = charts.theme();
+
+  const specs = [
+    { id: "spark-sale-psm", key: "median_sale_psm_eur", color: theme.primary },
+    { id: "spark-median-rent", key: "median_rent_eur", color: theme.tertiary },
+    { id: "spark-inventory", key: "inventory_n", color: theme.secondary },
+  ];
+
+  for (const spec of specs) {
+    const canvas = document.getElementById(spec.id);
+    const wrap = canvas?.closest(".pulse-spark-wrap");
+    if (!canvas || !wrap) continue;
+    const values = points.map((p) => p[spec.key]);
+    const chart = charts.createSparkline(canvas, { values, color: spec.color });
+    if (chart) {
+      wrap.hidden = false;
+      wrap.removeAttribute("hidden");
+    } else {
+      wrap.hidden = true;
+      wrap.setAttribute("hidden", "");
+    }
+  }
+}
+
+async function renderHistoryCharts(history) {
+  const section = document.getElementById("market-history-section");
+  const empty = document.getElementById("market-history-empty");
+  const chartsWrap = document.getElementById("market-history-charts");
+  const charts = window.MetrikCharts;
+  if (!section || !charts) return;
+
+  const points = history?.points || [];
+  const salePoints = points.filter((p) => p.median_sale_psm_eur != null);
+  const rentPoints = points.filter((p) => p.median_rent_eur != null);
+  const usable = salePoints.length >= 3 || rentPoints.length >= 3;
+
+  if (!usable) {
+    section.classList.remove("hidden");
+    if (chartsWrap) {
+      chartsWrap.hidden = true;
+      chartsWrap.classList.add("hidden");
+    }
+    if (empty) {
+      empty.hidden = false;
+      empty.textContent = t("market_history_insufficient");
+    }
+    charts.destroy(document.getElementById("historySaleChart"));
+    charts.destroy(document.getElementById("historyRentChart"));
+    return;
+  }
+
+  section.classList.remove("hidden");
+  if (chartsWrap) {
+    chartsWrap.hidden = false;
+    chartsWrap.classList.remove("hidden");
+  }
+  if (empty) empty.hidden = true;
+
+  await charts.ensureChartJs();
+  const theme = charts.theme();
+  const labels = points.map((p) => formatHistoryLabel(p.period_end || p.period_start));
+
+  const saleCanvas = document.getElementById("historySaleChart");
+  const rentCanvas = document.getElementById("historyRentChart");
+  const saleNote = document.getElementById("history-sale-note");
+  const rentNote = document.getElementById("history-rent-note");
+
+  if (saleCanvas && salePoints.length >= 3) {
+    charts.createLineChart(saleCanvas, {
+      labels,
+      beginAtZero: false,
+      datasets: [
+        {
+          label: t("market_history_sale"),
+          data: points.map((p) => p.median_sale_psm_eur),
+          borderColor: theme.primary,
+          backgroundColor: theme.primaryFill,
+          fill: true,
+        },
+      ],
+      tooltipBuilder: (items) => {
+        const idx = items[0]?.dataIndex ?? 0;
+        const p = points[idx];
+        if (!p) return { title: "", lines: [] };
+        return {
+          title: formatHistoryLabel(p.period_end || p.period_start),
+          lines: [
+            `${t("market_history_sale")}: ${fmtSalePsm(p.median_sale_psm_eur)}`,
+            t("chart_tooltip_n", { n: p.sale_n ?? 0 }),
+            t("chart_tooltip_confidence", { level: confLabel(p.sale_confidence) }),
+          ],
+        };
+      },
+    });
+    charts.setNote(saleNote, t("market_history_sale_note", { n: avgSample(points, "sale_n") || "—" }));
+  } else {
+    charts.destroy(saleCanvas);
+    charts.setNote(saleNote, t("market_history_insufficient"));
+  }
+
+  if (rentCanvas && rentPoints.length >= 3) {
+    charts.createLineChart(rentCanvas, {
+      labels,
+      beginAtZero: false,
+      datasets: [
+        {
+          label: t("market_history_rent"),
+          data: points.map((p) => p.median_rent_eur),
+          borderColor: theme.tertiary,
+          backgroundColor: theme.tertiaryFill,
+          fill: true,
+        },
+      ],
+      tooltipBuilder: (items) => {
+        const idx = items[0]?.dataIndex ?? 0;
+        const p = points[idx];
+        if (!p) return { title: "", lines: [] };
+        return {
+          title: formatHistoryLabel(p.period_end || p.period_start),
+          lines: [
+            `${t("market_history_rent")}: ${fmtRentMoney(p.median_rent_eur, t("per_month_suffix"))}`,
+            t("chart_tooltip_n", { n: p.rent_n ?? 0 }),
+            t("chart_tooltip_confidence", { level: confLabel(p.rent_confidence) }),
+          ],
+        };
+      },
+    });
+    charts.setNote(rentNote, t("market_history_rent_note", { n: avgSample(points, "rent_n") || "—" }));
+  } else {
+    charts.destroy(rentCanvas);
+    charts.setNote(rentNote, t("market_history_insufficient"));
+  }
+}
+
+function formatBinLabel(bin) {
+  const start = bin.bin_start;
+  const end = bin.bin_end;
+  if (start == null || end == null) return "—";
+  return `${start}–${end}`;
+}
+
+async function renderDistributionCharts(data) {
+  const section = document.getElementById("market-distribution-section");
+  const charts = window.MetrikCharts;
+  if (!section || !charts) return;
+
+  const saleDist = data.sale_price_distribution;
+  const rentDist = data.rent_price_distribution;
+  const saleOk = (saleDist?.bins || []).length >= 2 && (saleDist?.n || 0) >= 10;
+  const rentOk = (rentDist?.bins || []).length >= 2 && (rentDist?.n || 0) >= 10;
+
+  if (!saleOk && !rentOk) {
+    section.classList.add("hidden");
+    charts.destroy(document.getElementById("distSaleChart"));
+    charts.destroy(document.getElementById("distRentChart"));
+    return;
+  }
+
+  section.classList.remove("hidden");
+  await charts.ensureChartJs();
+  const theme = charts.theme();
+  const medianLabel = t("market_distribution_median_line");
+
+  async function paint(kind, dist, canvasId, wrapId, noteId, median, color) {
+    const canvas = document.getElementById(canvasId);
+    const wrap = document.getElementById(wrapId);
+    const note = document.getElementById(noteId);
+    const panel = document.getElementById(kind === "sale" ? "dist-sale-panel" : "dist-rent-panel");
+    const ok = (dist?.bins || []).length >= 2 && (dist?.n || 0) >= 10;
+    if (!ok) {
+      if (panel) panel.hidden = true;
+      charts.destroy(canvas);
+      return;
+    }
+    if (panel) panel.hidden = false;
+    charts.showChart(wrap);
+    const bins = dist.bins;
+    const labels = bins.map(formatBinLabel);
+    const values = bins.map((b) => b.count || 0);
+    const centers = bins.map((b) => (Number(b.bin_start) + Number(b.bin_end)) / 2);
+    charts.createHistogram(canvas, {
+      labels,
+      values,
+      binCenters: centers,
+      median: median != null ? Number(median) : null,
+      medianLabel,
+      color,
+      tooltipBuilder: (items) => {
+        const idx = items[0]?.dataIndex ?? 0;
+        const bin = bins[idx];
+        if (!bin) return { title: "", lines: [] };
+        return {
+          title: `${formatBinLabel(bin)} ${kind === "sale" ? t("market_distribution_psm") : t("market_distribution_rent_unit")}`,
+          lines: [
+            t("market_distribution_count", { n: bin.count || 0 }),
+            t("chart_tooltip_sample", { n: dist.n || 0, confidence: confLabel(dist.confidence) }),
+          ],
+        };
+      },
+    });
+    charts.setNote(
+      note,
+      t("market_distribution_note", {
+        n: dist.n || 0,
+        confidence: confLabel(dist.confidence),
+      })
+    );
+  }
+
+  await paint(
+    "sale",
+    saleDist,
+    "distSaleChart",
+    "dist-sale-wrap",
+    "dist-sale-note",
+    data.pulse?.average_sale_psm_eur ?? data.price_percentiles?.p50_sale_psm,
+    theme.primary
+  );
+  await paint(
+    "rent",
+    rentDist,
+    "distRentChart",
+    "dist-rent-wrap",
+    "dist-rent-note",
+    data.pulse?.median_rent_eur,
+    theme.tertiary
+  );
+}
+
+async function renderMarketVisuals(data, history) {
+  const seq = ++marketVizSeq;
+  try {
+    await Promise.all([
+      renderHistoryCharts(history),
+      renderDistributionCharts(data),
+      renderSparklines(history),
+    ]);
+  } catch (err) {
+    console.error("market visuals failed", err);
+  }
+  if (seq !== marketVizSeq) return;
+}
+
+async function fetchMarketHistory(entityType, slug) {
+  try {
+    const url = `/api/lookup/${entityType}/${slug}/history?months=12`;
+    const res = await fetchWithTimeout(url, 12000);
+    if (!res.ok) return null;
+    return await res.json();
+  } catch {
+    return null;
+  }
+}
+
 function setupValuateCta(data, onInsufficient = false) {
   const btn = document.getElementById("valuate-cta-btn");
   if (!btn) return;
@@ -606,7 +927,7 @@ function fetchWithTimeout(url, ms = 30000) {
   return fetch(url, { signal: controller.signal }).finally(() => clearTimeout(timer));
 }
 
-function renderMarketData(data) {
+function renderMarketData(data, history = null) {
   renderBreadcrumb(data);
 
   const inventory = totalListings(data);
@@ -616,6 +937,9 @@ function renderMarketData(data) {
   if (showInsufficient) {
     document.getElementById("market-content")?.classList.add("hidden");
     document.getElementById("insufficient")?.classList.remove("hidden");
+    document.getElementById("market-history-section")?.classList.add("hidden");
+    document.getElementById("market-distribution-section")?.classList.add("hidden");
+    clearSparklines();
     renderInsufficient(data);
     setupMarketActions(data);
     return;
@@ -631,6 +955,8 @@ function renderMarketData(data) {
   fillTable("size-table", data.size_breakdown, "label");
   renderRecent(data.recent_listings);
   setupValuateCta(data);
+  lastHistoryData = history;
+  renderMarketVisuals(data, history);
 }
 
 async function loadMarket() {
@@ -680,10 +1006,16 @@ async function loadMarket() {
       confidence_tier: data.pulse.confidence,
     });
 
-    renderMarketData(data);
-
-    if (seq !== marketLoadSeq) return;
+    // Render snapshot immediately; history is optional and may hit a colder path.
+    renderMarketData(data, null);
     document.title = `${data.display_name}, ${brand()}`;
+
+    const history = await fetchMarketHistory(data.entity_type, data.slug);
+    if (seq !== marketLoadSeq) return;
+    lastHistoryData = history;
+    if (history) {
+      await renderMarketVisuals(data, history);
+    }
   } catch (err) {
     if (seq !== marketLoadSeq) return;
 
