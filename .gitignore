@@ -55,7 +55,7 @@ Thumbs.db
 reports/generated/**
 !reports/generated/.gitkeep
 !reports/generated/lookup_cache/
-!reports/generated/lookup_cache/.gitkeep
+!reports/generated/lookup_cache/**
 reports/lighthouse-*.json
 backups/
 
