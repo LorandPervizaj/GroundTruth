@@ -1,6 +1,6 @@
 {
-  "built_at": "2026-09-17T08:41:13.305946+00:00",
-  "corpus_revision": "2026-09-15T21:48:52.646079+00:00",
+  "built_at": "2026-09-21T12:16:45.224557+00:00",
+  "corpus_revision": "2026-09-21T12:08:59.100854+00:00",
   "dataset_version": "v2.0",
   "dataset_hash": "4d4956eb49bfb75fc8abb63c84090edeb3c137b8fd5752b0dd33bfbf8b536f20",
   "entry_count": 210,
@@ -9,1281 +9,1281 @@
       "entity_type": "neighborhood",
       "slug": "prishtina-e-re",
       "path": "neighborhood/prishtina-e-re.json",
-      "sha256": "5f314cfa09f1b52acf2442b8695f97c6e62982092fdc43b27b3b3e685dc061a3"
+      "sha256": "54b2a3283c7d8e3e874d850aab0321082b377ddc36860e49965f2d59adb216f4"
     },
     {
       "entity_type": "neighborhood",
       "slug": "arberia",
       "path": "neighborhood/arberia.json",
-      "sha256": "ef171755dfaf468fe951e5b2e1e914b59acf7742bae7ca1ba4bffc064646d7a9"
+      "sha256": "1db50bd313964c058ec7adf36b0965b092f77ac8e3288489af82c26d1b458448"
     },
     {
       "entity_type": "neighborhood",
       "slug": "dragodan",
       "path": "neighborhood/dragodan.json",
-      "sha256": "1a13af6c8671173db6938ef0ef558955a29be1f76b30f56a6e89ab2e080aacfc"
+      "sha256": "a21c91eef0949afd0710ad74638913c06c6508abe165fca229da4b90452472d3"
     },
     {
       "entity_type": "neighborhood",
       "slug": "sunny-hill",
       "path": "neighborhood/sunny-hill.json",
-      "sha256": "fc879e0b4cd91d436b7d835a46c0293d539a2c50414820b4fbf0b1d9fa395045"
+      "sha256": "55aeb9f39a1d8882835ecfdb28bed5b26c2a7b972d8bcd5fc36cf4c906863d28"
     },
     {
       "entity_type": "neighborhood",
       "slug": "qafa",
       "path": "neighborhood/qafa.json",
-      "sha256": "85b353429f77371dab4b0adb608039860036bc03f7929e07bbeeb09bab70d227"
+      "sha256": "97f25ed70ff770978193355813bf34427b48ac7503f63f142516a174b9f43576"
     },
     {
       "entity_type": "neighborhood",
       "slug": "dardania",
       "path": "neighborhood/dardania.json",
-      "sha256": "a236a61439d8765d5f5cbcf0694730b00004b97c7bbc44eadf3a45273c3da67b"
+      "sha256": "ab9fd8473a5697dddf76fe5c71df4adb267647419565f08e4ac747eaa4032887"
     },
     {
       "entity_type": "neighborhood",
       "slug": "pejton-lakrishte",
       "path": "neighborhood/pejton-lakrishte.json",
-      "sha256": "faa1ac4df3c08bd282f4e2f418396270ea7a2cc9e5260a1cffa9ddfb281edaf2"
+      "sha256": "1b77fc41b898fbe4c79d71afd05a0c337c8a78357e82af131c66e5041b58827a"
     },
     {
       "entity_type": "neighborhood",
       "slug": "lakrishte",
       "path": "neighborhood/lakrishte.json",
-      "sha256": "d63aed9e873a97483619058218ca0c9849470e6acd1ef00e38119c9fb8b29d69"
+      "sha256": "87f2af465e06bffbb7be606f9e0b5bc347a5946cfc5e736bf1db610f1f1d786c"
     },
     {
       "entity_type": "neighborhood",
       "slug": "pejton",
       "path": "neighborhood/pejton.json",
-      "sha256": "10d783b93446f20293d3f7bf5a57923a6ead4a75d0911cd87415bfd5bce82ff8"
+      "sha256": "5e9faf7085f8d8c3b78e90a6e34390f5ae9c59bceed4e12d49e11b326a14f046"
     },
     {
       "entity_type": "neighborhood",
       "slug": "hajvali",
       "path": "neighborhood/hajvali.json",
-      "sha256": "e1813bc0dfe8b6a541c72a1bdd659ac46ddcddfc91fee8ba0ee97edbd3e4f011"
+      "sha256": "32b15ca666aeb95ce248662275b489692944b419ed371accf5988fc5407c2719"
     },
     {
       "entity_type": "neighborhood",
       "slug": "bregu-i-diellit",
       "path": "neighborhood/bregu-i-diellit.json",
-      "sha256": "89c5ca0605558d61342f11a562033a38202ba5af3b876ff81881c39cf99ba076"
+      "sha256": "e2d4b6638d488c7eb10c8e4b17468c2bf0d0974c4ebe1b49e3616e89a0891b60"
     },
     {
       "entity_type": "neighborhood",
       "slug": "aktash-muhaxhere",
       "path": "neighborhood/aktash-muhaxhere.json",
-      "sha256": "f803fc53e822b076a69618e741162c6bd89610139bee3d1f4fb5b89a28cb58bc"
+      "sha256": "2df59827da832a205b189c90c930a1c0d11e9b101431e4e42f450fd445a36b99"
     },
     {
       "entity_type": "neighborhood",
       "slug": "aktash",
       "path": "neighborhood/aktash.json",
-      "sha256": "5c74e39910ec20d4c5bc52b34ef17b49793a546f0133314cbcf453f97207b86e"
+      "sha256": "2268c01eea6c2b0855445bee7f683ed2007249d214a4ea1e5f5c3e8dc77930c4"
     },
     {
       "entity_type": "neighborhood",
       "slug": "muhaxhere",
       "path": "neighborhood/muhaxhere.json",
-      "sha256": "8b07950531fbf8c2fa9d46dc8caa4ef64b7958b98d17e971636dcad4c52ce57b"
+      "sha256": "fa0d7bef5059e2886a6daea5cf96c13a0eb7798bd05c69f44e41069df05ff477"
     },
     {
       "entity_type": "neighborhood",
       "slug": "taukbahce",
       "path": "neighborhood/taukbahce.json",
-      "sha256": "fb8baa68187491cfa59b55267a3b83874487fd210fb0bab228a4890a5dc7a299"
+      "sha256": "69714d164e29031b615bf631b7114b7e74b97f124c630f45dd6759be061c21c7"
     },
     {
       "entity_type": "neighborhood",
       "slug": "velania",
       "path": "neighborhood/velania.json",
-      "sha256": "213a3212e55dabaf97674015357a061817ee259dd74783ecbb86f541058f4cfc"
+      "sha256": "15405b6471a8ba78ac6c4493b85dcca901570e308a7189730b8452e6428b84cf"
     },
     {
       "entity_type": "neighborhood",
       "slug": "vranjevc-kodra-trimave",
       "path": "neighborhood/vranjevc-kodra-trimave.json",
-      "sha256": "72430d3bf845fce3d116518bee60cc2d05830ee7b6d6f032f2a754982e27e8d9"
+      "sha256": "14c91cbecdb4338ca28400be7f8a38eff4245e6dc93860e818659aaed294d578"
     },
     {
       "entity_type": "neighborhood",
       "slug": "kodra-e-trimave",
       "path": "neighborhood/kodra-e-trimave.json",
-      "sha256": "81fa9616a0f51ab1d1b6e3632652f036963fd0f61c0cdc042d66fd49f7d342ad"
+      "sha256": "7df72b9ff40efd91bd3bd92b2d5104eac1d5fc62605ceead77357e492b99a84a"
     },
     {
       "entity_type": "neighborhood",
       "slug": "sofalia",
       "path": "neighborhood/sofalia.json",
-      "sha256": "5488f250dd4d2a74cd79fb3cd4663cef6ac2e0f260f55a1b9c4c19d0c2c3845e"
+      "sha256": "00de814af998a0eb771baaef31cddb447b5700022ec022f98529605416ffc0d5"
     },
     {
       "entity_type": "neighborhood",
       "slug": "sharri",
       "path": "neighborhood/sharri.json",
-      "sha256": "29ff5db88adda04f0ca8944b3b439de38a7bf9910fc3bbb248e647e1cef9493b"
+      "sha256": "ea8fdd882206a73a2aa7ced6acb0dd2e99d529878b1b52857cbf62fd0af44b07"
     },
     {
       "entity_type": "neighborhood",
       "slug": "toplane",
       "path": "neighborhood/toplane.json",
-      "sha256": "dfdb94ce388877f69e9a08112dfb0602fb23b55f4235382d4bd22d398248f05a"
+      "sha256": "d4b49c043db36b56d0c9dd4f684fa50dd1600b9ad7aa85e390668391b0df671a"
     },
     {
       "entity_type": "neighborhood",
       "slug": "kurrizi",
       "path": "neighborhood/kurrizi.json",
-      "sha256": "9f55c1919c35d0bebedf1bb2d0830a91f53f4972bb64f3dd0932f2af7f86bbfe"
+      "sha256": "bc0a4b5ab8fae5814021b9cb65904812b4f08cf88990be72e88104c0ef37143a"
     },
     {
       "entity_type": "neighborhood",
       "slug": "kolonija",
       "path": "neighborhood/kolonija.json",
-      "sha256": "fcd1ec0f7361d8fc11ea2eba4bba683111de56aa8783b2b21a4f95a5c046e1ca"
+      "sha256": "ffa2cc81f6f7e8b2a3e56f2c0d45a90b925cb29935c7070d7288dabc800b274d"
     },
     {
       "entity_type": "neighborhood",
       "slug": "germia",
       "path": "neighborhood/germia.json",
-      "sha256": "5d3a297bf946e82f29d1c17e7048b89096972bac73ef955fb9a0fa7fd4f07d90"
+      "sha256": "98f921cb03b57a5752781c1bb86a2cbdede271f73a8e80e87a53482e60c60fd0"
     },
     {
       "entity_type": "neighborhood",
       "slug": "matiqan",
       "path": "neighborhood/matiqan.json",
-      "sha256": "f9e0e227ab1093a5ac0d054611a55fa2a81303cee1db785b3b0e6d7c99a3734e"
+      "sha256": "7cf8c2cacefe96af28139679a3b495cdf6b08aecdfa1a5be414bf66042a7bdcc"
     },
     {
       "entity_type": "neighborhood",
       "slug": "mati",
       "path": "neighborhood/mati.json",
-      "sha256": "e0d6334b8e31eaa6a8dfc8103f694ab077ea72acdb4186947eda4c7eac2a3d01"
+      "sha256": "d9c4a18066a43418ae6f0ef642770b89c9992451ff2edc1d8d0a6dd37acf8ef4"
     },
     {
       "entity_type": "neighborhood",
       "slug": "mati-2",
       "path": "neighborhood/mati-2.json",
-      "sha256": "c46ee4efb3e1cf03631d80482219a6aa6dc7a929581f91ab8fbd7ae606c9f106"
+      "sha256": "d9eb4858dddca275603bdcc5d3253d52b0632ee5f500f05c5c114376f8fdd158"
     },
     {
       "entity_type": "neighborhood",
       "slug": "mati-3",
       "path": "neighborhood/mati-3.json",
-      "sha256": "a4bb19b7503a61d4492d1c438217ae558ece76accf7214e1c00d6a1d65b86e14"
+      "sha256": "6829ac69f06da48ec4ddf9924f35019a287a45736f71e0decd2541bd2283f228"
     },
     {
       "entity_type": "neighborhood",
       "slug": "matican",
       "path": "neighborhood/matican.json",
-      "sha256": "114d3626d36a18375ef0db055eeae32c561bb35bbe09dd8a8a0cc4f73d11320c"
+      "sha256": "0eeb0b18fd092ff4ead3e114ba42538033804e260e5916c6535048be07feda22"
     },
     {
       "entity_type": "neighborhood",
       "slug": "kishnice",
       "path": "neighborhood/kishnice.json",
-      "sha256": "b7626d4e4ed70b4d638c469181ba179841e82d19b2e9f2baac523be91d6d9649"
+      "sha256": "29f3d3320a03cc2e91e6ac1d5f50e38231384c7406a038eb2a155e45a0de73cd"
     },
     {
       "entity_type": "neighborhood",
       "slug": "rilindja",
       "path": "neighborhood/rilindja.json",
-      "sha256": "20501a7eb207f049e67bfc9a9965557c1fd389455033fb52b5d4407b48f8d910"
+      "sha256": "08887cd6c8f617c6188045b18f9bc5f63af5fad5e180938a655cec701117e645"
     },
     {
       "entity_type": "neighborhood",
       "slug": "llullat-dodona",
       "path": "neighborhood/llullat-dodona.json",
-      "sha256": "fb7e732b86451adaaa3a1118d374d0b52c4699d3877a1bf05413d8122b61d0cf"
+      "sha256": "b8c9d154fe9f2c494777f972a3e1e4c764a6aad4bb53a44744f106327d152d9b"
     },
     {
       "entity_type": "neighborhood",
       "slug": "dodona",
       "path": "neighborhood/dodona.json",
-      "sha256": "bc51fc0137156770d1f355f89b3c558d54d713c9b395e60aa946e987dc248515"
+      "sha256": "383e344101cec5facc8d24952a737930ca30bd794fbf95cd56f4d0a3996cc49d"
     },
     {
       "entity_type": "neighborhood",
       "slug": "llullat",
       "path": "neighborhood/llullat.json",
-      "sha256": "70f9eb8b7e84997feaad45bf4c0792c507a2156ebf84b07632adad8b53d3b732"
+      "sha256": "b264137b1e948863dfb646d4f59110a4a32d4bc907fd6b4245ccf0a13edc5ca4"
     },
     {
       "entity_type": "neighborhood",
       "slug": "remize",
       "path": "neighborhood/remize.json",
-      "sha256": "149266ea6434ab351ea25071ca1b22146523d4fd89ead2000b9592fc89fa6fd5"
+      "sha256": "a8716f2eaf76b9748b77f0c243e4cbf66608c6a4ee281d4775d6a2a962f3c742"
     },
     {
       "entity_type": "neighborhood",
       "slug": "bardhosh",
       "path": "neighborhood/bardhosh.json",
-      "sha256": "6acac5850f175b0418a61f28b3653b68f01d969f30abd08e0d43251ef26aeb65"
+      "sha256": "a7ce542c9a37d1ff4c4bf72c16c0a20efe94b241bc18ece0ee8df09b23db3a8a"
     },
     {
       "entity_type": "neighborhood",
       "slug": "llukar",
       "path": "neighborhood/llukar.json",
-      "sha256": "a274baa53a1a17c1bf7a47a34f1d6c54e2d092c1afdca9e84b7bf770c65d94d4"
+      "sha256": "cdd00f433005cc7ced5b200a4d54321ee121b76d1747dd7eebcf2f6ea7fae55c"
     },
     {
       "entity_type": "neighborhood",
       "slug": "emshir",
       "path": "neighborhood/emshir.json",
-      "sha256": "e1641f54ade7bafa7d21d442b00ca4fbf7c7d40a92bfa945e745cd2c1b131225"
+      "sha256": "994b10d9628609a39cca29008d365d280fe0dee26bdf2fe89ad0a74d57ab4b4f"
     },
     {
       "entity_type": "neighborhood",
       "slug": "kalabria",
       "path": "neighborhood/kalabria.json",
-      "sha256": "1d98f0a0235c465202d78aa3a94997728ebce7feb6bc487f426df3f793e5eec5"
+      "sha256": "e1241cd77e10667328381337d3cd112ad065aa5480a72c886797c929d9586c01"
     },
     {
       "entity_type": "neighborhood",
       "slug": "kodra-e-diellit-2",
       "path": "neighborhood/kodra-e-diellit-2.json",
-      "sha256": "5412c00719d7f9f120d11a00346265e055183a57a2fdabbaa0310f24e6b09fa6"
+      "sha256": "4c43e791f91281d6e1f58e4172ee8c4eb69835c86b68225e0bcd7f7aecb7e11f"
     },
     {
       "entity_type": "neighborhood",
       "slug": "bledi",
       "path": "neighborhood/bledi.json",
-      "sha256": "37de92ff0b37e8a318ece0e40e0ef69c6a85c5f23e63aadf072898bb8526308b"
+      "sha256": "2826e2b74267e5792e88027e1fdc67b2dc650dd85d40d773cc40c748ce92525d"
     },
     {
       "entity_type": "neighborhood",
       "slug": "perparimi",
       "path": "neighborhood/perparimi.json",
-      "sha256": "9e0d3661299d6963b2f0ff3b2978b7162f58e369a881e3c6394423bf88c10173"
+      "sha256": "67e9dd9fad6934ee37e70fefced60c7bc6860b3795af2db1b23a7ae5fe55a59b"
     },
     {
       "entity_type": "neighborhood",
       "slug": "bregu-i-zi",
       "path": "neighborhood/bregu-i-zi.json",
-      "sha256": "9f6d0b8a6de1e2a079dab6b9f3519b4cac5a6c7430e1a316f851ed8f63e4cdc5"
+      "sha256": "8ecbee4abde03e215aec8b72b6ec4df3f0619bbc756710c6c982c1c7f2f2e184"
     },
     {
       "entity_type": "neighborhood",
       "slug": "prizren",
       "path": "neighborhood/prizren.json",
-      "sha256": "14c95360c879d1f94c85c3e91b1904bde25e49a822600d8bddb4991081335856"
+      "sha256": "2a2d03798d9a44abcc3cbc670b3d13cf2ac4292288d9ce55600dbbe09154c5b6"
     },
     {
       "entity_type": "neighborhood",
       "slug": "peja",
       "path": "neighborhood/peja.json",
-      "sha256": "34c552ced8e6bd1ba4f7d30f22a91e074cf279a7f43929d15157281e45c48b57"
+      "sha256": "4d0f649163f2276e3171875b862bbd04a63d4ccbd5e2aabbf17faaae841e69f7"
     },
     {
       "entity_type": "neighborhood",
       "slug": "gjakove",
       "path": "neighborhood/gjakove.json",
-      "sha256": "c9dc7ec9312395da94f014e54ba7fcdb126af0be3b62a3e1367b31c07aa8cefd"
+      "sha256": "d1f2295e65317cc3771bc5ac080af70ff3a1d9c35be9cfe09b2360516223b5d2"
     },
     {
       "entity_type": "neighborhood",
       "slug": "kalabri",
       "path": "neighborhood/kalabri.json",
-      "sha256": "5036c6d24e8a12db8e8078cbea86337460ab3f5df83bb9ee5b5fbc9f5a2aa594"
+      "sha256": "dd1639da20a4dd253b53d0c07727f17378afc62f17a702b1326451a40584690a"
     },
     {
       "entity_type": "neighborhood",
       "slug": "ulpiana",
       "path": "neighborhood/ulpiana.json",
-      "sha256": "12d480b6afa608f7efcae09e87ad2bc2c6cf90068de417650c7872b5e86db314"
+      "sha256": "65d63ea23430da8c7112982d42443d9fcab82de2a12dd34007323ec9fe54bd37"
     },
     {
       "entity_type": "neighborhood",
       "slug": "qendra",
       "path": "neighborhood/qendra.json",
-      "sha256": "311d05850c07d6badf734c0b68a0a286ee8adc7e4a688a49b86f6322c0d1c2c5"
+      "sha256": "6c819c15f0eeff04382ca5e606dc1fe9c5535dcc2673bd2eab9237e69c15f90c"
     },
     {
       "entity_type": "neighborhood",
       "slug": "veternik",
       "path": "neighborhood/veternik.json",
-      "sha256": "bc84e8a38c7158693cb56458327155a62ef67e899c35179fb7a52963ac28459e"
+      "sha256": "23f255120c2e0ab79550c07cb20dcd26ab626351ea7fc8c3609f7d973c5e4009"
     },
     {
       "entity_type": "neighborhood",
       "slug": "tophane",
       "path": "neighborhood/tophane.json",
-      "sha256": "37ed7d779f9df7810dc81339f6f1d72621351b1b161c0cc125a3a83729d1112b"
+      "sha256": "f6e653fc89b2d80f94af0ec998eee05b5005c32c13483bbe75880a4657d18990"
     },
     {
       "entity_type": "neighborhood",
       "slug": "spitali",
       "path": "neighborhood/spitali.json",
-      "sha256": "388bd255e014fd3fd5442b6552cb50219f4e1506ffca6ade179bb6555d7d731e"
+      "sha256": "484632df0bc6e1c8160c2300cbec0dc2a29a74383d459e63d0650a18f231a763"
     },
     {
       "entity_type": "neighborhood",
       "slug": "taslixhe",
       "path": "neighborhood/taslixhe.json",
-      "sha256": "537bb83e4e1164f7918b6dde94e0b44819b4e196cea556a6af272c693a57e4d5"
+      "sha256": "761b3618e582f582c30549ce81a9df6f217bcae11bb232208a41a4a06a375f48"
     },
     {
       "entity_type": "neighborhood",
       "slug": "sllovenia-sport",
       "path": "neighborhood/sllovenia-sport.json",
-      "sha256": "fce5e7fcb4f82e220c58e879af332cc66aa5d31d42df2d65d5f55a1d787a599e"
+      "sha256": "72bb08b926e79e6eaaa0ee48e657ab45f98775c0de099d768980c20f5c5842d1"
     },
     {
       "entity_type": "neighborhood",
       "slug": "parku-i-qytetit",
       "path": "neighborhood/parku-i-qytetit.json",
-      "sha256": "1434673634a1c02233749d24a5e27ea0216368ddce39053842d9c81ffd225cff"
+      "sha256": "95cb972190a42be73e021c1923ee9dc79231725f1fbed39d92e04aae50a5ded9"
     },
     {
       "entity_type": "neighborhood",
       "slug": "fushe-kosove",
       "path": "neighborhood/fushe-kosove.json",
-      "sha256": "a6f3643c2c1db05151ee38746a6f413d730b30985dcee235973faf0ffaeeecba"
+      "sha256": "ca8a5355585dd809bec329bb7f498eabaed282d5182603558ed8ce0bf0aa47e3"
     },
     {
       "entity_type": "neighborhood",
       "slug": "marigona-residence",
       "path": "neighborhood/marigona-residence.json",
-      "sha256": "474d4c5c8713b9ef6155072f3f27e62021dcee0243b4dc0926a3b61b9f61a36d"
+      "sha256": "85fbc8d0fa1a77ec62b023c0edc3b28c7ae618c8fc9d0c6ce87acbbf65122789"
     },
     {
       "entity_type": "neighborhood",
       "slug": "marigona-hill",
       "path": "neighborhood/marigona-hill.json",
-      "sha256": "eea99df18f0dd65582607e556c8c220c6b5599ac14b5b6fb79853b21aa0f607b"
+      "sha256": "dd5a956ced56d437585abfb5df995ba667166c187c82da7a3fb0affd599d7451"
     },
     {
       "entity_type": "neighborhood",
       "slug": "kolovice",
       "path": "neighborhood/kolovice.json",
-      "sha256": "cbb0b4cddff0e4a7c263229418fc3e2327ad69f70d1df67ba0873e1cfa6c1885"
+      "sha256": "55d716b3e89cc0a3335e43f10299ad572b5a58618aa7100a6a7c0add9f2c9f60"
     },
     {
       "entity_type": "district",
       "slug": "rruga-b",
       "path": "district/rruga-b.json",
-      "sha256": "febe95fa0bab2deb58f860237f142867d82ae814e78015172022cc2e99f54230"
+      "sha256": "e790aa7a727eea051a4f4a0567380b5c380c7a4ebdf62c4d8d843774aee28c9b"
     },
     {
       "entity_type": "district",
       "slug": "rruga-a",
       "path": "district/rruga-a.json",
-      "sha256": "9a3ceb2291f53c814a90254ba3dea7e80ef1d92a5303aff062018baeb4a836e6"
+      "sha256": "dca86b607da3dcc87589016901617e5d6019b99dc5a48491adec25ead9971081"
     },
     {
       "entity_type": "district",
       "slug": "rruga-c",
       "path": "district/rruga-c.json",
-      "sha256": "a2817e44ba70a31e5a7740a2db82ecea2ca5cfb338b722cd43777d20354df2e9"
+      "sha256": "3fa6b4872b5b77f73c399ab89a32a7e3c307ddbe32324fb445f94ea165f006a9"
     },
     {
       "entity_type": "district",
       "slug": "muharrem-fejza",
       "path": "district/muharrem-fejza.json",
-      "sha256": "cc5efc329e176f454acc76a322395ab5efc45ef8cdae173cabf613abf17625cd"
+      "sha256": "d42ede86b7c105a31ee5c3640a4d1474111930a5441f3166edf2ec20233ea157"
     },
     {
       "entity_type": "district",
       "slug": "mati-1",
       "path": "district/mati-1.json",
-      "sha256": "44369dbbcb19546c689f04ec879e5741c68c8a4a8e7d5eb58c3683d9bb89363b"
+      "sha256": "92d784eb25f3da8aa2f8fdd0dff49939d01105c107d3bbcc6400b30017150510"
     },
     {
       "entity_type": "district",
       "slug": "mati-2",
       "path": "district/mati-2.json",
-      "sha256": "874c987e5e691808d038462cdb17628e7164121fef5feaae5dced35b9118120c"
+      "sha256": "cfad667ac086cf6d40877c6a7ffe10dbf865036a6bb447d31997776e4e11f8c5"
     },
     {
       "entity_type": "district",
       "slug": "mati-3",
       "path": "district/mati-3.json",
-      "sha256": "b43cba2d2227694220a84391bb0bc8201c7a4ea254454049036c2a7d9001e12e"
+      "sha256": "bfbebc39025971f191bacaf42304ef546453ea98e940854b5a33d67cdb29c8ad"
     },
     {
       "entity_type": "district",
       "slug": "ndue-perlleshi",
       "path": "district/ndue-perlleshi.json",
-      "sha256": "7844cce54ab805d86e45a0799cbbec24ae5f79bdba33cf3ee6aed1dc7443e613"
+      "sha256": "d105d78d43af8f853b586b26fee1f0d348449e14b64b66a5ebfd1ec874a69e94"
     },
     {
       "entity_type": "district",
       "slug": "shkolla-iliria",
       "path": "district/shkolla-iliria.json",
-      "sha256": "eb57ee48f7faf08764853e6bb8f81ed639fb30321fa6f2800c581db4dc8dee41"
+      "sha256": "65e964f280f576b367f5a89fcadf4eab54b654301cbaf4e8bef438256cf72f00"
     },
     {
       "entity_type": "district",
       "slug": "fakulteti-teknik",
       "path": "district/fakulteti-teknik.json",
-      "sha256": "c900c4ec2e953966c196711d39b866fbed567664506a674aa9141504c2aea07a"
+      "sha256": "b7293063efbe500144bf6c28300d246209ab0e9680886ef95d14e7075f11bb8a"
     },
     {
       "entity_type": "district",
       "slug": "lagja-e-profesoreve",
       "path": "district/lagja-e-profesoreve.json",
-      "sha256": "d34b998f1f3d563cc177f23b982e9759e519baf2d08ea4ff1029dee500cea3f7"
+      "sha256": "e19fc0e86dd9b612416e0a475903d27b2238ea6b620b7abf602100e66de654a8"
     },
     {
       "entity_type": "district",
       "slug": "route-66",
       "path": "district/route-66.json",
-      "sha256": "56afc7bb8f2e410a4a09f2343d626dc878140f19ca27c2d6896b07624a6f9a2f"
+      "sha256": "30d96311481ad7a93ca30d7e7e5903b6da55c9926a1b58f64a5e5faadfc4e3fe"
     },
     {
       "entity_type": "district",
       "slug": "don-bosko",
       "path": "district/don-bosko.json",
-      "sha256": "dc5156adfcdaa4206e691dc759e93614547e18e859715eec7b9b97d5d6a2a99b"
+      "sha256": "01e3a9bad4265d68a0296398e765c105fc8b574fbdba9dbff1ff0279311ce9ef"
     },
     {
       "entity_type": "district",
       "slug": "7-marsi",
       "path": "district/7-marsi.json",
-      "sha256": "b670cf9f922a195c826b336424b069e6f8b5d7fbd46592c9b2f93f0b9a7ff9d6"
+      "sha256": "4c1815e0cbc1a4095480117c93160e8e11762e2652ce5e0e508f410a8de6b801"
     },
     {
       "entity_type": "district",
       "slug": "goldeni",
       "path": "district/goldeni.json",
-      "sha256": "c5dd1eddf1d368a21f46c8c25430b6554fecbb77d35852fbe89b9fe6571f7918"
+      "sha256": "287fbcad095735d05d8fc243f619f8654f3a95f75a0b384ed9f0b99a84e97d76"
     },
     {
       "entity_type": "district",
       "slug": "ambulanta",
       "path": "district/ambulanta.json",
-      "sha256": "d529d5ed255b317d7a005fe7fc58e79758ed636723260e05497631df669e660a"
+      "sha256": "0ddec4d0f0e16fc7836abfabec5aaf42b13691d2e7f145eb1754b057e0283d50"
     },
     {
       "entity_type": "district",
       "slug": "ujsjellsi",
       "path": "district/ujsjellsi.json",
-      "sha256": "2dea2b1069ee70cd8da18c1340a4c25a148257a31152fe57412bbea90758e81b"
+      "sha256": "fd3f3563ff65b7689a799271fe2c6ba50f3e0d81c2a62a024c7d66675955fed3"
     },
     {
       "entity_type": "district",
       "slug": "te-kfori",
       "path": "district/te-kfori.json",
-      "sha256": "f056256f17db55c5815f86d263eb8a42f8b08ca3af593d4fda6a19026c2289e8"
+      "sha256": "5c303a89ea4b0683569c5bb988c6032bd370cccadfe74670098fac5a78aab1c0"
     },
     {
       "entity_type": "district",
       "slug": "ambasada-amerikane",
       "path": "district/ambasada-amerikane.json",
-      "sha256": "64be0387e681e7c7939710cb868bda6229b31f1a8cc5c4dedd7107a949dd0d35"
+      "sha256": "d5f4c1f07421ad0186376ef0872b047c6e20aa7066f7bc27904025dd85afcd25"
     },
     {
       "entity_type": "district",
       "slug": "te-shkallet-dragodanit",
       "path": "district/te-shkallet-dragodanit.json",
-      "sha256": "3be25bfc1da5fc18674179055c54bc77e4e8cab675906082de7b21e1331157ca"
+      "sha256": "9fae19ba79852b09cb34e84c8f5ab46e89d5a2f2c29e3ff5d95934cd37ed630e"
     },
     {
       "entity_type": "district",
       "slug": "taslixhe-1",
       "path": "district/taslixhe-1.json",
-      "sha256": "b6d6821a4a478a43708a06de6218d2eb15a94ce0924f1cae69120fd9d4cfb54f"
+      "sha256": "a68da9fe89c82432548e0bb52490a59940cddc40522437bb8f64c055b831c9eb"
     },
     {
       "entity_type": "district",
       "slug": "taslixhe-2",
       "path": "district/taslixhe-2.json",
-      "sha256": "e987c0862a7b8fd1fbc78a64c14916cb9c63a5abf9f751b7fd86c4d1b8b4363c"
+      "sha256": "73ec0b78673c1e2956ea7a820f8b22d9362ec39585a8677ef2a2d7c247c77994"
     },
     {
       "entity_type": "district",
       "slug": "taslixhe-3",
       "path": "district/taslixhe-3.json",
-      "sha256": "bc001171d55c5aed72a323997f42de0da03e793320578d3a123bcbe52bad2b70"
+      "sha256": "3a044d0c2625e9bf59bfd6c560e7b9f583e829c17ef8f4fd1b593337a022b3d8"
     },
     {
       "entity_type": "district",
       "slug": "taslixhe-4",
       "path": "district/taslixhe-4.json",
-      "sha256": "39688ec152914224c4af5c331c082eb131cadf024d9090f0331c8f5a5b503458"
+      "sha256": "90d16e91d8173db96bf9afd1470d97e8a5c020a82ebd4b3e412ca231214130bb"
     },
     {
       "entity_type": "district",
       "slug": "tokebashqe",
       "path": "district/tokebashqe.json",
-      "sha256": "0931f0ff0180a5916c89f650663fd3e6074935ad7e10610a45fd36cfec5e41ac"
+      "sha256": "867db3f7b48a30c48ae94dfd7baa3f2b8f62913686c199428b4b14f2efe47f43"
     },
     {
       "entity_type": "district",
       "slug": "germia-sofalia",
       "path": "district/germia-sofalia.json",
-      "sha256": "ecbb75a524cc17b6d4298aba0f06f0b2f42529f91a073bc2fefbc7a21ea424f1"
+      "sha256": "664e44ed750891ef68ffa71c6c3ebe814b34da26eb7d0ed3c9d214f0c0a2480b"
     },
     {
       "entity_type": "district",
       "slug": "meto-bajraktari",
       "path": "district/meto-bajraktari.json",
-      "sha256": "277d9c960d7b4f75a596ea2a3e12ce40f12f0b0bd594fc50c6d78b8aa2aa0f8b"
+      "sha256": "8448525195acf13f8d7d57851a1b0d7cd3095c29929bea11c61431b2bea722af"
     },
     {
       "entity_type": "district",
       "slug": "te-kafet-e-vogla",
       "path": "district/te-kafet-e-vogla.json",
-      "sha256": "cb972cd4f997fb35b08a9047b2a2e34306a76b1a66726bdf9c942394666da64d"
+      "sha256": "e5026784460cae0bd8f58fc7d73fff8021ee7f1aa18936be0e7d6c497b408912"
     },
     {
       "entity_type": "district",
       "slug": "sheshi-nene-tereze",
       "path": "district/sheshi-nene-tereze.json",
-      "sha256": "42f0deeec1732ebc6297dc8fbdcfb298ff629feaf702ebf530d246068b236392"
+      "sha256": "970d03060052a2144fe93ed2c4e9d8fa025ec12297dfd5972dd6dcf2915f7446"
     },
     {
       "entity_type": "district",
       "slug": "sheshi-skenderbeu",
       "path": "district/sheshi-skenderbeu.json",
-      "sha256": "afff06db1c64094b3eff5fa8c1e30b76b776ed1f10a12a7533709e3ad58aa76b"
+      "sha256": "39967cb4d88fb20039be83dff716a6082a2836e7950bdac09d59b8c9240623e8"
     },
     {
       "entity_type": "district",
       "slug": "sheshi-zahir-pajaziti",
       "path": "district/sheshi-zahir-pajaziti.json",
-      "sha256": "064cba57f28bdcd9e54842b84341d09ec8e1ec77e379e7c62215a4f93f3b93dc"
+      "sha256": "5ad4e70ec1fddc2abcfdb7662fd44caf23aabe9fb6f85d33a4b343399eb9dd69"
     },
     {
       "entity_type": "district",
       "slug": "grand-hotel",
       "path": "district/grand-hotel.json",
-      "sha256": "d54e91069064c73c9cf15073c3a0ae7acc61966441484f1561c03610bf2eac8a"
+      "sha256": "67d04b5ba656c2123e5634eae9a04bdbb18a66e7a1bfbf108402c5efe78802f2"
     },
     {
       "entity_type": "district",
       "slug": "katedralja",
       "path": "district/katedralja.json",
-      "sha256": "dfa8508aab948dc75c1dd1c3f514ab6d567a1ff5d2f59d81a80edcd074f4c139"
+      "sha256": "7a3f76971a783895bcc7b79b251f96140be37c878fd7e0013190bc2e4950a592"
     },
     {
       "entity_type": "district",
       "slug": "universiteti-prishtines",
       "path": "district/universiteti-prishtines.json",
-      "sha256": "31c8e7650dfa146ee387eecb1113848d159b3a88e82adc62f4481b6444edd7d3"
+      "sha256": "4e3c1d3a0b40137b75ad2d7b0181e175c2f03fee0d583e35bb40b1a16d0e6e60"
     },
     {
       "entity_type": "district",
       "slug": "biblioteka-kombetare",
       "path": "district/biblioteka-kombetare.json",
-      "sha256": "32622c3fc4d8f535a3375cbcc6be9da27512b0c85843eb329a03a473a6ca9f48"
+      "sha256": "a975e7176dcf55a33a39e5ea56e71ac8c0acfa0cb02d55f045c512633e04ed32"
     },
     {
       "entity_type": "district",
       "slug": "newborn",
       "path": "district/newborn.json",
-      "sha256": "945f74e0657015cef38e1645a7207c1d2aa3e7aa09c708f41af64ef11f0cd42d"
+      "sha256": "9a0996e66da9c6adabdb48125b09aee48ddf176399eac9e467670905716b92f2"
     },
     {
       "entity_type": "district",
       "slug": "rilindja-boraramizi",
       "path": "district/rilindja-boraramizi.json",
-      "sha256": "33289b3a223c4918aa085849ee32e671a75eacff4ee3ab25d989b2aac13c4f68"
+      "sha256": "2750f6077777e918e58a098b9e3120388b798f6e2c4c965c9afb6880559dc8b8"
     },
     {
       "entity_type": "district",
       "slug": "garibaldi",
       "path": "district/garibaldi.json",
-      "sha256": "26294f368a298a37c3082647cab372abf0092cfc4c18b5ae3939b4ccf1f6c1cf"
+      "sha256": "41478d88f51a6239cbdcaefcdfe4648319c6e94b333f4c652a42fc4da212967d"
     },
     {
       "entity_type": "district",
       "slug": "faik-konica",
       "path": "district/faik-konica.json",
-      "sha256": "7c6d56ad70473539c1f696b50e79f8f72251734daaf9b7cc64ca754b0a6dbcdd"
+      "sha256": "f4f78373af3b2052b0d1f066aa5fc2bd09a35e9273c9798e6e61f38823c8ea9e"
     },
     {
       "entity_type": "district",
       "slug": "ambasada-italiane",
       "path": "district/ambasada-italiane.json",
-      "sha256": "b905a8438348b2f002376698d0c579c0026434cf382135a527bcd3bb9145e0ff"
+      "sha256": "ff422e7524d5fa4ce1909fe4555b6e8658a6ed656ec6cf39a6598ab109a49ea0"
     },
     {
       "entity_type": "district",
       "slug": "ramiz-stiku",
       "path": "district/ramiz-stiku.json",
-      "sha256": "61ded39acb5a4211f306873bb9396dc62821d21af4236db05b8ca1870d5f921b"
+      "sha256": "5a9012e4bc54cf157a28df6607ffdb8e835bc9c5fa8dc26ad722078a9a49f8e3"
     },
     {
       "entity_type": "district",
       "slug": "perball-santes",
       "path": "district/perball-santes.json",
-      "sha256": "df7a12f621116d411daa030ee4cca55f967a295ea570722f514073d0930aa740"
+      "sha256": "1246d4ff0d3d5c5f05dc5965d7b8e6c330f37156f1aaf5d1cb20668ad4595bba"
     },
     {
       "entity_type": "district",
       "slug": "hekurudha",
       "path": "district/hekurudha.json",
-      "sha256": "7879d994539b7a032faeb8d8fc9e75bee66990e53f578b8e735f6412ad824a9a"
+      "sha256": "cf45ffc4ed6b2f4fb9b27b7af386002464fe691f48815e6852af8ed0d9cad5d1"
     },
     {
       "entity_type": "district",
       "slug": "xhevdet-doda",
       "path": "district/xhevdet-doda.json",
-      "sha256": "53f4dbf7ca19822d9a36adb67133d2beaef0ae92232b9b44aa0b1b4d8241ff48"
+      "sha256": "9c7c7430684dbf37fb2b0e5a262af66b289cf269bed78dddbc80697f80c4d539"
     },
     {
       "entity_type": "district",
       "slug": "parku-dardania",
       "path": "district/parku-dardania.json",
-      "sha256": "daa327ca6e993cb7a5d8e21ce0f067f02edb5eabf96d3ce38d3d1b143617ee13"
+      "sha256": "0156f4adbcde5f0d5564e8873569acfe2e9dcd771d8d02f845c828785b922e31"
     },
     {
       "entity_type": "district",
       "slug": "xhamia-dardanise",
       "path": "district/xhamia-dardanise.json",
-      "sha256": "54b376f5e38abef896c2c86cd9d7b1594c14e9daf6e7e4680e5c976ed2d757c8"
+      "sha256": "8319f3a5fda86021ceed2e0c1d0c60e4046d7406c142cfdd48c000acda623db0"
     },
     {
       "entity_type": "district",
       "slug": "kurrizi-dardania",
       "path": "district/kurrizi-dardania.json",
-      "sha256": "c5a3af75a7de5a5b3d532b3e318c75573ed611614b1ecfa9f8adbcb808b59d02"
+      "sha256": "fdd3012fc0d6e1a68db374b5ffcf074bd41179fc59e81a603a352f0db1de8c7b"
     },
     {
       "entity_type": "district",
       "slug": "bill-klinton",
       "path": "district/bill-klinton.json",
-      "sha256": "04228c420c38a5eb199836391c0bed13e2f76c0c3c411af5542227d8b796886e"
+      "sha256": "4d9a934bb389699186530a51ceb6cdf060f8355d9da811428958730d162da6f9"
     },
     {
       "entity_type": "district",
       "slug": "shkolla-dardania",
       "path": "district/shkolla-dardania.json",
-      "sha256": "849d0fa66321b485e4a70bb9b18755f1761e6741557b339914ca230d488b3872"
+      "sha256": "bd3bf146132bd307c2fd3d2a51872ef0c71cfdb35e20d6ba33cb20e89d2df0e5"
     },
     {
       "entity_type": "district",
       "slug": "xhemail-mustafa",
       "path": "district/xhemail-mustafa.json",
-      "sha256": "b5e3fbf8256f1b55e95af321e708739da310bbf38e6d5d79a39e2ab273bfe07a"
+      "sha256": "9456056ec62827a8ebd09f67da0813739364fdc7d6c04a89c8f14572f7e7b25b"
     },
     {
       "entity_type": "district",
       "slug": "posta-dardania",
       "path": "district/posta-dardania.json",
-      "sha256": "10732997bbf68a32a50b59828397022c85bba5fb515ca3bc7f591e5cd10760d5"
+      "sha256": "6ab8c62728c9c1fa04db9923addc136a02af5ed478ec5f99ef79ae4348831022"
     },
     {
       "entity_type": "district",
       "slug": "santea",
       "path": "district/santea.json",
-      "sha256": "71deb5c0d3568179591c28e987a0d862f5b844c738ea537453870356bfc30751"
+      "sha256": "c47d86f84bc8773e55744a757b267d1f7fe6a91889807921220b4ad713afb8e2"
     },
     {
       "entity_type": "district",
       "slug": "lorik-center",
       "path": "district/lorik-center.json",
-      "sha256": "48030db685b4d102eb7902c8de2eefa69e5cce9cea05cc8cb7cae352cc1866dc"
+      "sha256": "e7f93995a7ee4c174b1abc3bab01828984ffc73e6067a1b3b8bf52a5d695f09e"
     },
     {
       "entity_type": "district",
       "slug": "termokosi",
       "path": "district/termokosi.json",
-      "sha256": "b2ceee962ba87d7608b88f4c243d7b493f3329554c8877053f00f84065a0e7b8"
+      "sha256": "0e64cee1d848513ce0c0cfab1dc0dd0eeca64e8d6e1732ac2bffd03112baa637"
     },
     {
       "entity_type": "district",
       "slug": "sami-frashri",
       "path": "district/sami-frashri.json",
-      "sha256": "c88f52550633625b149fe9bc11eaf3fb93cf94ec5084dba987198b140e67d6a5"
+      "sha256": "0be2461b29128b166a2a1f862f01bbb1e491a93dd6b2ca4eff86af160e73235f"
     },
     {
       "entity_type": "district",
       "slug": "4-lullat",
       "path": "district/4-lullat.json",
-      "sha256": "e2e064c5a52d9702734d118bce68a7faac8082928c9c9531ccb376148e7e78e4"
+      "sha256": "3c5dd05baad19e4d03af6016d7eaf2386a218236d69ef2c75ce7b9b6bd2c070a"
     },
     {
       "entity_type": "district",
       "slug": "teatri-dodona",
       "path": "district/teatri-dodona.json",
-      "sha256": "b174c783c3189d3a53d3b44a9695ba113e8c6aab61199675dc907a580defbd83"
+      "sha256": "00d4fa552642e94898dac081e9afbba2ea61d91282498fbb847dc54a5092164b"
     },
     {
       "entity_type": "district",
       "slug": "shkolla-sami-frashri",
       "path": "district/shkolla-sami-frashri.json",
-      "sha256": "dc2e7c66adbb3d45d84f2313afc5a3a546b63a1b893dfaa04f7c4369215c1aa6"
+      "sha256": "1ea24de5e0933731dc4e2da232ab01f4efaf7430c82fab64ee3dde91ac4d7ff2"
     },
     {
       "entity_type": "district",
       "slug": "ahmet-gashi",
       "path": "district/ahmet-gashi.json",
-      "sha256": "9c6c42fc1ba7b80a269d3bcc283c8567dff74f618f7c715c48713f85010aa7d4"
+      "sha256": "4d9b0d43e970366e93f4bf9684f7dd742c2456ceabc68b05d71a1431cf8d7414"
     },
     {
       "entity_type": "district",
       "slug": "elena-gjika",
       "path": "district/elena-gjika.json",
-      "sha256": "cbd1cee74a8c767b2738001c7f3c44f63572cc8d675cc71259639dc44829a092"
+      "sha256": "fdb0eb28299b3c6cebb1eb546b731e6b8860da0490e09352386e061a6b7fe21a"
     },
     {
       "entity_type": "district",
       "slug": "pazari-llullat",
       "path": "district/pazari-llullat.json",
-      "sha256": "ed72dca7479f2fe9272d1b4c313f37759c6f489a66970db3e0ea38dcceded5d8"
+      "sha256": "acf4a1978820e604e036a40c056bd7362be1d16f7950f288d27240a2d8a9bcf4"
     },
     {
       "entity_type": "district",
       "slug": "aba",
       "path": "district/aba.json",
-      "sha256": "f386bbba89b7c8670c3042957235a5dded8e1423d093c7dbbd5d5b2a97751961"
+      "sha256": "e1016bea052346b3bef6a8937e580c0842348f825c239337e80ebf660e93ed12"
     },
     {
       "entity_type": "district",
       "slug": "riga",
       "path": "district/riga.json",
-      "sha256": "03f07d07befc13c65ec0f618f0c1f3ccb8bcc762895045d6e341ccbe199bcf0a"
+      "sha256": "fcdb9dfd6fafe828f59a433be42bcb68c210a08103f74dffab216fb78c5efb25"
     },
     {
       "entity_type": "district",
       "slug": "skenda",
       "path": "district/skenda.json",
-      "sha256": "95aa1fa2d6771ef7ced48c1c820759c74c169cc96449e52849588bb15021ad6c"
+      "sha256": "72ee7344bc6999e373adeee77f8c4788e1a7cd92a4ae54ccb2953457f75791d1"
     },
     {
       "entity_type": "district",
       "slug": "domi-i-pleqve",
       "path": "district/domi-i-pleqve.json",
-      "sha256": "92db865670e546ec63a5a83790ff01bc6a5f530d6e69fd3cfdde9130d7f63123"
+      "sha256": "a08365abeafeef27a8239b074dc60d69a7784d8c6d01b7663c9dfd3d10f9c10c"
     },
     {
       "entity_type": "district",
       "slug": "parku-i-qytetit-aktash",
       "path": "district/parku-i-qytetit-aktash.json",
-      "sha256": "69e38e6526f15726e3bd4ca0d33e2bd0d44d64c98d99165cd6dddb3b01611102"
+      "sha256": "dd25fc7f54a47584f7f7de3083e18182466d449bd3494e1a42f3337071b3a0b8"
     },
     {
       "entity_type": "district",
       "slug": "extrm-pizza",
       "path": "district/extrm-pizza.json",
-      "sha256": "a837867673a25f7c9be93bf92349b21927c6d7ecc5a6e00b35be13b0cade2c54"
+      "sha256": "1ffaa527992c8eb37fc8800bcfccfb23aca373aba18ca4752a025cb2d3b8ea36"
     },
     {
       "entity_type": "district",
       "slug": "naim-frashri",
       "path": "district/naim-frashri.json",
-      "sha256": "d8a9997ab0f36e02febea872e4ed085ea8ac10f7f5c2b2b4d5e0813caae2f213"
+      "sha256": "6663b742dfbd44740744ec4d51359376de6fce47005cc9dc41e8a336cf614d41"
     },
     {
       "entity_type": "district",
       "slug": "ambasada-zviceres",
       "path": "district/ambasada-zviceres.json",
-      "sha256": "933e8f80e85015298c1cefe7aa87e8a44a0b2a5be52452f8656f36304c077cd9"
+      "sha256": "7f49503949eeb458f6f12d130bf3e7f040908247be3671b6c673ffb79752076e"
     },
     {
       "entity_type": "district",
       "slug": "kulla-e-zontit",
       "path": "district/kulla-e-zontit.json",
-      "sha256": "7e1a8056694f4504c65455d7f4b47d47f2681526897e6f858eba9f9591496aa1"
+      "sha256": "3296e446a5b503320d96154688b5cdf43dbaf8c06f5672066fb7632e794d8373"
     },
     {
       "entity_type": "district",
       "slug": "hotel-afa",
       "path": "district/hotel-afa.json",
-      "sha256": "d889a721bb09cb87f0f6a9eb6a6d9b4851d68cc10fb8b71a1b459df5fbfb71d4"
+      "sha256": "025e18074caf58e604843f41715c80d7c82098bbe7fd820c2c0807ad86fe4d03"
     },
     {
       "entity_type": "district",
       "slug": "qkuk",
       "path": "district/qkuk.json",
-      "sha256": "c6989f705609b15dc4c6782badccb43e835cd564942463cae1454076d7a9e721"
+      "sha256": "e218b7834d4e874eba75bc53ac2572e32206e70e4952c2b7381b316ee8d0f31c"
     },
     {
       "entity_type": "district",
       "slug": "rruga-holger-pedersen",
       "path": "district/rruga-holger-pedersen.json",
-      "sha256": "36749647a89265b63bf2ab873561f9a80f202941970e6e039947d3e2a09c2779"
+      "sha256": "07cb61080233b1c9fd1420be08e3f9d46c422f69881fdf9490148c76427fdea8"
     },
     {
       "entity_type": "district",
       "slug": "pallati-drejtesise",
       "path": "district/pallati-drejtesise.json",
-      "sha256": "a1e400de5688069567cb1d0738fc9c8ecc49759603d8bc0e2d50388c2ceeeb31"
+      "sha256": "24e512d6938a6e23e14e261a19728708854d9cfefc8d6f19fc71906d16656099"
     },
     {
       "entity_type": "district",
       "slug": "fontana",
       "path": "district/fontana.json",
-      "sha256": "aefb0466b25e4eacfe23912ebc52a22113ec04d63825307255d2fe7c64531dc6"
+      "sha256": "a19924b678d835127364353d0405f3d4e82164f6d0c1a73c5693a072a3037bd2"
     },
     {
       "entity_type": "district",
       "slug": "hasan-prishtina",
       "path": "district/hasan-prishtina.json",
-      "sha256": "343ec6e03f3e49a0f4f9604572065049cde609b4b743d63a5f547faf431ca821"
+      "sha256": "ead9f334a2e6f7eb26284fa72d4fafd060a63f58bbd3cb13db39e5a21f088ae6"
     },
     {
       "entity_type": "district",
       "slug": "soliterat",
       "path": "district/soliterat.json",
-      "sha256": "50cdc3b5a264b536f18d012d9cb398b76db176ca5de67a24af646cfa434391e9"
+      "sha256": "f621347b9145786292747123e323a9332b0c0b80657779734ff6116267cab463"
     },
     {
       "entity_type": "district",
       "slug": "gorenje",
       "path": "district/gorenje.json",
-      "sha256": "8d628e76457f1932cb170fb4dbbdbd683952d48f459ef559cb03f524a9d13a2e"
+      "sha256": "e0b09960a6c7f6dc11be596961a679eabd1aadceb06f0ecce9b4a5d44dcbd3bf"
     },
     {
       "entity_type": "district",
       "slug": "prishtina-e-re",
       "path": "district/prishtina-e-re.json",
-      "sha256": "e6f4bf4c9666520f3e908c2ada75d78e779cd128ed60f5180d3a3c7c50442037"
+      "sha256": "568fe0b105fe078539263f57195b826d43f3e789dd8d387b5747ff85a591bd7d"
     },
     {
       "entity_type": "district",
       "slug": "albi-mall",
       "path": "district/albi-mall.json",
-      "sha256": "bb54bfb7cc83424e8821d94311fb2e3ea42ed9375ef7b75e122345ef3525d140"
+      "sha256": "ce4a62c7f5501d62b0ce8062f00c42b45df9b1cba6a289f1cd68c09282411368"
     },
     {
       "entity_type": "district",
       "slug": "fshati-nderkombetar",
       "path": "district/fshati-nderkombetar.json",
-      "sha256": "a0ce0f296918465b5cbbc115b841f73f1d9c1dc99d98d5573e2ae0b01c4eadbc"
+      "sha256": "c032d2a33e14a9e2af4d27492590a05d943fc98d6ce0466c34ae3d6f0a95467f"
     },
     {
       "entity_type": "district",
       "slug": "lagjja-qendresa",
       "path": "district/lagjja-qendresa.json",
-      "sha256": "e36f94720e605896ca81b452168435608b7378455055a76f389b7e3cdeb702d4"
+      "sha256": "e7e740184822dc96a18c5084145ed068d5dc4b6d6bcff74bd28931cd337ebaeb"
     },
     {
       "entity_type": "district",
       "slug": "afrim-gashi",
       "path": "district/afrim-gashi.json",
-      "sha256": "aecf33afb93d6253ddbc73712700c1774f43ecf8d187c06a3194ea1bb028cb4e"
+      "sha256": "51eee3a7496e2695d9ee05c7fe196f50051e9417f3664b5f10649f4c109bdce1"
     },
     {
       "entity_type": "district",
       "slug": "shpia-e-rugoves",
       "path": "district/shpia-e-rugoves.json",
-      "sha256": "d5e4b186c2f5f8ec35c0253c4ff0351c4e6fe9cc439477f3d1f4fcdc853f8fb5"
+      "sha256": "b39fe249e6f7f1fe0d5ef9aed2259e9b9dcee11d941e5fec8652b2996dcc61fa"
     },
     {
       "entity_type": "district",
       "slug": "vorri-i-rugoves",
       "path": "district/vorri-i-rugoves.json",
-      "sha256": "791ef641236582199b392d29cf5e70657622be6f0ffed6dd469ae51de48cfd2c"
+      "sha256": "25ad713323b5d0644d814e63aae34f26240427285a22e706552fc8d367056a3b"
     },
     {
       "entity_type": "district",
       "slug": "sos-velania",
       "path": "district/sos-velania.json",
-      "sha256": "acb3c1bd27cfeb1e0d6ce00284eb90ff22c115328d83a822c1c16e72b93309fb"
+      "sha256": "36ccb802b4c301e5754902c26005e5f8be6ecfb59404680cdde768a986c8c1a9"
     },
     {
       "entity_type": "district",
       "slug": "kolovica-e-re",
       "path": "district/kolovica-e-re.json",
-      "sha256": "1ae0d5cf701e2b1a138635243e5e20348b9eb57141ff93de56b2f2c667c00ca0"
+      "sha256": "5acb895b6c4cb830604a492a2c67230e40142c9c6b8297c2d3a860645cbd9efb"
     },
     {
       "entity_type": "district",
       "slug": "kolovica-e-vjeter",
       "path": "district/kolovica-e-vjeter.json",
-      "sha256": "afc8dbf760066c18558d2defe5cb0f947d8c583801b663cf065cb917961bfc83"
+      "sha256": "7731de691d9e77648f9182fc15619719f081b133a82437bda4eee7dbba6f15d7"
     },
     {
       "entity_type": "district",
       "slug": "kolovica-e-eperme",
       "path": "district/kolovica-e-eperme.json",
-      "sha256": "a536463c14ec91ddeb23ba770831ba932852ec663a58936f0c82e232749fa23a"
+      "sha256": "6db705dfdef7754c39d711cd72f84e40ee1d87eedf445c075cd873f0238977b0"
     },
     {
       "entity_type": "district",
       "slug": "shkolla-e-gjelber",
       "path": "district/shkolla-e-gjelber.json",
-      "sha256": "74e4df1951c6e022cde7d08d8f485e52e22bb8f0150a47ed14377f084019aeb9"
+      "sha256": "fdda5eb3c1612cd79f1855ffe88510bddf3a9e2c412778dcdbad2fe0d5683f6e"
     },
     {
       "entity_type": "district",
       "slug": "cigllat",
       "path": "district/cigllat.json",
-      "sha256": "c7d62df7f3f84df176ec303d7552d84bf22fda434367cc9473ff1d5696922aa3"
+      "sha256": "d54119aaa7020ce55d2c2a7a1cc84f86459e2bc55f4ffb43d75921efc733b50d"
     },
     {
       "entity_type": "district",
       "slug": "zenel-hajdini",
       "path": "district/zenel-hajdini.json",
-      "sha256": "ba8cc969450045d4c004fb1b47efa59ccec4434deea72bfc2346f5cde799c8de"
+      "sha256": "4bd16fa628a0f545b5e2b4812eedf0a635953bcb91fc411ed7f154787243fcde"
     },
     {
       "entity_type": "district",
       "slug": "raiffeisen-bank",
       "path": "district/raiffeisen-bank.json",
-      "sha256": "06645f6d4e807bfabb810a83bbb54307a85fc507722ab9202d39147e1b082e1a"
+      "sha256": "00b470992b0e0ab14ca0b0aa7aa77334a9d91f99717d8c577988b173b410815d"
     },
     {
       "entity_type": "district",
       "slug": "princi-i-arbrit",
       "path": "district/princi-i-arbrit.json",
-      "sha256": "c447672757e24a3e992fdda403eec126a79ed6e19819aa54eae647ad4d69e82d"
+      "sha256": "2d5445faccf756b19da8099af5465d10a6e5aff0b38be2a44b437a383e54ea72"
     },
     {
       "entity_type": "street",
       "slug": "rruga-pejtonit",
       "path": "street/rruga-pejtonit.json",
-      "sha256": "cc59d080fc2aa78ac519c371c2e4496bcc83e96e7a87f2d27b4a770aaa0dcda9"
+      "sha256": "67ad6ec0e0616db2a82ca864dfde9a194ebd103ef3284d9344d90ab029cb0976"
     },
     {
       "entity_type": "street",
       "slug": "rruga-emshirit",
       "path": "street/rruga-emshirit.json",
-      "sha256": "acb464d6d451b1ca948c8e5fc5b96547d56fee31d91e2434efe5e9d1a766d9aa"
+      "sha256": "76cfc6b52cbb4854b85f35ca3239d6e44deed3f00176d64df8c43bfbc8de542e"
     },
     {
       "entity_type": "street",
       "slug": "garibaldi",
       "path": "street/garibaldi.json",
-      "sha256": "2f442d990e5934713f0872b8937a1f53f8a4006d5eb661671945c8a6ca397223"
+      "sha256": "65a0ba0397530b52b6256201d0054cad98c2592da55c10776c6c7ce4c3db6d50"
     },
     {
       "entity_type": "street",
       "slug": "rruga-veternikut",
       "path": "street/rruga-veternikut.json",
-      "sha256": "3cb1838e4f9e51616334cb507c7ca4de989e2bc19955ed5dfa31b05b667a7f95"
+      "sha256": "1ded3b0430fce12e0b2ee09dd4f3591b48a84cc3d08c6d61d1690824b79bf25a"
     },
     {
       "entity_type": "street",
       "slug": "rruga-c",
       "path": "street/rruga-c.json",
-      "sha256": "75e8d6d2e8f68e4b70e94561ef29379c886c7e7d550a4cc2820e083897322a0b"
+      "sha256": "325b361650446f7421264adb03831e455c12ce17ab8e7942aa673edd9538cc28"
     },
     {
       "entity_type": "street",
       "slug": "muharrem-fejza",
       "path": "street/muharrem-fejza.json",
-      "sha256": "f7caafd8d0358dfd0cc29720354639a663d70e5378804a519a403c13ca3c16f2"
+      "sha256": "0d11a4465bc760d957e981ee6bc8b6b8ad2efed32a75307d0eeb44d36ca18dae"
     },
     {
       "entity_type": "street",
       "slug": "nena-tereza",
       "path": "street/nena-tereza.json",
-      "sha256": "bdd92d27dd80b82a9a01ed68a3f7feada3810a51c65819074e2ffbab36d52e1d"
+      "sha256": "3e0e300eea1dbab340fe3b4c2a806933e4a6413c720724eddd6238592a200c91"
     },
     {
       "entity_type": "street",
       "slug": "rruga-dardanise",
       "path": "street/rruga-dardanise.json",
-      "sha256": "c863ab0a7a515cd4096b08da3ef4da67fcc5072745ac4be518e29db4a52915f1"
+      "sha256": "c1797dc47ffaf3b48d6b06bfb422f37954ead846857baa05dae0f4dcd36f0bb3"
     },
     {
       "entity_type": "street",
       "slug": "rruga-spitalit",
       "path": "street/rruga-spitalit.json",
-      "sha256": "fae317b8b316995946f4ca162e59f614586e73a3802b14c832afd617c4e0b3aa"
+      "sha256": "b6c994d9341d30970a300b6b796530e5c0a02570140f97dd70dca029b6ceca8e"
     },
     {
       "entity_type": "street",
       "slug": "rruga-ulpianes",
       "path": "street/rruga-ulpianes.json",
-      "sha256": "7454fdc8e7d6eb32364f17bd2d4310b4d59bc42655d08ce983a1b5d105b2f900"
+      "sha256": "5a0bda69c3daabd5a17f856b572789d985b9d6dbc8d5974974a35e6bbdcc1135"
     },
     {
       "entity_type": "street",
       "slug": "ndue-perlleshi",
       "path": "street/ndue-perlleshi.json",
-      "sha256": "0813009dd62b0f4611926297c243a23a91e0eea6d0671377cf3681972b2b5bb4"
+      "sha256": "f7d1ed61d818093588139efa4cda823368b11553a22433793d708030e6a5a329"
     },
     {
       "entity_type": "street",
       "slug": "sokol-sopi",
       "path": "street/sokol-sopi.json",
-      "sha256": "94da1d55ff116664d3570cad9c36369bc8238937acca67761ded69ca3b1aaeab"
+      "sha256": "17a0d2b3a4546720d7d092319c906df824ba276365c82a03d9525965cd67fb7c"
     },
     {
       "entity_type": "street",
       "slug": "rruga-b",
       "path": "street/rruga-b.json",
-      "sha256": "b6d8560fda30b429ef616c5fbe4a80ed8564f87a2a6cf74f581eb18271627d72"
+      "sha256": "0825690356b0040395c90e9b909a9ac06302222b8737f338d77886af2d21a961"
     },
     {
       "entity_type": "street",
       "slug": "rruga-dragodanit",
       "path": "street/rruga-dragodanit.json",
-      "sha256": "8bd92d021bf17f94b93ff7c0b0a37282ef4798ecceced97c40a7101734940ff1"
+      "sha256": "5a6ce4956eb5100e6cee68d65081427196c5df9faf88d7cd61a65e768eddec8d"
     },
     {
       "entity_type": "street",
       "slug": "rruga-a",
       "path": "street/rruga-a.json",
-      "sha256": "12962f38b373c3aeedcc2bbd4ac9b915b390cdd32a086f98023e93a073bf20ea"
+      "sha256": "c89dc1327b37b5264024f409dd2f81530b676068f733f0848149ab6e9760f87e"
     },
     {
       "entity_type": "complex",
       "slug": "bs-group",
       "path": "complex/bs-group.json",
-      "sha256": "23961f27e105cdf3665da1e9abd5c86c5445def774d06f2fb3e411d5d4d6206f"
+      "sha256": "1881ee0027f65a132b088cc6942c91656b69b512bcb2f5ad0725d1d6bf059d81"
     },
     {
       "entity_type": "complex",
       "slug": "green-hill",
       "path": "complex/green-hill.json",
-      "sha256": "8ee1df340a70515925616c963b79cf3a802b34cde52fc25b145aa500517e9a69"
+      "sha256": "70ca2dcbed6bde85de86b0194e17bdf1232079458e7f234f488087d72a0f590a"
     },
     {
       "entity_type": "complex",
       "slug": "lesna-residence",
       "path": "complex/lesna-residence.json",
-      "sha256": "7d75e75136e3f1a0327aea861ef1d7f82a9d38b67e8b8b1145d3184d353fa954"
+      "sha256": "2daafa0fae9c82b656579f14441ab2d81e58670e7724b232c0a02febe24dfba6"
     },
     {
       "entity_type": "complex",
       "slug": "dardania-residence",
       "path": "complex/dardania-residence.json",
-      "sha256": "ed193c7eec0b2db86e7b587bef2037daa9ef1496571b995240114687bc6226cd"
+      "sha256": "0a6eb69248f49204c53717069427c856e132fec1548f80d3cdc473e63a306b6a"
     },
     {
       "entity_type": "complex",
       "slug": "ulpiana-residence",
       "path": "complex/ulpiana-residence.json",
-      "sha256": "4f33b20d419294846fd738ac8daa01c3bc77e8b49f2280094d3e00e066e53f79"
+      "sha256": "14447fb4969de9b1578c7eeb0b8719e05f5c5ad7284f210eb39899e0c95c788b"
     },
     {
       "entity_type": "complex",
       "slug": "sunny-hill-residence",
       "path": "complex/sunny-hill-residence.json",
-      "sha256": "e1e19aadf102f7611673aa4cd221b1c4bc846aa04def3eeab691207996f2658c"
+      "sha256": "0554b7b3b4fdbe69b5bc94fc62d31cc76a124911b4d9ed727b80bb1a625de785"
     },
     {
       "entity_type": "complex",
       "slug": "emshir-residence",
       "path": "complex/emshir-residence.json",
-      "sha256": "88d27881d289dac3c39e4abf0acf50a9ef37101b137cc30e0c727dbce863c9cd"
+      "sha256": "be51e3fb28ea8abce6a9d79002c9b8ddd25cc7d9b53d0f9fa6029a352085bed4"
     },
     {
       "entity_type": "complex",
       "slug": "mati-1",
       "path": "complex/mati-1.json",
-      "sha256": "aece735027bd62368ec60dc2fdd9923bd1dbafb04d63097a459794475f9e60cb"
+      "sha256": "9392c9bbe3138893e9a6d804beeb685877f30af18ef099984033ad6366828b14"
     },
     {
       "entity_type": "complex",
       "slug": "arberia-residence",
       "path": "complex/arberia-residence.json",
-      "sha256": "cad7f5862b0bddcbcb4fcf98cd30f230fdeceddee9594efea8a73dd5f354a7d8"
+      "sha256": "9aefab12067c9ac596c52f61e1c01e3a7f891133f72d3a1982bd6964471c9701"
     },
     {
       "entity_type": "complex",
       "slug": "va-residence-4",
       "path": "complex/va-residence-4.json",
-      "sha256": "0e5a3fc96d07ec07c139d5452a6fc44e991aef2390cac40c3518d1225b7049f5"
+      "sha256": "3c9971f2b34c43dc6f14523e47dd1a763856f6147717bd16520293339f94dbff"
     },
     {
       "entity_type": "complex",
       "slug": "pika-comfort",
       "path": "complex/pika-comfort.json",
-      "sha256": "225ad5ad304f79f9172c6894f8dee60ecc2d0cc3a3ddd104dfc00032b9cade03"
+      "sha256": "89c8b3399a3f2b52d8443fe8ba7f52d40c78baf7eac623ef14e0e31e630b72e8"
     },
     {
       "entity_type": "complex",
       "slug": "cima-2",
       "path": "complex/cima-2.json",
-      "sha256": "95765820b8606af377b5b7fc61165b59de34e8c6cfd29e2fe556c7847ada0c0e"
+      "sha256": "a825b5bd93bbb678a73b40d2b84b52a4b27ec81c9ea0d9865d68f81343dcfd34"
     },
     {
       "entity_type": "complex",
       "slug": "garden-building",
       "path": "complex/garden-building.json",
-      "sha256": "c8bdd74efaace7721621b66c635149a8e6829b6b0b02adfa4256edfc7ffb23e5"
+      "sha256": "59020af72a60c1d005cc8ebcc945ea2b1a999deb9e625ac2aaa8a6d8bb5f606d"
     },
     {
       "entity_type": "complex",
       "slug": "mati-2",
       "path": "complex/mati-2.json",
-      "sha256": "1f2ef36320e65086fc9d9b66d3f586aeb9e682acf05741c650feb75430f0e77e"
+      "sha256": "c02d13ff2e6e180e834cfcded2e0fc2321f1e85cc1247b4a2cd9ee75119146ef"
     },
     {
       "entity_type": "complex",
       "slug": "royal-city",
       "path": "complex/royal-city.json",
-      "sha256": "d2eb70653fab53b81d377704a96b3939329cc0792f6c42260c1b5632bcb1923f"
+      "sha256": "c04a37aca3804fa2ce7b953e244ded650ed09949e6ff9014a4ee6b94746da144"
     },
     {
       "entity_type": "complex",
       "slug": "royal-mall",
       "path": "complex/royal-mall.json",
-      "sha256": "ac191ba4338779a30d877051af135a84939ee094108d3cfa7619f0ba1e940f2a"
+      "sha256": "773bbf4aaaa70619f7c776dfd5246ec3bb193776786554f3400bf633bfc18227"
     },
     {
       "entity_type": "complex",
       "slug": "maxi-24",
       "path": "complex/maxi-24.json",
-      "sha256": "61d39b60974e2e6ee2bfcc50064236d6a88758b712e239b957ae59a97c3ffca3"
+      "sha256": "43290fa1da269bba3ac6a7a3ef0d5316fad47bcffb960b20dca287a11e915e3a"
     },
     {
       "entity_type": "complex",
       "slug": "fivestar",
       "path": "complex/fivestar.json",
-      "sha256": "ce01874d92a71adbfb70c30c835936e6f2043d87bd3b680b4a7f058ef4381e64"
+      "sha256": "191265951bb8785c0cf52f9d92550c9df500266b58aa8c4c39d15857cc774305"
     },
     {
       "entity_type": "complex",
       "slug": "tregtia",
       "path": "complex/tregtia.json",
-      "sha256": "7c84dfe5de45c7e4441304c856a2d8a7e4409f08f4bd7ec51c1c51524aed0337"
+      "sha256": "265f5d46bc8716c669854753163c5f847ea79e463749b3f0162deb0d83c2472f"
     },
     {
       "entity_type": "complex",
       "slug": "rethi-i-matit",
       "path": "complex/rethi-i-matit.json",
-      "sha256": "f2ebe33345399fbe0b25b8cdf33bc1c6da6234f5ff9665bc89099b84af706217"
+      "sha256": "7acbef049b089d976786fa187b2d871bad1be2bd3801dac8264ff06a7c2ed0be"
     },
     {
       "entity_type": "complex",
       "slug": "banesat-e-kuqe",
       "path": "complex/banesat-e-kuqe.json",
-      "sha256": "8f5087a99fe707555055f7c8e45db735bc7842e4bbcbc156cdbab157f67ba8ef"
+      "sha256": "9dafdaca699c46c52f6bfe777ca5479aa5f2e1913eebb62a261f134e01953e33"
     },
     {
       "entity_type": "complex",
       "slug": "banesat-e-bardha",
       "path": "complex/banesat-e-bardha.json",
-      "sha256": "6f430d2d1a9533daa56024fade39f230be0a3a41e4fcc35c0bd497413bc66dc4"
+      "sha256": "00f3aceb4bc5e11131e8166926036520726c05ce227b59baabf269fbbec25893"
     },
     {
       "entity_type": "complex",
       "slug": "banesat-e-hint",
       "path": "complex/banesat-e-hint.json",
-      "sha256": "c8049b8336ce60d4af90bb4dfd83badf370b95b9f0032b28587ceeccd6725cde"
+      "sha256": "b7c3acaee7854ae9e6307f0fcf528158534a079b23cfe517465fbb1416cebcde"
     },
     {
       "entity_type": "complex",
       "slug": "te-standardi",
       "path": "complex/te-standardi.json",
-      "sha256": "5a61eb36f1b4b61e193f5109cd09e9f583f78099c468d1cea2df957aeec4c701"
+      "sha256": "25548480d04fffc878660b157e255a9060c61268d472d65b6047ec44fd301cc7"
     },
     {
       "entity_type": "complex",
       "slug": "ontex",
       "path": "complex/ontex.json",
-      "sha256": "94401276dd4ba440d308a73682c1fc2a539280e346d5f3cd06892eafa3ef9433"
+      "sha256": "431ff44048e195b9d2ce3c743dbefceb112a74e905838f3f4df64eb50bd461f0"
     },
     {
       "entity_type": "complex",
       "slug": "banesat-e-reja",
       "path": "complex/banesat-e-reja.json",
-      "sha256": "266eb0a26a0646780797592bcdc1ae93128dfc88b523f647b088d5e86cd342aa"
+      "sha256": "3385616bc358ee453d008dd773712bce164d6d28a89a2d99c99fa6daa8141e7e"
     },
     {
       "entity_type": "complex",
       "slug": "banesat-e-arabeve",
       "path": "complex/banesat-e-arabeve.json",
-      "sha256": "ec05296f5df1787a5dfe92d1776703386cd9f7042acbacf0d86ab3728ecc8d79"
+      "sha256": "897a81f37cae8831c363ab87bba8bd83340b2377211c9766bafe9f628c1b4dd0"
     },
     {
       "entity_type": "complex",
       "slug": "gardeni",
       "path": "complex/gardeni.json",
-      "sha256": "8be8fbf4a27e0bd75b642cba10136ca6a1212123f4964986f358fb051affe67c"
+      "sha256": "15cdf33f60c25ea9acd610ad3400e99c822c0e5a10733d8616007138f057b078"
     },
     {
       "entity_type": "complex",
       "slug": "prishtina-stars",
       "path": "complex/prishtina-stars.json",
-      "sha256": "5d511ebfbd80d2f7f8f4a7afd3fa892b323983c3023863baabf69bf6119a5463"
+      "sha256": "bdf7bc04c160bc95a9553d008e1cfe50f839ddc5f94c4c0f106dc47a20e22e7c"
     },
     {
       "entity_type": "complex",
       "slug": "narteli",
       "path": "complex/narteli.json",
-      "sha256": "64f269c487f09c26778105420f946462e34bc038cdc2514e5fe97ef558187cfd"
+      "sha256": "ccfb1a625fe7a61529ed9e404112043eca349d791c337373597bead925f6a058"
     },
     {
       "entity_type": "complex",
       "slug": "benidona",
       "path": "complex/benidona.json",
-      "sha256": "03bbd3bd838d6b74373dff5b789e39a876e2d6c9d7faf48f210f7f05e28a67fb"
+      "sha256": "3bdca5a291404d928b296562a6346a428ad558080b97087bcc9370657c6c4659"
     },
     {
       "entity_type": "complex",
       "slug": "dugagjini-center",
       "path": "complex/dugagjini-center.json",
-      "sha256": "0066f07b11440ae46388203ed5c8a830bfbd16e32864acba1c9f925baa96f4bc"
+      "sha256": "bc06133b7543ddbd77dd26226f74086421fe0980a03bdd99a246656b1c5e5615"
     },
     {
       "entity_type": "complex",
       "slug": "prishtina-city-center",
       "path": "complex/prishtina-city-center.json",
-      "sha256": "8fef4015b0dc8342e897e2fbc7701eb5278a8f4f0a7106d2c5c5272af5eb4fb5"
+      "sha256": "48570e12fa24c1c6faa77cbd9a290baf72de566c0c88db416d206d1f83a19c63"
     },
     {
       "entity_type": "complex",
       "slug": "bagolina-derand",
       "path": "complex/bagolina-derand.json",
-      "sha256": "8c72f7177924c2df7b8f565162edf0d8955527c32984064b10b799696075d780"
+      "sha256": "5ec2f60b1f54ec3ee9fad88c0ecd2b908c41466da752d57426263cf6d3d0f081"
     },
     {
       "entity_type": "complex",
       "slug": "banesat-e-gjelbra",
       "path": "complex/banesat-e-gjelbra.json",
-      "sha256": "373463d81df73b95981b4e3ac08a658ca2d69706cf95c4defae65360cefd030f"
+      "sha256": "e91f4b50b7f69f8aeff51bcdbc4515f42b00b0a4583a6af31852fade4cfd18b3"
     },
     {
       "entity_type": "complex",
       "slug": "eliabi",
       "path": "complex/eliabi.json",
-      "sha256": "9e2f017913a68674a81e93f3df705864d6692652597c846c4bb000dc680997d8"
+      "sha256": "6a67be9d5da193c0f63fd14b89946704358ec24590dc7eb6c6a78e8c9cf9ca83"
     },
     {
       "entity_type": "complex",
       "slug": "ivy-residence",
       "path": "complex/ivy-residence.json",
-      "sha256": "760420be3a6a07a3fddcde84e2a719862c85fbe22d78850b15dae3a9ae726793"
+      "sha256": "47268c9a0d28d499ef7a2614c024df1a660e743f80e050b9cc50d81f62bf7a4b"
     },
     {
       "entity_type": "complex",
       "slug": "olive-bakery",
       "path": "complex/olive-bakery.json",
-      "sha256": "fff5333f384a7c4c526cc2a9c48d718acb7560a4ce6c85f59bbbd2188a1f4a19"
+      "sha256": "daa43f19215972fa50d190148a26e382400e3562b3df810b7f8d11c0ecdc5e46"
     },
     {
       "entity_type": "complex",
       "slug": "sonder",
       "path": "complex/sonder.json",
-      "sha256": "0fcd14211c0b11c84875ef1a0da61b0ac268e493ec5c2a2f1d9ab7c3f9935ad7"
+      "sha256": "1c92bdad6dc81f575170b6c15029f2367ef10116026e4e49eb13deb159114760"
     },
     {
       "entity_type": "complex",
       "slug": "beni-dona",
       "path": "complex/beni-dona.json",
-      "sha256": "99678b77318784bce06456f70e93e9f94449d839017be9abc72190c9d3be1dab"
+      "sha256": "a2944c305fac5371bcd6735cf501f81577c2ac2a1535363790d4ff26fcbdd9d2"
     },
     {
       "entity_type": "complex",
       "slug": "laburatora",
       "path": "complex/laburatora.json",
-      "sha256": "8b2062108f1f800b7d40a9331323278d9cd4c3526bc585672b0416e4bd5757df"
+      "sha256": "6c2476cc35a0e25c1a70f7a7320600170131e0b499fd090ce547cc8dabc8093b"
     },
     {
       "entity_type": "complex",
       "slug": "interex",
       "path": "complex/interex.json",
-      "sha256": "a057a6cf5585a55fb4ca4374a2991f5a87dbaf594e9455d673427962d9b44887"
+      "sha256": "add9908b083ac60edfcd46a390092d3a8b0457c20bda591410c121ea8afef9d6"
     }
   ],
   "artifact_hashes": {
-    "comparables_meta.json": "2cc2afdbb04a2a8e219d1ca593b5e5efc3abaa2f0506ca7caab2136d6e9c1d80",
-    "rent_comparables.json.gz": "69d8b0e51974fa094f12805014fa9ff039d42f7c065e4296afbb66e971a64488",
-    "sale_comparables.json.gz": "70a35e0c06853be5ab190a9fe4885e36b4c43230077eff7c289519466eb2f8f6"
+    "comparables_meta.json": "1204417b16691990454ae124989f992d1f53522ee7cc2c6696113e6bcfd86629",
+    "rent_comparables.json.gz": "6be24b3966d3c4483911b88e73d643967e10eb4ff9c3284c8a77143a98c4501e",
+    "sale_comparables.json.gz": "e63b2695d1391dafa735e0987c26870e583c25e587df4499ef659339760bd02a"
   },
   "related_artifacts": {
     "annual_report": {
-      "sha256": "16390fb1845081febe88ab6baa3600f866fc95c0400bf03bc6dd68f29bd037cb"
+      "sha256": "e32ab06946f3e879d92929b051e477d7998944eadd87ecfbba8b94e8960bb7fd"
     }
   },
   "corpus_meta": {
-    "corpus_updated_at": "2026-09-15T21:48:52.646079Z",
-    "active_listings": 10589,
+    "corpus_updated_at": "2026-09-21T12:08:59.100854Z",
+    "active_listings": 10750,
     "active_listings_confidence": "high",
-    "raw_listings": 14106,
-    "cross_portal_duplicates_removed": 3517,
-    "cross_portal_duplicate_groups": 806,
-    "median_days_on_market": 95,
+    "raw_listings": 14334,
+    "cross_portal_duplicates_removed": 3584,
+    "cross_portal_duplicate_groups": 816,
+    "median_days_on_market": 101,
     "data_sources": [],
     "source_count": 0,
     "geocode_coverage_pct": null,
@@ -1299,9 +1299,9 @@
     {
       "slug": "matiqan",
       "name": "Matiqan",
-      "rent_listings": 437,
+      "rent_listings": 448,
       "sale_listings": 714,
-      "median_rent_eur": 460.0,
+      "median_rent_eur": 470.0,
       "median_rent_psm_eur": 5.0,
       "confidence": "high",
       "estimate_ready": true
@@ -1309,8 +1309,8 @@
     {
       "slug": "veternik",
       "name": "Veternik",
-      "rent_listings": 202,
-      "sale_listings": 518,
+      "rent_listings": 204,
+      "sale_listings": 519,
       "median_rent_eur": 500.0,
       "median_rent_psm_eur": 6.0,
       "confidence": "high",
@@ -1319,27 +1319,17 @@
     {
       "slug": "arberia",
       "name": "Arb\u00ebria",
-      "rent_listings": 359,
-      "sale_listings": 163,
+      "rent_listings": 368,
+      "sale_listings": 164,
       "median_rent_eur": 500.0,
       "median_rent_psm_eur": 6.0,
       "confidence": "high",
       "estimate_ready": true
     },
     {
-      "slug": "bregu-i-diellit",
-      "name": "Bregu i Diellit",
-      "rent_listings": 263,
-      "sale_listings": 204,
-      "median_rent_eur": 390.0,
-      "median_rent_psm_eur": 5.0,
-      "confidence": "high",
-      "estimate_ready": true
-    },
-    {
       "slug": "qendra",
       "name": "Qendra",
-      "rent_listings": 309,
+      "rent_listings": 313,
       "sale_listings": 158,
       "median_rent_eur": 420.0,
       "median_rent_psm_eur": 6.0,
@@ -1347,11 +1337,21 @@
       "estimate_ready": true
     },
     {
+      "slug": "bregu-i-diellit",
+      "name": "Bregu i Diellit",
+      "rent_listings": 259,
+      "sale_listings": 204,
+      "median_rent_eur": 380.0,
+      "median_rent_psm_eur": 5.0,
+      "confidence": "high",
+      "estimate_ready": true
+    },
+    {
       "slug": "aktash-muhaxhere",
       "name": "Aktash / Muhaxher\u00eb",
-      "rent_listings": 273,
-      "sale_listings": 147,
-      "median_rent_eur": 450.0,
+      "rent_listings": 276,
+      "sale_listings": 145,
+      "median_rent_eur": 480.0,
       "median_rent_psm_eur": 6.0,
       "confidence": "high",
       "estimate_ready": true
@@ -1359,8 +1359,8 @@
     {
       "slug": "emshir",
       "name": "Emshir",
-      "rent_listings": 170,
-      "sale_listings": 209,
+      "rent_listings": 173,
+      "sale_listings": 210,
       "median_rent_eur": 400.0,
       "median_rent_psm_eur": 5.0,
       "confidence": "high",
@@ -1369,7 +1369,7 @@
     {
       "slug": "ulpiana",
       "name": "Ulpiana",
-      "rent_listings": 219,
+      "rent_listings": 231,
       "sale_listings": 151,
       "median_rent_eur": 350.0,
       "median_rent_psm_eur": 5.0,
@@ -1389,7 +1389,7 @@
     {
       "slug": "dardania",
       "name": "Dardania",
-      "rent_listings": 171,
+      "rent_listings": 170,
       "sale_listings": 130,
       "median_rent_eur": 400.0,
       "median_rent_psm_eur": 6.0,
@@ -1399,7 +1399,7 @@
     {
       "slug": "pejton-lakrishte",
       "name": "Pejton / Lakrishte",
-      "rent_listings": 175,
+      "rent_listings": 176,
       "sale_listings": 72,
       "median_rent_eur": 550.0,
       "median_rent_psm_eur": 6.0,
@@ -1409,7 +1409,7 @@
     {
       "slug": "tophane",
       "name": "Tophane",
-      "rent_listings": 144,
+      "rent_listings": 143,
       "sale_listings": 80,
       "median_rent_eur": 450.0,
       "median_rent_psm_eur": 5.0,
@@ -1419,7 +1419,7 @@
     {
       "slug": "llullat-dodona",
       "name": "4 Lullat / Dodona",
-      "rent_listings": 131,
+      "rent_listings": 133,
       "sale_listings": 34,
       "median_rent_eur": 350.0,
       "median_rent_psm_eur": 5.0,
@@ -1429,7 +1429,7 @@
     {
       "slug": "qafa",
       "name": "Qafa",
-      "rent_listings": 96,
+      "rent_listings": 99,
       "sale_listings": 28,
       "median_rent_eur": 400.0,
       "median_rent_psm_eur": 6.0,
@@ -1439,7 +1439,7 @@
     {
       "slug": "velania",
       "name": "Velania",
-      "rent_listings": 47,
+      "rent_listings": 49,
       "sale_listings": 24,
       "median_rent_eur": 450.0,
       "median_rent_psm_eur": 5.0,
@@ -1449,8 +1449,8 @@
     {
       "slug": "marigona-hill",
       "name": "Marigona Hill",
-      "rent_listings": 25,
-      "sale_listings": 21,
+      "rent_listings": 26,
+      "sale_listings": 23,
       "median_rent_eur": 1200.0,
       "median_rent_psm_eur": 9.0,
       "confidence": "low",
@@ -1761,7 +1761,7 @@
     {
       "name": "Matiqan",
       "slug": "matiqan",
-      "rent_listings": 402,
+      "rent_listings": 413,
       "sale_listings": 683,
       "estimate_ready": true,
       "sale_estimate_ready": true
@@ -1769,15 +1769,15 @@
     {
       "name": "Arb\u00ebria",
       "slug": "arberia",
-      "rent_listings": 334,
-      "sale_listings": 151,
+      "rent_listings": 341,
+      "sale_listings": 152,
       "estimate_ready": true,
       "sale_estimate_ready": true
     },
     {
       "name": "Qendra",
       "slug": "qendra",
-      "rent_listings": 295,
+      "rent_listings": 299,
       "sale_listings": 151,
       "estimate_ready": true,
       "sale_estimate_ready": true
@@ -1785,15 +1785,15 @@
     {
       "name": "Aktash / Muhaxher\u00eb",
       "slug": "aktash-muhaxhere",
-      "rent_listings": 263,
-      "sale_listings": 143,
+      "rent_listings": 266,
+      "sale_listings": 141,
       "estimate_ready": true,
       "sale_estimate_ready": true
     },
     {
       "name": "Bregu i Diellit",
       "slug": "bregu-i-diellit",
-      "rent_listings": 253,
+      "rent_listings": 249,
       "sale_listings": 199,
       "estimate_ready": true,
       "sale_estimate_ready": true
@@ -1801,7 +1801,7 @@
     {
       "name": "Ulpiana",
       "slug": "ulpiana",
-      "rent_listings": 219,
+      "rent_listings": 231,
       "sale_listings": 147,
       "estimate_ready": true,
       "sale_estimate_ready": true
@@ -1817,32 +1817,32 @@
     {
       "name": "Veternik",
       "slug": "veternik",
-      "rent_listings": 183,
-      "sale_listings": 480,
-      "estimate_ready": true,
-      "sale_estimate_ready": true
-    },
-    {
-      "name": "Dardania",
-      "slug": "dardania",
-      "rent_listings": 168,
-      "sale_listings": 126,
+      "rent_listings": 185,
+      "sale_listings": 481,
       "estimate_ready": true,
       "sale_estimate_ready": true
     },
     {
       "name": "Pejton / Lakrishte",
       "slug": "pejton-lakrishte",
-      "rent_listings": 167,
+      "rent_listings": 168,
       "sale_listings": 68,
+      "estimate_ready": true,
+      "sale_estimate_ready": true
+    },
+    {
+      "name": "Dardania",
+      "slug": "dardania",
+      "rent_listings": 167,
+      "sale_listings": 126,
       "estimate_ready": true,
       "sale_estimate_ready": true
     },
     {
       "name": "Emshir",
       "slug": "emshir",
-      "rent_listings": 163,
-      "sale_listings": 199,
+      "rent_listings": 166,
+      "sale_listings": 200,
       "estimate_ready": true,
       "sale_estimate_ready": true
     },
@@ -1857,7 +1857,7 @@
     {
       "name": "4 Lullat / Dodona",
       "slug": "llullat-dodona",
-      "rent_listings": 129,
+      "rent_listings": 131,
       "sale_listings": 33,
       "estimate_ready": true,
       "sale_estimate_ready": true
@@ -1865,7 +1865,7 @@
     {
       "name": "Qafa",
       "slug": "qafa",
-      "rent_listings": 95,
+      "rent_listings": 98,
       "sale_listings": 28,
       "estimate_ready": true,
       "sale_estimate_ready": false
@@ -1873,7 +1873,7 @@
     {
       "name": "Velania",
       "slug": "velania",
-      "rent_listings": 46,
+      "rent_listings": 48,
       "sale_listings": 23,
       "estimate_ready": true,
       "sale_estimate_ready": false
@@ -1881,8 +1881,8 @@
     {
       "name": "Marigona Hill",
       "slug": "marigona-hill",
-      "rent_listings": 23,
-      "sale_listings": 12,
+      "rent_listings": 24,
+      "sale_listings": 13,
       "estimate_ready": false,
       "sale_estimate_ready": false
     },
@@ -2233,7 +2233,7 @@
   ],
   "statistical_qa": {
     "status": "PASS",
-    "details_sha256": "d69c1fde1845070fe664067dce2f2e9d53d4649a143f564f16d062c8bc4270fa",
+    "details_sha256": "5e8bf43e33ee6c41af08689fef8fc7d9cdd749bc0996c727a3ad0567daaa6c02",
     "summary": "_qa/market_qa_summary.json",
     "details": "_qa/market_qa_details.json"
   }

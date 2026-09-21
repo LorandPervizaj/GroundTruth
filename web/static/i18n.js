@@ -1056,6 +1056,7 @@
       percentile_top10: "Më e shtrenjta",
       percentile_hint: "Bazuar në {n} shitje apartamentesh.",
       percentile_asking_note: "Percentilet e çmimeve kërkuese të listimeve (jo kufij të garantuar).",
+      percentile_info: "Percentilet e çmimeve kërkuese të listimeve (jo kufij të garantuar). Bazuar në {n} shitje apartamentesh.",
 
       city_comparison_title: "Krahasim me qytetin",
       city_col_here: "Kjo lagje",
@@ -2121,6 +2122,7 @@
       percentile_top10: "Most expensive",
       percentile_hint: "Based on {n} apartment sales.",
       percentile_asking_note: "Observed listing asking-price percentiles (not guaranteed bounds).",
+      percentile_info: "Observed listing asking-price percentiles (not guaranteed bounds). Based on {n} apartment sales.",
 
       city_comparison_title: "vs. City average",
       city_col_here: "This area",

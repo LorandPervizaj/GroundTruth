@@ -467,6 +467,7 @@
       const a = document.createElement("a");
       a.href = `/market/neighborhood/${seg(row.slug)}`;
       a.textContent = row.neighborhood;
+      a.className = "statistics-neighborhood-link";
       td.appendChild(a);
     } else {
       td.textContent = row.neighborhood;

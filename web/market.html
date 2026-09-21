@@ -10,7 +10,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:image" content="/favicon.svg" />
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="/static/style.css?v=55" />
+  <link rel="stylesheet" href="/static/style.css?v=56" />
 </head>
 <body data-page-title="market_title">
   <div class="page page-wide page-market">
@@ -319,7 +319,7 @@
 
         <section class="panel rail-panel" id="rail-percentiles" hidden>
           <h3 class="rail-title" data-i18n="percentile_title"></h3>
-          <p class="rail-foot" data-i18n="percentile_asking_note"></p>
+          <p class="rail-foot hint-info" id="pct-info" data-info-attach="#rail-percentiles .rail-title"></p>
           <div class="percentile-range" id="percentile-range" hidden aria-hidden="true">
             <div class="percentile-track">
               <span class="percentile-fill" id="pct-fill"></span>
@@ -345,7 +345,6 @@
             <span class="percentile-label" data-i18n="percentile_top10"></span>
             <span class="percentile-value" id="pct-p90">-</span>
           </div>
-          <p class="rail-foot hint-info" id="pct-hint" data-info-attach="#rail-percentiles .rail-title"></p>
         </section>
 
         <section class="panel rail-panel" id="rail-confidence" hidden>
@@ -367,7 +366,7 @@
 
     <div id="site-footer"></div>
   </div>
-  <script defer src="/static/i18n.js?v=51"></script>
+  <script defer src="/static/i18n.js?v=52"></script>
   <script defer src="/static/api-cache.js?v=1"></script>
   <script defer src="/static/format.js?v=10"></script>
   <script defer src="/static/theme.js?v=1"></script>
@@ -376,6 +375,6 @@
   <script defer src="/static/site.js?v=34"></script>
   <script defer src="/static/feedback.js?v=4"></script>
   <script defer src="/static/search.js?v=1"></script>
-  <script defer src="/static/lookup.js?v=13"></script>
+  <script defer src="/static/lookup.js?v=14"></script>
 </body>
 </html>

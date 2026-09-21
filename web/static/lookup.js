@@ -208,21 +208,20 @@ function renderPercentilePanel(data) {
   document.getElementById("pct-p50").textContent = fmtSalePsm(pc.p50_sale_psm);
   document.getElementById("pct-p90").textContent = fmtSalePsm(pc.p90_sale_psm);
   renderPercentileRange(pc);
-  const pctHint = document.getElementById("pct-hint");
-  if (pctHint) {
-    pctHint.classList.add("hint-info");
-    pctHint.setAttribute("data-i18n-tip", "percentile_hint");
-    pctHint.setAttribute("data-i18n-tip-vars", JSON.stringify({ n: pc.n }));
-    pctHint.textContent = t("percentile_hint", { n: pc.n });
-    delete pctHint.dataset.infoTipMounted;
+  const pctInfo = document.getElementById("pct-info");
+  if (pctInfo) {
+    pctInfo.setAttribute("data-i18n-tip", "percentile_info");
+    pctInfo.setAttribute("data-i18n-tip-vars", JSON.stringify({ n: pc.n }));
+    pctInfo.textContent = t("percentile_info", { n: pc.n });
+    delete pctInfo.dataset.infoTipMounted;
     window.MetrikSite?.initInfoTips?.();
     const tip =
-      document.getElementById("pct-hint-tip") ||
+      document.getElementById("pct-info-tip") ||
       panel.querySelector(".rail-title .info-tip");
     if (tip) {
-      tip.setAttribute("data-i18n-tip", "percentile_hint");
+      tip.setAttribute("data-i18n-tip", "percentile_info");
       tip.setAttribute("data-i18n-tip-vars", JSON.stringify({ n: pc.n }));
-      window.MetrikSite?.setInfoTipText?.(tip, t("percentile_hint", { n: pc.n }));
+      window.MetrikSite?.setInfoTipText?.(tip, t("percentile_info", { n: pc.n }));
     }
   }
   panel.hidden = false;

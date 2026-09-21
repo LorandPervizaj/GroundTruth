@@ -1766,16 +1766,36 @@ a.btn-secondary.pdf-download-btn {
 }
 .city-compare-table th,
 .city-compare-table td {
-  padding: 0.4rem 0.3rem;
+  padding: 0.55rem 0.3rem;
   text-align: right;
 }
-.city-compare-table thead th { color: var(--muted); font-weight: 600; font-size: var(--text-table-head); }
+.city-compare-table thead th {
+  color: var(--muted);
+  font-weight: 600;
+  font-size: var(--text-table-head);
+  border-bottom: 1px solid var(--border-strong, var(--border));
+}
+.city-compare-table tbody tr + tr {
+  border-top: 1px solid var(--panel-border);
+}
 .city-compare-table tbody th {
   text-align: left;
   font-weight: 500;
   color: var(--muted);
 }
 .city-compare-table td { font-weight: 700; }
+
+.statistics-neighborhood-link,
+.statistics-neighborhood-link:visited {
+  color: var(--text);
+  font-weight: 600;
+  text-decoration-color: transparent;
+}
+.statistics-neighborhood-link:hover,
+.statistics-neighborhood-link:focus-visible {
+  color: var(--text);
+  text-decoration-color: currentColor;
+}
 .city-premium {
   margin: 0.7rem 0 0;
   font-size: 0.85rem;

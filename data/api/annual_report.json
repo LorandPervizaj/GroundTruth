@@ -16,22 +16,22 @@
       "2026-09"
     ],
     "rent": [
-      41,
-      444,
+      31,
+      441,
       81,
       79,
-      210,
+      208,
       147,
       116,
-      150,
-      224,
-      1301,
-      1118,
-      1475,
-      937
+      149,
+      223,
+      1238,
+      790,
+      1127,
+      1847
     ],
     "sale": [
-      30,
+      27,
       116,
       71,
       125,
@@ -41,9 +41,9 @@
       146,
       359,
       1436,
-      332,
-      514,
-      418
+      331,
+      504,
+      437
     ]
   },
   "prices": {
@@ -63,7 +63,7 @@
       "2026-09"
     ],
     "values": [
-      1360,
+      1350,
       1360,
       1310,
       1500,
@@ -74,11 +74,11 @@
       1420,
       1400,
       null,
-      1530,
-      1340
+      1540,
+      1360
     ],
     "raw_values": [
-      1360,
+      1350,
       1360,
       1310,
       1500,
@@ -88,12 +88,12 @@
       1400,
       1420,
       1400,
-      1770,
-      1530,
-      1340
+      1780,
+      1540,
+      1360
     ],
     "counts": [
-      30,
+      27,
       116,
       71,
       125,
@@ -103,16 +103,16 @@
       146,
       359,
       1436,
-      332,
-      514,
-      418
+      331,
+      504,
+      437
     ],
     "excluded_months": [
       {
         "month": "2026-07",
         "reason": "thin_sample_spike",
-        "n": 313,
-        "raw_median": 1769
+        "n": 312,
+        "raw_median": 1777
       }
     ],
     "metric": "median"
@@ -134,7 +134,7 @@
       "2026-09"
     ],
     "values": [
-      450,
+      480,
       400,
       500,
       450,
@@ -145,11 +145,11 @@
       450,
       450,
       400,
-      400,
+      370,
       400
     ],
     "raw_values": [
-      450,
+      480,
       400,
       500,
       450,
@@ -160,23 +160,23 @@
       450,
       450,
       400,
-      400,
+      370,
       400
     ],
     "counts": [
-      41,
-      444,
+      31,
+      441,
       81,
       79,
-      210,
+      208,
       147,
       116,
-      150,
-      224,
-      1301,
-      1118,
-      1475,
-      937
+      149,
+      223,
+      1238,
+      790,
+      1127,
+      1847
     ],
     "excluded_months": [
       {
@@ -197,32 +197,32 @@
   "top_neighborhoods": [
     {
       "name": "Matiqan",
-      "count": 1860
+      "count": 1903
     },
     {
       "name": "Veternik",
-      "count": 939
+      "count": 948
     },
     {
       "name": "Qendra",
-      "count": 779
+      "count": 790
     },
     {
       "name": "Arbëria",
-      "count": 668
+      "count": 682
     },
     {
       "name": "Bregu i Diellit",
-      "count": 641
+      "count": 642
     }
   ],
   "neighborhood_highlights": [
     {
       "neighborhood": "Matiqan",
       "slug": "matiqan",
-      "inventory": 1860,
+      "inventory": 1903,
       "sale_n": 777,
-      "rent_n": 1066,
+      "rent_n": 1109,
       "sale_confidence": "high",
       "rent_confidence": "high",
       "median_price_per_sqm": 1390,
@@ -231,9 +231,9 @@
     {
       "neighborhood": "Veternik",
       "slug": "veternik",
-      "inventory": 939,
-      "sale_n": 596,
-      "rent_n": 334,
+      "inventory": 948,
+      "sale_n": 597,
+      "rent_n": 342,
       "sale_confidence": "high",
       "rent_confidence": "high",
       "median_price_per_sqm": 1240,
@@ -242,9 +242,9 @@
     {
       "neighborhood": "Qendra",
       "slug": "qendra",
-      "inventory": 779,
+      "inventory": 790,
       "sale_n": 193,
-      "rent_n": 571,
+      "rent_n": 581,
       "sale_confidence": "high",
       "rent_confidence": "high",
       "median_price_per_sqm": 1800,
@@ -253,20 +253,20 @@
     {
       "neighborhood": "Arbëria",
       "slug": "arberia",
-      "inventory": 668,
-      "sale_n": 192,
-      "rent_n": 472,
+      "inventory": 682,
+      "sale_n": 193,
+      "rent_n": 484,
       "sale_confidence": "high",
       "rent_confidence": "high",
-      "median_price_per_sqm": 1580,
+      "median_price_per_sqm": 1570,
       "median_rent": 550
     },
     {
       "neighborhood": "Bregu i Diellit",
       "slug": "bregu-i-diellit",
-      "inventory": 641,
+      "inventory": 642,
       "sale_n": 224,
-      "rent_n": 413,
+      "rent_n": 414,
       "sale_confidence": "high",
       "rent_confidence": "high",
       "median_price_per_sqm": 1650,
@@ -277,9 +277,9 @@
     {
       "neighborhood": "Matiqan",
       "slug": "matiqan",
-      "inventory": 1860,
+      "inventory": 1903,
       "sale_n": 777,
-      "rent_n": 1066,
+      "rent_n": 1109,
       "sale_confidence": "high",
       "rent_confidence": "high",
       "median_price_per_sqm": 1390,
@@ -288,9 +288,9 @@
     {
       "neighborhood": "Veternik",
       "slug": "veternik",
-      "inventory": 939,
-      "sale_n": 596,
-      "rent_n": 334,
+      "inventory": 948,
+      "sale_n": 597,
+      "rent_n": 342,
       "sale_confidence": "high",
       "rent_confidence": "high",
       "median_price_per_sqm": 1240,
@@ -299,9 +299,9 @@
     {
       "neighborhood": "Qendra",
       "slug": "qendra",
-      "inventory": 779,
+      "inventory": 790,
       "sale_n": 193,
-      "rent_n": 571,
+      "rent_n": 581,
       "sale_confidence": "high",
       "rent_confidence": "high",
       "median_price_per_sqm": 1800,
@@ -310,20 +310,20 @@
     {
       "neighborhood": "Arbëria",
       "slug": "arberia",
-      "inventory": 668,
-      "sale_n": 192,
-      "rent_n": 472,
+      "inventory": 682,
+      "sale_n": 193,
+      "rent_n": 484,
       "sale_confidence": "high",
       "rent_confidence": "high",
-      "median_price_per_sqm": 1580,
+      "median_price_per_sqm": 1570,
       "median_rent": 550
     },
     {
       "neighborhood": "Bregu i Diellit",
       "slug": "bregu-i-diellit",
-      "inventory": 641,
+      "inventory": 642,
       "sale_n": 224,
-      "rent_n": 413,
+      "rent_n": 414,
       "sale_confidence": "high",
       "rent_confidence": "high",
       "median_price_per_sqm": 1650,
@@ -332,9 +332,9 @@
     {
       "neighborhood": "Aktash / Muhaxherë",
       "slug": "aktash-muhaxhere",
-      "inventory": 619,
-      "sale_n": 160,
-      "rent_n": 453,
+      "inventory": 627,
+      "sale_n": 158,
+      "rent_n": 463,
       "sale_confidence": "high",
       "rent_confidence": "high",
       "median_price_per_sqm": 1850,
@@ -343,31 +343,31 @@
     {
       "neighborhood": "Ulpiana",
       "slug": "ulpiana",
-      "inventory": 567,
+      "inventory": 581,
       "sale_n": 176,
-      "rent_n": 386,
+      "rent_n": 400,
       "sale_confidence": "high",
       "rent_confidence": "high",
       "median_price_per_sqm": 2390,
-      "median_rent": 390
+      "median_rent": 400
     },
     {
       "neighborhood": "Emshir",
       "slug": "emshir",
-      "inventory": 500,
-      "sale_n": 226,
-      "rent_n": 271,
+      "inventory": 509,
+      "sale_n": 227,
+      "rent_n": 279,
       "sale_confidence": "high",
       "rent_confidence": "high",
       "median_price_per_sqm": 1480,
-      "median_rent": 420
+      "median_rent": 400
     },
     {
       "neighborhood": "Dardania",
       "slug": "dardania",
-      "inventory": 454,
+      "inventory": 453,
       "sale_n": 146,
-      "rent_n": 303,
+      "rent_n": 302,
       "sale_confidence": "high",
       "rent_confidence": "high",
       "median_price_per_sqm": 1950,
@@ -376,9 +376,9 @@
     {
       "neighborhood": "Spitali",
       "slug": "spitali",
-      "inventory": 431,
+      "inventory": 432,
       "sale_n": 122,
-      "rent_n": 297,
+      "rent_n": 298,
       "sale_confidence": "high",
       "rent_confidence": "high",
       "median_price_per_sqm": 1400,
@@ -390,9 +390,9 @@
       {
         "neighborhood": "Marigona Hill",
         "slug": "marigona-hill",
-        "n": 24,
+        "n": 26,
         "confidence": "low",
-        "median_price_per_sqm": 2820,
+        "median_price_per_sqm": 2780,
         "median_sale_eur": 460000
       },
       {
@@ -430,6 +430,14 @@
     ],
     "affordable": [
       {
+        "neighborhood": "Kolovice",
+        "slug": "kolovice",
+        "n": 15,
+        "confidence": "low",
+        "median_price_per_sqm": 1000,
+        "median_sale_eur": 322000
+      },
+      {
         "neighborhood": "Hajvali",
         "slug": "hajvali",
         "n": 24,
@@ -448,69 +456,61 @@
       {
         "neighborhood": "Sofalia",
         "slug": "sofalia",
-        "n": 32,
+        "n": 33,
         "confidence": "medium",
-        "median_price_per_sqm": 1230,
-        "median_sale_eur": 354000
+        "median_price_per_sqm": 1240,
+        "median_sale_eur": 377000
       },
       {
         "neighborhood": "Veternik",
         "slug": "veternik",
-        "n": 581,
+        "n": 582,
         "confidence": "high",
         "median_price_per_sqm": 1240,
-        "median_sale_eur": 133000
-      },
-      {
-        "neighborhood": "Matiqan",
-        "slug": "matiqan",
-        "n": 757,
-        "confidence": "high",
-        "median_price_per_sqm": 1390,
-        "median_sale_eur": 128000
+        "median_sale_eur": 132000
       }
     ],
     "min_sale_listings": 15
   },
-  "total_listings": 10589,
+  "total_listings": 10750,
   "kpis": {
-    "total_listings": 10589,
+    "total_listings": 10750,
     "total_sample": {
-      "n": 10589,
+      "n": 10750,
       "confidence": "high"
     },
-    "rent_count": 6323,
+    "rent_count": 6477,
     "rent_sample": {
-      "n": 6323,
+      "n": 6477,
       "confidence": "high"
     },
-    "sale_count": 3956,
+    "sale_count": 3961,
     "sale_sample": {
-      "n": 3956,
+      "n": 3961,
       "confidence": "high"
     },
     "rent_pct": 60,
     "median_sale_price_per_sqm": 1440,
     "median_sale_sample": {
-      "n": 3956,
+      "n": 3961,
       "confidence": "high"
     },
     "median_rent": 450,
     "median_rent_sample": {
-      "n": 6323,
+      "n": 6477,
       "confidence": "high"
     }
   },
   "sources": [],
   "coverage": {
     "price_pct": 97.1,
-    "area_pct": 78.0,
-    "neighborhood_pct": 83.8,
-    "bedrooms_pct": 80.6
+    "area_pct": 77.8,
+    "neighborhood_pct": 83.9,
+    "bedrooms_pct": 80.8
   },
   "methodology": {
     "window_months": 12,
-    "cutoff_date": "2025-09-17",
+    "cutoff_date": "2025-09-21",
     "date_field": "listing_date",
     "deduped": true,
     "sources": [
@@ -543,13 +543,13 @@
       "Dominimi i qirasë do të thotë që qiramarrësit kanë më shumë zgjedhje dhe mundësi negociimi, ndërsa blerësit duhet të filtrojnë me kujdes listimet e shitjes që mbeten më të pakta. Kjo nuk tregon automatikisht një treg të ftohtë të shitjes; shpesh pasqyron se portalet përdoren më shumë për qira.",
       "Inventari është i përqendruar te 'Matiqan', rreth 18% e listimeve të raportuara. Kjo mund të pasqyrojë si aktivitetin real të tregut, ashtu edhe mënyrën se si agjencitë dhe portalet etiketojnë lagjet periferike ose zonat e paqarta gjeografikisht. Për blerës dhe qiramarrës, krahasimet brenda lagjes janë më të vlefshme se mesatarja e qytetit.",
       "Rritja e aktivitetit në muajt e fundit mund të pasqyrojë hyrje të reja të të dhënave (p.sh. arkiva të portalit), jo domosdoshmërisht një rritje sezonale. Muaji 2026-06 duket veçanërisht i lartë krahasuar me mesataren; trajtoje si sinjal, jo si fakt ekonomik.",
-      "Hendeku i çmimeve midis lagjeve me mjaftueshëm të dhëna mbetet i madh: Marigona Hill kërkon nivel premium ndaj Hajvali. Blerësit që kërkojnë vlerë duhet të shohin periferinë; ata që kërkojnë likuiditet duhet të pranojnë premium në lagjet e dokumentuara mirë."
+      "Hendeku i çmimeve midis lagjeve me mjaftueshëm të dhëna mbetet i madh: Marigona Hill kërkon nivel premium ndaj Kolovice. Blerësit që kërkojnë vlerë duhet të shohin periferinë; ata që kërkojnë likuiditet duhet të pranojnë premium në lagjet e dokumentuara mirë."
     ],
     "en": [
       "Rent dominance means tenants have more choice and room to negotiate, while buyers should filter carefully through a thinner for-sale pool. This does not automatically signal a cold sale market; portals are often used more for rentals.",
       "Inventory is concentrated in 'Matiqan', about 18% of reported listings. That may reflect real market activity, but also how agencies and portals label peripheral or loosely geocoded areas. Neighborhood-level comparisons matter more than a citywide average.",
       "Higher activity in recent months may reflect new data ingestion (e.g. portal archives), not necessarily a seasonal boom. Month 2026-06 looks unusually high versus the median; treat it as a signal, not an economic fact.",
-      "The price gap across well-covered neighborhoods remains wide: Marigona Hill asks at a premium versus Hajvali. Value seekers should look outward; liquidity seekers should expect a premium in well-documented areas."
+      "The price gap across well-covered neighborhoods remains wide: Marigona Hill asks at a premium versus Kolovice. Value seekers should look outward; liquidity seekers should expect a premium in well-documented areas."
     ]
   },
   "coverage_narrative": {
@@ -578,8 +578,8 @@
   },
   "methodology_plain": {
     "plain": {
-      "sq": "Ky raport përmbledh listime aktive të banimit në Prishtinë nga portale publike të listimeve, publikuar brenda 12 muajve të fundit (nga 2025-09-17). Çdo listim numërohet një herë; çmimet janë medianë të çmimeve të kërkuara, jo transaksione. Përditësohet pas çdo cikli të përpunimit të të dhënave.",
-      "en": "This report summarizes active residential listings in Prishtina from public listing portals, published within the last 12 months (from 2025-09-17). Each listing is counted once; prices are medians of asking prices, not transactions. Updated after each data processing cycle."
+      "sq": "Ky raport përmbledh listime aktive të banimit në Prishtinë nga portale publike të listimeve, publikuar brenda 12 muajve të fundit (nga 2025-09-21). Çdo listim numërohet një herë; çmimet janë medianë të çmimeve të kërkuara, jo transaksione. Përditësohet pas çdo cikli të përpunimit të të dhënave.",
+      "en": "This report summarizes active residential listings in Prishtina from public listing portals, published within the last 12 months (from 2025-09-21). Each listing is counted once; prices are medians of asking prices, not transactions. Updated after each data processing cycle."
     },
     "technical": {
       "parsers": "6 active parser version(s)"
@@ -600,21 +600,21 @@
     ]
   },
   "rankings_commentary": {
-    "sq": "Hendeku midis Marigona Hill (€2820/m²) dhe Hajvali (€1030/m²), rreth 2.7×, pasqyron ndarjen klasike të qytetit: zona qendrore dhe të dokumentuara mirë kërkojnë premium, ndërsa periferitë ofrojnë çmime më të ulëta të kërkuara. Blerësit që kërkojnë vlerë duhet të krahasojnë lagjet periferike; ata që kërkojnë likuiditet dhe afërsi me qendrën duhet të presin premium.",
-    "en": "The gap between Marigona Hill (€2820/m²) and Hajvali (€1030/m²), about 2.7×, reflects a classic city split: central, well-documented areas command a premium, while outer neighborhoods show lower asking prices. Value seekers should compare peripheral areas; buyers prioritizing centrality and liquidity should expect to pay more."
+    "sq": "Hendeku midis Marigona Hill (€2780/m²) dhe Kolovice (€1000/m²), rreth 2.8×, pasqyron ndarjen klasike të qytetit: zona qendrore dhe të dokumentuara mirë kërkojnë premium, ndërsa periferitë ofrojnë çmime më të ulëta të kërkuara. Blerësit që kërkojnë vlerë duhet të krahasojnë lagjet periferike; ata që kërkojnë likuiditet dhe afërsi me qendrën duhet të presin premium.",
+    "en": "The gap between Marigona Hill (€2780/m²) and Kolovice (€1000/m²), about 2.8×, reflects a classic city split: central, well-documented areas command a premium, while outer neighborhoods show lower asking prices. Value seekers should compare peripheral areas; buyers prioritizing centrality and liquidity should expect to pay more."
   },
   "conclusions": {
     "sq": [
       "Dominimi i qirasë do të thotë që qiramarrësit kanë më shumë zgjedhje dhe mundësi negociimi, ndërsa blerësit duhet të filtrojnë me kujdes listimet e shitjes që mbeten më të pakta. Kjo nuk tregon automatikisht një treg të ftohtë të shitjes; shpesh pasqyron se portalet përdoren më shumë për qira.",
       "Inventari është i përqendruar te 'Matiqan', rreth 18% e listimeve të raportuara. Kjo mund të pasqyrojë si aktivitetin real të tregut, ashtu edhe mënyrën se si agjencitë dhe portalet etiketojnë lagjet periferike ose zonat e paqarta gjeografikisht. Për blerës dhe qiramarrës, krahasimet brenda lagjes janë më të vlefshme se mesatarja e qytetit.",
       "Rritja e aktivitetit në muajt e fundit mund të pasqyrojë hyrje të reja të të dhënave (p.sh. arkiva të portalit), jo domosdoshmërisht një rritje sezonale. Muaji 2026-06 duket veçanërisht i lartë krahasuar me mesataren; trajtoje si sinjal, jo si fakt ekonomik.",
-      "Hendeku i çmimeve midis lagjeve me mjaftueshëm të dhëna mbetet i madh: Marigona Hill kërkon nivel premium ndaj Hajvali. Blerësit që kërkojnë vlerë duhet të shohin periferinë; ata që kërkojnë likuiditet duhet të pranojnë premium në lagjet e dokumentuara mirë."
+      "Hendeku i çmimeve midis lagjeve me mjaftueshëm të dhëna mbetet i madh: Marigona Hill kërkon nivel premium ndaj Kolovice. Blerësit që kërkojnë vlerë duhet të shohin periferinë; ata që kërkojnë likuiditet duhet të pranojnë premium në lagjet e dokumentuara mirë."
     ],
     "en": [
       "Rent dominance means tenants have more choice and room to negotiate, while buyers should filter carefully through a thinner for-sale pool. This does not automatically signal a cold sale market; portals are often used more for rentals.",
       "Inventory is concentrated in 'Matiqan', about 18% of reported listings. That may reflect real market activity, but also how agencies and portals label peripheral or loosely geocoded areas. Neighborhood-level comparisons matter more than a citywide average.",
       "Higher activity in recent months may reflect new data ingestion (e.g. portal archives), not necessarily a seasonal boom. Month 2026-06 looks unusually high versus the median; treat it as a signal, not an economic fact.",
-      "The price gap across well-covered neighborhoods remains wide: Marigona Hill asks at a premium versus Hajvali. Value seekers should look outward; liquidity seekers should expect a premium in well-documented areas."
+      "The price gap across well-covered neighborhoods remains wide: Marigona Hill asks at a premium versus Kolovice. Value seekers should look outward; liquidity seekers should expect a premium in well-documented areas."
     ]
   },
   "narratives": {
@@ -641,16 +641,16 @@
     "by_bedrooms": [
       {
         "segment": "0 BR",
-        "listings": 107,
+        "listings": 108,
         "confidence": "high",
         "median_sale_price": 76000,
         "median_sale_psm": 1840,
         "median_rent": 300,
-        "median_area_sqm": 42.0
+        "median_area_sqm": 43.0
       },
       {
         "segment": "1 BR",
-        "listings": 2492,
+        "listings": 2520,
         "confidence": "high",
         "median_sale_price": 90000,
         "median_sale_psm": 1550,
@@ -659,7 +659,7 @@
       },
       {
         "segment": "2 BR",
-        "listings": 3229,
+        "listings": 3274,
         "confidence": "high",
         "median_sale_price": 120000,
         "median_sale_psm": 1360,
@@ -668,7 +668,7 @@
       },
       {
         "segment": "3 BR",
-        "listings": 1555,
+        "listings": 1582,
         "confidence": "high",
         "median_sale_price": 161000,
         "median_sale_psm": 1400,
@@ -677,7 +677,7 @@
       },
       {
         "segment": "4+ BR",
-        "listings": 213,
+        "listings": 214,
         "confidence": "high",
         "median_sale_price": 270000,
         "median_sale_psm": 1420,
@@ -688,7 +688,7 @@
     "by_size_band": [
       {
         "segment": "<50m²",
-        "listings": 532,
+        "listings": 536,
         "confidence": "high",
         "median_sale_price": 83000,
         "median_sale_psm": 2140,
@@ -697,7 +697,7 @@
       },
       {
         "segment": "50-79m²",
-        "listings": 2256,
+        "listings": 2267,
         "confidence": "high",
         "median_sale_price": 98000,
         "median_sale_psm": 1480,
@@ -706,7 +706,7 @@
       },
       {
         "segment": "80-109m²",
-        "listings": 2506,
+        "listings": 2521,
         "confidence": "high",
         "median_sale_price": 124000,
         "median_sale_psm": 1350,
@@ -715,7 +715,7 @@
       },
       {
         "segment": "110m²+",
-        "listings": 1753,
+        "listings": 1776,
         "confidence": "high",
         "median_sale_price": 209000,
         "median_sale_psm": 1480,
@@ -745,17 +745,17 @@
         "types": [
           {
             "type": "APARTMENT",
-            "count": 9024,
-            "pct": 85.2
+            "count": 9136,
+            "pct": 85.0
           },
           {
             "type": "HOUSE",
-            "count": 674,
-            "pct": 6.4
+            "count": 709,
+            "pct": 6.6
           },
           {
             "type": "COMMERCIAL",
-            "count": 486,
+            "count": 499,
             "pct": 4.6
           },
           {
@@ -770,7 +770,7 @@
           },
           {
             "type": "STUDIO",
-            "count": 24,
+            "count": 25,
             "pct": 0.2
           },
           {
@@ -780,121 +780,121 @@
           }
         ],
         "top_type": "APARTMENT",
-        "top_pct": 85.2,
-        "total": 10589
+        "top_pct": 85.0,
+        "total": 10750
       },
       "by_neighborhood": [
         {
           "neighborhood": "Matiqan",
           "slug": "matiqan",
           "top_property_type": "APARTMENT",
-          "top_property_type_pct": 90.1,
-          "listings": 1860
+          "top_property_type_pct": 89.9,
+          "listings": 1903
         },
         {
           "neighborhood": "Veternik",
           "slug": "veternik",
           "top_property_type": "APARTMENT",
-          "top_property_type_pct": 84.1,
-          "listings": 939
+          "top_property_type_pct": 83.8,
+          "listings": 948
         },
         {
           "neighborhood": "Qendra",
           "slug": "qendra",
           "top_property_type": "APARTMENT",
-          "top_property_type_pct": 84.3,
-          "listings": 779
+          "top_property_type_pct": 83.9,
+          "listings": 790
         },
         {
           "neighborhood": "Arbëria",
           "slug": "arberia",
           "top_property_type": "APARTMENT",
-          "top_property_type_pct": 89.2,
-          "listings": 668
+          "top_property_type_pct": 88.9,
+          "listings": 682
         },
         {
           "neighborhood": "Bregu i Diellit",
           "slug": "bregu-i-diellit",
           "top_property_type": "APARTMENT",
-          "top_property_type_pct": 93.8,
-          "listings": 641
+          "top_property_type_pct": 93.6,
+          "listings": 642
         },
         {
           "neighborhood": "Aktash / Muhaxherë",
           "slug": "aktash-muhaxhere",
           "top_property_type": "APARTMENT",
-          "top_property_type_pct": 91.4,
-          "listings": 619
+          "top_property_type_pct": 91.2,
+          "listings": 627
         },
         {
           "neighborhood": "Ulpiana",
           "slug": "ulpiana",
           "top_property_type": "APARTMENT",
-          "top_property_type_pct": 91.5,
-          "listings": 567
+          "top_property_type_pct": 91.7,
+          "listings": 581
         },
         {
           "neighborhood": "Emshir",
           "slug": "emshir",
           "top_property_type": "APARTMENT",
-          "top_property_type_pct": 94.8,
-          "listings": 500
+          "top_property_type_pct": 94.9,
+          "listings": 509
         },
         {
           "neighborhood": "Dardania",
           "slug": "dardania",
           "top_property_type": "APARTMENT",
-          "top_property_type_pct": 92.5,
-          "listings": 454
+          "top_property_type_pct": 92.7,
+          "listings": 453
         },
         {
           "neighborhood": "Spitali",
           "slug": "spitali",
           "top_property_type": "APARTMENT",
           "top_property_type_pct": 95.1,
-          "listings": 431
+          "listings": 432
         },
         {
           "neighborhood": "Pejton / Lakrishte",
           "slug": "pejton-lakrishte",
           "top_property_type": "APARTMENT",
-          "top_property_type_pct": 84.3,
-          "listings": 344
+          "top_property_type_pct": 83.8,
+          "listings": 351
         },
         {
           "neighborhood": "Tophane",
           "slug": "tophane",
           "top_property_type": "APARTMENT",
-          "top_property_type_pct": 96.5,
-          "listings": 282
+          "top_property_type_pct": 96.1,
+          "listings": 283
         },
         {
           "neighborhood": "4 Lullat / Dodona",
           "slug": "llullat-dodona",
           "top_property_type": "APARTMENT",
-          "top_property_type_pct": 89.9,
-          "listings": 227
+          "top_property_type_pct": 89.2,
+          "listings": 231
         },
         {
           "neighborhood": "Qafa",
           "slug": "qafa",
           "top_property_type": "APARTMENT",
-          "top_property_type_pct": 94.4,
-          "listings": 161
+          "top_property_type_pct": 94.5,
+          "listings": 165
         },
         {
           "neighborhood": "Velania",
           "slug": "velania",
           "top_property_type": "APARTMENT",
-          "top_property_type_pct": 85.9,
-          "listings": 92
+          "top_property_type_pct": 86.2,
+          "listings": 94
         }
       ]
     },
     "common_segments": {
       "most_common_bedroom": {
         "segment": "2 BR",
-        "listings": 3229,
+        "listings": 3274,
         "confidence": "high",
         "median_sale_price": 120000,
         "median_sale_psm": 1360,
@@ -903,7 +903,7 @@
       },
       "most_common_size_band": {
         "segment": "80-109m²",
-        "listings": 2506,
+        "listings": 2521,
         "confidence": "high",
         "median_sale_price": 124000,
         "median_sale_psm": 1350,
@@ -912,16 +912,16 @@
       },
       "most_expensive_bedroom": {
         "segment": "0 BR",
-        "listings": 107,
+        "listings": 108,
         "confidence": "high",
         "median_sale_price": 76000,
         "median_sale_psm": 1840,
         "median_rent": 300,
-        "median_area_sqm": 42.0
+        "median_area_sqm": 43.0
       },
       "most_expensive_size_band": {
         "segment": "<50m²",
-        "listings": 532,
+        "listings": 536,
         "confidence": "high",
         "median_sale_price": 83000,
         "median_sale_psm": 2140,
@@ -933,105 +933,105 @@
       {
         "neighborhood": "Matiqan",
         "slug": "matiqan",
-        "listings": 1860,
+        "listings": 1903,
         "top_bedroom_segment": "2 BR",
         "top_size_band": "80-109m²"
       },
       {
         "neighborhood": "Veternik",
         "slug": "veternik",
-        "listings": 939,
+        "listings": 948,
         "top_bedroom_segment": "2 BR",
         "top_size_band": "110m²+"
       },
       {
         "neighborhood": "Qendra",
         "slug": "qendra",
-        "listings": 779,
+        "listings": 790,
         "top_bedroom_segment": "2 BR",
         "top_size_band": "50-79m²"
       },
       {
         "neighborhood": "Arbëria",
         "slug": "arberia",
-        "listings": 668,
+        "listings": 682,
         "top_bedroom_segment": "2 BR",
         "top_size_band": "110m²+"
       },
       {
         "neighborhood": "Bregu i Diellit",
         "slug": "bregu-i-diellit",
-        "listings": 641,
+        "listings": 642,
         "top_bedroom_segment": "2 BR",
         "top_size_band": "50-79m²"
       },
       {
         "neighborhood": "Aktash / Muhaxherë",
         "slug": "aktash-muhaxhere",
-        "listings": 619,
+        "listings": 627,
         "top_bedroom_segment": "2 BR",
         "top_size_band": "80-109m²"
       },
       {
         "neighborhood": "Ulpiana",
         "slug": "ulpiana",
-        "listings": 567,
+        "listings": 581,
         "top_bedroom_segment": "1 BR",
         "top_size_band": "50-79m²"
       },
       {
         "neighborhood": "Emshir",
         "slug": "emshir",
-        "listings": 500,
+        "listings": 509,
         "top_bedroom_segment": "2 BR",
         "top_size_band": "80-109m²"
       },
       {
         "neighborhood": "Dardania",
         "slug": "dardania",
-        "listings": 454,
+        "listings": 453,
         "top_bedroom_segment": "2 BR",
         "top_size_band": "50-79m²"
       },
       {
         "neighborhood": "Spitali",
         "slug": "spitali",
-        "listings": 431,
+        "listings": 432,
         "top_bedroom_segment": "2 BR",
         "top_size_band": "80-109m²"
       },
       {
         "neighborhood": "Pejton / Lakrishte",
         "slug": "pejton-lakrishte",
-        "listings": 344,
+        "listings": 351,
         "top_bedroom_segment": "2 BR",
         "top_size_band": "80-109m²"
       },
       {
         "neighborhood": "Tophane",
         "slug": "tophane",
-        "listings": 282,
+        "listings": 283,
         "top_bedroom_segment": "1 BR",
         "top_size_band": "80-109m²"
       },
       {
         "neighborhood": "4 Lullat / Dodona",
         "slug": "llullat-dodona",
-        "listings": 227,
+        "listings": 231,
         "top_bedroom_segment": "1 BR",
         "top_size_band": "50-79m²"
       },
       {
         "neighborhood": "Qafa",
         "slug": "qafa",
-        "listings": 161,
-        "top_bedroom_segment": "1 BR",
+        "listings": 165,
+        "top_bedroom_segment": "2 BR",
         "top_size_band": "50-79m²"
       },
       {
         "neighborhood": "Velania",
         "slug": "velania",
-        "listings": 92,
+        "listings": 94,
         "top_bedroom_segment": "2 BR",
         "top_size_band": "80-109m²"
       }
@@ -1040,12 +1040,12 @@
       {
         "neighborhood": "Sofalia",
         "slug": "sofalia",
-        "gross_yield_pct": 5.98,
+        "gross_yield_pct": 5.96,
         "median_rent_eur": 1500,
-        "median_sale_eur": 301000,
-        "sale_n": 38,
-        "rent_n": 29,
-        "confidence": "low"
+        "median_sale_eur": 302000,
+        "sale_n": 39,
+        "rent_n": 30,
+        "confidence": "medium"
       },
       {
         "neighborhood": "Taslixhe",
@@ -1063,8 +1063,8 @@
         "gross_yield_pct": 4.56,
         "median_rent_eur": 500,
         "median_sale_eur": 132000,
-        "sale_n": 596,
-        "rent_n": 334,
+        "sale_n": 597,
+        "rent_n": 342,
         "confidence": "high"
       },
       {
@@ -1074,7 +1074,7 @@
         "median_rent_eur": 450,
         "median_sale_eur": 135000,
         "sale_n": 89,
-        "rent_n": 191,
+        "rent_n": 192,
         "confidence": "medium"
       },
       {
@@ -1084,11 +1084,19 @@
         "median_rent_eur": 350,
         "median_sale_eur": 105000,
         "sale_n": 176,
-        "rent_n": 386,
+        "rent_n": 400,
         "confidence": "high"
       }
     ],
     "best_to_live": [
+      {
+        "neighborhood": "Kolovice",
+        "slug": "kolovice",
+        "n": 15,
+        "confidence": "low",
+        "median_price_per_sqm": 1000,
+        "median_sale_eur": 322000
+      },
       {
         "neighborhood": "Hajvali",
         "slug": "hajvali",
@@ -1108,35 +1116,27 @@
       {
         "neighborhood": "Sofalia",
         "slug": "sofalia",
-        "n": 32,
+        "n": 33,
         "confidence": "medium",
-        "median_price_per_sqm": 1230,
-        "median_sale_eur": 354000
+        "median_price_per_sqm": 1240,
+        "median_sale_eur": 377000
       },
       {
         "neighborhood": "Veternik",
         "slug": "veternik",
-        "n": 581,
+        "n": 582,
         "confidence": "high",
         "median_price_per_sqm": 1240,
-        "median_sale_eur": 133000
-      },
-      {
-        "neighborhood": "Matiqan",
-        "slug": "matiqan",
-        "n": 757,
-        "confidence": "high",
-        "median_price_per_sqm": 1390,
-        "median_sale_eur": 128000
+        "median_sale_eur": 132000
       }
     ],
     "most_expensive_psm": [
       {
         "neighborhood": "Marigona Hill",
         "slug": "marigona-hill",
-        "n": 24,
+        "n": 26,
         "confidence": "low",
-        "median_price_per_sqm": 2820,
+        "median_price_per_sqm": 2780,
         "median_sale_eur": 460000
       },
       {
@@ -1189,10 +1189,10 @@
     }
   },
   "price_percentiles": {
-    "p10_sale_psm": 924,
+    "p10_sale_psm": 925,
     "p50_sale_psm": 1400,
     "p90_sale_psm": 2500,
-    "n": 3003,
+    "n": 3006,
     "max_psm_exclusive": 4000,
     "excluded_n": 215
   },
@@ -1272,7 +1272,7 @@
       {
         "bin_start": 1200,
         "bin_end": 1250,
-        "count": 188
+        "count": 189
       },
       {
         "bin_start": 1250,
@@ -1292,12 +1292,12 @@
       {
         "bin_start": 1400,
         "bin_end": 1450,
-        "count": 127
+        "count": 128
       },
       {
         "bin_start": 1450,
         "bin_end": 1500,
-        "count": 115
+        "count": 116
       },
       {
         "bin_start": 1500,
@@ -1312,12 +1312,12 @@
       {
         "bin_start": 1600,
         "bin_end": 1650,
-        "count": 95
+        "count": 96
       },
       {
         "bin_start": 1650,
         "bin_end": 1700,
-        "count": 73
+        "count": 72
       },
       {
         "bin_start": 1700,
@@ -1347,12 +1347,12 @@
       {
         "bin_start": 1950,
         "bin_end": 2000,
-        "count": 33
+        "count": 34
       },
       {
         "bin_start": 2000,
         "bin_end": 2050,
-        "count": 53
+        "count": 52
       },
       {
         "bin_start": 2050,
@@ -1427,7 +1427,7 @@
       {
         "bin_start": 2750,
         "bin_end": 2800,
-        "count": 10
+        "count": 11
       },
       {
         "bin_start": 2800,
@@ -1517,7 +1517,7 @@
       {
         "bin_start": 3650,
         "bin_end": 3700,
-        "count": 3
+        "count": 2
       },
       {
         "bin_start": 3700,
@@ -1550,7 +1550,7 @@
         "count": 4
       }
     ],
-    "n": 3003,
+    "n": 3006,
     "confidence": "high",
     "max_psm_exclusive": 4000,
     "excluded_n": 215
@@ -1729,6 +1729,6 @@
       ]
     }
   ],
-  "generated_at": "2026-09-17T08:41:15+00:00",
-  "data_revision": "197:2026-09-15T21:48:52.646079+00:00:2.0.0"
+  "generated_at": "2026-09-21T12:16:46+00:00",
+  "data_revision": "205:2026-09-21T12:08:59.100854+00:00:2.0.0"
 }
