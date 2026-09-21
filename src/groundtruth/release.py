@@ -37,7 +37,10 @@ def build_release_artifacts() -> tuple[Path, Path]:
     from groundtruth.analytics.statistical_qa import run_statistical_qa
     from groundtruth.config import PROJECT_ROOT
 
-    run_statistical_qa(lookup_cache_dir(), PROJECT_ROOT / "reports" / "generated")
+    run_statistical_qa(
+        lookup_cache_dir(),
+        PROJECT_ROOT / "reports" / "generated" / "lookup_cache" / "_qa",
+    )
     return lookup_manifest, annual_path
 
 
@@ -75,6 +78,8 @@ def verify_release_artifacts() -> list[str]:
     if not isinstance(qa, dict) or qa.get("status") not in {"PASS", "PASS_WITH_WARNINGS"}:
         raise ValueError("release manifest is missing a passing statistical QA gate")
     qa_details = Path(str(qa.get("details") or ""))
+    if not qa_details.is_absolute():
+        qa_details = base / qa_details
     if not qa_details.is_file():
         raise FileNotFoundError(f"missing statistical QA details: {qa_details}")
     _require_sha256(qa.get("details_sha256"), qa_details, context="statistical_qa")

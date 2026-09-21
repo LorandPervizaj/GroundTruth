@@ -488,7 +488,7 @@ def refresh_analytics(
     # orchestration function testable with a stubbed cache builder while the
     # release verifier remains the final mandatory gate.
     if cache_path.is_file():
-        qa_status, qa_paths = run_statistical_qa(cache_path.parent, corpus_dir)
+        qa_status, qa_paths = run_statistical_qa(cache_path.parent, cache_path.parent / "_qa")
         out.print(f"[green]Statistical QA: {qa_status} ({qa_paths['summary']}).[/green]")
 
     skew = source_skew_report(session)

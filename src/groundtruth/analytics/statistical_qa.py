@@ -243,7 +243,9 @@ def run_statistical_qa(
     summary_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
     buffer = StringIO()
     writer = csv.DictWriter(
-        buffer, fieldnames=["level", "code", "entity", "metric", "message", "evidence"]
+        buffer,
+        fieldnames=["level", "code", "entity", "metric", "message", "evidence"],
+        lineterminator="\n",
     )
     writer.writeheader()
     for issue in issues:
@@ -255,8 +257,8 @@ def run_statistical_qa(
     manifest["statistical_qa"] = {
         "status": status,
         "details_sha256": qa_hash,
-        "summary": str(summary_path),
-        "details": str(details_path),
+        "summary": summary_path.relative_to(cache_dir).as_posix(),
+        "details": details_path.relative_to(cache_dir).as_posix(),
     }
     manifest_path.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
     if status == "FAIL":
