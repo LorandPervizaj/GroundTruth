@@ -70,16 +70,20 @@ COALESCE(
 
 _INFORMAL_SOURCE_SQL = ", ".join(f"'{s}'" for s in sorted(INFORMAL_SOURCE_WEBSITES))
 
-ACTIVE_CORPUS_WHERE = f"""
+VALID_CORPUS_WHERE = f"""
           AND nl.parser_version = ANY(:parser_versions)
           AND nl.source_website NOT IN ({_INFORMAL_SOURCE_SQL})
-          AND {EFFECTIVE_LISTING_DATE_SQL} IS NOT NULL
-          AND {EFFECTIVE_LISTING_DATE_SQL} >= :cutoff_date
           AND NOT EXISTS (
               SELECT 1 FROM invalid_listings il
               WHERE il.parsed_listing_id = nl.parsed_listing_id
                 AND il.stage IN ('validate', 'VALIDATE')
           )
+"""
+
+ACTIVE_CORPUS_WHERE = f"""
+{VALID_CORPUS_WHERE}
+          AND {EFFECTIVE_LISTING_DATE_SQL} IS NOT NULL
+          AND {EFFECTIVE_LISTING_DATE_SQL} >= :cutoff_date
 """
 
 

@@ -17,6 +17,33 @@ Crawl → raw_listings (immutable, content-hash identity)
 
 Public Metrik prefers **disk release artifacts** (`reports/generated/lookup_cache/`). Dataset freeze manifests under `data/datasets/` label versions and fingerprints; they do **not** by themselves reconstruct or lock the served cache. Rebuild artifacts from the research DB, then verify before deploy.
 
+### Price distribution (asking €/m²)
+
+Sale and rent histograms render through `web/static/distribution.js` (`MetrikDistribution.render`), sharing Chart.js loading/theming from `web/static/charts.js` (same stack as the Statistics `priceChart` trend line).
+
+| Surface | Data | Notes |
+|---------|------|-------|
+| Market main (`#market-distribution-section`) | Lookup `sale_price_distribution` + `rent_price_distribution` | Side-by-side sale €/m² and rent €/mo |
+| Market rail (`#rail-percentiles`) | Lookup `price_percentiles` p10/p50/p90 | Numbers + link to Stats |
+| Statistics (`#annual-distribution-section`) | Annual `sale_price_distribution` + paired `price_percentiles` | City-wide sale histogram |
+
+UI labels **Më e lira / Mediana / Më e shtrenjta** map to **p10 / p50 / p90** (not observed min/max). Histograms are pre-binned aggregates — listing-level prices are not shipped to the browser.
+
+**Sale analytical filter:** `SALE_DISTRIBUTION_MAX_PSM = 4000` (exclusive) in `price_histogram.sale_psm_for_distribution`. Sale values at or above €4,000/m² are excluded from the public sale histogram and from the Stats percentiles that accompany it. Market lookup also applies `applySaleDistributionCutoff` so stale cache payloads cannot reintroduce the tail. Raw listings and rent metrics are unchanged. The payload reports `max_psm_exclusive` and `excluded_n`.
+
+**Sparse / empty slots:** every bin with at least one listing is drawn as a bar. Charts are bar-only (no outline curve). The Y axis is integer listing counts.
+
+Two rendering rules exist because the payload omits empty bins:
+
+- `normalizeBins` rebuilds the even-width grid before plotting. Without it a category axis collapses real gaps. Bins whose widths are not uniform (ratio > 1.5) are plotted as reported rather than forced onto a grid. Sale grids clamp to `max_psm_exclusive`.
+- Market and Statistics both render through `MetrikDistribution` (`web/static/distribution.js`), so the same bar style applies on every neighborhood, district, and complex page.
+
+Bins above p90 (within the filtered range) are drawn in `--outlier` *and* given a border. Values are never capped for cosmetics — the €4,000/m² rule is an explicit, labelled analytical filter.
+
+**Bin widths:** fixed intervals — sale **€50/m²**, rent **€20/month** — so charts stay comparable across markets. Sale uses `sale_psm_series` then the exclusive €4,000/m² ceiling; rent uses `sane_rent_rows` monthly rent and never the sale ceiling. A rent ask only appears if its implied €/m²/mo is inside the validation band, which is why a €3,200/mo ask on 400 m² is kept while a €6,300/mo ask on 70 m² is not.
+
+**Known upstream defect (not fixed here):** 185 of 1,093 merrjep sale listings in the current release carry the identical price €450,000 across all area bands. The €4,000/m² distribution filter removes those rows from the public histogram; the parser/ingest bug itself remains — see `scripts/audit_price_outliers.py`.
+
 See also [DATASET_V2_FREEZE.md](DATASET_V2_FREEZE.md), [DATA_HANDLING.md](DATA_HANDLING.md), [DEPLOYMENT.md](DEPLOYMENT.md).
 
 ## Deferred architecture (not on the live path)

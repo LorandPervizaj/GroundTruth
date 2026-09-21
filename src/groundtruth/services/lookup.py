@@ -54,7 +54,13 @@ from groundtruth.analytics.market_metrics import (
 )
 from groundtruth.analytics.metrics.price import price_percentiles as _compute_percentiles
 from groundtruth.analytics.price_histogram import segment_price_distribution
-from groundtruth.analytics.sample_confidence import confidence_level, sample_meta
+from groundtruth.analytics.sample_confidence import (
+    MetricEvidence,
+    confidence_level,
+    metric_confidence,
+    metric_evidence_payload,
+    sample_meta,
+)
 from groundtruth.analytics.valuation import MIN_COMPARABLES
 from groundtruth.datasets.manifest import (
     frozen_at,
@@ -82,6 +88,7 @@ from groundtruth.schemas.lookup import (
     MarketLookup,
     MarketPulse,
     MetricSample,
+    MetricValue,
     NeighborhoodMarketSummary,
     ParentEntity,
     PriceDistribution,
@@ -249,6 +256,7 @@ def _sale_by_property_type_breakdown(segment: pd.DataFrame) -> list[PropertyType
                 property_type=key,  # type: ignore[arg-type]
                 label=label,
                 average_sale_psm_eur=median_sale_psm(psm),
+                median_sale_psm_eur=median_sale_psm(psm),
                 median_sale_eur=round_sale_eur(group["sale_price"].median()),
                 median_area_sqm=round_area(areas.median() if not areas.empty else None),
                 listings=n,
@@ -265,6 +273,7 @@ def _sale_by_property_type_breakdown(segment: pd.DataFrame) -> list[PropertyType
                 property_type="other",
                 label="Other",
                 average_sale_psm_eur=median_sale_psm(psm),
+                median_sale_psm_eur=median_sale_psm(psm),
                 median_sale_eur=round_sale_eur(other["sale_price"].median()),
                 median_area_sqm=round_area(areas.median() if not areas.empty else None),
                 listings=n,
@@ -328,18 +337,55 @@ def _build_pulse(
         sane_rent[sane_rent["rent_price"].notna()] if not sane_rent.empty else sane_rent
     )
     dom_median, dom_n, dom_conf = segment_days_on_market(segment, lifecycle_map or {})
+    sale_psm_value = median_sale_psm(sale_psm)
+    rent_psm_value = median_rent_psm(rent_psm)
+    median_sale_value = round_sale_eur(
+        sane_sale["sale_price"].median() if not sane_sale.empty else None
+    )
+    median_rent_value = round_rent_eur(
+        sane_rent["rent_price"].median() if not sane_rent.empty else None
+    )
+    metric_specs = {
+        "median_sale_psm": (sale_psm_value, "EUR_PER_M2", len(sale_psm), "recent.sale.apartment_studio", sale),
+        "median_rent_psm": (rent_psm_value, "EUR_PER_M2_MONTH", len(rent_psm), "recent.rent.apartment_studio", rent),
+        "median_sale_eur": (median_sale_value, "EUR", len(sale_with_price), "recent.sale.apartment_studio", sale_with_price),
+        "median_rent_eur": (median_rent_value, "EUR_MONTH", len(rent_with_price), "recent.rent.apartment_studio", rent_with_price),
+    }
+    metrics = {}
+    for metric_id, (value, unit, sample_n, population, evidence_df) in metric_specs.items():
+        source_counts = evidence_df["source_website"].value_counts() if not evidence_df.empty else pd.Series(dtype=int)
+        evidence = MetricEvidence(
+            sample_n=sample_n,
+            source_count=int(len(source_counts)),
+            freshness_days=0,
+            largest_source_share_pct=(
+                round(100.0 * float(source_counts.iloc[0]) / sample_n, 2)
+                if sample_n and len(source_counts)
+                else None
+            ),
+        )
+        metrics[metric_id] = MetricValue(
+            value=value,
+            statistic="median",
+            unit=unit,
+            sample_n=sample_n,
+            population=population,
+            confidence=metric_confidence(evidence),
+            window={"days": 365},
+            as_of=last_updated,
+            evidence=metric_evidence_payload(evidence),
+        )
     return MarketPulse(
-        average_sale_psm_eur=median_sale_psm(sale_psm),
-        average_rent_psm_eur=median_rent_psm(rent_psm),
-        median_sale_eur=round_sale_eur(
-            sane_sale["sale_price"].median() if not sane_sale.empty else None
-        ),
-        median_rent_eur=round_rent_eur(
-            sane_rent["rent_price"].median() if not sane_rent.empty else None
-        ),
+        average_sale_psm_eur=sale_psm_value,
+        average_rent_psm_eur=rent_psm_value,
+        median_sale_psm_eur=sale_psm_value,
+        median_rent_psm_eur=rent_psm_value,
+        median_sale_eur=median_sale_value,
+        median_rent_eur=median_rent_value,
         typical_area_sqm=round_area(areas.median() if not areas.empty else None),
         typical_bedrooms=int(beds.median()) if not beds.empty else None,
         active_listings=n_inventory,
+        recent_valid_listings=n_inventory,
         observations=observations or n_inventory,
         data_sources=[],
         confidence=confidence_level(confidence_n),  # type: ignore[arg-type]
@@ -350,6 +396,7 @@ def _build_pulse(
         median_days_on_market=dom_median,
         days_on_market_sample=MetricSample(n=dom_n, confidence=dom_conf),  # type: ignore[arg-type]
         last_updated=last_updated,
+        metrics=metrics,
     )
 
 
@@ -521,6 +568,8 @@ def _bedroom_breakdown(segment: pd.DataFrame) -> list[BedroomBreakdown]:
                 label=bedroom_label(bucket),
                 average_sale_psm_eur=median_sale_psm(sale_psm_series(sale)),
                 average_rent_psm_eur=median_rent_psm(rent_psm_series(rent)),
+                median_sale_psm_eur=median_sale_psm(sale_psm_series(sale)),
+                median_rent_psm_eur=median_rent_psm(rent_psm_series(rent)),
                 median_sale_eur=round_sale_eur(
                     sane_sale["sale_price"].median() if not sane_sale.empty else None
                 ),
@@ -528,7 +577,12 @@ def _bedroom_breakdown(segment: pd.DataFrame) -> list[BedroomBreakdown]:
                     sane_rent["rent_price"].median() if not sane_rent.empty else None
                 ),
                 listings=n,
+                sale_sample_n=len(sale_psm_series(sale)),
+                rent_sample_n=len(sane_rent),
+                union_sample_n=n,
                 confidence=confidence_level(n),  # type: ignore[arg-type]
+                sale_confidence=confidence_level(len(sale_psm_series(sale))),  # type: ignore[arg-type]
+                rent_confidence=confidence_level(len(sane_rent)),  # type: ignore[arg-type]
             )
         )
     return sorted(rows, key=lambda r: r.bedrooms)
@@ -553,6 +607,8 @@ def _size_breakdown(segment: pd.DataFrame) -> list[SizeBreakdown]:
                 label=label,
                 average_sale_psm_eur=median_sale_psm(sale_psm_series(sale)),
                 average_rent_psm_eur=median_rent_psm(rent_psm_series(rent)),
+                median_sale_psm_eur=median_sale_psm(sale_psm_series(sale)),
+                median_rent_psm_eur=median_rent_psm(rent_psm_series(rent)),
                 median_sale_eur=round_sale_eur(
                     sane_sale["sale_price"].median() if not sane_sale.empty else None
                 ),
@@ -560,7 +616,12 @@ def _size_breakdown(segment: pd.DataFrame) -> list[SizeBreakdown]:
                     sane_rent["rent_price"].median() if not sane_rent.empty else None
                 ),
                 listings=n,
+                sale_sample_n=len(sale_psm_series(sale)),
+                rent_sample_n=len(sane_rent),
+                union_sample_n=n,
                 confidence=confidence_level(n),  # type: ignore[arg-type]
+                sale_confidence=confidence_level(len(sale_psm_series(sale))),  # type: ignore[arg-type]
+                rent_confidence=confidence_level(len(sane_rent)),  # type: ignore[arg-type]
             )
         )
     return rows
@@ -1092,6 +1153,10 @@ def get_market_lookup(
         rent_price_distribution=rent_dist,
         listing_health=listing_health,
         dataset_version=frozen_dataset_version(),
+        corpus_revision=corpus_updated.isoformat() if corpus_updated else None,
+        generated_at=datetime.now().astimezone(),
+        pricing_window_days=365,
+        inventory_as_of=None,
         total_listings=len(full_segment),
     )
 

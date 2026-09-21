@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import json
+import os
 import re
+import tempfile
 import threading
 import time
 from contextlib import suppress
@@ -121,18 +123,23 @@ def persist_comparables_disk_cache(
 ) -> None:
     """Write comparables to disk for instant API valuate (avoids ~2 min cold SQL)."""
     base.mkdir(parents=True, exist_ok=True)
-    rent_df.to_json(
-        base / RENT_COMPARABLES_FILE,
-        orient="table",
-        compression="gzip",
-        date_format="iso",
-    )
-    sale_df.to_json(
-        base / SALE_COMPARABLES_FILE,
-        orient="table",
-        compression="gzip",
-        date_format="iso",
-    )
+    for frame, filename in (
+        (rent_df, RENT_COMPARABLES_FILE),
+        (sale_df, SALE_COMPARABLES_FILE),
+    ):
+        target = base / filename
+        with tempfile.NamedTemporaryFile(dir=base, suffix=".json.gz", delete=False) as handle:
+            temporary = Path(handle.name)
+        try:
+            frame.to_json(
+                temporary,
+                orient="table",
+                compression="gzip",
+                date_format="iso",
+            )
+            os.replace(temporary, target)
+        finally:
+            temporary.unlink(missing_ok=True)
     meta = {
         "corpus_revision": corpus_revision,
         "rent_rows": len(rent_df),

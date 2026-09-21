@@ -482,6 +482,15 @@ def refresh_analytics(
     cache_path = build_lookup_cache(session)
     out.print(f"[green]Lookup cache built ({cache_path}).[/green]")
 
+    from groundtruth.analytics.statistical_qa import run_statistical_qa
+
+    # A real cache build always returns its manifest.  The guard keeps this
+    # orchestration function testable with a stubbed cache builder while the
+    # release verifier remains the final mandatory gate.
+    if cache_path.is_file():
+        qa_status, qa_paths = run_statistical_qa(cache_path.parent, corpus_dir)
+        out.print(f"[green]Statistical QA: {qa_status} ({qa_paths['summary']}).[/green]")
+
     skew = source_skew_report(session)
     skew_path = corpus_dir / "source_skew.json"
     skew_path.write_text(json.dumps(skew.as_dict(), indent=2), encoding="utf-8")
@@ -636,12 +645,83 @@ def _run_etl_jobs(
             continue
         _run_etl_for_label(label, checkpoint, window, resume=resume, out=out)
 
+    _advance_lifecycle_from_checkpoint(checkpoint, out=out)
+
     session = get_session_factory()()
     try:
         alerts = check_parse_health(session)
         for alert in alerts:
             out.print(f"[red bold]PARSE ALERT[/red bold]: {alert.message}")
             logger.error("parse_health_alert", source=alert.source, rate=alert.parse_failure_rate)
+    finally:
+        session.close()
+
+
+def _advance_lifecycle_from_checkpoint(
+    checkpoint: WeeklyCheckpoint,
+    *,
+    out: Console,
+) -> None:
+    """Advance absence only after every crawl variant for a source is healthy."""
+    from collections import defaultdict
+
+    from sqlalchemy import select
+
+    from groundtruth.analytics.lifecycle_state import (
+        CrawlHealth,
+        apply_source_crawl_lifecycle,
+        lifecycle_policy_for_source,
+        source_crawl_health,
+    )
+    from groundtruth.database.session import get_session_factory
+    from groundtruth.models.pipeline import NormalizedListing
+
+    grouped: dict[str, list[Any]] = defaultdict(list)
+    for label, cp in checkpoint.sources.items():
+        grouped[_etl_source_for_label(label)].append(cp)
+
+    session = get_session_factory()()
+    try:
+        for source, checkpoints in grouped.items():
+            run_ids = [cp.scrape_run_id for cp in checkpoints if cp.scrape_run_id is not None]
+            if not run_ids:
+                continue
+            health_parts = []
+            for cp in checkpoints:
+                stored, errors, _ = (
+                    _scrape_run_stats(cp.scrape_run_id) if cp.scrape_run_id else (0, 0, None)
+                )
+                health_parts.append(
+                    source_crawl_health(
+                        completed=cp.crawl == "done" and cp.etl == "done",
+                        listings_stored=stored,
+                        errors_count=errors,
+                    )
+                )
+            health = (
+                CrawlHealth(True, "all_source_variants_healthy")
+                if all(item.healthy for item in health_parts)
+                else CrawlHealth(False, ",".join(item.reason for item in health_parts if not item.healthy))
+            )
+            observed_ids = session.scalars(
+                select(NormalizedListing.source_listing_id).where(
+                    NormalizedListing.scrape_run_id.in_(run_ids),
+                    NormalizedListing.source_website == source,
+                )
+            ).all()
+            counts = apply_source_crawl_lifecycle(
+                session,
+                source_website=source,
+                run_id=max(run_ids),
+                observed_listing_ids=observed_ids,
+                crawl_health=health,
+                policy=lifecycle_policy_for_source(source),
+            )
+            out.print(f"    Lifecycle {source}: {health.reason} {counts}")
+        session.commit()
+    except Exception:
+        session.rollback()
+        raise
     finally:
         session.close()
 

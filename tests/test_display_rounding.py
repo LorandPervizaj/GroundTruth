@@ -50,8 +50,8 @@ def test_median_rent_psm() -> None:
 
 
 def test_round_area() -> None:
-    assert round_area(2340) == 2350
-    assert round_area(63.7) == 50
+    assert round_area(2340) == 2340
+    assert round_area(63.7) == 64
 
 
 def test_round_percent() -> None:

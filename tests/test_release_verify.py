@@ -69,6 +69,8 @@ def _valid_bundle(tmp_path: Path) -> tuple[Path, Path]:
 
     annual = tmp_path / "annual_report.json"
     annual_sha = _write_json(annual, {"generated_at": "2026-01-01T00:00:00+00:00"})
+    qa_details = tmp_path / "market_qa_details.json"
+    qa_sha = _write_json(qa_details, {"status": "PASS", "issues": []})
 
     manifest = {
         "built_at": "2026-01-01T00:00:00+00:00",
@@ -86,6 +88,11 @@ def _valid_bundle(tmp_path: Path) -> tuple[Path, Path]:
         ],
         "artifact_hashes": artifact_hashes,
         "related_artifacts": {"annual_report": {"sha256": annual_sha}},
+        "statistical_qa": {
+            "status": "PASS",
+            "details_sha256": qa_sha,
+            "details": str(qa_details),
+        },
         "corpus_meta": {},
         "markets": [],
         "neighborhood_options": [],

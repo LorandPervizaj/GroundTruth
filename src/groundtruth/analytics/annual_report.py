@@ -29,6 +29,11 @@ from groundtruth.analytics.market_metrics import (
     sane_rent_rows,
     sane_sale_rows,
 )
+from groundtruth.analytics.metrics.price import price_percentiles as compute_price_percentiles
+from groundtruth.analytics.price_histogram import (
+    sale_psm_for_distribution,
+    segment_price_distribution,
+)
 from groundtruth.analytics.price_quality import monthly_medians_from_frame
 from groundtruth.analytics.sample_confidence import confidence_level, sample_meta
 from groundtruth.portals.registry import public_parser_placeholders
@@ -550,6 +555,28 @@ def build_annual_report_from_dataframe(
     median_sale_psm = sale_psm_series(sale_df).median() if not sale_df.empty else None
     median_rent = sane_rent_rows(rent_df)["rent_price"].median() if not rent_df.empty else None
 
+    apt_for_dist = work[
+        work["property_type"].astype(str).str.contains("apartment|studio", case=False, na=False)
+    ].copy()
+    if apt_for_dist.empty:
+        apt_for_dist = work.copy()
+    # Stats distribution summaries share the same analytical ceiling as the
+    # histogram (< €4,000/m²). Unrelated KPIs above still use the full band.
+    sale_psm_raw = sale_psm_series(apt_for_dist[apt_for_dist["listing_type"] == "sale"])
+    sale_psm_for_dist, _excluded_sale_dist = sale_psm_for_distribution(sale_psm_raw)
+    pct_map = compute_price_percentiles(sale_psm_for_dist)
+    price_percentiles_payload: dict[str, Any] | None = None
+    if pct_map.get("p50") is not None and len(sale_psm_for_dist) > 0:
+        price_percentiles_payload = {
+            "p10_sale_psm": pct_map.get("p10"),
+            "p50_sale_psm": pct_map.get("p50"),
+            "p90_sale_psm": pct_map.get("p90"),
+            "n": int(len(sale_psm_for_dist)),
+            "max_psm_exclusive": 4000,
+            "excluded_n": int(_excluded_sale_dist),
+        }
+    sale_price_distribution = segment_price_distribution(apt_for_dist, "sale")
+
     sources: list[dict[str, Any]] = []
 
     coverage = {
@@ -688,6 +715,8 @@ def build_annual_report_from_dataframe(
             "recommendations": segment_recommendations,
         },
         "market_insights": market_insights,
+        "price_percentiles": price_percentiles_payload,
+        "sale_price_distribution": sale_price_distribution,
         "formulas": build_annual_formulas(min_sale_listings=MIN_SALE_LISTINGS_PER_NH),
     }
 
@@ -823,5 +852,12 @@ def _empty_payload(*, cutoff_date: date, max_age_months: int) -> dict[str, Any]:
                 },
                 "best_rent_value": {"segment": None, "reason": "lowest_median_rent"},
             },
+        },
+        "price_percentiles": None,
+        "sale_price_distribution": {
+            "listing_type": "sale",
+            "bins": [],
+            "n": 0,
+            "confidence": "insufficient",
         },
     }

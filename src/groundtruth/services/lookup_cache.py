@@ -3,7 +3,10 @@
 from __future__ import annotations
 
 import json
+import os
+import tempfile
 import threading
+import time
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
@@ -184,7 +187,28 @@ def _write_lookup_entry(
     rel_dir.mkdir(exist_ok=True)
     rel_path = f"{entity_type}/{slug}.json"
     path = base / rel_path
-    path.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
+    serialized = json.dumps(payload, ensure_ascii=False)
+    temporary: str | None = None
+    try:
+        with tempfile.NamedTemporaryFile(
+            mode="w", encoding="utf-8", dir=path.parent, delete=False
+        ) as handle:
+            temporary = handle.name
+            handle.write(serialized)
+        for attempt in range(5):
+            try:
+                os.replace(temporary, path)
+                temporary = None
+                break
+            except OSError:
+                # Windows indexers/virus scanners can briefly hold a generated
+                # artifact. Replacing a closed temp file is safe to retry.
+                if attempt == 4:
+                    raise
+                time.sleep(0.05 * (attempt + 1))
+    finally:
+        if temporary is not None:
+            Path(temporary).unlink(missing_ok=True)
     entries.append(
         {
             "entity_type": entity_type,
@@ -200,6 +224,7 @@ def build_lookup_cache(session: Session) -> Path:
     from groundtruth.analytics.annual_export import DEFAULT_ANNUAL_REPORT_PATH
     from groundtruth.analytics.valuation import (
         COMPARABLES_META_FILE,
+        MIN_COMPARABLES,
         RENT_COMPARABLES_FILE,
         SALE_COMPARABLES_FILE,
         list_neighborhood_options,
@@ -209,11 +234,7 @@ def build_lookup_cache(session: Session) -> Path:
         seed_comparables_cache,
     )
     from groundtruth.models.reference import Complex, District, Neighborhood, Street
-    from groundtruth.services.lookup import (
-        get_corpus_meta,
-        get_market_lookup,
-        list_neighborhood_market_summaries,
-    )
+    from groundtruth.services.lookup import get_corpus_meta, get_market_lookup
 
     base = lookup_cache_dir()
     base.mkdir(parents=True, exist_ok=True)
@@ -223,6 +244,7 @@ def build_lookup_cache(session: Session) -> Path:
     entries: list[dict[str, Any]] = []
     built = 0
     seen_neighborhood_canonical: set[str] = set()
+    neighborhood_lookups: list[MarketLookup] = []
 
     targets: list[tuple[str, str]] = []
     for nh in session.query(Neighborhood).filter(Neighborhood.slug.isnot(None)).all():
@@ -253,6 +275,7 @@ def build_lookup_cache(session: Session) -> Path:
         built += 1
 
         if entity_type == "neighborhood":
+            neighborhood_lookups.append(result)
             for alias_slug in slugs_for_canonical(lookup_slug):
                 if alias_slug == lookup_slug:
                     continue
@@ -269,7 +292,24 @@ def build_lookup_cache(session: Session) -> Path:
                 built += 1
 
     corpus_meta = get_corpus_meta(session)
-    markets = list_neighborhood_market_summaries(session)
+    # Derive the index surface from the exact lookup objects written above.
+    # This prevents a second aggregation path from drifting in filters or N.
+    markets = [
+        NeighborhoodMarketSummary(
+            slug=lookup.slug,
+            name=lookup.display_name,
+            rent_listings=lookup.pulse.median_rent_sample.n,
+            sale_listings=lookup.pulse.median_sale_sample.n,
+            median_rent_eur=lookup.pulse.median_rent_eur,
+            median_rent_psm_eur=lookup.pulse.median_rent_psm_eur,
+            confidence=lookup.pulse.median_rent_sample.confidence
+            if lookup.pulse.median_rent_sample.n
+            else lookup.pulse.median_sale_sample.confidence,
+            estimate_ready=lookup.pulse.median_rent_sample.n >= MIN_COMPARABLES,
+        )
+        for lookup in neighborhood_lookups
+    ]
+    markets.sort(key=lambda item: (-(item.rent_listings + item.sale_listings), item.name))
     rent_df = rent_comparables_dataframe(session)
     sale_df = sale_comparables_dataframe(session)
     persist_comparables_disk_cache(base, rent_df, sale_df, revision_iso)

@@ -101,6 +101,12 @@ def test_build_annual_report_deduped_counts_and_medians() -> None:
     assert isinstance(payload["sources"], list)
     assert payload["neighborhood_table"]
     assert payload["neighborhood_highlights"] == payload["neighborhood_table"][:5]
+    assert "price_percentiles" in payload
+    assert "sale_price_distribution" in payload
+    assert payload["price_percentiles"] is not None
+    assert payload["price_percentiles"]["p50_sale_psm"] == 900
+    assert payload["price_percentiles"]["n"] == 2
+    assert payload["sale_price_distribution"]["listing_type"] == "sale"
     slug_payload = build_annual_report_from_dataframe(
         _sample_df(),
         cutoff_date=date(2025, 6, 1),

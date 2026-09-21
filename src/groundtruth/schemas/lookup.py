@@ -19,6 +19,21 @@ class MetricSample(BaseModel):
     confidence: ConfidenceLevel = "insufficient"
 
 
+class MetricValue(BaseModel):
+    """Self-describing public metric contract."""
+
+    value: float | int | None = None
+    statistic: Literal["count", "median", "percentile", "ratio"]
+    unit: str
+    sample_n: int = 0
+    population: str
+    confidence: ConfidenceLevel = "insufficient"
+    window: dict[str, str | int | None] = Field(default_factory=dict)
+    as_of: datetime | None = None
+    dataset_version: str = "live"
+    evidence: dict[str, int | float | None] = Field(default_factory=dict)
+
+
 PropertyTypeKey = Literal["apartment", "house", "land", "commercial", "other"]
 
 
@@ -28,6 +43,7 @@ class PropertyTypeMarket(BaseModel):
     property_type: PropertyTypeKey
     label: str
     average_sale_psm_eur: float | None = None
+    median_sale_psm_eur: float | None = None
     median_sale_eur: float | None = None
     median_area_sqm: float | None = None
     listings: int = 0
@@ -37,11 +53,14 @@ class PropertyTypeMarket(BaseModel):
 class MarketPulse(BaseModel):
     average_sale_psm_eur: float | None = None
     average_rent_psm_eur: float | None = None
+    median_sale_psm_eur: float | None = None
+    median_rent_psm_eur: float | None = None
     median_sale_eur: float | None = None
     median_rent_eur: float | None = None
     typical_area_sqm: float | None = None
     typical_bedrooms: int | None = None
     active_listings: int = 0
+    recent_valid_listings: int = 0
     observations: int = 0
     data_sources: list[str] = Field(default_factory=list)
     confidence: ConfidenceLevel = "insufficient"
@@ -52,6 +71,7 @@ class MarketPulse(BaseModel):
     median_days_on_market: int | None = None
     days_on_market_sample: MetricSample = Field(default_factory=MetricSample)
     last_updated: datetime | None = None
+    metrics: dict[str, MetricValue] = Field(default_factory=dict)
 
 
 class PricePercentiles(BaseModel):
@@ -79,10 +99,17 @@ class BedroomBreakdown(BaseModel):
     label: str
     average_sale_psm_eur: float | None = None
     average_rent_psm_eur: float | None = None
+    median_sale_psm_eur: float | None = None
+    median_rent_psm_eur: float | None = None
     median_sale_eur: float | None = None
     median_rent_eur: float | None = None
     listings: int = 0
+    sale_sample_n: int = 0
+    rent_sample_n: int = 0
+    union_sample_n: int = 0
     confidence: ConfidenceLevel = "insufficient"
+    sale_confidence: ConfidenceLevel = "insufficient"
+    rent_confidence: ConfidenceLevel = "insufficient"
 
 
 class SizeBreakdown(BaseModel):
@@ -90,10 +117,17 @@ class SizeBreakdown(BaseModel):
     label: str
     average_sale_psm_eur: float | None = None
     average_rent_psm_eur: float | None = None
+    median_sale_psm_eur: float | None = None
+    median_rent_psm_eur: float | None = None
     median_sale_eur: float | None = None
     median_rent_eur: float | None = None
     listings: int = 0
+    sale_sample_n: int = 0
+    rent_sample_n: int = 0
+    union_sample_n: int = 0
     confidence: ConfidenceLevel = "insufficient"
+    sale_confidence: ConfidenceLevel = "insufficient"
+    rent_confidence: ConfidenceLevel = "insufficient"
 
 
 class RecentListing(BaseModel):
@@ -135,6 +169,9 @@ class PriceDistribution(BaseModel):
     bins: list[PriceHistogramBin] = Field(default_factory=list)
     n: int = 0
     confidence: ConfidenceLevel = "insufficient"
+    # Sale-distribution analytical ceiling (exclusive). Absent for rent.
+    max_psm_exclusive: int | None = None
+    excluded_n: int | None = None
 
 
 class ListingHealthSummary(BaseModel):
@@ -225,6 +262,10 @@ class MarketLookup(BaseModel):
     rent_price_distribution: PriceDistribution | None = None
     listing_health: ListingHealthSummary | None = None
     dataset_version: str = "live"
+    corpus_revision: str | None = None
+    generated_at: datetime | None = None
+    pricing_window_days: int = 365
+    inventory_as_of: datetime | None = None
     total_listings: int = 0
 
 

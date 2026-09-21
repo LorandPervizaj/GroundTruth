@@ -14,6 +14,7 @@ from groundtruth.models.enums import (
 )
 from groundtruth.models.etl import EtlMetrics, InvalidListing
 from groundtruth.models.events import PropertyEvent
+from groundtruth.models.lifecycle import ListingLifecycleState
 from groundtruth.models.lineage import DataLineage
 from groundtruth.models.listing_observation import ListingObservation
 from groundtruth.models.market import MarketSnapshot
@@ -36,6 +37,7 @@ __all__ = [
     "HeatingType",
     "InvalidListing",
     "ListingObservation",
+    "ListingLifecycleState",
     "ListingSource",
     "ListingType",
     "PipelineStage",

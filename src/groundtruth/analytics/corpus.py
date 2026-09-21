@@ -20,6 +20,7 @@ from groundtruth.analytics.corpus_filters import (
     EFFECTIVE_LISTING_DATE_SQL,
     GJIRAFA_PARSER_VERSION,
     MERRJEP_PARSER_VERSION,
+    VALID_CORPUS_WHERE,
     active_corpus_sql_params,
 )
 from groundtruth.claims.hashes import dataset_fingerprint, raw_crawl_fingerprint
@@ -86,9 +87,10 @@ def _query_deduped_corpus_dataframe(
     *,
     active_only: bool = False,
     max_age_months: int = DEFAULT_MAX_AGE_MONTHS,
+    validity_only: bool = False,
 ) -> pd.DataFrame:
     """Load deduped corpus from SQL (uncached)."""
-    active_filter = ACTIVE_CORPUS_WHERE if active_only else ""
+    active_filter = VALID_CORPUS_WHERE if validity_only else ACTIVE_CORPUS_WHERE if active_only else ""
     sql = text(
         f"""
         SELECT DISTINCT ON (nl.source_website, nl.source_listing_id)
@@ -128,7 +130,13 @@ def _query_deduped_corpus_dataframe(
         ORDER BY nl.source_website, nl.source_listing_id, nl.id DESC
         """
     )
-    params = active_corpus_sql_params(max_age_months=max_age_months) if active_only else {}
+    params = (
+        {"parser_versions": active_corpus_sql_params()["parser_versions"]}
+        if validity_only
+        else active_corpus_sql_params(max_age_months=max_age_months)
+        if active_only
+        else {}
+    )
     df = pd.DataFrame(session.execute(sql, params).mappings().all())
     if df.empty:
         return df

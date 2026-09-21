@@ -83,8 +83,8 @@ def build_rent_yield_from_lookup_cache() -> list[dict]:
                 "median_sale_eur": round(float(median_sale), 0),
                 "median_rent_psm": summary.median_rent_psm_eur,
                 "median_sale_psm": (
-                    round(float(pulse.average_sale_psm_eur), 0)
-                    if pulse.average_sale_psm_eur is not None
+                    round(float(pulse.median_sale_psm_eur), 0)
+                    if pulse.median_sale_psm_eur is not None
                     else None
                 ),
                 "gross_yield_pct": round(yield_pct, 2),

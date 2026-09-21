@@ -47,10 +47,10 @@ def round_psm(value: Any) -> int | None:
 
 
 def round_area(value: Any) -> int | None:
-    """Area — nearest 50 m²."""
+    """Area — nearest whole m² (global public-display policy)."""
     if value is None or (isinstance(value, float) and pd.isna(value)):
         return None
-    return _round_to_step(float(value), 50)
+    return _round_to_step(float(value), 1)
 
 
 def round_percent(value: Any, *, digits: int = 0) -> float | None:

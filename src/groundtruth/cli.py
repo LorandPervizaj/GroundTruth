@@ -463,6 +463,43 @@ def dedup_report(
     console.print(f"[green]Wrote {relists_path}[/green]")
 
 
+@dedup_app.command("benchmark")
+def dedup_benchmark(
+    labels: Path = typer.Option(
+        PROJECT_ROOT / "data" / "deduplication" / "benchmark.csv",
+        help="CSV of manually labelled cross-source pairs",
+    ),
+    output: Path = typer.Option(
+        PROJECT_ROOT / "reports" / "generated" / "dedup_benchmark.csv",
+        help="Threshold sensitivity output",
+    ),
+) -> None:
+    """Measure dedup precision, recall, blocking recall, and threshold sensitivity."""
+    import csv
+
+    from groundtruth.analytics.dedup_benchmark import (
+        evaluate_pairs,
+        load_benchmark,
+        threshold_sensitivity,
+    )
+
+    rows = load_benchmark(labels)
+    result, details = evaluate_pairs(rows, threshold=get_settings().dedup_fuzzy_threshold)
+    sensitivity = threshold_sensitivity(rows)
+    output.parent.mkdir(parents=True, exist_ok=True)
+    with output.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=list(sensitivity[0]))
+        writer.writeheader()
+        writer.writerows(sensitivity)
+    errors = output.with_name("dedup_benchmark_errors.csv")
+    with errors.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=list(details[0]))
+        writer.writeheader()
+        writer.writerows(details)
+    console.print(f"Precision {result.precision:.1%} · recall {result.recall:.1%} · blocking recall {result.blocking_recall:.1%}")
+    console.print(f"[green]Wrote {output} and {errors}[/green]")
+
+
 @corpus_app.command("report")
 def corpus_report(
     output: Path | None = typer.Option(None, help="Output directory (default: reports/generated)"),
@@ -480,6 +517,27 @@ def corpus_report(
         session.close()
 
     console.print("[bold]Corpus report written[/bold]")
+    for label, path in paths.items():
+        console.print(f"  {label}: {path}")
+
+
+@corpus_app.command("market-integrity")
+def market_integrity_report(
+    output: Path | None = typer.Option(None, help="Output directory (default: reports/generated)"),
+) -> None:
+    """Generate the Stage 1 system-wide market integrity baseline."""
+    from groundtruth.analytics.market_integrity import write_market_integrity_artifacts
+    from groundtruth.config import PROJECT_ROOT
+    from groundtruth.database.session import get_session_factory
+
+    out_dir = output or (PROJECT_ROOT / "reports" / "generated")
+    session = get_session_factory()()
+    try:
+        paths = write_market_integrity_artifacts(session, out_dir)
+    finally:
+        session.close()
+
+    console.print("[bold]Market integrity baseline written[/bold]")
     for label, path in paths.items():
         console.print(f"  {label}: {path}")
 
