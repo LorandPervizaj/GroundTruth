@@ -49,3 +49,24 @@ The Azure for Students subscription previously returned no permitted Flexible Se
 9. Retain the local database until migration plus restore verification succeeds.
 
 The cloud database becomes authoritative only after those checks. Infrastructure creation alone is not proof of recoverability.
+
+## Schedule and manual control
+
+The Container Apps Job owns the production schedule: `0 3 * * 1`, every Monday at 03:00 UTC. This corresponds to 04:00 Europe/Belgrade in standard time and 05:00 during daylight-saving time. Container Apps cron is UTC-only, so the local hour shifts while the UTC instant remains stable.
+
+The job is configured with one replica, one required completion, a 12-hour timeout, and one platform retry. The pipeline's Azure Files lock rejects a second execution if a prior run is still active. Its verified watermark expands the next successful run after a missed schedule.
+
+Manual start or status inspection is available through the `GroundTruth weekly control` GitHub workflow. It authenticates with GitHub OIDC, not a stored client secret. Configure the `groundtruth-research` GitHub environment with:
+
+- Secrets: `AZURE_CLIENT_ID`, `AZURE_TENANT_ID`, `AZURE_SUBSCRIPTION_ID`
+- Variables: `GROUNDTRUTH_AZURE_RESOURCE_GROUP`, `GROUNDTRUTH_AZURE_JOB_NAME`
+
+The federated identity requires only permission to start/read the research Container Apps Job and read its execution status.
+
+Equivalent operator commands:
+
+```powershell
+az containerapp job start -g <research-rg> -n job-groundtruth-weekly
+az containerapp job execution list -g <research-rg> -n job-groundtruth-weekly -o table
+az containerapp job logs show -g <research-rg> -n job-groundtruth-weekly --follow
+```
