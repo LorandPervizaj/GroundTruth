@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 import subprocess
 from collections.abc import Callable
 from datetime import datetime
@@ -60,6 +61,7 @@ def run_weekly_release(
     verifier: Callable[[], list[str]] | None = None,
     source_health_runner: Callable[[Any], list[Any]] | None = None,
     data_quality_runner: Callable[[Any], list[Any]] | None = None,
+    statistical_runner: Callable[[dict[str, Any]], Any] | None = None,
 ) -> PipelineRunResult:
     """Run the existing weekly pipeline and fail closed on release verification."""
     from groundtruth.crawl.weekly import run_weekly_pipeline
@@ -158,18 +160,50 @@ def run_weekly_release(
             stage.finish("warning" if stage.counts["yellow"] else "passed")
             _write_result(result, destination)
 
+            stage = result.stage("statistical_sanity", blocking=False)
+            stage.start()
+            _write_result(result, destination)
+            if statistical_runner is None:
+                from groundtruth.automation.statistical_sanity import (
+                    build_statistical_snapshot,
+                    evaluate_statistical_sanity,
+                )
+
+                shadow_mode = os.getenv("GROUNDTRUTH_STATISTICAL_QA_SHADOW", "true").lower() in {
+                    "1",
+                    "true",
+                    "yes",
+                }
+                statistical = evaluate_statistical_sanity(
+                    build_statistical_snapshot(),
+                    durable_state.get("last_verified_statistics"),
+                    shadow_mode=shadow_mode,
+                )
+            else:
+                statistical = statistical_runner(durable_state)
+            stage.details.update(statistical.to_dict())
+            if statistical.level == "RED" and not statistical.shadow_mode:
+                stage.blocking = True
+                stage.finish("failed", error="statistical sanity gate is RED")
+                raise RuntimeError(stage.error)
+            stage.finish("warning" if statistical.level != "GREEN" else "passed")
+            _write_result(result, destination)
+
             stage = result.stage("release_verify")
             stage.start()
             _write_result(result, destination)
             stage.details["checks"] = verify()
             stage.finish("passed")
-            result.outcome = "verified"
+            result.outcome = (
+                "warning" if any(item.status == "warning" for item in result.stages) else "verified"
+            )
             durable_state.update(
                 {
                     "last_verified_release_id": result.release_id,
                     "last_verified_run_id": result.run_id,
                     "last_verified_at": utc_now().isoformat(),
                     "last_verified_data_through": result.data_through,
+                    "last_verified_statistics": statistical.snapshot,
                 }
             )
             save_state(durable_state)

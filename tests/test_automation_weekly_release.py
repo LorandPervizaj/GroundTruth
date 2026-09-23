@@ -7,6 +7,10 @@ import pytest
 from groundtruth.automation.data_quality import DataQualityResult, classify_data_quality
 from groundtruth.automation.source_health import SourceHealth, classify_source_health
 from groundtruth.automation.state import PipelineLock, calculate_lookback_days
+from groundtruth.automation.statistical_sanity import (
+    StatisticalSanityResult,
+    evaluate_statistical_sanity,
+)
 from groundtruth.automation.weekly_release import make_release_id, run_weekly_release
 
 
@@ -63,6 +67,31 @@ def healthy_data(_: object) -> list[DataQualityResult]:
     ]
 
 
+def healthy_statistics(_: object) -> StatisticalSanityResult:
+    return StatisticalSanityResult(level="GREEN", shadow_mode=True, snapshot={"total_listings": 10})
+
+
+def test_statistical_sanity_is_sample_aware_and_shadowed() -> None:
+    result = evaluate_statistical_sanity(
+        {
+            "total_listings": 1000,
+            "median_rent": 900,
+            "median_rent_sample_n": 500,
+            "coverage": {"price_pct": 90},
+        },
+        {
+            "total_listings": 1000,
+            "median_rent": 450,
+            "median_rent_sample_n": 500,
+            "coverage": {"price_pct": 99},
+        },
+        shadow_mode=True,
+    )
+    assert result.level == "RED"
+    assert result.shadow_mode is True
+    assert any(issue.metric == "median_rent" for issue in result.issues)
+
+
 def test_data_quality_blocks_parser_collapse() -> None:
     result = classify_data_quality(
         source="topia",
@@ -94,9 +123,11 @@ def test_weekly_release_records_verified_result(
         verifier=lambda: ["ok"],
         source_health_runner=healthy_sources,
         data_quality_runner=healthy_data,
+        statistical_runner=healthy_statistics,
     )
     assert result.outcome == "verified"
     assert [stage.status for stage in result.stages] == [
+        "passed",
         "passed",
         "passed",
         "passed",
@@ -124,6 +155,7 @@ def test_weekly_release_records_verification_failure(
             verifier=fail,
             source_health_runner=healthy_sources,
             data_quality_runner=healthy_data,
+            statistical_runner=healthy_statistics,
         )
 
 
@@ -151,6 +183,7 @@ def test_red_source_blocks_release_verification(
                 SourceHealth(source="topia", level="RED", scrape_run_id=1)
             ],
             data_quality_runner=healthy_data,
+            statistical_runner=healthy_statistics,
         )
     assert verifier_called is False
 
@@ -172,4 +205,26 @@ def test_red_data_quality_blocks_verification(
             data_quality_runner=lambda _: [
                 DataQualityResult(source="topia", level="RED", scrape_run_id=1)
             ],
+            statistical_runner=healthy_statistics,
+        )
+
+
+def test_non_shadow_red_statistics_blocks_verification(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setenv("GROUNDTRUTH_PIPELINE_STATE_DIR", str(tmp_path / "state"))
+    report = SimpleNamespace(
+        sources=[],
+        window=SimpleNamespace(window_start=date(2026, 9, 15), window_end=date(2026, 9, 22)),
+    )
+    with pytest.raises(RuntimeError, match="statistical sanity gate is RED"):
+        run_weekly_release(
+            output_path=tmp_path / "red-statistics.json",
+            weekly_runner=lambda **_: report,
+            verifier=lambda: ["should not run"],
+            source_health_runner=healthy_sources,
+            data_quality_runner=healthy_data,
+            statistical_runner=lambda _: StatisticalSanityResult(
+                level="RED", shadow_mode=False, snapshot={}, baseline_available=True
+            ),
         )
