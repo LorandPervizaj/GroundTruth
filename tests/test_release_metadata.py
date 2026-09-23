@@ -22,3 +22,4 @@ def test_stamp_release_metadata_is_auditable(tmp_path: Path) -> None:
     assert payload["release"]["release_id"] == "2026-W39-abc"
     assert payload["release"]["previous_release_id"] == "2026-W38-old"
     assert payload["release"]["corpus_revision"] == "rev"
+    assert payload["release"]["publishable"] is True

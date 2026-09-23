@@ -183,6 +183,8 @@ def stamp_release_metadata(
     data_through: str,
     source_git_sha: str,
     qa_decision: str,
+    publishable: bool = True,
+    statistical_shadow_mode: bool = True,
     previous_release_id: str | None = None,
 ) -> Path:
     """Attach auditable release identity without changing artifact contents."""
@@ -194,6 +196,8 @@ def stamp_release_metadata(
         "data_through": data_through,
         "source_git_sha": source_git_sha,
         "qa_decision": qa_decision,
+        "publishable": publishable,
+        "statistical_shadow_mode": statistical_shadow_mode,
         "previous_release_id": previous_release_id,
         "corpus_revision": manifest.get("corpus_revision"),
         "dataset_version": manifest.get("dataset_version"),
@@ -208,7 +212,9 @@ def create_release_bundle(release_id: str, output_dir: Path | None = None) -> tu
     """Create a versioned bundle and SHA256 sidecar from verified public artifacts."""
     verify_release_artifacts()
     configured = os.getenv("GROUNDTRUTH_RELEASE_OUTPUT_DIR")
-    destination = output_dir or (Path(configured) if configured else lookup_cache_dir().parent / "releases")
+    destination = output_dir or (
+        Path(configured) if configured else lookup_cache_dir().parent / "releases"
+    )
     destination.mkdir(parents=True, exist_ok=True)
     bundle = destination / f"groundtruth-release-{release_id}.tar.gz"
     with tarfile.open(bundle, "w:gz") as archive:

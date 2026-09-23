@@ -1,0 +1,156 @@
+name: Deploy verified weekly release
+
+on:
+  schedule:
+    # Research begins Monday 03:00 UTC; deployment pickup waits twelve hours.
+    - cron: "0 15 * * 1"
+  workflow_dispatch:
+    inputs:
+      release_bundle:
+        description: Optional exact bundle filename from the verified-releases share
+        required: false
+        type: string
+
+concurrency:
+  group: metrik-weekly-release-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: azure-beta
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      RESEARCH_STORAGE_ACCOUNT: ${{ vars.GROUNDTRUTH_STORAGE_ACCOUNT }}
+      RELEASE_SHARE: ${{ vars.GROUNDTRUTH_RELEASE_SHARE }}
+      RESOURCE_GROUP: ${{ vars.METRIK_AZURE_RESOURCE_GROUP }}
+      CONTAINER_APP: ${{ vars.METRIK_AZURE_CONTAINER_APP }}
+      ACR_NAME: ${{ vars.METRIK_AZURE_ACR_NAME }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Azure login with OIDC
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Resolve and download verified bundle
+        env:
+          REQUESTED_BUNDLE: ${{ inputs.release_bundle }}
+        run: |
+          set -euo pipefail
+          test -n "$RESEARCH_STORAGE_ACCOUNT"
+          test -n "$RELEASE_SHARE"
+          bundle="$REQUESTED_BUNDLE"
+          if [ -z "$bundle" ]; then
+            bundle="$(az storage file list \
+              --account-name "$RESEARCH_STORAGE_ACCOUNT" \
+              --share-name "$RELEASE_SHARE" \
+              --auth-mode login \
+              --query "sort_by([?ends_with(name, '.tar.gz')], &properties.lastModified)[-1].name" \
+              -o tsv)"
+          fi
+          test -n "$bundle"
+          az storage file download --account-name "$RESEARCH_STORAGE_ACCOUNT" \
+            --share-name "$RELEASE_SHARE" --path "$bundle" --dest /tmp/release.tar.gz \
+            --auth-mode login --only-show-errors
+          az storage file download --account-name "$RESEARCH_STORAGE_ACCOUNT" \
+            --share-name "$RELEASE_SHARE" --path "$bundle.sha256" --dest /tmp/release.tar.gz.sha256 \
+            --auth-mode login --only-show-errors
+          expected="$(cut -d' ' -f1 /tmp/release.tar.gz.sha256)"
+          actual="$(sha256sum /tmp/release.tar.gz | cut -d' ' -f1)"
+          test "$expected" = "$actual"
+          mkdir -p /tmp/release
+          tar -xzf /tmp/release.tar.gz -C /tmp/release
+          rm -rf reports/generated/lookup_cache
+          cp -a /tmp/release/lookup_cache reports/generated/lookup_cache
+          cp /tmp/release/data/api/annual_report.json data/api/annual_report.json
+          release_id="$(python -c "import json; print(json.load(open('reports/generated/lookup_cache/manifest.json'))['release']['release_id'])")"
+          publishable="$(python -c "import json; p=json.load(open('reports/generated/lookup_cache/manifest.json')); print(str(p['release'].get('publishable', True)).lower())")"
+          test "$publishable" = "true"
+          echo "RELEASE_ID=$release_id" >> "$GITHUB_ENV"
+          echo "BUNDLE_NAME=$bundle" >> "$GITHUB_ENV"
+
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Verify release again at deploy boundary
+        run: |
+          uv python install 3.13
+          uv sync --extra web --frozen --no-dev
+          uv run groundtruth release verify-artifacts
+
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Build and push immutable serving image
+        run: |
+          set -euo pipefail
+          az acr login --name "$ACR_NAME"
+          login="$(az acr show -n "$ACR_NAME" --query loginServer -o tsv)"
+          sha="$(git rev-parse --short HEAD)"
+          image="$login/metrik-api:${RELEASE_ID}-${sha}"
+          docker build -f Dockerfile -t "$image" .
+          docker run --rm --entrypoint uv "$image" run python -c \
+            "import importlib.util as u; assert u.find_spec('scrapy') is None; assert u.find_spec('playwright') is None; assert u.find_spec('fastapi') is not None"
+          docker push "$image"
+          digest="$(az acr repository show --name "$ACR_NAME" --image "metrik-api:${RELEASE_ID}-${sha}" --query digest -o tsv)"
+          echo "CANDIDATE_IMAGE=$image" >> "$GITHUB_ENV"
+          echo "CANDIDATE_DIGEST=$digest" >> "$GITHUB_ENV"
+
+      - name: Capture current production target
+        run: |
+          set -euo pipefail
+          previous_image="$(az containerapp show -g "$RESOURCE_GROUP" -n "$CONTAINER_APP" --query 'properties.template.containers[?name==`metrik-api`].image | [0]' -o tsv)"
+          previous_revision="$(az containerapp show -g "$RESOURCE_GROUP" -n "$CONTAINER_APP" --query properties.latestReadyRevisionName -o tsv)"
+          test -n "$previous_image"
+          echo "PREVIOUS_IMAGE=$previous_image" >> "$GITHUB_ENV"
+          echo "PREVIOUS_REVISION=$previous_revision" >> "$GITHUB_ENV"
+
+      - name: Deploy candidate revision
+        run: |
+          set -euo pipefail
+          echo "DEPLOY_STARTED=true" >> "$GITHUB_ENV"
+          az containerapp update -g "$RESOURCE_GROUP" -n "$CONTAINER_APP" --image "$CANDIDATE_IMAGE"
+          fqdn="$(az containerapp show -g "$RESOURCE_GROUP" -n "$CONTAINER_APP" --query properties.configuration.ingress.fqdn -o tsv)"
+          echo "APP_URL=https://$fqdn" >> "$GITHUB_ENV"
+
+      - name: Verify live production contract
+        shell: pwsh
+        run: ./scripts/azure/smoke.ps1 -BaseUrl $env:APP_URL -ExpectedReleaseId $env:RELEASE_ID
+
+      - name: Record deployed revision
+        run: |
+          revision="$(az containerapp show -g "$RESOURCE_GROUP" -n "$CONTAINER_APP" --query properties.latestReadyRevisionName -o tsv)"
+          echo "DEPLOYED_REVISION=$revision" >> "$GITHUB_ENV"
+          printf '%s\n' \
+            "release_id=$RELEASE_ID" \
+            "bundle=$BUNDLE_NAME" \
+            "image=$CANDIDATE_IMAGE" \
+            "digest=$CANDIDATE_DIGEST" \
+            "revision=$revision" \
+            "previous_image=$PREVIOUS_IMAGE" \
+            "previous_revision=$PREVIOUS_REVISION" | tee deployment-summary.txt
+
+      - name: Upload deployment evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: deployment-${{ env.RELEASE_ID }}
+          path: deployment-summary.txt
+          retention-days: 90
+
+      - name: Restore previous production image after failure
+        if: ${{ failure() && env.DEPLOY_STARTED == 'true' && env.PREVIOUS_IMAGE != '' }}
+        run: |
+          set -euo pipefail
+          az containerapp update -g "$RESOURCE_GROUP" -n "$CONTAINER_APP" --image "$PREVIOUS_IMAGE"
+          echo "ROLLBACK_ATTEMPTED=true" >> "$GITHUB_ENV"
+
+      - name: Verify rollback
+        if: ${{ failure() && env.ROLLBACK_ATTEMPTED == 'true' }}
+        shell: pwsh
+        run: ./scripts/azure/smoke.ps1 -BaseUrl $env:APP_URL

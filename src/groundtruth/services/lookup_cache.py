@@ -170,6 +170,11 @@ def corpus_meta_from_cache(session: Session) -> CorpusMeta | None:
     if not manifest or "corpus_meta" not in manifest:
         return None
     meta = dict(manifest["corpus_meta"])
+    release = manifest.get("release") or {}
+    if isinstance(release, dict):
+        meta["release_id"] = release.get("release_id")
+        meta["source_git_sha"] = release.get("source_git_sha")
+        meta["data_through"] = release.get("data_through")
     if not meta.get("corpus_updated_at"):
         meta["corpus_updated_at"] = corpus_last_updated(session)
     return CorpusMeta.model_validate(meta)

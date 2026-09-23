@@ -202,6 +202,9 @@ class ChildEntity(BaseModel):
 
 
 class CorpusMeta(BaseModel):
+    release_id: str | None = None
+    source_git_sha: str | None = None
+    data_through: str | None = None
     corpus_updated_at: datetime | None = None
     active_listings: int = 0
     active_listings_confidence: ConfidenceLevel = "insufficient"

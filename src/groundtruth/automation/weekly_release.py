@@ -201,6 +201,8 @@ def run_weekly_release(
                 data_through=result.data_through or started.date().isoformat(),
                 source_git_sha=sha,
                 qa_decision=statistical.level,
+                publishable=statistical.level in {"GREEN", "YELLOW"} or statistical.shadow_mode,
+                statistical_shadow_mode=statistical.shadow_mode,
                 previous_release_id=result.previous_release_id,
             )
             result.release_manifest_sha256 = sha256_file(manifest_path)
