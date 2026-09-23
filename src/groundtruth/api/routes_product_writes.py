@@ -22,6 +22,7 @@ from groundtruth.schemas.product_analytics import ProductEvent
 from groundtruth.services.alerts import log_price_alert
 from groundtruth.services.feedback import log_data_feedback
 from groundtruth.services.product_analytics import log_product_event
+from groundtruth.services.product_notifications import notify_product_submission
 from groundtruth.services.product_submissions import (
     DuplicateSubmission,
     append_product_submission,
@@ -64,6 +65,7 @@ def _persist(kind: str, payload: dict) -> dict[str, str]:
             status_code=503,
             detail="Unable to persist submission. Try again later.",
         ) from None
+    notify_product_submission(kind, payload)
     return {"status": "ok"}
 
 
@@ -88,6 +90,7 @@ def submit_feedback(request: Request, feedback: DataFeedbackRequest) -> dict[str
             status_code=503,
             detail="Unable to persist submission. Try again later.",
         ) from None
+    notify_product_submission("feedback", feedback.model_dump(exclude_none=True))
     return {"status": "ok"}
 
 
@@ -108,6 +111,7 @@ def submit_alert(request: Request, alert: SavedAlertRequest) -> JSONResponse:
             status_code=503,
             detail="Unable to persist submission. Try again later.",
         ) from None
+    notify_product_submission("alerts", alert.model_dump(exclude_none=True))
     return JSONResponse(content={"status": "ok"})
 
 
