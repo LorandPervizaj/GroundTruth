@@ -223,6 +223,19 @@ def run_weekly_release(
             result.outcome = (
                 "warning" if any(item.status == "warning" for item in result.stages) else "verified"
             )
+            shadow_history = list(durable_state.get("statistical_shadow_runs") or [])
+            if statistical.shadow_mode:
+                shadow_history.append(
+                    {
+                        "release_id": result.release_id,
+                        "run_id": result.run_id,
+                        "predicted_level": statistical.level,
+                        "issues": [issue.__dict__ for issue in statistical.issues],
+                        "operator_assessment": None,
+                        "false_positive": None,
+                        "false_negative": None,
+                    }
+                )
             durable_state.update(
                 {
                     "last_verified_release_id": result.release_id,
@@ -230,6 +243,7 @@ def run_weekly_release(
                     "last_verified_at": utc_now().isoformat(),
                     "last_verified_data_through": result.data_through,
                     "last_verified_statistics": statistical.snapshot,
+                    "statistical_shadow_runs": shadow_history[-5:],
                 }
             )
             save_state(durable_state)

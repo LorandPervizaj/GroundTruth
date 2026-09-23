@@ -1,3 +1,4 @@
+import json
 from datetime import UTC, date, datetime
 from pathlib import Path
 from types import SimpleNamespace
@@ -149,6 +150,9 @@ def test_weekly_release_records_verified_result(
         "passed",
     ]
     assert output.is_file()
+    state_payload = json.loads((tmp_path / "state" / "state.json").read_text(encoding="utf-8"))
+    assert state_payload["statistical_shadow_runs"][-1]["predicted_level"] == "GREEN"
+    assert state_payload["statistical_shadow_runs"][-1]["operator_assessment"] is None
 
 
 def test_weekly_release_records_verification_failure(
