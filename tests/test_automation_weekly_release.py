@@ -4,6 +4,7 @@ from types import SimpleNamespace
 
 import pytest
 
+from groundtruth.automation.source_health import SourceHealth, classify_source_health
 from groundtruth.automation.state import PipelineLock, calculate_lookback_days
 from groundtruth.automation.weekly_release import make_release_id, run_weekly_release
 
@@ -29,6 +30,24 @@ def test_pipeline_lock_prevents_overlap(tmp_path: Path) -> None:
     assert not lock_path.exists()
 
 
+def test_source_health_uses_historical_source_baseline() -> None:
+    result = classify_source_health(
+        source="topia",
+        scrape_run_id=9,
+        completed=True,
+        listings_found=2,
+        listings_stored=2,
+        errors_count=0,
+        historical_counts=[100, 110, 90],
+    )
+    assert result.level == "RED"
+    assert result.historical_median == 100
+
+
+def healthy_sources(_: object) -> list[SourceHealth]:
+    return [SourceHealth(source="topia", level="GREEN", scrape_run_id=1)]
+
+
 def test_weekly_release_records_verified_result(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
@@ -43,9 +62,10 @@ def test_weekly_release_records_verified_result(
         output_path=output,
         weekly_runner=lambda **_: report,
         verifier=lambda: ["ok"],
+        source_health_runner=healthy_sources,
     )
     assert result.outcome == "verified"
-    assert [stage.status for stage in result.stages] == ["passed", "passed"]
+    assert [stage.status for stage in result.stages] == ["passed", "passed", "passed"]
     assert output.is_file()
 
 
@@ -66,4 +86,32 @@ def test_weekly_release_records_verification_failure(
             output_path=tmp_path / "failed.json",
             weekly_runner=lambda **_: report,
             verifier=fail,
+            source_health_runner=healthy_sources,
         )
+
+
+def test_red_source_blocks_release_verification(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setenv("GROUNDTRUTH_PIPELINE_STATE_DIR", str(tmp_path / "state"))
+    report = SimpleNamespace(
+        sources=[],
+        window=SimpleNamespace(window_start=date(2026, 9, 15), window_end=date(2026, 9, 22)),
+    )
+    verifier_called = False
+
+    def verify() -> list[str]:
+        nonlocal verifier_called
+        verifier_called = True
+        return ["ok"]
+
+    with pytest.raises(RuntimeError, match="sources are RED"):
+        run_weekly_release(
+            output_path=tmp_path / "red.json",
+            weekly_runner=lambda **_: report,
+            verifier=verify,
+            source_health_runner=lambda _: [
+                SourceHealth(source="topia", level="RED", scrape_run_id=1)
+            ],
+        )
+    assert verifier_called is False

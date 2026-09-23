@@ -58,6 +58,7 @@ def run_weekly_release(
     console: Console | None = None,
     weekly_runner: Callable[..., Any] | None = None,
     verifier: Callable[[], list[str]] | None = None,
+    source_health_runner: Callable[[Any], list[Any]] | None = None,
 ) -> PipelineRunResult:
     """Run the existing weekly pipeline and fail closed on release verification."""
     from groundtruth.crawl.weekly import run_weekly_pipeline
@@ -102,6 +103,30 @@ def run_weekly_release(
             result.data_window_start = str(report.window.window_start)
             result.data_through = str(report.window.window_end)
             stage.finish("passed")
+            _write_result(result, destination)
+
+            stage = result.stage("source_health")
+            stage.start()
+            _write_result(result, destination)
+            if source_health_runner is None:
+                from groundtruth.automation.source_health import collect_source_health
+                from groundtruth.database.session import get_session_factory
+
+                with get_session_factory()() as session:
+                    health = collect_source_health(session, report.sources)
+            else:
+                health = source_health_runner(report)
+            health_payload = [item.to_dict() for item in health]
+            stage.details["sources"] = health_payload
+            stage.counts = {
+                "green": sum(item.level == "GREEN" for item in health),
+                "yellow": sum(item.level == "YELLOW" for item in health),
+                "red": sum(item.level == "RED" for item in health),
+            }
+            if stage.counts["red"]:
+                stage.finish("failed", error="one or more automated sources are RED")
+                raise RuntimeError(stage.error)
+            stage.finish("warning" if stage.counts["yellow"] else "passed")
             _write_result(result, destination)
 
             stage = result.stage("release_verify")
