@@ -4,6 +4,7 @@ from types import SimpleNamespace
 
 import pytest
 
+from groundtruth.automation.data_quality import DataQualityResult, classify_data_quality
 from groundtruth.automation.source_health import SourceHealth, classify_source_health
 from groundtruth.automation.state import PipelineLock, calculate_lookback_days
 from groundtruth.automation.weekly_release import make_release_id, run_weekly_release
@@ -48,6 +49,35 @@ def healthy_sources(_: object) -> list[SourceHealth]:
     return [SourceHealth(source="topia", level="GREEN", scrape_run_id=1)]
 
 
+def healthy_data(_: object) -> list[DataQualityResult]:
+    return [
+        DataQualityResult(
+            source="topia",
+            level="GREEN",
+            scrape_run_id=1,
+            raw=12,
+            parsed=12,
+            normalized=12,
+            valid=12,
+        )
+    ]
+
+
+def test_data_quality_blocks_parser_collapse() -> None:
+    result = classify_data_quality(
+        source="topia",
+        scrape_run_id=1,
+        raw=100,
+        parsed=10,
+        parse_failures=90,
+        normalized=10,
+        normalization_failures=0,
+        validation_failures=0,
+    )
+    assert result.level == "RED"
+    assert result.valid == 10
+
+
 def test_weekly_release_records_verified_result(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
@@ -63,9 +93,15 @@ def test_weekly_release_records_verified_result(
         weekly_runner=lambda **_: report,
         verifier=lambda: ["ok"],
         source_health_runner=healthy_sources,
+        data_quality_runner=healthy_data,
     )
     assert result.outcome == "verified"
-    assert [stage.status for stage in result.stages] == ["passed", "passed", "passed"]
+    assert [stage.status for stage in result.stages] == [
+        "passed",
+        "passed",
+        "passed",
+        "passed",
+    ]
     assert output.is_file()
 
 
@@ -87,6 +123,7 @@ def test_weekly_release_records_verification_failure(
             weekly_runner=lambda **_: report,
             verifier=fail,
             source_health_runner=healthy_sources,
+            data_quality_runner=healthy_data,
         )
 
 
@@ -113,5 +150,26 @@ def test_red_source_blocks_release_verification(
             source_health_runner=lambda _: [
                 SourceHealth(source="topia", level="RED", scrape_run_id=1)
             ],
+            data_quality_runner=healthy_data,
         )
     assert verifier_called is False
+
+
+def test_red_data_quality_blocks_verification(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setenv("GROUNDTRUTH_PIPELINE_STATE_DIR", str(tmp_path / "state"))
+    report = SimpleNamespace(
+        sources=[],
+        window=SimpleNamespace(window_start=date(2026, 9, 15), window_end=date(2026, 9, 22)),
+    )
+    with pytest.raises(RuntimeError, match="data-integrity gate is RED"):
+        run_weekly_release(
+            output_path=tmp_path / "red-data.json",
+            weekly_runner=lambda **_: report,
+            verifier=lambda: ["should not run"],
+            source_health_runner=healthy_sources,
+            data_quality_runner=lambda _: [
+                DataQualityResult(source="topia", level="RED", scrape_run_id=1)
+            ],
+        )

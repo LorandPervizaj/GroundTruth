@@ -59,6 +59,7 @@ def run_weekly_release(
     weekly_runner: Callable[..., Any] | None = None,
     verifier: Callable[[], list[str]] | None = None,
     source_health_runner: Callable[[Any], list[Any]] | None = None,
+    data_quality_runner: Callable[[Any], list[Any]] | None = None,
 ) -> PipelineRunResult:
     """Run the existing weekly pipeline and fail closed on release verification."""
     from groundtruth.crawl.weekly import run_weekly_pipeline
@@ -125,6 +126,34 @@ def run_weekly_release(
             }
             if stage.counts["red"]:
                 stage.finish("failed", error="one or more automated sources are RED")
+                raise RuntimeError(stage.error)
+            stage.finish("warning" if stage.counts["yellow"] else "passed")
+            _write_result(result, destination)
+
+            stage = result.stage("data_quality")
+            stage.start()
+            _write_result(result, destination)
+            if data_quality_runner is None:
+                from groundtruth.automation.data_quality import collect_data_quality
+                from groundtruth.database.session import get_session_factory
+
+                with get_session_factory()() as session:
+                    quality = collect_data_quality(session, report.sources)
+            else:
+                quality = data_quality_runner(report)
+            stage.details["sources"] = [item.to_dict() for item in quality]
+            stage.counts = {
+                "raw": sum(item.raw for item in quality),
+                "parsed": sum(item.parsed for item in quality),
+                "normalized": sum(item.normalized for item in quality),
+                "valid": sum(item.valid for item in quality),
+                "quarantined": sum(item.quarantined for item in quality),
+                "duplicate_candidates": sum(item.duplicate_candidates for item in quality),
+                "yellow": sum(item.level == "YELLOW" for item in quality),
+                "red": sum(item.level == "RED" for item in quality),
+            }
+            if stage.counts["red"]:
+                stage.finish("failed", error="ETL data-integrity gate is RED")
                 raise RuntimeError(stage.error)
             stage.finish("warning" if stage.counts["yellow"] else "passed")
             _write_result(result, destination)
