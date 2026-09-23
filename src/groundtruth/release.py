@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 import tarfile
 from datetime import UTC, datetime
 from pathlib import Path
@@ -206,7 +207,8 @@ def stamp_release_metadata(
 def create_release_bundle(release_id: str, output_dir: Path | None = None) -> tuple[Path, Path]:
     """Create a versioned bundle and SHA256 sidecar from verified public artifacts."""
     verify_release_artifacts()
-    destination = output_dir or lookup_cache_dir().parent / "releases"
+    configured = os.getenv("GROUNDTRUTH_RELEASE_OUTPUT_DIR")
+    destination = output_dir or (Path(configured) if configured else lookup_cache_dir().parent / "releases")
     destination.mkdir(parents=True, exist_ok=True)
     bundle = destination / f"groundtruth-release-{release_id}.tar.gz"
     with tarfile.open(bundle, "w:gz") as archive:
