@@ -1,5 +1,9 @@
 from groundtruth.automation.models import PipelineRunResult, StageResult
-from groundtruth.automation.notifications import format_pipeline_notification, send_telegram_message
+from groundtruth.automation.notifications import (
+    format_pipeline_notification,
+    send_email_report,
+    send_telegram_message,
+)
 
 
 def test_failure_notification_is_concise_and_actionable() -> None:
@@ -29,3 +33,15 @@ def test_telegram_is_optional_without_secrets(monkeypatch) -> None:
     monkeypatch.delenv("TELEGRAM_BOT_TOKEN", raising=False)
     monkeypatch.delenv("TELEGRAM_CHAT_ID", raising=False)
     assert send_telegram_message("hello") is False
+
+
+def test_email_is_optional_without_credentials(monkeypatch) -> None:
+    for key in ("SMTP_USERNAME", "SMTP_PASSWORD", "SMTP_FROM", "PIPELINE_EMAIL_TO"):
+        monkeypatch.delenv(key, raising=False)
+    result = PipelineRunResult(
+        run_id="run-1",
+        release_id="release-1",
+        started_at="2026-09-23T00:00:00+00:00",
+        requested_days=7,
+    )
+    assert send_email_report(result) is False

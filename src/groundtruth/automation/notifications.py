@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import os
+import smtplib
+from email.message import EmailMessage
 from typing import Any
 
 import httpx
@@ -71,10 +73,55 @@ def notify_pipeline_result(result: PipelineRunResult) -> bool:
     return send_telegram_message(format_pipeline_notification(result))
 
 
+def send_email_report(
+    result: PipelineRunResult,
+    *,
+    host: str | None = None,
+    port: int | None = None,
+    username: str | None = None,
+    password: str | None = None,
+    sender: str | None = None,
+    recipient: str | None = None,
+) -> bool:
+    smtp_host = host or os.getenv("SMTP_HOST")
+    smtp_port = port or int(os.getenv("SMTP_PORT", "587"))
+    smtp_username = username or os.getenv("SMTP_USERNAME")
+    smtp_password = password or os.getenv("SMTP_PASSWORD")
+    from_address = sender or os.getenv("SMTP_FROM") or smtp_username
+    to_address = recipient or os.getenv("PIPELINE_EMAIL_TO")
+    if not all((smtp_host, smtp_username, smtp_password, from_address, to_address)):
+        return False
+    message = EmailMessage()
+    message["Subject"] = f"GroundTruth {result.outcome.upper()}: {result.release_id}"
+    message["From"] = from_address
+    message["To"] = to_address
+    body = [format_pipeline_notification(result), "", "Stage details:"]
+    for stage in result.stages:
+        body.append(
+            f"- {stage.name}: {stage.status}; duration={stage.duration_seconds}; "
+            f"counts={stage.counts}; error={stage.error or '-'}"
+        )
+    message.set_content("\n".join(body))
+    with smtplib.SMTP(smtp_host, smtp_port, timeout=20) as client:
+        client.starttls()
+        client.login(smtp_username, smtp_password)
+        client.send_message(message)
+    return True
+
+
 def safe_notify_pipeline_result(result: PipelineRunResult) -> dict[str, Any]:
     """Notify without hiding the pipeline's real outcome or exposing credentials."""
-    try:
-        sent = notify_pipeline_result(result)
-        return {"sent": sent, "channel": "telegram" if sent else "not_configured"}
-    except Exception as exc:
-        return {"sent": False, "channel": "telegram", "error": type(exc).__name__}
+    channels: list[str] = []
+    errors: list[str] = []
+    for name, sender in (("telegram", notify_pipeline_result), ("email", send_email_report)):
+        try:
+            if sender(result):
+                channels.append(name)
+        except Exception as exc:
+            errors.append(f"{name}:{type(exc).__name__}")
+    return {
+        "sent": bool(channels),
+        "channels": channels,
+        "configured": bool(channels or errors),
+        **({"errors": errors} if errors else {}),
+    }

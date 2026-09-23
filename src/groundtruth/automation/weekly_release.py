@@ -243,7 +243,7 @@ def run_weekly_release(
         from groundtruth.automation.notifications import safe_notify_pipeline_result
 
         notification = safe_notify_pipeline_result(result)
-        if notification["sent"] or notification.get("error"):
+        if notification["sent"] or notification.get("errors"):
             notification_stage = result.stage("notification", blocking=False)
             notification_stage.start()
             notification_stage.details.update(notification)
