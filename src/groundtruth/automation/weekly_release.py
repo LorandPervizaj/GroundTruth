@@ -77,6 +77,7 @@ def run_weekly_release(
         release_id=release_id,
         started_at=started.isoformat(),
         requested_days=days or 0,
+        source_git_sha=sha,
     )
     durable_state = load_state()
     watermark = verified_watermark(durable_state)
@@ -189,11 +190,34 @@ def run_weekly_release(
             stage.finish("warning" if statistical.level != "GREEN" else "passed")
             _write_result(result, destination)
 
+            stage = result.stage("release_build")
+            stage.start()
+            _write_result(result, destination)
+            from groundtruth.claims.hashes import sha256_file
+            from groundtruth.release import create_release_bundle, stamp_release_metadata
+
+            manifest_path = stamp_release_metadata(
+                release_id=result.release_id,
+                data_through=result.data_through or started.date().isoformat(),
+                source_git_sha=sha,
+                qa_decision=statistical.level,
+                previous_release_id=result.previous_release_id,
+            )
+            result.release_manifest_sha256 = sha256_file(manifest_path)
+            stage.details["manifest"] = str(manifest_path)
+            stage.details["manifest_sha256"] = result.release_manifest_sha256
+            stage.finish("passed")
+            _write_result(result, destination)
+
             stage = result.stage("release_verify")
             stage.start()
             _write_result(result, destination)
             stage.details["checks"] = verify()
             stage.finish("passed")
+            bundle, digest = create_release_bundle(result.release_id)
+            result.release_bundle = str(bundle)
+            stage.details["bundle"] = str(bundle)
+            stage.details["bundle_sha256"] = digest.read_text(encoding="utf-8").split()[0]
             result.outcome = (
                 "warning" if any(item.status == "warning" for item in result.stages) else "verified"
             )

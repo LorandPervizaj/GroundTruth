@@ -116,17 +116,32 @@ def test_weekly_release_records_verified_result(
         window=SimpleNamespace(window_start=date(2026, 9, 15), window_end=date(2026, 9, 22)),
     )
     output = tmp_path / "run.json"
-    result = run_weekly_release(
-        days=8,
-        output_path=output,
-        weekly_runner=lambda **_: report,
-        verifier=lambda: ["ok"],
-        source_health_runner=healthy_sources,
-        data_quality_runner=healthy_data,
-        statistical_runner=healthy_statistics,
-    )
+    from unittest.mock import patch
+
+    with (
+        patch(
+            "groundtruth.release.stamp_release_metadata", return_value=tmp_path / "manifest.json"
+        ),
+        patch(
+            "groundtruth.release.create_release_bundle",
+            return_value=(tmp_path / "bundle.tgz", tmp_path / "bundle.tgz.sha256"),
+        ),
+        patch("groundtruth.claims.hashes.sha256_file", return_value="a" * 64),
+    ):
+        (tmp_path / "manifest.json").write_text("{}", encoding="utf-8")
+        (tmp_path / "bundle.tgz.sha256").write_text(f"{'b' * 64}  bundle.tgz\n", encoding="utf-8")
+        result = run_weekly_release(
+            days=8,
+            output_path=output,
+            weekly_runner=lambda **_: report,
+            verifier=lambda: ["ok"],
+            source_health_runner=healthy_sources,
+            data_quality_runner=healthy_data,
+            statistical_runner=healthy_statistics,
+        )
     assert result.outcome == "verified"
     assert [stage.status for stage in result.stages] == [
+        "passed",
         "passed",
         "passed",
         "passed",
@@ -148,7 +163,15 @@ def test_weekly_release_records_verification_failure(
     def fail() -> list[str]:
         raise ValueError("hash mismatch")
 
-    with pytest.raises(ValueError, match="hash mismatch"):
+    from unittest.mock import patch
+
+    manifest = tmp_path / "manifest.json"
+    manifest.write_text("{}", encoding="utf-8")
+    with (
+        patch("groundtruth.release.stamp_release_metadata", return_value=manifest),
+        patch("groundtruth.claims.hashes.sha256_file", return_value="a" * 64),
+        pytest.raises(ValueError, match="hash mismatch"),
+    ):
         run_weekly_release(
             output_path=tmp_path / "failed.json",
             weekly_runner=lambda **_: report,

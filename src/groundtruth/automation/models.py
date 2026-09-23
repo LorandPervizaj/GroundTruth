@@ -48,9 +48,12 @@ class PipelineRunResult:
     release_id: str
     started_at: str
     requested_days: int
+    source_git_sha: str | None = None
     data_window_start: str | None = None
     data_through: str | None = None
     previous_release_id: str | None = None
+    release_manifest_sha256: str | None = None
+    release_bundle: str | None = None
     stages: list[StageResult] = field(default_factory=list)
     finished_at: str | None = None
     outcome: Literal["running", "verified", "warning", "failed"] = "running"
