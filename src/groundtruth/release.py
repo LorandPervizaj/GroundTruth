@@ -22,6 +22,10 @@ from groundtruth.services.lookup_cache import (
     stamp_related_artifact_hash,
 )
 from groundtruth.services.public_payload import assert_market_lookup_public
+from groundtruth.services.rent_yield import (
+    RENT_YIELD_CACHE,
+    build_rent_yield_from_lookup_cache,
+)
 
 
 def build_release_artifacts() -> tuple[Path, Path]:
@@ -37,6 +41,8 @@ def build_release_artifacts() -> tuple[Path, Path]:
     finally:
         session.close()
     stamp_related_artifact_hash(key="annual_report", path=annual_path)
+    build_rent_yield_from_lookup_cache()
+    stamp_related_artifact_hash(key="rent_yield", path=RENT_YIELD_CACHE)
     from groundtruth.analytics.statistical_qa import run_statistical_qa
     from groundtruth.config import PROJECT_ROOT
 
@@ -164,6 +170,28 @@ def verify_release_artifacts() -> list[str]:
         context="related_artifacts[annual_report]",
     )
 
+    if not RENT_YIELD_CACHE.is_file():
+        raise FileNotFoundError(f"missing rent-yield artifact: {RENT_YIELD_CACHE}")
+    try:
+        rent_yield_payload = json.loads(RENT_YIELD_CACHE.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        raise ValueError(f"invalid JSON in {RENT_YIELD_CACHE}: {exc}") from exc
+    if not isinstance(rent_yield_payload, dict) or not isinstance(
+        rent_yield_payload.get("rows"), list
+    ):
+        raise ValueError(f"expected JSON object with rows array in {RENT_YIELD_CACHE}")
+    rent_yield_meta = related.get("rent_yield") if isinstance(related, dict) else None
+    if not isinstance(rent_yield_meta, dict) or not rent_yield_meta.get("sha256"):
+        raise ValueError(
+            "lookup cache manifest missing related_artifacts.rent_yield.sha256 — "
+            "rebuild with `groundtruth release build-artifacts`"
+        )
+    _require_sha256(
+        rent_yield_meta.get("sha256"),
+        RENT_YIELD_CACHE,
+        context="related_artifacts[rent_yield]",
+    )
+
     meta_revision = meta_payload.get("corpus_revision")
     manifest_revision = manifest.get("corpus_revision")
     if meta_revision and manifest_revision and meta_revision != manifest_revision:
@@ -174,6 +202,7 @@ def verify_release_artifacts() -> list[str]:
 
     out.append(f"lookup_cache_ok entries={len(entries)} path={manifest_path}")
     out.append(f"annual_report_ok path={annual_path}")
+    out.append(f"rent_yield_ok path={RENT_YIELD_CACHE}")
     return out
 
 
@@ -220,6 +249,7 @@ def create_release_bundle(release_id: str, output_dir: Path | None = None) -> tu
     with tarfile.open(bundle, "w:gz") as archive:
         archive.add(lookup_cache_dir(), arcname="lookup_cache")
         archive.add(DEFAULT_ANNUAL_REPORT_PATH, arcname="data/api/annual_report.json")
+        archive.add(RENT_YIELD_CACHE, arcname="data/api/rent_yield.json")
     digest_path = bundle.with_suffix(bundle.suffix + ".sha256")
     digest_path.write_text(f"{sha256_file(bundle)}  {bundle.name}\n", encoding="utf-8")
     return bundle, digest_path

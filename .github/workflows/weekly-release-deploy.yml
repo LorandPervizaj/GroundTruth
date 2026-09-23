@@ -69,6 +69,7 @@ jobs:
           rm -rf reports/generated/lookup_cache
           cp -a /tmp/release/lookup_cache reports/generated/lookup_cache
           cp /tmp/release/data/api/annual_report.json data/api/annual_report.json
+          cp /tmp/release/data/api/rent_yield.json data/api/rent_yield.json
           release_id="$(python -c "import json; print(json.load(open('reports/generated/lookup_cache/manifest.json'))['release']['release_id'])")"
           publishable="$(python -c "import json; p=json.load(open('reports/generated/lookup_cache/manifest.json')); print(str(p['release'].get('publishable', True)).lower())")"
           test "$publishable" = "true"
