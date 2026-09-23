@@ -24,6 +24,9 @@ from groundtruth.config import PROJECT_ROOT
 
 
 def source_git_sha() -> str:
+    configured = os.getenv("GROUNDTRUTH_SOURCE_GIT_SHA")
+    if configured:
+        return configured
     result = subprocess.run(
         ["git", "rev-parse", "--short=12", "HEAD"],
         cwd=PROJECT_ROOT,

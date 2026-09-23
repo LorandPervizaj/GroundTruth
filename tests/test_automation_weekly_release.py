@@ -12,11 +12,20 @@ from groundtruth.automation.statistical_sanity import (
     StatisticalSanityResult,
     evaluate_statistical_sanity,
 )
-from groundtruth.automation.weekly_release import make_release_id, run_weekly_release
+from groundtruth.automation.weekly_release import (
+    make_release_id,
+    run_weekly_release,
+    source_git_sha,
+)
 
 
 def test_release_id_uses_iso_week() -> None:
     assert make_release_id(datetime(2026, 9, 23, tzinfo=UTC), git_sha="abc123") == "2026-W39-abc123"
+
+
+def test_source_git_sha_prefers_immutable_build_value(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("GROUNDTRUTH_SOURCE_GIT_SHA", "deadbeef1234")
+    assert source_git_sha() == "deadbeef1234"
 
 
 def test_lookback_uses_verified_watermark_and_recovers_missed_week() -> None:

@@ -16,7 +16,7 @@ GroundTruth runs separately from the public Metrik Container App. The target is 
 $sha = git rev-parse --short HEAD
 $login = az acr show -n acrmetrikbetalgy2mu --query loginServer -o tsv
 az acr login -n acrmetrikbetalgy2mu
-docker build -f Dockerfile.research -t "$login/groundtruth-research:$sha" .
+docker build -f Dockerfile.research --build-arg "SOURCE_GIT_SHA=$sha" -t "$login/groundtruth-research:$sha" .
 docker push "$login/groundtruth-research:$sha"
 ```
 
