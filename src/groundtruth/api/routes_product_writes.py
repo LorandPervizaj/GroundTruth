@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
-from typing import Literal
+import hmac
+import os
+from typing import Any, Literal
 
 from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import JSONResponse
@@ -22,7 +24,10 @@ from groundtruth.schemas.product_analytics import ProductEvent
 from groundtruth.services.alerts import log_price_alert
 from groundtruth.services.feedback import log_data_feedback
 from groundtruth.services.product_analytics import log_product_event
-from groundtruth.services.product_notifications import notify_product_submission
+from groundtruth.services.product_notifications import (
+    handle_telegram_update,
+    notify_product_submission,
+)
 from groundtruth.services.product_submissions import (
     DuplicateSubmission,
     append_product_submission,
@@ -41,6 +46,17 @@ _ALERTS_UNAVAILABLE = {
 
 class LangPreference(BaseModel):
     lang: Literal["sq", "en"]
+
+
+@router.post("/api/telegram/webhook", include_in_schema=False)
+def telegram_webhook(request: Request, update: dict[str, Any]) -> dict[str, bool]:
+    """Accept authenticated Telegram updates and ignore every non-owner chat."""
+    expected = os.getenv("TELEGRAM_WEBHOOK_SECRET")
+    supplied = request.headers.get("x-telegram-bot-api-secret-token", "")
+    if not expected or not hmac.compare_digest(supplied, expected):
+        raise HTTPException(status_code=403, detail="Forbidden")
+    handle_telegram_update(update)
+    return {"ok": True}
 
 
 def _require_json_content_type(request: Request) -> None:

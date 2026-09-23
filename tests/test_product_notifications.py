@@ -4,7 +4,9 @@ from unittest.mock import Mock
 
 from groundtruth.services.product_notifications import (
     format_product_submission,
+    handle_telegram_update,
     notify_product_submission,
+    telegram_command_reply,
 )
 
 
@@ -36,3 +38,13 @@ def test_notification_only_targets_configured_owner(monkeypatch) -> None:
     assert notify_product_submission("public_reports", {"message": "broken page"}) is True
     assert post.call_args.kwargs["data"]["chat_id"] == "123456"
     assert "test-token" not in post.call_args.kwargs["data"]["text"]
+
+
+def test_commands_have_real_replies() -> None:
+    assert "Metrik is online" in telegram_command_reply("/status")
+    assert "/latest" in telegram_command_reply("/help")
+
+
+def test_command_rejects_non_owner(monkeypatch) -> None:
+    monkeypatch.setenv("TELEGRAM_CHAT_ID", "123456")
+    assert handle_telegram_update({"message": {"chat": {"id": 999}, "text": "/status"}}) is False
