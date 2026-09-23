@@ -12,6 +12,13 @@ from typing import Any
 from rich.console import Console
 
 from groundtruth.automation.models import PipelineRunResult, utc_now
+from groundtruth.automation.state import (
+    calculate_lookback_days,
+    load_state,
+    pipeline_lock,
+    save_state,
+    verified_watermark,
+)
 from groundtruth.config import PROJECT_ROOT
 
 
@@ -45,7 +52,7 @@ def _write_result(result: PipelineRunResult, path: Path) -> None:
 
 def run_weekly_release(
     *,
-    days: int = 7,
+    days: int | None = None,
     force: bool = True,
     output_path: Path | None = None,
     console: Console | None = None,
@@ -65,36 +72,53 @@ def run_weekly_release(
         run_id=run_id,
         release_id=release_id,
         started_at=started.isoformat(),
-        requested_days=days,
+        requested_days=days or 0,
     )
+    durable_state = load_state()
+    watermark = verified_watermark(durable_state)
+    resolved_days = days or calculate_lookback_days(watermark, today=started.date())
+    result.requested_days = resolved_days
+    result.previous_release_id = durable_state.get("last_verified_release_id")
     destination = output_path or _default_output_path(run_id)
     _write_result(result, destination)
 
     weekly = weekly_runner or run_weekly_pipeline
     verify = verifier or verify_release_artifacts
     try:
-        stage = result.stage("weekly_pipeline")
-        stage.start()
-        _write_result(result, destination)
-        report = weekly(days=days, force=force, stage="all", resume=True, console=out)
-        stage.counts = {
-            "sources": len(report.sources),
-            "sources_failed": sum(1 for item in report.sources if item.error),
-            "normalized": sum(item.etl_normalized for item in report.sources),
-        }
-        stage.details["window"] = {
-            "start": str(report.window.window_start),
-            "end": str(report.window.window_end),
-        }
-        stage.finish("passed")
-        _write_result(result, destination)
+        with pipeline_lock(run_id):
+            stage = result.stage("weekly_pipeline")
+            stage.start()
+            _write_result(result, destination)
+            report = weekly(days=resolved_days, force=force, stage="all", resume=True, console=out)
+            stage.counts = {
+                "sources": len(report.sources),
+                "sources_failed": sum(1 for item in report.sources if item.error),
+                "normalized": sum(item.etl_normalized for item in report.sources),
+            }
+            stage.details["window"] = {
+                "start": str(report.window.window_start),
+                "end": str(report.window.window_end),
+            }
+            result.data_window_start = str(report.window.window_start)
+            result.data_through = str(report.window.window_end)
+            stage.finish("passed")
+            _write_result(result, destination)
 
-        stage = result.stage("release_verify")
-        stage.start()
-        _write_result(result, destination)
-        stage.details["checks"] = verify()
-        stage.finish("passed")
-        result.outcome = "verified"
+            stage = result.stage("release_verify")
+            stage.start()
+            _write_result(result, destination)
+            stage.details["checks"] = verify()
+            stage.finish("passed")
+            result.outcome = "verified"
+            durable_state.update(
+                {
+                    "last_verified_release_id": result.release_id,
+                    "last_verified_run_id": result.run_id,
+                    "last_verified_at": utc_now().isoformat(),
+                    "last_verified_data_through": result.data_through,
+                }
+            )
+            save_state(durable_state)
     except Exception as exc:
         if result.stages and result.stages[-1].status == "running":
             result.stages[-1].finish("failed", error=str(exc))

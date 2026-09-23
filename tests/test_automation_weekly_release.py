@@ -4,6 +4,7 @@ from types import SimpleNamespace
 
 import pytest
 
+from groundtruth.automation.state import PipelineLock, calculate_lookback_days
 from groundtruth.automation.weekly_release import make_release_id, run_weekly_release
 
 
@@ -11,7 +12,27 @@ def test_release_id_uses_iso_week() -> None:
     assert make_release_id(datetime(2026, 9, 23, tzinfo=UTC), git_sha="abc123") == "2026-W39-abc123"
 
 
-def test_weekly_release_records_verified_result(tmp_path: Path) -> None:
+def test_lookback_uses_verified_watermark_and_recovers_missed_week() -> None:
+    assert calculate_lookback_days(date(2026, 9, 14), today=date(2026, 9, 28)) == 15
+    assert calculate_lookback_days(date(2026, 9, 27), today=date(2026, 9, 28)) == 7
+    assert calculate_lookback_days(None, today=date(2026, 9, 28)) == 7
+
+
+def test_pipeline_lock_prevents_overlap(tmp_path: Path) -> None:
+    lock_path = tmp_path / "weekly-release.lock"
+    with (
+        PipelineLock(lock_path, "first"),
+        pytest.raises(RuntimeError, match="another weekly release"),
+        PipelineLock(lock_path, "second"),
+    ):
+        pass
+    assert not lock_path.exists()
+
+
+def test_weekly_release_records_verified_result(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setenv("GROUNDTRUTH_PIPELINE_STATE_DIR", str(tmp_path / "state"))
     report = SimpleNamespace(
         sources=[SimpleNamespace(error=None, etl_normalized=12)],
         window=SimpleNamespace(window_start=date(2026, 9, 15), window_end=date(2026, 9, 22)),
@@ -28,7 +49,10 @@ def test_weekly_release_records_verified_result(tmp_path: Path) -> None:
     assert output.is_file()
 
 
-def test_weekly_release_records_verification_failure(tmp_path: Path) -> None:
+def test_weekly_release_records_verification_failure(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setenv("GROUNDTRUTH_PIPELINE_STATE_DIR", str(tmp_path / "state"))
     report = SimpleNamespace(
         sources=[],
         window=SimpleNamespace(window_start=date(2026, 9, 15), window_end=date(2026, 9, 22)),
