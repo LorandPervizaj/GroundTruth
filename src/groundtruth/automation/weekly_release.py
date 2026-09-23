@@ -240,6 +240,14 @@ def run_weekly_release(
         raise
     finally:
         result.finished_at = utc_now().isoformat()
+        from groundtruth.automation.notifications import safe_notify_pipeline_result
+
+        notification = safe_notify_pipeline_result(result)
+        if notification["sent"] or notification.get("error"):
+            notification_stage = result.stage("notification", blocking=False)
+            notification_stage.start()
+            notification_stage.details.update(notification)
+            notification_stage.finish("passed" if notification["sent"] else "warning")
         _write_result(result, destination)
         out.print(f"[bold]Pipeline run record:[/bold] {destination}")
     return result

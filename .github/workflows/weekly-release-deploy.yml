@@ -154,3 +154,40 @@ jobs:
         if: ${{ failure() && env.ROLLBACK_ATTEMPTED == 'true' }}
         shell: pwsh
         run: ./scripts/azure/smoke.ps1 -BaseUrl $env:APP_URL
+
+      - name: Telegram success notification
+        if: ${{ success() }}
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          set -euo pipefail
+          if [ -z "$TELEGRAM_BOT_TOKEN" ] || [ -z "$TELEGRAM_CHAT_ID" ]; then exit 0; fi
+          text="✅ Metrik deployment SUCCESS
+          Release: $RELEASE_ID
+          Image: $CANDIDATE_IMAGE
+          Digest: $CANDIDATE_DIGEST
+          Revision: $DEPLOYED_REVISION
+          Production verification: passed"
+          curl -fsS --retry 2 "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            --data-urlencode "chat_id=$TELEGRAM_CHAT_ID" \
+            --data-urlencode "text=$text" >/dev/null
+
+      - name: Telegram failure notification
+        if: ${{ failure() }}
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          set +e
+          if [ -z "$TELEGRAM_BOT_TOKEN" ] || [ -z "$TELEGRAM_CHAT_ID" ]; then exit 0; fi
+          text="❌ Metrik deployment FAILURE
+          Release: ${RELEASE_ID:-unknown}
+          Candidate: ${CANDIDATE_IMAGE:-not built}
+          Previous image: ${PREVIOUS_IMAGE:-unchanged}
+          Rollback attempted: ${ROLLBACK_ATTEMPTED:-false}
+          Previous production should be checked immediately.
+          Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          curl -fsS --retry 2 "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            --data-urlencode "chat_id=$TELEGRAM_CHAT_ID" \
+            --data-urlencode "text=$text" >/dev/null
