@@ -10,8 +10,8 @@ from groundtruth.processing import validation as validation_mod
 
 def test_ingestion_rent_bounds_wider_than_valuation_comparables() -> None:
     """Ingestion keeps broad sanity; valuation uses a tighter comparable band."""
-    assert validation_mod.MIN_RENT_PRICE == Decimal("50")
-    assert validation_mod.MAX_RENT_PRICE == Decimal("8000")
+    assert Decimal("50") == validation_mod.MIN_RENT_PRICE
+    assert Decimal("8000") == validation_mod.MAX_RENT_PRICE
     assert valuation_mod.RENT_COMPARABLE_MIN_EUR == 80
     assert valuation_mod.RENT_COMPARABLE_MAX_EUR == 2500
     assert float(validation_mod.MIN_RENT_PRICE) < valuation_mod.RENT_COMPARABLE_MIN_EUR
@@ -19,8 +19,8 @@ def test_ingestion_rent_bounds_wider_than_valuation_comparables() -> None:
 
 
 def test_ingestion_sale_bounds_wider_than_valuation_comparables() -> None:
-    assert validation_mod.MIN_SALE_PRICE == Decimal("3000")
-    assert validation_mod.MAX_SALE_PRICE == Decimal("10000000")
+    assert Decimal("3000") == validation_mod.MIN_SALE_PRICE
+    assert Decimal("10000000") == validation_mod.MAX_SALE_PRICE
     assert valuation_mod.SALE_COMPARABLE_MIN_EUR == 10_000
     assert valuation_mod.SALE_COMPARABLE_MAX_EUR == 500_000
     assert float(validation_mod.MIN_SALE_PRICE) < valuation_mod.SALE_COMPARABLE_MIN_EUR

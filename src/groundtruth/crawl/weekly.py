@@ -701,7 +701,9 @@ def _advance_lifecycle_from_checkpoint(
             health = (
                 CrawlHealth(True, "all_source_variants_healthy")
                 if all(item.healthy for item in health_parts)
-                else CrawlHealth(False, ",".join(item.reason for item in health_parts if not item.healthy))
+                else CrawlHealth(
+                    False, ",".join(item.reason for item in health_parts if not item.healthy)
+                )
             )
             observed_ids = session.scalars(
                 select(NormalizedListing.source_listing_id).where(

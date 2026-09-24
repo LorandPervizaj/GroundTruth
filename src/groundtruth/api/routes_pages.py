@@ -192,7 +192,5 @@ def market_page(entity_type: EntityType, slug: str) -> HTMLResponse:
     html = inject_sanitize_script(html)
     html = inject_accessibility_shell(html)
     base_url = get_settings().public_base_url.rstrip("/")
-    html = inject_canonical_url(
-        html, f"{base_url}/market/{entity_type}/{slug}"
-    )
+    html = inject_canonical_url(html, f"{base_url}/market/{entity_type}/{slug}")
     return HTMLResponse(content=html, headers={"Cache-Control": "no-cache"})

@@ -90,7 +90,9 @@ def _query_deduped_corpus_dataframe(
     validity_only: bool = False,
 ) -> pd.DataFrame:
     """Load deduped corpus from SQL (uncached)."""
-    active_filter = VALID_CORPUS_WHERE if validity_only else ACTIVE_CORPUS_WHERE if active_only else ""
+    active_filter = (
+        VALID_CORPUS_WHERE if validity_only else ACTIVE_CORPUS_WHERE if active_only else ""
+    )
     sql = text(
         f"""
         SELECT DISTINCT ON (nl.source_website, nl.source_listing_id)

@@ -499,7 +499,9 @@ def dedup_benchmark(
         writer = csv.DictWriter(handle, fieldnames=list(details[0]))
         writer.writeheader()
         writer.writerows(details)
-    console.print(f"Precision {result.precision:.1%} · recall {result.recall:.1%} · blocking recall {result.blocking_recall:.1%}")
+    console.print(
+        f"Precision {result.precision:.1%} · recall {result.recall:.1%} · blocking recall {result.blocking_recall:.1%}"
+    )
     console.print(f"[green]Wrote {output} and {errors}[/green]")
 
 
