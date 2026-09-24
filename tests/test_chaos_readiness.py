@@ -29,12 +29,14 @@ def test_ready_fails_when_release_artifacts_corrupt() -> None:
 def test_http_ready_503_on_artifact_chaos() -> None:
     from groundtruth.api.app import app
 
-    with TestClient(app) as client:
-        with patch(
+    with (
+        TestClient(app) as client,
+        patch(
             "groundtruth.api.routes_markets.evaluate_readiness",
             return_value={"ok": False, "reasons": ["artifacts_unverified", "artifact_error:chaos"]},
-        ):
-            res = client.get("/api/ready")
+        ),
+    ):
+        res = client.get("/api/ready")
     assert res.status_code == 503
     assert res.json()["ok"] is False
 
@@ -43,20 +45,20 @@ def test_valuate_blocked_when_comparables_not_ready() -> None:
     from groundtruth.api.app import app
 
     prod = Settings(app_env="production", valuation_public_enabled=True, health_check_token="x")
-    with TestClient(app) as client:
-        with (
-            patch("groundtruth.api.routes_markets.get_settings", return_value=prod),
-            patch("groundtruth.analytics.valuation.comparables_cache_ready", return_value=False),
-        ):
-            res = client.post(
-                "/api/valuate",
-                json={
-                    "valuation_type": "rent",
-                    "neighborhood": "Ulpiana",
-                    "area_sqm": 60,
-                    "bedrooms": 2,
-                },
-            )
+    with (
+        TestClient(app) as client,
+        patch("groundtruth.api.routes_markets.get_settings", return_value=prod),
+        patch("groundtruth.analytics.valuation.comparables_cache_ready", return_value=False),
+    ):
+        res = client.post(
+            "/api/valuate",
+            json={
+                "valuation_type": "rent",
+                "neighborhood": "Ulpiana",
+                "area_sqm": 60,
+                "bedrooms": 2,
+            },
+        )
     assert res.status_code == 503
     detail = str(res.json().get("detail", "")).lower()
     assert "loading" in detail or "unavailable" in detail

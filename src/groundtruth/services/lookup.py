@@ -346,14 +346,42 @@ def _build_pulse(
         sane_rent["rent_price"].median() if not sane_rent.empty else None
     )
     metric_specs = {
-        "median_sale_psm": (sale_psm_value, "EUR_PER_M2", len(sale_psm), "recent.sale.apartment_studio", sale),
-        "median_rent_psm": (rent_psm_value, "EUR_PER_M2_MONTH", len(rent_psm), "recent.rent.apartment_studio", rent),
-        "median_sale_eur": (median_sale_value, "EUR", len(sale_with_price), "recent.sale.apartment_studio", sale_with_price),
-        "median_rent_eur": (median_rent_value, "EUR_MONTH", len(rent_with_price), "recent.rent.apartment_studio", rent_with_price),
+        "median_sale_psm": (
+            sale_psm_value,
+            "EUR_PER_M2",
+            len(sale_psm),
+            "recent.sale.apartment_studio",
+            sale,
+        ),
+        "median_rent_psm": (
+            rent_psm_value,
+            "EUR_PER_M2_MONTH",
+            len(rent_psm),
+            "recent.rent.apartment_studio",
+            rent,
+        ),
+        "median_sale_eur": (
+            median_sale_value,
+            "EUR",
+            len(sale_with_price),
+            "recent.sale.apartment_studio",
+            sale_with_price,
+        ),
+        "median_rent_eur": (
+            median_rent_value,
+            "EUR_MONTH",
+            len(rent_with_price),
+            "recent.rent.apartment_studio",
+            rent_with_price,
+        ),
     }
     metrics = {}
     for metric_id, (value, unit, sample_n, population, evidence_df) in metric_specs.items():
-        source_counts = evidence_df["source_website"].value_counts() if not evidence_df.empty else pd.Series(dtype=int)
+        source_counts = (
+            evidence_df["source_website"].value_counts()
+            if not evidence_df.empty
+            else pd.Series(dtype=int)
+        )
         evidence = MetricEvidence(
             sample_n=sample_n,
             source_count=int(len(source_counts)),

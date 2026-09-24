@@ -25,7 +25,10 @@ def test_liveness_health_always_200(api_client: TestClient) -> None:
 def test_metrics_hidden_without_token_in_production(api_client: TestClient) -> None:
     from groundtruth.config import Settings
 
-    with patch("groundtruth.api.deps.get_settings", return_value=Settings(app_env="production", health_check_token="secret-ops")):
+    with patch(
+        "groundtruth.api.deps.get_settings",
+        return_value=Settings(app_env="production", health_check_token="secret-ops"),
+    ):
         res = api_client.get("/api/metrics")
     assert res.status_code == 404
 
@@ -45,7 +48,10 @@ def test_metrics_ok_with_token_in_production(api_client: TestClient) -> None:
 def test_health_perf_requires_token_in_production(api_client: TestClient) -> None:
     from groundtruth.config import Settings
 
-    with patch("groundtruth.api.deps.get_settings", return_value=Settings(app_env="production", health_check_token="secret-ops")):
+    with patch(
+        "groundtruth.api.deps.get_settings",
+        return_value=Settings(app_env="production", health_check_token="secret-ops"),
+    ):
         assert api_client.get("/api/health/perf").status_code == 404
         ok = api_client.get("/api/health/perf", headers={"X-Health-Token": "secret-ops"})
     assert ok.status_code == 200

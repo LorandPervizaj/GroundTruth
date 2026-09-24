@@ -1,7 +1,9 @@
 #Requires -Version 7.0
 param(
   [Parameter(Mandatory = $true)]
-  [string]$BaseUrl
+  [string]$BaseUrl,
+  [string]$ExpectedReleaseId = "",
+  [int]$ExpectedValuationStatus = 200
 )
 
 $ErrorActionPreference = "Stop"
@@ -53,7 +55,11 @@ $ready = Hit GET /api/ready
 if ($ready.StatusCode -ne 200) { throw "ready failed" }
 
 Hit GET /
-Hit GET /api/meta
+$meta = Hit GET /api/meta
+if ($meta.StatusCode -ne 200) { throw "meta failed" }
+if ($ExpectedReleaseId -and $meta.Content -notmatch [regex]::Escape($ExpectedReleaseId)) {
+  throw "meta does not report expected release $ExpectedReleaseId"
+}
 Hit GET "/api/search?q=ulpiana"
 Hit GET /api/markets
 Hit GET "/api/compare?neighborhoods=ulpiana,arberia"
@@ -68,7 +74,9 @@ $alerts = Hit POST /api/alerts @{ email = "beta@example.com"; neighborhood_slug 
 if ([int]$alerts.StatusCode -notin 503, 429) { throw "alerts should be unavailable or rate-limited" }
 
 $valuate = Hit POST /api/valuate @{ neighborhood = "Ulpiana"; area_sqm = 70; valuation_type = "rent" }
-if ([int]$valuate.StatusCode -ne 503) { throw "valuate should be 503 while disabled/unavailable" }
+if ([int]$valuate.StatusCode -ne $ExpectedValuationStatus) {
+  throw "valuate expected $ExpectedValuationStatus, got $($valuate.StatusCode)"
+}
 
 $badCtFile = Join-Path $env:TEMP "metrik-badct.txt"
 Set-Content -Path $badCtFile -Value "x" -NoNewline

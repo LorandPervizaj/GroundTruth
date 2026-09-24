@@ -1,0 +1,55 @@
+name: GroundTruth weekly control
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: Start a new run or inspect recent executions
+        type: choice
+        required: true
+        default: start
+        options:
+          - start
+          - status
+
+concurrency:
+  group: groundtruth-weekly-control
+  cancel-in-progress: false
+
+jobs:
+  control:
+    runs-on: ubuntu-latest
+    environment: groundtruth-research
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Azure login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Start private research job
+        if: ${{ inputs.action == 'start' }}
+        env:
+          RESOURCE_GROUP: ${{ vars.GROUNDTRUTH_AZURE_RESOURCE_GROUP }}
+          JOB_NAME: ${{ vars.GROUNDTRUTH_AZURE_JOB_NAME }}
+        run: |
+          set -euo pipefail
+          test -n "$RESOURCE_GROUP"
+          test -n "$JOB_NAME"
+          az containerapp job start --resource-group "$RESOURCE_GROUP" --name "$JOB_NAME"
+
+      - name: Show recent executions
+        env:
+          RESOURCE_GROUP: ${{ vars.GROUNDTRUTH_AZURE_RESOURCE_GROUP }}
+          JOB_NAME: ${{ vars.GROUNDTRUTH_AZURE_JOB_NAME }}
+        run: |
+          set -euo pipefail
+          az containerapp job execution list \
+            --resource-group "$RESOURCE_GROUP" \
+            --name "$JOB_NAME" \
+            --query "[:10].{name:name,status:properties.status,start:properties.startTime,end:properties.endTime}" \
+            --output table

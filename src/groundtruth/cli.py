@@ -8,6 +8,7 @@ from rich.console import Console
 from groundtruth import __version__
 from groundtruth.commands.crawl_portals import crawl_app
 from groundtruth.commands.etl_commands import etl_app
+from groundtruth.commands.pipeline_commands import pipeline_app
 from groundtruth.commands.release_commands import release_app
 from groundtruth.config import PROJECT_ROOT, get_settings
 from groundtruth.logging import configure_logging, get_logger
@@ -56,6 +57,8 @@ reports_app = typer.Typer(help="Public report artifacts")
 app.add_typer(reports_app, name="reports")
 
 app.add_typer(release_app, name="release")
+
+app.add_typer(pipeline_app, name="pipeline")
 
 app.add_typer(crawl_app, name="crawl")
 
@@ -496,7 +499,9 @@ def dedup_benchmark(
         writer = csv.DictWriter(handle, fieldnames=list(details[0]))
         writer.writeheader()
         writer.writerows(details)
-    console.print(f"Precision {result.precision:.1%} · recall {result.recall:.1%} · blocking recall {result.blocking_recall:.1%}")
+    console.print(
+        f"Precision {result.precision:.1%} · recall {result.recall:.1%} · blocking recall {result.blocking_recall:.1%}"
+    )
     console.print(f"[green]Wrote {output} and {errors}[/green]")
 
 

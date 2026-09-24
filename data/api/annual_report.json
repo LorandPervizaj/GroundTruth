@@ -510,7 +510,7 @@
   },
   "methodology": {
     "window_months": 12,
-    "cutoff_date": "2025-09-21",
+    "cutoff_date": "2025-09-22",
     "date_field": "listing_date",
     "deduped": true,
     "sources": [
@@ -578,8 +578,8 @@
   },
   "methodology_plain": {
     "plain": {
-      "sq": "Ky raport përmbledh listime aktive të banimit në Prishtinë nga portale publike të listimeve, publikuar brenda 12 muajve të fundit (nga 2025-09-21). Çdo listim numërohet një herë; çmimet janë medianë të çmimeve të kërkuara, jo transaksione. Përditësohet pas çdo cikli të përpunimit të të dhënave.",
-      "en": "This report summarizes active residential listings in Prishtina from public listing portals, published within the last 12 months (from 2025-09-21). Each listing is counted once; prices are medians of asking prices, not transactions. Updated after each data processing cycle."
+      "sq": "Ky raport përmbledh listime aktive të banimit në Prishtinë nga portale publike të listimeve, publikuar brenda 12 muajve të fundit (nga 2025-09-22). Çdo listim numërohet një herë; çmimet janë medianë të çmimeve të kërkuara, jo transaksione. Përditësohet pas çdo cikli të përpunimit të të dhënave.",
+      "en": "This report summarizes active residential listings in Prishtina from public listing portals, published within the last 12 months (from 2025-09-22). Each listing is counted once; prices are medians of asking prices, not transactions. Updated after each data processing cycle."
     },
     "technical": {
       "parsers": "6 active parser version(s)"
@@ -1729,6 +1729,6 @@
       ]
     }
   ],
-  "generated_at": "2026-09-21T12:16:46+00:00",
+  "generated_at": "2026-09-21T22:36:50+00:00",
   "data_revision": "205:2026-09-21T12:08:59.100854+00:00:2.0.0"
 }

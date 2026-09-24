@@ -3,6 +3,9 @@
 from __future__ import annotations
 
 import json
+import os
+import tarfile
+from datetime import UTC, datetime
 from pathlib import Path
 
 from groundtruth.analytics.annual_export import DEFAULT_ANNUAL_REPORT_PATH, export_annual_report
@@ -19,6 +22,10 @@ from groundtruth.services.lookup_cache import (
     stamp_related_artifact_hash,
 )
 from groundtruth.services.public_payload import assert_market_lookup_public
+from groundtruth.services.rent_yield import (
+    RENT_YIELD_CACHE,
+    build_rent_yield_from_lookup_cache,
+)
 
 
 def build_release_artifacts() -> tuple[Path, Path]:
@@ -34,6 +41,8 @@ def build_release_artifacts() -> tuple[Path, Path]:
     finally:
         session.close()
     stamp_related_artifact_hash(key="annual_report", path=annual_path)
+    build_rent_yield_from_lookup_cache()
+    stamp_related_artifact_hash(key="rent_yield", path=RENT_YIELD_CACHE)
     from groundtruth.analytics.statistical_qa import run_statistical_qa
     from groundtruth.config import PROJECT_ROOT
 
@@ -74,6 +83,12 @@ def verify_release_artifacts() -> list[str]:
     if not manifest_path.is_file():
         raise FileNotFoundError(f"missing lookup cache manifest: {manifest_path}")
     manifest = _read_json(manifest_path)
+    release_meta = manifest.get("release")
+    if release_meta is not None:
+        required = ("release_id", "generated_at", "data_through", "source_git_sha", "qa_decision")
+        missing_release = [key for key in required if not release_meta.get(key)]
+        if missing_release:
+            raise ValueError(f"release metadata missing fields: {missing_release}")
     qa = manifest.get("statistical_qa")
     if not isinstance(qa, dict) or qa.get("status") not in {"PASS", "PASS_WITH_WARNINGS"}:
         raise ValueError("release manifest is missing a passing statistical QA gate")
@@ -155,6 +170,28 @@ def verify_release_artifacts() -> list[str]:
         context="related_artifacts[annual_report]",
     )
 
+    if not RENT_YIELD_CACHE.is_file():
+        raise FileNotFoundError(f"missing rent-yield artifact: {RENT_YIELD_CACHE}")
+    try:
+        rent_yield_payload = json.loads(RENT_YIELD_CACHE.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        raise ValueError(f"invalid JSON in {RENT_YIELD_CACHE}: {exc}") from exc
+    if not isinstance(rent_yield_payload, dict) or not isinstance(
+        rent_yield_payload.get("rows"), list
+    ):
+        raise ValueError(f"expected JSON object with rows array in {RENT_YIELD_CACHE}")
+    rent_yield_meta = related.get("rent_yield") if isinstance(related, dict) else None
+    if not isinstance(rent_yield_meta, dict) or not rent_yield_meta.get("sha256"):
+        raise ValueError(
+            "lookup cache manifest missing related_artifacts.rent_yield.sha256 — "
+            "rebuild with `groundtruth release build-artifacts`"
+        )
+    _require_sha256(
+        rent_yield_meta.get("sha256"),
+        RENT_YIELD_CACHE,
+        context="related_artifacts[rent_yield]",
+    )
+
     meta_revision = meta_payload.get("corpus_revision")
     manifest_revision = manifest.get("corpus_revision")
     if meta_revision and manifest_revision and meta_revision != manifest_revision:
@@ -165,4 +202,54 @@ def verify_release_artifacts() -> list[str]:
 
     out.append(f"lookup_cache_ok entries={len(entries)} path={manifest_path}")
     out.append(f"annual_report_ok path={annual_path}")
+    out.append(f"rent_yield_ok path={RENT_YIELD_CACHE}")
     return out
+
+
+def stamp_release_metadata(
+    *,
+    release_id: str,
+    data_through: str,
+    source_git_sha: str,
+    qa_decision: str,
+    publishable: bool = True,
+    statistical_shadow_mode: bool = True,
+    previous_release_id: str | None = None,
+) -> Path:
+    """Attach auditable release identity without changing artifact contents."""
+    manifest_path = lookup_cache_dir() / "manifest.json"
+    manifest = _read_json(manifest_path)
+    manifest["release"] = {
+        "release_id": release_id,
+        "generated_at": datetime.now(UTC).isoformat(),
+        "data_through": data_through,
+        "source_git_sha": source_git_sha,
+        "qa_decision": qa_decision,
+        "publishable": publishable,
+        "statistical_shadow_mode": statistical_shadow_mode,
+        "previous_release_id": previous_release_id,
+        "corpus_revision": manifest.get("corpus_revision"),
+        "dataset_version": manifest.get("dataset_version"),
+    }
+    temporary = manifest_path.with_suffix(".json.tmp")
+    temporary.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
+    temporary.replace(manifest_path)
+    return manifest_path
+
+
+def create_release_bundle(release_id: str, output_dir: Path | None = None) -> tuple[Path, Path]:
+    """Create a versioned bundle and SHA256 sidecar from verified public artifacts."""
+    verify_release_artifacts()
+    configured = os.getenv("GROUNDTRUTH_RELEASE_OUTPUT_DIR")
+    destination = output_dir or (
+        Path(configured) if configured else lookup_cache_dir().parent / "releases"
+    )
+    destination.mkdir(parents=True, exist_ok=True)
+    bundle = destination / f"groundtruth-release-{release_id}.tar.gz"
+    with tarfile.open(bundle, "w:gz") as archive:
+        archive.add(lookup_cache_dir(), arcname="lookup_cache")
+        archive.add(DEFAULT_ANNUAL_REPORT_PATH, arcname="data/api/annual_report.json")
+        archive.add(RENT_YIELD_CACHE, arcname="data/api/rent_yield.json")
+    digest_path = bundle.with_suffix(bundle.suffix + ".sha256")
+    digest_path.write_text(f"{sha256_file(bundle)}  {bundle.name}\n", encoding="utf-8")
+    return bundle, digest_path

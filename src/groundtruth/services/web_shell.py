@@ -88,7 +88,6 @@ def inject_accessibility_shell(html: str) -> str:
     return html
 
 
-
 def inject_sanitize_script(html: str) -> str:
     """Load sanitize.js before other app scripts (XSS hardening for API-rendered HTML)."""
     if "sanitize.js" in html:

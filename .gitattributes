@@ -1,3 +1,5 @@
 *.sh text eol=lf
 Dockerfile text eol=lf
 *.ps1 text eol=crlf
+reports/generated/lookup_cache/** -text
+data/api/*.json -text

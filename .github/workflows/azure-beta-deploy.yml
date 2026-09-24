@@ -35,6 +35,10 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     environment: azure-beta
+    env:
+      # GitHub does not permit direct `secrets.*` references in step `if` expressions.
+      # Promote the optional value to job env, then test the env context below.
+      METRIK_RELEASE_ARTIFACT_URL: ${{ secrets.METRIK_RELEASE_ARTIFACT_URL }}
     permissions:
       contents: read
       id-token: write
@@ -45,9 +49,9 @@ jobs:
         run: mkdir -p reports/generated/lookup_cache
 
       - name: Download release artifacts (optional)
-        if: ${{ secrets.METRIK_RELEASE_ARTIFACT_URL != '' }}
+        if: ${{ env.METRIK_RELEASE_ARTIFACT_URL != '' }}
         env:
-          ARTIFACT_URL: ${{ secrets.METRIK_RELEASE_ARTIFACT_URL }}
+          ARTIFACT_URL: ${{ env.METRIK_RELEASE_ARTIFACT_URL }}
         run: |
           curl -fsSL "$ARTIFACT_URL" -o /tmp/lookup_cache.tgz
           tar -xzf /tmp/lookup_cache.tgz -C reports/generated/lookup_cache --strip-components=1

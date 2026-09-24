@@ -113,4 +113,3 @@ def stop_background_corpus_warm(*, timeout: float = 5.0) -> None:
     thread.join(timeout=timeout)
     if thread.is_alive():
         logger.warning("corpus_warm_join_timeout", timeout_sec=timeout)
-

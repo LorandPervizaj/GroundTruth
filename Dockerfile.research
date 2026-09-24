@@ -1,0 +1,42 @@
+# Private GroundTruth research worker. Never expose this image through public ingress.
+FROM python:3.13-slim AS research
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    UV_SYSTEM_PYTHON=1 \
+    APP_ENV=production \
+    LOG_FORMAT=json \
+    GROUNDTRUTH_PIPELINE_STATE_DIR=/mnt/state \
+    GROUNDTRUTH_RELEASE_OUTPUT_DIR=/mnt/releases
+
+ARG SOURCE_GIT_SHA=unknown
+ENV GROUNDTRUTH_SOURCE_GIT_SHA=${SOURCE_GIT_SHA}
+
+WORKDIR /app
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends ca-certificates curl git \
+    && rm -rf /var/lib/apt/lists/* \
+    && pip install --no-cache-dir uv
+
+COPY pyproject.toml uv.lock README.md ./
+COPY src ./src
+COPY alembic.ini ./alembic.ini
+COPY alembic ./alembic
+COPY data/api ./data/api
+COPY data/claims ./data/claims
+COPY data/datasets ./data/datasets
+COPY data/gazetteers ./data/gazetteers
+COPY data/product ./data/product
+COPY reports/templates ./reports/templates
+COPY reports/generated/lookup_cache ./reports/generated/lookup_cache
+
+RUN uv sync --extra research --frozen --no-dev \
+    && addgroup --system groundtruth \
+    && adduser --system --ingroup groundtruth --home /app groundtruth \
+    && mkdir -p /mnt/state /mnt/releases /app/reports/generated \
+    && chown -R groundtruth:groundtruth /app /mnt/state /mnt/releases
+
+USER groundtruth
+
+ENTRYPOINT ["uv", "run", "groundtruth", "pipeline", "weekly-release"]

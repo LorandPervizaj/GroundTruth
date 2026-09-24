@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 import pytest
 from fastapi.testclient import TestClient
@@ -32,7 +32,12 @@ def test_openapi_includes_core_public_paths(api_client: TestClient) -> None:
     # Docs may be disabled in prod settings; force schema from app.
     schema = api_client.app.openapi()
     paths = set(schema.get("paths", {}))
-    for required in ("/api/ready", "/api/health", "/api/metrics", "/api/lookup/{entity_type}/{slug}"):
+    for required in (
+        "/api/ready",
+        "/api/health",
+        "/api/metrics",
+        "/api/lookup/{entity_type}/{slug}",
+    ):
         assert required in paths or any(required.split("{")[0] in p for p in paths), required
 
 
@@ -73,5 +78,3 @@ def test_contact_or_alerts_do_not_echo_secrets(api_client: TestClient) -> None:
         blob = (res.text or "").lower()
         assert "traceback" not in blob
         assert "health_check_token" not in blob
-
-

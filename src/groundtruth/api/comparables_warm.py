@@ -109,4 +109,3 @@ def stop_background_comparables_warm(*, timeout: float = 5.0) -> None:
             "comparables_warm_join_timeout",
             timeout_sec=timeout,
         )
-

@@ -10,7 +10,11 @@ from unittest.mock import MagicMock
 import pytest
 
 from groundtruth.crawl.window import CrawlWindow
-from groundtruth.services.parse_health import ParseHealthAlert, assert_parse_health, check_parse_health
+from groundtruth.services.parse_health import (
+    ParseHealthAlert,
+    assert_parse_health,
+    check_parse_health,
+)
 
 
 def test_refresh_analytics_reraises_when_release_verify_fails(monkeypatch) -> None:
@@ -30,9 +34,13 @@ def test_refresh_analytics_reraises_when_release_verify_fails(monkeypatch) -> No
         "groundtruth.analytics.dataframe.normalized_listings_dataframe",
         lambda _s: __import__("pandas").DataFrame(),
     )
-    monkeypatch.setattr("groundtruth.analytics.audit.run_audit", lambda *_a, **_k: SimpleNamespace())
+    monkeypatch.setattr(
+        "groundtruth.analytics.audit.run_audit", lambda *_a, **_k: SimpleNamespace()
+    )
     monkeypatch.setattr("groundtruth.analytics.audit.write_audit_artifacts", lambda *_a, **_k: None)
-    monkeypatch.setattr("groundtruth.analytics.corpus.write_corpus_artifacts", lambda *_a, **_k: None)
+    monkeypatch.setattr(
+        "groundtruth.analytics.corpus.write_corpus_artifacts", lambda *_a, **_k: None
+    )
     monkeypatch.setattr(
         "groundtruth.analytics.annual_export.export_annual_report",
         lambda *_a, **_k: Path("annual.json"),

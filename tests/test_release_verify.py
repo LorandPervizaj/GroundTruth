@@ -69,6 +69,8 @@ def _valid_bundle(tmp_path: Path) -> tuple[Path, Path]:
 
     annual = tmp_path / "annual_report.json"
     annual_sha = _write_json(annual, {"generated_at": "2026-01-01T00:00:00+00:00"})
+    rent_yield = tmp_path / "rent_yield.json"
+    rent_yield_sha = _write_json(rent_yield, {"rows": []})
     qa_details = cache / "_qa" / "market_qa_details.json"
     qa_sha = _write_json(qa_details, {"status": "PASS", "issues": []})
 
@@ -87,7 +89,10 @@ def _valid_bundle(tmp_path: Path) -> tuple[Path, Path]:
             }
         ],
         "artifact_hashes": artifact_hashes,
-        "related_artifacts": {"annual_report": {"sha256": annual_sha}},
+        "related_artifacts": {
+            "annual_report": {"sha256": annual_sha},
+            "rent_yield": {"sha256": rent_yield_sha},
+        },
         "statistical_qa": {
             "status": "PASS",
             "details_sha256": qa_sha,
@@ -105,6 +110,7 @@ def _run_verify(cache: Path, annual: Path):
     with (
         patch("groundtruth.release.lookup_cache_dir", return_value=cache),
         patch("groundtruth.release.DEFAULT_ANNUAL_REPORT_PATH", annual),
+        patch("groundtruth.release.RENT_YIELD_CACHE", annual.parent / "rent_yield.json"),
     ):
         return verify_release_artifacts()
 
@@ -233,6 +239,7 @@ def test_verify_rejects_inconsistent_corpus_revision(tmp_path: Path) -> None:
     with (
         patch("groundtruth.release.lookup_cache_dir", return_value=cache),
         patch("groundtruth.release.DEFAULT_ANNUAL_REPORT_PATH", annual),
+        patch("groundtruth.release.RENT_YIELD_CACHE", annual.parent / "rent_yield.json"),
         pytest.raises(ValueError, match="inconsistent release state"),
     ):
         verify_release_artifacts()
