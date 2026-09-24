@@ -1,0 +1,7 @@
+pair_id,is_duplicate,left_source,left_id,left_listing_type,left_price,left_neighborhood_id,left_street_id,left_building_id,left_area_sqm,left_bedrooms,left_bathrooms,left_description,right_source,right_id,right_listing_type,right_price,right_neighborhood_id,right_street_id,right_building_id,right_area_sqm,right_bedrooms,right_bathrooms,right_description
+same_exact,1,gjirafa,101,sale,120000,1,10,100,80,2,1,Apartment near park,merrjep,501,sale,120000,1,10,100,80,2,1,Apartment near park
+same_wording,1,pro-rks,102,rent,550,2,20,,70,2,1,Furnished flat center,gjirafa,502,rent,550,2,20,,70,2,1,Furnished flat in center
+different_building,0,gjirafa,103,sale,95000,3,30,301,65,1,1,New apartment,merrjep,503,sale,95000,3,30,302,65,1,1,New apartment
+different_neighborhood,0,pro-rks,104,rent,400,4,40,,55,1,1,Sunny apartment,gjirafa,504,rent,400,5,40,,55,1,1,Sunny apartment
+blocked_price_edge,1,merrjep,105,sale,100049,6,60,,90,3,2,Three bedroom home,pro-rks,505,sale,100051,6,60,,90,3,2,Three bedroom home
+different_area,0,gjirafa,106,sale,140000,7,70,,85,2,1,Central apartment,merrjep,506,sale,140000,7,70,,115,2,1,Central apartment

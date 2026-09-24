@@ -80,6 +80,7 @@ data/product/*.jsonl
 # Dedup review registers (regenerate locally; see data/deduplication/README.md)
 data/deduplication/*.csv
 !data/deduplication/README.md
+!data/deduplication/benchmark.csv
 
 # QA temporary artifacts
 .tmp/
