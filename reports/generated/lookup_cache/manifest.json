@@ -1274,6 +1274,9 @@
   "related_artifacts": {
     "annual_report": {
       "sha256": "cf4c7f6073f24686262293551caf4bcd8714f9239fc3e023f7132e379573008e"
+    },
+    "rent_yield": {
+      "sha256": "330afd4c09dbaf4890d526fa04a7b70eb723c642cf1f1fbbd3feb48689504703"
     }
   },
   "corpus_meta": {
