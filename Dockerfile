@@ -32,7 +32,9 @@ COPY reports/generated/lookup_cache ./reports/generated/lookup_cache
 COPY scripts/docker-entrypoint.sh ./scripts/docker-entrypoint.sh
 
 # Install Metrik runtime (+ web) only — research tooling stays out of the public image.
+# Drop the uv cache so image scans do not flag build-time wheels.
 RUN uv sync --extra web --frozen --no-dev \
+    && rm -rf /root/.cache /tmp/* \
     && sed -i 's/\r$//' ./scripts/docker-entrypoint.sh \
     && chmod +x ./scripts/docker-entrypoint.sh
 

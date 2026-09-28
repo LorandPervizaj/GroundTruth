@@ -116,7 +116,7 @@ jobs:
         run: |
           set -euo pipefail
           echo "DEPLOY_STARTED=true" >> "$GITHUB_ENV"
-          az containerapp update -g "$RESOURCE_GROUP" -n "$CONTAINER_APP" --image "$CANDIDATE_IMAGE"
+          az containerapp update -g "$RESOURCE_GROUP" -n "$CONTAINER_APP" --container-name metrik-api --image "$CANDIDATE_IMAGE"
           fqdn="$(az containerapp show -g "$RESOURCE_GROUP" -n "$CONTAINER_APP" --query properties.configuration.ingress.fqdn -o tsv)"
           echo "APP_URL=https://$fqdn" >> "$GITHUB_ENV"
 
@@ -148,7 +148,7 @@ jobs:
         if: ${{ failure() && env.DEPLOY_STARTED == 'true' && env.PREVIOUS_IMAGE != '' }}
         run: |
           set -euo pipefail
-          az containerapp update -g "$RESOURCE_GROUP" -n "$CONTAINER_APP" --image "$PREVIOUS_IMAGE"
+          az containerapp update -g "$RESOURCE_GROUP" -n "$CONTAINER_APP" --container-name metrik-api --image "$PREVIOUS_IMAGE"
           echo "ROLLBACK_ATTEMPTED=true" >> "$GITHUB_ENV"
 
       - name: Verify rollback
