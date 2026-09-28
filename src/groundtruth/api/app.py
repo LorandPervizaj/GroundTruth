@@ -14,6 +14,10 @@ from starlette.middleware.gzip import GZipMiddleware
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 from starlette.staticfiles import StaticFiles
 
+# httpx logs full request URLs, including the Telegram bot token.
+logging.getLogger("httpx").setLevel(logging.WARNING)
+logging.getLogger("httpcore").setLevel(logging.WARNING)
+
 from groundtruth.api.comparables_warm import (
     start_background_comparables_warm,
     stop_background_comparables_warm,
@@ -134,7 +138,11 @@ async def _lifespan(_app: FastAPI):
         if not comparables_cache_ready():
             start_background_comparables_warm()
         logger.info("Skipping background corpus warm — serving from precomputed cache")
+    from groundtruth.services.scrape_control import start_scrape_watch, stop_scrape_watch
+
+    start_scrape_watch()
     yield
+    stop_scrape_watch()
     stop_background_comparables_warm()
     stop_background_corpus_warm()
 
