@@ -47,6 +47,9 @@ jobs:
           docker run --rm --entrypoint uv metrik-api:ci run python -c \
             "import importlib.util as u; assert u.find_spec('scrapy') is None; assert u.find_spec('playwright') is None; assert u.find_spec('fastapi') is not None"
 
+      - name: Locate setuptools and msgpack copies
+        run: docker run --rm --user root --entrypoint find metrik-api:ci / -iname '*setuptools*' -o -iname '*msgpack*'
+
       - name: Scan image (Trivy)
         uses: aquasecurity/trivy-action@v0.36.0
         with:
