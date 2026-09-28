@@ -79,7 +79,9 @@ def test_scrape_status_reports_running_execution(monkeypatch) -> None:
 
     def handler(method, url, **_kwargs):
         if url.endswith("/executions"):
-            return _response(200, {"value": [{"name": "run-1", "properties": {"status": "Running"}}]})
+            return _response(
+                200, {"value": [{"name": "run-1", "properties": {"status": "Running"}}]}
+            )
         return _response(200, {"name": "job-groundtruth-weekly"})
 
     _arm(monkeypatch, handler)
@@ -105,7 +107,9 @@ def test_stop_targets_running_execution(monkeypatch) -> None:
     def handler(method, url, **_kwargs):
         calls.append((method, url))
         if url.endswith("/executions"):
-            return _response(200, {"value": [{"name": "run-1", "properties": {"status": "Running"}}]})
+            return _response(
+                200, {"value": [{"name": "run-1", "properties": {"status": "Running"}}]}
+            )
         if url.endswith("/executions/run-1/stop"):
             return _response(202)
         return _response(200, {})
@@ -147,5 +151,7 @@ def test_auto_update_stays_quiet_until_a_scrape_is_running(monkeypatch) -> None:
 
 def test_auto_update_rejects_unknown_argument() -> None:
     set_auto_update(False)
-    assert owner_command_reply("/automatic_update maybe") == "Use /auto_update on or /auto_update off."
+    assert (
+        owner_command_reply("/automatic_update maybe") == "Use /auto_update on or /auto_update off."
+    )
     set_auto_update(False)

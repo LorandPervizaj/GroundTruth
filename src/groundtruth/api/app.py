@@ -14,10 +14,6 @@ from starlette.middleware.gzip import GZipMiddleware
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 from starlette.staticfiles import StaticFiles
 
-# httpx logs full request URLs, including the Telegram bot token.
-logging.getLogger("httpx").setLevel(logging.WARNING)
-logging.getLogger("httpcore").setLevel(logging.WARNING)
-
 from groundtruth.api.comparables_warm import (
     start_background_comparables_warm,
     stop_background_comparables_warm,
@@ -43,6 +39,10 @@ from groundtruth.services.coverage_metrics import coverage_analytics_snapshot
 from groundtruth.services.lookup_cache import load_lookup_cache_from_disk
 from groundtruth.services.product_metrics import product_analytics_snapshot
 from groundtruth.startup import validate_production_settings
+
+# httpx logs full request URLs, including the Telegram bot token.
+logging.getLogger("httpx").setLevel(logging.WARNING)
+logging.getLogger("httpcore").setLevel(logging.WARNING)
 
 logger = logging.getLogger(__name__)
 
