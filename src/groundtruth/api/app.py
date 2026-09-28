@@ -14,6 +14,10 @@ from starlette.middleware.gzip import GZipMiddleware
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 from starlette.staticfiles import StaticFiles
 
+# httpx logs full request URLs, including the Telegram bot token.
+logging.getLogger("httpx").setLevel(logging.WARNING)
+logging.getLogger("httpcore").setLevel(logging.WARNING)
+
 from groundtruth.api.comparables_warm import (
     start_background_comparables_warm,
     stop_background_comparables_warm,

@@ -1,6 +1,8 @@
 """Owner controls for the Azure weekly scrape job.
 
 The public app uses its managed identity. It never stores an Azure password.
+That identity needs permission to read, start, and stop Microsoft.App jobs,
+including job executions, in the research resource group.
 """
 
 from __future__ import annotations
