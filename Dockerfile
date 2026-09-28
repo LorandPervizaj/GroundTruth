@@ -32,11 +32,10 @@ COPY reports/generated/lookup_cache ./reports/generated/lookup_cache
 COPY scripts/docker-entrypoint.sh ./scripts/docker-entrypoint.sh
 
 # Install Metrik runtime (+ web) only — research tooling stays out of the public image.
-# setuptools and msgpack are build leftovers. Image scans fail while those copies remain.
+# The base image ships setuptools and msgpack wheels that image scans flag.
 RUN uv sync --extra web --frozen --no-dev \
-    && python -c "import pathlib, shutil; roots=list(pathlib.Path('/').rglob('*.dist-info')); \
-[shutil.rmtree(path, ignore_errors=True) for path in roots if path.name.startswith(('setuptools-','msgpack-'))]" \
-    && rm -rf /root/.cache /tmp/* \
+    && rm -rf /usr/local/lib/python3.13/ensurepip /root/.cache /tmp/* \
+    && { find / \( -name 'setuptools-*.whl' -o -name 'msgpack-*.whl' -o -name 'setuptools-*.dist-info' -o -name 'msgpack-*.dist-info' \) -exec rm -rf {} + || true; } \
     && sed -i 's/\r$//' ./scripts/docker-entrypoint.sh \
     && chmod +x ./scripts/docker-entrypoint.sh
 
