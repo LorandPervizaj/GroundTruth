@@ -20,6 +20,7 @@ _LABELS = {
     "feedback": "Data feedback",
     "alerts": "Price-alert request",
     "bot_reply": "Bot reply",
+    "scrape": "Scrape update",
 }
 
 
@@ -84,6 +85,12 @@ def telegram_command_reply(command: str) -> str:
             "/sources - Source-monitoring information\n"
             "/quality - Latest data-quality result\n"
             "/deployment - Current release and source revision\n"
+            "/scrape - Whether the Azure scrape is running\n"
+            "/scrape_start - Start the weekly scrape job\n"
+            "/scrape_stop - Stop a running scrape\n"
+            "/auto_update on - Progress message every 30 minutes while a scrape runs\n"
+            "/auto_update off - Stop those progress messages\n"
+            "Contact, feedback, reports, and listing submissions arrive here automatically.\n"
             "/help - Show these commands"
         )
     if normalized == "/status":
@@ -117,7 +124,27 @@ def handle_telegram_update(update: dict[str, Any]) -> bool:
     text = str(message.get("text") or "").strip()
     if not text.startswith("/"):
         return False
-    return notify_product_submission(
-        "bot_reply",
-        {"message": telegram_command_reply(text.split()[0])},
+    return notify_product_submission("bot_reply", {"message": owner_command_reply(text)})
+
+
+def owner_command_reply(text: str) -> str:
+    """Run an owner command. Scrape commands can change the Azure job."""
+    from groundtruth.services.scrape_control import (
+        auto_update_reply,
+        scrape_snapshot,
+        start_scrape,
+        stop_scrape,
     )
+
+    parts = text.strip().split()
+    command = parts[0].lower().split("@", 1)[0]
+    argument = " ".join(parts[1:])
+    if command in {"/scrape", "/scrape_status"}:
+        return scrape_snapshot()[1]
+    if command == "/scrape_start":
+        return start_scrape()
+    if command == "/scrape_stop":
+        return stop_scrape()
+    if command in {"/auto_update", "/automatic_update"}:
+        return auto_update_reply(argument)
+    return telegram_command_reply(command)

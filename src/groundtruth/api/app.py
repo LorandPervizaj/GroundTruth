@@ -134,7 +134,11 @@ async def _lifespan(_app: FastAPI):
         if not comparables_cache_ready():
             start_background_comparables_warm()
         logger.info("Skipping background corpus warm — serving from precomputed cache")
+    from groundtruth.services.scrape_control import start_scrape_watch, stop_scrape_watch
+
+    start_scrape_watch()
     yield
+    stop_scrape_watch()
     stop_background_comparables_warm()
     stop_background_corpus_warm()
 
