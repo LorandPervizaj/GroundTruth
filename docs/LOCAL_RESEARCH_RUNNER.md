@@ -166,6 +166,11 @@ deleting the drill container.
 - The runner opens no inbound port; it connects out to GitHub.
 - Published releases hold only public serving artifacts. Database dumps, raw
   pages, pipeline state, logs, and `research.env` never leave the host.
+- pytest never touches `groundtruth-postgres`. Database-backed tests use only
+  `GROUNDTRUTH_TEST_DATABASE_URL` (the disposable `groundtruth-test-postgres`
+  on port 15433, started by `scripts/test-db.ps1`), and `tests/conftest.py`
+  aborts collection if that URL names the research database.
+  `tests/test_database_isolation.py` proves the refusal.
 
 ## Enabling the schedule
 

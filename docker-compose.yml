@@ -19,6 +19,26 @@ services:
       timeout: 5s
       retries: 5
 
+  # Disposable database for pytest. Never point tests at the research database.
+  # Start with scripts/test-db.ps1 (profile "test"); data lives in tmpfs.
+  postgres-test:
+    image: postgis/postgis:16-3.4
+    container_name: groundtruth-test-postgres
+    profiles: ["test"]
+    environment:
+      POSTGRES_USER: groundtruth_test
+      POSTGRES_PASSWORD: groundtruth_test
+      POSTGRES_DB: groundtruth_test
+    ports:
+      - "127.0.0.1:15433:5432"
+    tmpfs:
+      - /var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U groundtruth_test -d groundtruth_test"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
   pgadmin:
     image: dpage/pgadmin4:latest
     container_name: groundtruth-pgadmin

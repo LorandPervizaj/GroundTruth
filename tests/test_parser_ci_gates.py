@@ -102,19 +102,8 @@ class TestParseFailureAlerting:
         assert alert.parse_failure_rate > PARSE_FAILURE_SPIKE_THRESHOLD
         assert "merrjep" in alert.message
 
-    def test_recent_etl_parse_rates_within_threshold(self) -> None:
+    def test_recent_etl_parse_rates_within_threshold(self, require_postgres) -> None:
         """Fail loudly when any source's latest ETL run exceeds parse-failure threshold."""
-        import socket
-
-        sock = socket.socket()
-        sock.settimeout(1)
-        try:
-            sock.connect(("127.0.0.1", 5432))
-        except OSError:
-            pytest.skip("Database unavailable")
-        finally:
-            sock.close()
-
         from groundtruth.database.session import get_session_factory
         from groundtruth.services.parse_health import check_parse_health
 

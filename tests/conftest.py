@@ -1,8 +1,13 @@
 """Pytest fixtures."""
 
-import pytest
+from tests.db_isolation import isolate_process_environment
 
-from groundtruth.gazetteers.loader import GazetteerService
+# Must run before anything reads settings: tests never see the app or research DB.
+isolate_process_environment()
+
+import pytest  # noqa: E402
+
+from groundtruth.gazetteers.loader import GazetteerService  # noqa: E402
 
 
 def _postgres_available() -> bool:
@@ -27,9 +32,21 @@ def _postgres_available() -> bool:
 
 @pytest.fixture(scope="session")
 def require_postgres() -> None:
-    """Skip DB-backed tests when Postgres is not reachable."""
+    """Skip DB-backed tests without a test database; abort if connected to anything else."""
     if not _postgres_available():
-        pytest.skip("Postgres not available (start with: docker compose up -d postgres)")
+        pytest.skip("Test database not available (run scripts/test-db.ps1)")
+    from sqlalchemy import create_engine, text
+
+    from groundtruth.config import get_settings
+
+    engine = create_engine(str(get_settings().database_url))
+    try:
+        with engine.connect() as connection:
+            name = connection.execute(text("SELECT current_database()")).scalar_one()
+    finally:
+        engine.dispose()
+    if "test" not in name.lower():
+        pytest.exit(f"Refusing to run database tests against {name!r}", returncode=3)
 
 
 @pytest.fixture(autouse=True)
