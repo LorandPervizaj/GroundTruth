@@ -64,6 +64,26 @@ def _result(path: Path, bundle: Path, outcome: str = "verified") -> Path:
     return path
 
 
+def test_bundles_built_by_the_pipeline_pass_publication(tmp_path, monkeypatch):
+    from groundtruth import release
+
+    cache = tmp_path / "lookup_cache"
+    cache.mkdir()
+    (cache / "manifest.json").write_text(
+        json.dumps({"release": {"release_id": RELEASE_ID, "publishable": True}})
+    )
+    annual, rent = tmp_path / "annual_report.json", tmp_path / "rent_yield.json"
+    annual.write_text("{}")
+    rent.write_text("{}")
+    monkeypatch.setattr(release, "verify_release_artifacts", lambda: [])
+    monkeypatch.setattr(release, "lookup_cache_dir", lambda: cache)
+    monkeypatch.setattr(release, "DEFAULT_ANNUAL_REPORT_PATH", annual)
+    monkeypatch.setattr(release, "RENT_YIELD_CACHE", rent)
+    bundle, checksum = release.create_release_bundle(RELEASE_ID, tmp_path / "releases")
+    assert b"\r" not in checksum.read_bytes()
+    assert verify_bundle(bundle, release_id=RELEASE_ID).bundle == bundle
+
+
 def test_verified_bundle_exposes_immutable_identity(tmp_path):
     verified = verify_bundle(_bundle(tmp_path), release_id=RELEASE_ID)
     assert verified.release_tag == f"groundtruth-release-{RELEASE_ID}"

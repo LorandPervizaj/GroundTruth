@@ -251,5 +251,8 @@ def create_release_bundle(release_id: str, output_dir: Path | None = None) -> tu
         archive.add(DEFAULT_ANNUAL_REPORT_PATH, arcname="data/api/annual_report.json")
         archive.add(RENT_YIELD_CACHE, arcname="data/api/rent_yield.json")
     digest_path = bundle.with_suffix(bundle.suffix + ".sha256")
-    digest_path.write_text(f"{sha256_file(bundle)}  {bundle.name}\n", encoding="utf-8")
+    # LF even on Windows: the Linux deploy job runs sha256sum --check on this file.
+    digest_path.write_text(
+        f"{sha256_file(bundle)}  {bundle.name}\n", encoding="utf-8", newline="\n"
+    )
     return bundle, digest_path

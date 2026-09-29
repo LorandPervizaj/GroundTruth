@@ -20,6 +20,10 @@ from groundtruth.config import PROJECT_ROOT
 research_app = typer.Typer(help="Local research host health and backups")
 
 
+class DoctorWarning(Exception):
+    """A non-blocking finding. The message must not contain credentials."""
+
+
 def doctor_checks(*, expected_sha: str | None = None, minimum_free_gb: float = 20) -> dict:
     checks = []
 
@@ -27,6 +31,8 @@ def doctor_checks(*, expected_sha: str | None = None, minimum_free_gb: float = 2
         try:
             detail = operation()
             checks.append({"name": name, "status": "PASS", "detail": detail})
+        except DoctorWarning as warning:
+            checks.append({"name": name, "status": "WARN", "detail": str(warning)})
         except Exception as exc:
             # Connection exceptions can embed credentials. Never serialize them.
             checks.append({"name": name, "status": "FAIL", "detail": type(exc).__name__})
@@ -130,18 +136,21 @@ def doctor_checks(*, expected_sha: str | None = None, minimum_free_gb: float = 2
     check("latest_verified_release", latest_release)
 
     def backup_age():
-        backups = list(Path(os.environ["GROUNDTRUTH_BACKUP_DIR"]).glob("*.dump"))
+        backups = [
+            p for p in Path(os.environ["GROUNDTRUTH_BACKUP_DIR"]).glob("*.dump") if p.stat().st_size
+        ]
+        if not backups:
+            raise DoctorWarning("no backup yet; the run takes one before crawling")
         latest = max(backups, key=lambda p: p.stat().st_mtime)
         age = (datetime.now(UTC).timestamp() - latest.stat().st_mtime) / 3600
-        if latest.stat().st_size == 0 or age > 24 * 8:
-            raise ValueError("backup missing or older than eight days")
+        if age > 24 * 8:
+            raise DoctorWarning(f"latest backup {latest.name} is {round(age)} hours old")
         return {"filename": latest.name, "age_hours": round(age, 2)}
 
     check("backup_recent", backup_age)
-    return {
-        "overall": "FAIL" if any(c["status"] == "FAIL" for c in checks) else "PASS",
-        "checks": checks,
-    }
+    statuses = {c["status"] for c in checks}
+    overall = "FAIL" if "FAIL" in statuses else "WARN" if "WARN" in statuses else "PASS"
+    return {"overall": overall, "checks": checks}
 
 
 @research_app.command("doctor")
@@ -158,7 +167,7 @@ def doctor(
         for item in result["checks"]:
             console.print(f"{item['name']:26} {item['status']:5} {item['detail']}")
         console.print(f"OVERALL                    {result['overall']}")
-    if result["overall"] != "PASS":
+    if result["overall"] == "FAIL":
         raise typer.Exit(1)
 
 

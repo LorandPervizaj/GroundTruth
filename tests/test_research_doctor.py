@@ -31,6 +31,36 @@ def test_doctor_json_and_nonzero_exit(monkeypatch):
     assert '"overall": "FAIL"' in result.stdout
 
 
+def test_doctor_warning_does_not_block(monkeypatch):
+    monkeypatch.setattr(
+        research,
+        "doctor_checks",
+        lambda **k: {
+            "overall": "WARN",
+            "checks": [{"name": "backup_recent", "status": "WARN", "detail": "old"}],
+        },
+    )
+    result = CliRunner().invoke(research.research_app, ["doctor"])
+    assert result.exit_code == 0
+    assert "WARN" in result.stdout
+
+
+def test_missing_backup_is_a_warning_not_a_failure(monkeypatch, tmp_path):
+    monkeypatch.setattr(research, "create_engine", MagicMock(side_effect=ValueError("down")))
+    monkeypatch.setattr(research.subprocess, "check_output", lambda *a, **k: "abc")
+    monkeypatch.setattr(research.subprocess, "run", lambda *a, **k: None)
+    monkeypatch.setenv("DATABASE_URL", "postgresql://x")
+    for key in (
+        "GROUNDTRUTH_PIPELINE_STATE_DIR",
+        "GROUNDTRUTH_RELEASE_OUTPUT_DIR",
+        "GROUNDTRUTH_BACKUP_DIR",
+    ):
+        monkeypatch.setenv(key, str(tmp_path))
+    result = research.doctor_checks(expected_sha="abc", minimum_free_gb=0)
+    backup = next(c for c in result["checks"] if c["name"] == "backup_recent")
+    assert backup["status"] == "WARN"
+
+
 def test_retention_preserves_four_weeks_and_three_months(tmp_path):
     import os
     from datetime import UTC, datetime
