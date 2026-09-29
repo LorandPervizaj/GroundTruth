@@ -10,6 +10,7 @@ from groundtruth.commands.crawl_portals import crawl_app
 from groundtruth.commands.etl_commands import etl_app
 from groundtruth.commands.pipeline_commands import pipeline_app
 from groundtruth.commands.release_commands import release_app
+from groundtruth.commands.research_commands import research_app
 from groundtruth.config import PROJECT_ROOT, get_settings
 from groundtruth.logging import configure_logging, get_logger
 
@@ -59,6 +60,7 @@ app.add_typer(reports_app, name="reports")
 app.add_typer(release_app, name="release")
 
 app.add_typer(pipeline_app, name="pipeline")
+app.add_typer(research_app, name="research")
 
 app.add_typer(crawl_app, name="crawl")
 
