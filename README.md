@@ -75,6 +75,13 @@ uv run pytest
 uv run ruff check src tests
 ```
 
+Database-backed tests run only against a dedicated test database named by
+`GROUNDTRUTH_TEST_DATABASE_URL` (process env or `.env`); without it they skip.
+`scripts/test-db.ps1` starts a disposable PostGIS on `127.0.0.1:15433` and
+migrates it. The suite ignores `DATABASE_URL` and `GROUNDTRUTH_ENV_FILE`, and it
+refuses to start if the test URL's database name lacks `test` or matches the
+application or research database.
+
 ## Production (Metrik only)
 
 Ship release artifacts and run the **website/API** stack — not the research crawlers:
