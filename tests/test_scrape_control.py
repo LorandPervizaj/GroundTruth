@@ -1,39 +1,22 @@
-"""Owner scrape commands talk to Azure only through the app identity."""
+"""Owner scrape commands control only the GitHub research workflow."""
 
 from unittest.mock import Mock
 
+import httpx
+
 from groundtruth.services.product_notifications import owner_command_reply, telegram_command_reply
-from groundtruth.services.scrape_control import (
-    publish_scrape_progress,
-    set_auto_update,
-    start_scrape,
-    stop_scrape,
+from groundtruth.services.scrape_control import scrape_snapshot, start_scrape, stop_scrape
+
+RUNS = "/repos/LorandPervizaj/GroundTruth/actions/workflows/groundtruth-weekly-local.yml/runs"
+DISPATCH = (
+    "/repos/LorandPervizaj/GroundTruth/actions/workflows/groundtruth-weekly-local.yml/dispatches"
 )
 
 
 def _configure(monkeypatch) -> None:
-    monkeypatch.setenv("AZURE_SUBSCRIPTION_ID", "sub")
-    monkeypatch.setenv("GROUNDTRUTH_AZURE_RESOURCE_GROUP", "rg-metrik-beta-eus2")
-    monkeypatch.setenv("GROUNDTRUTH_AZURE_JOB_NAME", "job-groundtruth-weekly")
-    monkeypatch.setenv("IDENTITY_ENDPOINT", "http://identity.local/token")
-    monkeypatch.setenv("IDENTITY_HEADER", "identity-header")
-    monkeypatch.setenv("AZURE_CLIENT_ID", "client")
-
-
-def _token(monkeypatch) -> None:
-    response = Mock()
-    response.raise_for_status.return_value = None
-    response.json.return_value = {"access_token": "arm-token"}
-    monkeypatch.setattr(
-        "groundtruth.services.scrape_control.httpx.get",
-        Mock(return_value=response),
-    )
-
-
-def _arm(monkeypatch, handler) -> Mock:
-    request = Mock(side_effect=handler)
-    monkeypatch.setattr("groundtruth.services.scrape_control.httpx.request", request)
-    return request
+    monkeypatch.setenv("GROUNDTRUTH_GITHUB_TOKEN", "github_pat_secret")
+    monkeypatch.delenv("GROUNDTRUTH_GITHUB_REPOSITORY", raising=False)
+    monkeypatch.delenv("GROUNDTRUTH_GITHUB_WORKFLOW", raising=False)
 
 
 def _response(status: int, payload: dict | None = None) -> Mock:
@@ -43,115 +26,171 @@ def _response(status: int, payload: dict | None = None) -> Mock:
     return response
 
 
-def test_help_lists_scrape_commands() -> None:
+def _run(run_id: int, status: str, conclusion: str | None = None) -> dict:
+    return {
+        "id": run_id,
+        "status": status,
+        "conclusion": conclusion,
+        "run_started_at": "2026-09-29T10:00:00Z",
+        "html_url": f"https://github.com/LorandPervizaj/GroundTruth/actions/runs/{run_id}",
+    }
+
+
+def _github(monkeypatch, handler) -> Mock:
+    request = Mock(side_effect=handler)
+    monkeypatch.setattr("groundtruth.services.scrape_control.httpx.request", request)
+    return request
+
+
+def _path(url: str) -> str:
+    return url.removeprefix("https://api.github.com")
+
+
+def test_help_lists_scrape_commands_without_auto_update() -> None:
     help_text = telegram_command_reply("/help")
     assert "/scrape_start" in help_text
-    assert "/auto_update on" in help_text
+    assert "/scrape_stop" in help_text
+    assert "/auto_update" not in help_text
     assert "feedback" in help_text
 
 
-def test_scrape_status_without_azure_config(monkeypatch) -> None:
-    monkeypatch.delenv("AZURE_SUBSCRIPTION_ID", raising=False)
-    monkeypatch.delenv("GROUNDTRUTH_AZURE_RESOURCE_GROUP", raising=False)
-    text = owner_command_reply("/scrape")
-    assert "No scrape is running" in text
-    assert "not configured" in text
+def test_unconfigured_service_never_calls_github(monkeypatch) -> None:
+    monkeypatch.delenv("GROUNDTRUTH_GITHUB_TOKEN", raising=False)
+    request = _github(monkeypatch, lambda *a, **k: _response(500))
+    assert "not configured" in owner_command_reply("/scrape")
+    assert "not configured" in start_scrape()
+    assert "not configured" in stop_scrape()
+    assert request.call_count == 0
 
 
-def test_scrape_status_reports_missing_job(monkeypatch) -> None:
+def test_invalid_workflow_name_is_treated_as_unconfigured(monkeypatch) -> None:
     _configure(monkeypatch)
-    _token(monkeypatch)
+    monkeypatch.setenv("GROUNDTRUTH_GITHUB_WORKFLOW", "../../secrets")
+    request = _github(monkeypatch, lambda *a, **k: _response(200))
+    assert "not configured" in start_scrape()
+    assert request.call_count == 0
+
+
+def test_requests_use_the_restricted_token_and_api_version(monkeypatch) -> None:
+    _configure(monkeypatch)
+    request = _github(monkeypatch, lambda *a, **k: _response(200, {"workflow_runs": []}))
+    owner_command_reply("/scrape")
+    headers = request.call_args.kwargs["headers"]
+    assert headers["Authorization"] == "Bearer github_pat_secret"
+    assert headers["X-GitHub-Api-Version"] == "2022-11-28"
+
+
+def test_status_reports_running_workflow(monkeypatch) -> None:
+    _configure(monkeypatch)
 
     def handler(method, url, **_kwargs):
-        assert method == "GET"
-        assert url.endswith("/jobs/job-groundtruth-weekly")
-        return _response(404)
+        assert (method, _path(url)) == ("GET", RUNS)
+        return _response(200, {"workflow_runs": [_run(42, "in_progress")]})
 
-    _arm(monkeypatch, handler)
-    text = owner_command_reply("/scrape")
-    assert "not deployed" in text
-    assert "not be started" in text
+    _github(monkeypatch, handler)
+    running, text = scrape_snapshot()
+    assert running is True
+    assert "Research is running" in text
+    assert "Run 42: in_progress" in text
 
 
-def test_scrape_status_reports_running_execution(monkeypatch) -> None:
+def test_status_reports_latest_conclusion(monkeypatch) -> None:
     _configure(monkeypatch)
-    _token(monkeypatch)
-
-    def handler(method, url, **_kwargs):
-        if url.endswith("/executions"):
-            return _response(
-                200, {"value": [{"name": "run-1", "properties": {"status": "Running"}}]}
-            )
-        return _response(200, {"name": "job-groundtruth-weekly"})
-
-    _arm(monkeypatch, handler)
-    text = owner_command_reply("/scrape")
-    assert "Scrape is running" in text
-    assert "run-1" in text
+    _github(
+        monkeypatch,
+        lambda *a, **k: _response(200, {"workflow_runs": [_run(41, "completed", "failure")]}),
+    )
+    running, text = scrape_snapshot()
+    assert running is False
+    assert "Run 41: failure" in text
 
 
-def test_start_refuses_missing_job(monkeypatch) -> None:
+def test_status_with_no_runs(monkeypatch) -> None:
     _configure(monkeypatch)
-    _token(monkeypatch)
-    request = _arm(monkeypatch, lambda method, url, **_kwargs: _response(404))
+    _github(monkeypatch, lambda *a, **k: _response(200, {"workflow_runs": []}))
+    assert scrape_snapshot() == (False, "No research run has been recorded yet.")
+
+
+def test_status_survives_github_errors(monkeypatch) -> None:
+    _configure(monkeypatch)
+    _github(monkeypatch, Mock(side_effect=httpx.ConnectError("down")))
+    running, text = scrape_snapshot()
+    assert running is False
+    assert "Could not read" in text
+    assert "github_pat_secret" not in text
+
+
+def test_start_dispatches_master(monkeypatch) -> None:
+    _configure(monkeypatch)
+    calls: list[tuple[str, str, dict | None]] = []
+
+    def handler(method, url, **kwargs):
+        calls.append((method, _path(url), kwargs.get("json")))
+        if method == "GET":
+            return _response(200, {"workflow_runs": [_run(41, "completed", "success")]})
+        return _response(204)
+
+    _github(monkeypatch, handler)
+    assert "requested on master" in start_scrape()
+    assert calls[-1] == ("POST", DISPATCH, {"ref": "master"})
+
+
+def test_start_refuses_overlap(monkeypatch) -> None:
+    _configure(monkeypatch)
+    request = _github(
+        monkeypatch, lambda *a, **k: _response(200, {"workflow_runs": [_run(42, "queued")]})
+    )
     text = start_scrape()
-    assert "not deployed" in text
+    assert "already queued" in text
     assert request.call_count == 1
 
 
-def test_stop_targets_running_execution(monkeypatch) -> None:
+def test_start_reports_permission_failure(monkeypatch) -> None:
     _configure(monkeypatch)
-    _token(monkeypatch)
+
+    def handler(method, url, **_kwargs):
+        if method == "GET":
+            return _response(200, {"workflow_runs": []})
+        return _response(403)
+
+    _github(monkeypatch, handler)
+    assert "GitHub returned 403" in start_scrape()
+
+
+def test_stop_cancels_active_run(monkeypatch) -> None:
+    _configure(monkeypatch)
     calls: list[tuple[str, str]] = []
 
     def handler(method, url, **_kwargs):
-        calls.append((method, url))
-        if url.endswith("/executions"):
+        calls.append((method, _path(url)))
+        if method == "GET":
             return _response(
-                200, {"value": [{"name": "run-1", "properties": {"status": "Running"}}]}
+                200, {"workflow_runs": [_run(42, "in_progress"), _run(41, "completed", "success")]}
             )
-        if url.endswith("/executions/run-1/stop"):
-            return _response(202)
-        return _response(200, {})
+        return _response(202)
 
-    _arm(monkeypatch, handler)
-    assert stop_scrape() == "Stop requested for run-1."
-    assert calls[-1] == ("POST", calls[-1][1])
-    assert calls[-1][1].endswith("/executions/run-1/stop")
+    _github(monkeypatch, handler)
+    assert stop_scrape() == "Cancellation requested for run 42."
+    assert calls[-1] == ("POST", "/repos/LorandPervizaj/GroundTruth/actions/runs/42/cancel")
 
 
-def test_auto_update_stays_quiet_until_a_scrape_is_running(monkeypatch) -> None:
-    set_auto_update(False)
-    monkeypatch.setattr(
-        "groundtruth.services.scrape_control.scrape_snapshot",
-        lambda: (False, "No scrape is running."),
+def test_stop_with_nothing_active(monkeypatch) -> None:
+    _configure(monkeypatch)
+    request = _github(
+        monkeypatch,
+        lambda *a, **k: _response(200, {"workflow_runs": [_run(41, "completed", "success")]}),
     )
-    sent: list[str] = []
-    monkeypatch.setattr("groundtruth.services.scrape_control._notify", sent.append)
+    assert stop_scrape() == "No research run is active."
+    assert request.call_count == 1
+
+
+def test_auto_update_is_retired() -> None:
     text = owner_command_reply("/auto_update on")
-    assert "are on" in text
-    publish_scrape_progress()
-    assert sent == []
-
-    monkeypatch.setattr(
-        "groundtruth.services.scrape_control.scrape_snapshot",
-        lambda: (True, "Scrape is running."),
-    )
-    publish_scrape_progress()
-    assert sent == ["Scrape is running."]
-
-    monkeypatch.setattr(
-        "groundtruth.services.scrape_control.scrape_snapshot",
-        lambda: (False, "No scrape is running."),
-    )
-    publish_scrape_progress()
-    assert sent[-1].startswith("The scrape stopped.")
-    set_auto_update(False)
+    assert "retired" in text
 
 
-def test_auto_update_rejects_unknown_argument() -> None:
-    set_auto_update(False)
-    assert (
-        owner_command_reply("/automatic_update maybe") == "Use /auto_update on or /auto_update off."
-    )
-    set_auto_update(False)
+def test_public_app_no_longer_imports_a_scrape_watch() -> None:
+    from pathlib import Path
+
+    app = Path(__file__).resolve().parents[1] / "src" / "groundtruth" / "api" / "app.py"
+    assert "scrape_watch" not in app.read_text(encoding="utf-8")

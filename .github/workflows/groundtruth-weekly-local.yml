@@ -1,0 +1,171 @@
+# Sole automatic GroundTruth research entrypoint. Runs on the local Windows
+# research host through a self-hosted runner labelled groundtruth-research.
+#
+# This repository is public and that runner can reach the private research
+# database. Never add pull_request, pull_request_target, or any other trigger
+# that can run code from a fork. Allowed triggers: workflow_dispatch, schedule.
+#
+# The weekly schedule is enabled only after manual commissioning and failure
+# drills. See docs/LOCAL_RESEARCH_RUNNER.md.
+
+name: GroundTruth weekly research
+
+on:
+  workflow_dispatch:
+    inputs:
+      days:
+        description: Optional catch-up interval in days (1-56). Empty uses the verified watermark.
+        required: false
+        type: string
+      deploy:
+        description: Deploy the verified release to public Metrik after publication
+        required: false
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: groundtruth-weekly
+  cancel-in-progress: false
+
+jobs:
+  research:
+    if: ${{ github.ref == 'refs/heads/master' }}
+    runs-on: [self-hosted, Windows, X64, groundtruth-research]
+    timeout-minutes: 1440
+    permissions:
+      contents: write
+    env:
+      GROUNDTRUTH_ENV_FILE: C:\MetrikResearch\config\research.env
+      RESEARCH_RUNS_DIR: C:\MetrikResearch\state\runs
+      PYTHONUTF8: "1"
+      RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+    defaults:
+      run:
+        shell: pwsh
+    outputs:
+      release_tag: ${{ steps.candidate.outputs.release_tag }}
+      release_id: ${{ steps.candidate.outputs.release_id }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          clean: true
+          persist-credentials: false
+
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: false
+
+      - name: Install locked research environment
+        run: |
+          uv python install 3.13
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          uv sync --extra research --frozen --no-dev
+
+      - name: Notify research started
+        run: |
+          uv run --no-sync groundtruth research notify "🔬 GroundTruth research started`nSource: $env:GITHUB_SHA`nRun: $env:RUN_URL"
+
+      - name: Research doctor
+        run: uv run --no-sync groundtruth research doctor --expected-sha $env:GITHUB_SHA
+
+      - name: Back up research database before the run
+        run: uv run --no-sync groundtruth research backup --label pre-weekly
+
+      - name: Run canonical weekly release
+        id: pipeline
+        env:
+          DAYS: ${{ inputs.days }}
+        run: |
+          New-Item -ItemType Directory -Force -Path $env:RESEARCH_RUNS_DIR | Out-Null
+          $result = Join-Path $env:RESEARCH_RUNS_DIR "github-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT.json"
+          "result=$result" >> $env:GITHUB_OUTPUT
+          $arguments = @('run', '--no-sync', 'groundtruth', 'pipeline', 'weekly-release', '--output', $result)
+          if ($env:DAYS) { $arguments += @('--days', $env:DAYS) }
+          uv @arguments
+
+      - name: Verify publication candidate
+        id: candidate
+        env:
+          RESULT: ${{ steps.pipeline.outputs.result }}
+        run: uv run --no-sync groundtruth research publication-candidate --result $env:RESULT --github-output $env:GITHUB_OUTPUT
+
+      - name: Publish immutable GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ steps.candidate.outputs.release_tag }}
+          RELEASE_ID: ${{ steps.candidate.outputs.release_id }}
+          BUNDLE: ${{ steps.candidate.outputs.bundle }}
+          CHECKSUM: ${{ steps.candidate.outputs.checksum }}
+          BUNDLE_SHA256: ${{ steps.candidate.outputs.sha256 }}
+          DATA_THROUGH: ${{ steps.candidate.outputs.data_through }}
+          SOURCE_GIT_SHA: ${{ steps.candidate.outputs.source_git_sha }}
+        run: |
+          gh release view $env:RELEASE_TAG --repo $env:GITHUB_REPOSITORY *> $null
+          if ($LASTEXITCODE -eq 0) { throw "Release $env:RELEASE_TAG already exists; verified releases are never overwritten." }
+          git ls-remote --exit-code --tags "https://github.com/$env:GITHUB_REPOSITORY.git" "refs/tags/$env:RELEASE_TAG" *> $null
+          if ($LASTEXITCODE -ne 2) { throw "Tag $env:RELEASE_TAG already exists or the remote is unreachable." }
+          $notes = @(
+            "release_id: $env:RELEASE_ID",
+            "source_git_sha: $env:SOURCE_GIT_SHA",
+            "data_through: $env:DATA_THROUGH",
+            "bundle_sha256: $env:BUNDLE_SHA256",
+            "workflow_run: $env:RUN_URL"
+          ) -join "`n"
+          gh release create $env:RELEASE_TAG $env:BUNDLE $env:CHECKSUM --repo $env:GITHUB_REPOSITORY --target $env:GITHUB_SHA --title $env:RELEASE_TAG --notes $notes
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          $assets = (gh release view $env:RELEASE_TAG --repo $env:GITHUB_REPOSITORY --json assets --jq '.assets[].name') | Sort-Object
+          $expected = @("$env:RELEASE_TAG.tar.gz", "$env:RELEASE_TAG.tar.gz.sha256") | Sort-Object
+          if (Compare-Object $assets $expected) { throw "Published assets differ from the verified bundle and checksum." }
+
+      - name: Notify release verified
+        env:
+          RELEASE_TAG: ${{ steps.candidate.outputs.release_tag }}
+        run: |
+          uv run --no-sync groundtruth research notify "📦 GroundTruth verified release published`n$env:RELEASE_TAG`nDeployment follows when enabled for this run.`nRun: $env:RUN_URL"
+
+      - name: Back up research database after the run
+        id: post_backup
+        continue-on-error: true
+        run: uv run --no-sync groundtruth research backup --label post-weekly
+
+      - name: Notify post-run backup failure
+        if: ${{ steps.post_backup.outcome == 'failure' }}
+        run: |
+          uv run --no-sync groundtruth research notify "⚠️ GroundTruth post-run database backup failed. The verified release is unaffected.`nRun: $env:RUN_URL"
+
+  deploy:
+    needs: research
+    if: ${{ needs.research.result == 'success' && needs.research.outputs.release_tag != '' && (github.event_name == 'schedule' || inputs.deploy) }}
+    permissions:
+      contents: read
+      id-token: write
+    uses: ./.github/workflows/weekly-release-deploy.yml
+    with:
+      release_tag: ${{ needs.research.outputs.release_tag }}
+    secrets: inherit
+
+  report-research-failure:
+    needs: research
+    if: ${{ always() && needs.research.result != 'success' && needs.research.result != 'skipped' }}
+    runs-on: ubuntu-latest
+    environment: azure-beta
+    permissions: {}
+    steps:
+      - name: Telegram research failure notification
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          RESULT: ${{ needs.research.result }}
+        run: |
+          set +e
+          if [ -z "$TELEGRAM_BOT_TOKEN" ] || [ -z "$TELEGRAM_CHAT_ID" ]; then exit 0; fi
+          text="❌ GroundTruth research did not complete ($RESULT)
+          Deployment was skipped; production is unchanged.
+          Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          curl -fsS --retry 2 "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            --data-urlencode "chat_id=$TELEGRAM_CHAT_ID" \
+            --data-urlencode "text=$text" >/dev/null

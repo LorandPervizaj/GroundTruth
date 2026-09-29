@@ -1,5 +1,6 @@
 """Application configuration via pydantic-settings."""
 
+import os
 from functools import lru_cache
 from pathlib import Path
 from typing import Literal
@@ -125,3 +126,18 @@ class Settings(BaseSettings):
 def get_settings() -> Settings:
     """Return cached settings singleton."""
     return Settings()
+
+
+def load_external_env() -> Path | None:
+    """Load host-local settings named by GROUNDTRUTH_ENV_FILE; process values win."""
+    configured = os.getenv("GROUNDTRUTH_ENV_FILE", "").strip()
+    if not configured:
+        return None
+    path = Path(configured)
+    if not path.is_file():
+        raise FileNotFoundError(f"GROUNDTRUTH_ENV_FILE does not exist: {path}")
+    from dotenv import load_dotenv
+
+    load_dotenv(path, override=False)
+    get_settings.cache_clear()
+    return path

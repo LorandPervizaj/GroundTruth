@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import os
+import socket
 from contextlib import AbstractContextManager
 from dataclasses import dataclass
 from datetime import UTC, date, datetime
@@ -73,6 +74,7 @@ class PipelineLock(AbstractContextManager["PipelineLock"]):
     path: Path
     run_id: str
     acquired: bool = False
+    _descriptor: int | None = None
 
     def __enter__(self) -> PipelineLock:
         self.path.parent.mkdir(parents=True, exist_ok=True)
@@ -83,19 +85,38 @@ class PipelineLock(AbstractContextManager["PipelineLock"]):
                 "acquired_at": datetime.now(UTC).isoformat(),
             }
         )
+        descriptor = os.open(self.path, os.O_CREAT | os.O_RDWR, 0o600)
         try:
-            descriptor = os.open(self.path, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
-        except FileExistsError as exc:
-            owner = self.path.read_text(encoding="utf-8") if self.path.is_file() else "unknown"
-            raise RuntimeError(f"another weekly release holds {self.path}: {owner}") from exc
-        with os.fdopen(descriptor, "w", encoding="utf-8") as handle:
-            handle.write(body)
+            if os.name == "nt":
+                import msvcrt
+
+                msvcrt.locking(descriptor, msvcrt.LK_NBLCK, 1)
+            else:
+                import fcntl
+
+                fcntl.flock(descriptor, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except OSError as exc:
+            os.close(descriptor)
+            raise RuntimeError(f"another weekly release holds {self.path}") from exc
+        try:
+            metadata = json.loads(body)
+            metadata["host"] = socket.gethostname()
+            os.ftruncate(descriptor, 0)
+            os.write(descriptor, json.dumps(metadata).encode("utf-8"))
+            os.fsync(descriptor)
+        except BaseException:
+            os.close(descriptor)
+            raise
+        self._descriptor = descriptor
         self.acquired = True
         return self
 
     def __exit__(self, *args: object) -> None:
         if self.acquired:
-            self.path.unlink(missing_ok=True)
+            # Never unlink: replacing an inode can allow two independent locks.
+            # Closing releases the OS lock, including on abrupt process death.
+            os.close(self._descriptor)
+            self._descriptor = None
             self.acquired = False
 
 

@@ -1,5 +1,7 @@
 # Autonomous weekly pipeline operator runbook
 
+> **HISTORICAL — SUPERSEDED.** This runbook describes the never-provisioned Azure research job and the retired 15:00 deploy cron. The operator runbook is now `LOCAL_RESEARCH_RUNNER.md`.
+
 ## Normal Monday sequence
 
 At 03:00 UTC Monday, `job-groundtruth-weekly` starts the private research image. It derives the catch-up interval from the last verified watermark, crawls all automated sources, runs ETL/analytics/QA, verifies artifacts, and writes a versioned bundle to the private `verified-releases` Azure Files share. At 15:00 UTC, the GitHub deploy workflow retrieves the newest verified bundle, verifies it again, builds an immutable Metrik image, deploys it, smoke-tests production, and rolls back on failure.

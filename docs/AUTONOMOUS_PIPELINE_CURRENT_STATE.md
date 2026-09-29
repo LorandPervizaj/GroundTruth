@@ -1,5 +1,7 @@
 # Autonomous pipeline: current state audit
 
+> **HISTORICAL.** 2026-09-23 audit notes, kept as evidence. Current operation: `LOCAL_RESEARCH_RUNNER.md`.
+
 Audit date: 2026-09-23
 
 ## Existing flow

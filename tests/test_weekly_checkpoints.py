@@ -10,11 +10,7 @@ from groundtruth.crawl.checkpoints import (
 
 
 def test_checkpoint_roundtrip(tmp_path, monkeypatch) -> None:
-    tmp_path / "weekly" / "checkpoints"
-    monkeypatch.setattr(
-        "groundtruth.crawl.checkpoints.PROJECT_ROOT",
-        tmp_path,
-    )
+    monkeypatch.setenv("GROUNDTRUTH_PIPELINE_STATE_DIR", str(tmp_path))
 
     cp = ensure_checkpoint(
         "2026-W25",
@@ -32,7 +28,7 @@ def test_checkpoint_roundtrip(tmp_path, monkeypatch) -> None:
 
 
 def test_checkpoint_resets_when_window_days_change(tmp_path, monkeypatch) -> None:
-    monkeypatch.setattr("groundtruth.crawl.checkpoints.PROJECT_ROOT", tmp_path)
+    monkeypatch.setenv("GROUNDTRUTH_PIPELINE_STATE_DIR", str(tmp_path))
 
     cp = ensure_checkpoint(
         "2026-W34",

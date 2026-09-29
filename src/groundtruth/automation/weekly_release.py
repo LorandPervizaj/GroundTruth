@@ -18,6 +18,7 @@ from groundtruth.automation.state import (
     load_state,
     pipeline_lock,
     save_state,
+    state_dir,
     verified_watermark,
 )
 from groundtruth.config import PROJECT_ROOT
@@ -44,7 +45,7 @@ def make_release_id(now: datetime | None = None, *, git_sha: str | None = None) 
 
 
 def _default_output_path(run_id: str) -> Path:
-    return PROJECT_ROOT / "reports" / "generated" / "weekly" / "runs" / f"{run_id}.json"
+    return state_dir() / "runs" / f"{run_id}.json"
 
 
 def _write_result(result: PipelineRunResult, path: Path) -> None:

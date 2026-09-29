@@ -1,5 +1,7 @@
 # Research infrastructure reconciliation — 2026-09-28
 
+> **HISTORICAL.** Point-in-time record. Superseded for migration by `RESEARCH_AUTOMATION_MIGRATION_AUDIT_2026-09-29.md`; current operation: `LOCAL_RESEARCH_RUNNER.md`.
+
 Scope: compare `infra/azure/research.bicep`, the weekly GitHub workflows, and the
 live `Azure for Students` subscription before provisioning. Resource group used
 by the existing API and bot configuration: `rg-metrik-beta-eus2` (`eastus2`).

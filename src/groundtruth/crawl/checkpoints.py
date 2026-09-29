@@ -9,7 +9,7 @@ from enum import StrEnum
 from pathlib import Path
 from typing import Any, Literal
 
-from groundtruth.config import PROJECT_ROOT
+from groundtruth.automation.state import state_dir
 
 StageName = Literal["crawl", "etl", "analytics"]
 StageStatus = Literal["pending", "running", "done", "failed", "skipped"]
@@ -70,7 +70,7 @@ class WeeklyCheckpoint:
 
 
 def checkpoint_path(crawl_week: str) -> Path:
-    base = PROJECT_ROOT / "reports" / "generated" / "weekly" / "checkpoints"
+    base = state_dir() / "checkpoints"
     base.mkdir(parents=True, exist_ok=True)
     return base / f"{crawl_week}.json"
 

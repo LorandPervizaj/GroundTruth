@@ -1,14 +1,22 @@
+# Deploy one exact, already-verified GroundTruth GitHub Release to public Metrik.
+# Called by groundtruth-weekly-local.yml after publication, or dispatched by hand
+# with an exact tag for redeploys. It never searches for a "latest" release and
+# has no schedule of its own.
+
 name: Deploy verified weekly release
 
 on:
-  schedule:
-    # Research begins Monday 03:00 UTC; deployment pickup waits twelve hours.
-    - cron: "0 15 * * 1"
+  workflow_call:
+    inputs:
+      release_tag:
+        description: Exact tag, groundtruth-release-<release_id>
+        required: true
+        type: string
   workflow_dispatch:
     inputs:
-      release_bundle:
-        description: Optional exact bundle filename from the verified-releases share
-        required: false
+      release_tag:
+        description: Exact tag, groundtruth-release-<release_id>
+        required: true
         type: string
 
 concurrency:
@@ -23,13 +31,54 @@ jobs:
       contents: read
       id-token: write
     env:
-      RESEARCH_STORAGE_ACCOUNT: ${{ vars.GROUNDTRUTH_STORAGE_ACCOUNT }}
-      RELEASE_SHARE: ${{ vars.GROUNDTRUTH_RELEASE_SHARE }}
+      RELEASE_TAG: ${{ inputs.release_tag }}
       RESOURCE_GROUP: ${{ vars.METRIK_AZURE_RESOURCE_GROUP }}
       CONTAINER_APP: ${{ vars.METRIK_AZURE_CONTAINER_APP }}
       ACR_NAME: ${{ vars.METRIK_AZURE_ACR_NAME }}
     steps:
+      - name: Validate exact release tag
+        run: |
+          set -euo pipefail
+          [[ "$RELEASE_TAG" =~ ^groundtruth-release-[0-9A-Za-z][0-9A-Za-z._-]{0,99}$ ]]
+          echo "RELEASE_ID=${RELEASE_TAG#groundtruth-release-}" >> "$GITHUB_ENV"
+          echo "BUNDLE_NAME=$RELEASE_TAG.tar.gz" >> "$GITHUB_ENV"
+
       - uses: actions/checkout@v4
+        with:
+          ref: refs/tags/${{ inputs.release_tag }}
+          persist-credentials: false
+
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Install serving environment
+        run: |
+          uv python install 3.13
+          uv sync --extra web --frozen --no-dev
+
+      - name: Download and verify exact GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_ASSETS_DIR: /tmp/release-assets
+        run: bash scripts/release/install-verified-release.sh "$RELEASE_TAG"
+
+      - name: Verify release again at deploy boundary
+        run: uv run groundtruth release verify-artifacts
+
+      - name: Telegram deployment started
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          set +e
+          if [ -z "$TELEGRAM_BOT_TOKEN" ] || [ -z "$TELEGRAM_CHAT_ID" ]; then exit 0; fi
+          text="🚀 Metrik deployment started
+          Release: $RELEASE_ID
+          Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          curl -fsS --retry 2 "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            --data-urlencode "chat_id=$TELEGRAM_CHAT_ID" \
+            --data-urlencode "text=$text" >/dev/null
 
       - name: Azure login with OIDC
         uses: azure/login@v2
@@ -38,69 +87,36 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      - name: Resolve and download verified bundle
-        env:
-          REQUESTED_BUNDLE: ${{ inputs.release_bundle }}
-        run: |
-          set -euo pipefail
-          test -n "$RESEARCH_STORAGE_ACCOUNT"
-          test -n "$RELEASE_SHARE"
-          bundle="$REQUESTED_BUNDLE"
-          if [ -z "$bundle" ]; then
-            bundle="$(az storage file list \
-              --account-name "$RESEARCH_STORAGE_ACCOUNT" \
-              --share-name "$RELEASE_SHARE" \
-              --auth-mode login \
-              --query "sort_by([?ends_with(name, '.tar.gz')], &properties.lastModified)[-1].name" \
-              -o tsv)"
-          fi
-          test -n "$bundle"
-          az storage file download --account-name "$RESEARCH_STORAGE_ACCOUNT" \
-            --share-name "$RELEASE_SHARE" --path "$bundle" --dest /tmp/release.tar.gz \
-            --auth-mode login --only-show-errors
-          az storage file download --account-name "$RESEARCH_STORAGE_ACCOUNT" \
-            --share-name "$RELEASE_SHARE" --path "$bundle.sha256" --dest /tmp/release.tar.gz.sha256 \
-            --auth-mode login --only-show-errors
-          expected="$(cut -d' ' -f1 /tmp/release.tar.gz.sha256)"
-          actual="$(sha256sum /tmp/release.tar.gz | cut -d' ' -f1)"
-          test "$expected" = "$actual"
-          mkdir -p /tmp/release
-          tar -xzf /tmp/release.tar.gz -C /tmp/release
-          rm -rf reports/generated/lookup_cache
-          cp -a /tmp/release/lookup_cache reports/generated/lookup_cache
-          cp /tmp/release/data/api/annual_report.json data/api/annual_report.json
-          cp /tmp/release/data/api/rent_yield.json data/api/rent_yield.json
-          release_id="$(python -c "import json; print(json.load(open('reports/generated/lookup_cache/manifest.json'))['release']['release_id'])")"
-          publishable="$(python -c "import json; p=json.load(open('reports/generated/lookup_cache/manifest.json')); print(str(p['release'].get('publishable', True)).lower())")"
-          test "$publishable" = "true"
-          echo "RELEASE_ID=$release_id" >> "$GITHUB_ENV"
-          echo "BUNDLE_NAME=$bundle" >> "$GITHUB_ENV"
-
-      - uses: astral-sh/setup-uv@v5
-        with:
-          enable-cache: true
-
-      - name: Verify release again at deploy boundary
-        run: |
-          uv python install 3.13
-          uv sync --extra web --frozen --no-dev
-          uv run groundtruth release verify-artifacts
-
       - uses: docker/setup-buildx-action@v3
 
-      - name: Build and push immutable serving image
+      - name: Build immutable serving image
         run: |
           set -euo pipefail
-          az acr login --name "$ACR_NAME"
           login="$(az acr show -n "$ACR_NAME" --query loginServer -o tsv)"
           sha="$(git rev-parse --short HEAD)"
           image="$login/metrik-api:${RELEASE_ID}-${sha}"
-          docker build -f Dockerfile -t "$image" .
+          docker build -f Dockerfile -t "$image" --load .
           docker run --rm --entrypoint uv "$image" run python -c \
             "import importlib.util as u; assert u.find_spec('scrapy') is None; assert u.find_spec('playwright') is None; assert u.find_spec('fastapi') is not None"
-          docker push "$image"
-          digest="$(az acr repository show --name "$ACR_NAME" --image "metrik-api:${RELEASE_ID}-${sha}" --query digest -o tsv)"
           echo "CANDIDATE_IMAGE=$image" >> "$GITHUB_ENV"
+          echo "CANDIDATE_TAG=${RELEASE_ID}-${sha}" >> "$GITHUB_ENV"
+
+      - name: Trivy scan
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: ${{ env.CANDIDATE_IMAGE }}
+          format: table
+          exit-code: "1"
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true
+
+      - name: Push immutable serving image
+        run: |
+          set -euo pipefail
+          az acr login --name "$ACR_NAME"
+          docker push "$CANDIDATE_IMAGE"
+          digest="$(az acr repository show --name "$ACR_NAME" --image "metrik-api:$CANDIDATE_TAG" --query digest -o tsv)"
+          test -n "$digest"
           echo "CANDIDATE_DIGEST=$digest" >> "$GITHUB_ENV"
 
       - name: Capture current production target
@@ -129,8 +145,10 @@ jobs:
           revision="$(az containerapp show -g "$RESOURCE_GROUP" -n "$CONTAINER_APP" --query properties.latestReadyRevisionName -o tsv)"
           echo "DEPLOYED_REVISION=$revision" >> "$GITHUB_ENV"
           printf '%s\n' \
+            "release_tag=$RELEASE_TAG" \
             "release_id=$RELEASE_ID" \
             "bundle=$BUNDLE_NAME" \
+            "bundle_sha256=$(cut -d' ' -f1 "/tmp/release-assets/$BUNDLE_NAME.sha256")" \
             "image=$CANDIDATE_IMAGE" \
             "digest=$CANDIDATE_DIGEST" \
             "revision=$revision" \

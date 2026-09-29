@@ -17,6 +17,7 @@ from typing import Any, Literal
 from rich.console import Console
 from sqlalchemy.orm import Session
 
+from groundtruth.automation.state import state_dir
 from groundtruth.config import PROJECT_ROOT, get_settings
 from groundtruth.crawl.checkpoints import (
     WeeklyCheckpoint,
@@ -178,7 +179,7 @@ class WeeklyCrawlReport:
 
 
 def weekly_state_path() -> Path:
-    return PROJECT_ROOT / "reports" / "generated" / "weekly" / STATE_FILENAME
+    return state_dir() / STATE_FILENAME
 
 
 def load_weekly_state() -> dict[str, Any]:
