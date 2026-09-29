@@ -1,3 +1,4 @@
+import re
 from pathlib import Path
 
 import yaml
@@ -58,6 +59,14 @@ def test_self_hosted_workflows_cannot_run_fork_code() -> None:
         runners = [str(job.get("runs-on", "")) for job in workflow["jobs"].values()]
         if any("self-hosted" in runner for runner in runners):
             assert set(_triggers(workflow)) <= {"workflow_dispatch", "schedule"}, path.name
+
+
+def test_research_workflow_pins_actions_to_commits() -> None:
+    workflow, _ = _workflow(RESEARCH)
+    for step in workflow["jobs"]["research"]["steps"]:
+        if "uses" in step:
+            _, _, ref = step["uses"].partition("@")
+            assert re.fullmatch(r"[0-9a-f]{40}", ref), step["uses"]
 
 
 def test_research_workflow_allows_one_run_at_a_time() -> None:
