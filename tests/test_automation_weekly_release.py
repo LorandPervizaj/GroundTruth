@@ -42,7 +42,8 @@ def test_pipeline_lock_prevents_overlap(tmp_path: Path) -> None:
         PipelineLock(lock_path, "second"),
     ):
         pass
-    assert not lock_path.exists()
+    with PipelineLock(lock_path, "after-release"):
+        assert lock_path.exists()
 
 
 def test_source_health_uses_historical_source_baseline() -> None:
