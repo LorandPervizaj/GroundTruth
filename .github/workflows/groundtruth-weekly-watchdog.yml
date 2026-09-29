@@ -1,0 +1,117 @@
+# Tells "the research runner never came online" apart from "the weekly research
+# workflow ran and failed". Runs on a GitHub-hosted runner so it still reports
+# when the research host is asleep, logged out, or powered off.
+
+name: GroundTruth weekly watchdog
+
+on:
+  workflow_dispatch:
+    inputs:
+      max_queue_minutes:
+        description: Minutes the research job may wait for the self-hosted runner
+        required: false
+        type: string
+        default: "45"
+
+permissions:
+  actions: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    environment: azure-beta
+    timeout-minutes: 5
+    steps:
+      - name: Classify the latest weekly research run
+        id: classify
+        env:
+          GH_TOKEN: ${{ github.token }}
+          MAX_QUEUE_MINUTES: ${{ inputs.max_queue_minutes || '45' }}
+          LOOKBACK_HOURS: "20"
+        run: |
+          set -euo pipefail
+          since=$(date -u -d "-${LOOKBACK_HOURS} hours" +%Y-%m-%dT%H:%M:%SZ)
+          run=$(gh api "repos/$GITHUB_REPOSITORY/actions/workflows/groundtruth-weekly-local.yml/runs?per_page=1&created=%3E%3D$since" --jq '.workflow_runs[0] // empty')
+          url=""
+          if [ -z "$run" ]; then
+            state=not_created
+            detail="No weekly research run was created in the last ${LOOKBACK_HOURS} hours."
+          else
+            id=$(jq -r .id <<<"$run")
+            url=$(jq -r .html_url <<<"$run")
+            status=$(jq -r .status <<<"$run")
+            conclusion=$(jq -r '.conclusion // ""' <<<"$run")
+            age=$(( ($(date -u +%s) - $(date -u -d "$(jq -r .created_at <<<"$run")" +%s)) / 60 ))
+            job=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$id/jobs" --jq '[.jobs[] | select(.name == "research")][0] // empty')
+            job_json=${job:-'{}'}
+            runner=$(jq -r '.runner_name // ""' <<<"$job_json")
+            failed_step=$(jq -r '[.steps[]? | select(.conclusion == "failure") | .name][0] // ""' <<<"$job_json")
+            if [ "$status" = completed ] && [ "$conclusion" = success ]; then
+              state=ok
+              detail="Latest run succeeded."
+            elif [ "$status" = completed ] && [ -z "$runner" ]; then
+              state=runner_offline
+              detail="The run ended ($conclusion) without any runner picking up the research job."
+            elif [ "$status" = completed ]; then
+              state=workflow_failed
+              detail="The research workflow ran on $runner and ended $conclusion${failed_step:+ at step: $failed_step}."
+            elif [ -n "$runner" ]; then
+              state=ok
+              detail="Research job is running on $runner."
+            elif [ "$age" -lt "$MAX_QUEUE_MINUTES" ]; then
+              state=ok
+              detail="Run is $status for $age minutes; within the ${MAX_QUEUE_MINUTES}-minute allowance."
+            elif [ -z "$job" ]; then
+              state=blocked
+              detail="Run has been $status for $age minutes and has not started its research job. Another weekly run may still hold the concurrency group."
+            else
+              state=runner_offline
+              detail="The research job has waited $age minutes and no runner has picked it up."
+            fi
+          fi
+          {
+            echo "state=$state"
+            echo "detail=$detail"
+            echo "run_url=$url"
+          } >> "$GITHUB_OUTPUT"
+          echo "### $state" >> "$GITHUB_STEP_SUMMARY"
+          echo "$detail ${url}" >> "$GITHUB_STEP_SUMMARY"
+          echo "$state: $detail ${url}"
+
+      - name: Telegram watchdog alert
+        if: ${{ steps.classify.outputs.state != 'ok' }}
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          STATE: ${{ steps.classify.outputs.state }}
+          DETAIL: ${{ steps.classify.outputs.detail }}
+          RUN: ${{ steps.classify.outputs.run_url }}
+        run: |
+          set +e
+          if [ -z "$TELEGRAM_BOT_TOKEN" ] || [ -z "$TELEGRAM_CHAT_ID" ]; then exit 0; fi
+          case "$STATE" in
+            runner_offline) title="🛑 GroundTruth research runner never came online"
+              hint="Check that the research host is on and logged in, and that the 'GroundTruth research runner' task is running. Nothing was crawled." ;;
+            workflow_failed) title="❌ GroundTruth research workflow failed"
+              hint="The runner was online; see the run log." ;;
+            blocked) title="⏳ GroundTruth weekly research is blocked"
+              hint="Check for an older run that is still in progress." ;;
+            *) title="⚠️ GroundTruth weekly research did not start"
+              hint="Check the workflow schedule." ;;
+          esac
+          text="$title
+          $DETAIL
+          $hint
+          Production is unchanged.
+          ${RUN:-$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID}"
+          curl -fsS --retry 2 "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            --data-urlencode "chat_id=$TELEGRAM_CHAT_ID" \
+            --data-urlencode "text=$text" >/dev/null
+
+      - name: Fail when the weekly run is unhealthy
+        if: ${{ steps.classify.outputs.state != 'ok' }}
+        env:
+          STATE: ${{ steps.classify.outputs.state }}
+        run: |
+          echo "::error::Weekly research watchdog state: $STATE"
+          exit 1
