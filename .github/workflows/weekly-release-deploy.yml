@@ -48,23 +48,6 @@ jobs:
           ref: refs/tags/${{ inputs.release_tag }}
           persist-credentials: false
 
-      - name: Download exact GitHub release
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          set -euo pipefail
-          assets="$(gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --json assets --jq '.assets[].name' | sort)"
-          expected="$(printf '%s\n' "$BUNDLE_NAME" "$BUNDLE_NAME.sha256" | sort)"
-          test "$assets" = "$expected"
-          mkdir -p /tmp/release-assets
-          gh release download "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --dir /tmp/release-assets
-
-      - name: Verify bundle SHA256
-        run: |
-          set -euo pipefail
-          cd /tmp/release-assets
-          sha256sum --check --strict "$BUNDLE_NAME.sha256"
-
       - uses: astral-sh/setup-uv@v5
         with:
           enable-cache: true
@@ -74,18 +57,11 @@ jobs:
           uv python install 3.13
           uv sync --extra web --frozen --no-dev
 
-      - name: Verify bundle contents and identity
-        run: uv run groundtruth release verify-bundle "/tmp/release-assets/$BUNDLE_NAME" --release-id "$RELEASE_ID"
-
-      - name: Install verified artifacts
-        run: |
-          set -euo pipefail
-          mkdir -p /tmp/release
-          tar -xzf "/tmp/release-assets/$BUNDLE_NAME" -C /tmp/release
-          rm -rf reports/generated/lookup_cache
-          cp -a /tmp/release/lookup_cache reports/generated/lookup_cache
-          cp /tmp/release/data/api/annual_report.json data/api/annual_report.json
-          cp /tmp/release/data/api/rent_yield.json data/api/rent_yield.json
+      - name: Download and verify exact GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_ASSETS_DIR: /tmp/release-assets
+        run: bash scripts/release/install-verified-release.sh "$RELEASE_TAG"
 
       - name: Verify release again at deploy boundary
         run: uv run groundtruth release verify-artifacts

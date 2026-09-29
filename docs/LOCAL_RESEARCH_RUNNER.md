@@ -78,9 +78,10 @@ research window. The current power plan never sleeps on idle.
    not block the release).
 8. Job `deploy` calls `weekly-release-deploy.yml` with that exact tag.
 
-`weekly-release-deploy.yml` (GitHub-hosted) checks out the release tag,
-downloads exactly two assets, runs `sha256sum --check`, runs
-`groundtruth release verify-bundle` and `release verify-artifacts`, builds
+`weekly-release-deploy.yml` (GitHub-hosted) checks out the release tag, and
+`scripts/release/install-verified-release.sh` downloads exactly two assets,
+runs `sha256sum --check` and `groundtruth release verify-bundle`, and installs
+them. The workflow then runs `release verify-artifacts`, builds
 `metrik-api:<release_id>-<sha>`, confirms scraper packages are absent, runs
 Trivy (HIGH/CRITICAL fails), pushes, captures the previous image, deploys,
 smoke-tests `/api/meta` against the release id, and restores the previous
@@ -179,9 +180,14 @@ Only after manual commissioning and the failure drills, add to
 Do not re-add a schedule to `weekly-release-deploy.yml`. There is one weekly
 decision: research, then its verified release, then deployment.
 
-## Known gap
+## Code deploys keep the live data release
 
-`azure-beta-deploy.yml` runs on code pushes to `master` and ships the
-`lookup_cache` committed in the repository. After a weekly deployment, the next
-code push can replace the weekly data with the older committed artifacts until
-the next weekly run. Resolve this before relying on weekly data freshness.
+`azure-beta-deploy.yml` runs on code pushes to `master`. Before building, it
+reads `release_id` from live `/api/meta` and reinstalls that exact GitHub
+Release through `scripts/release/install-verified-release.sh`, the same
+download-and-verify path the weekly deploy uses. Smoke tests then require
+`/api/meta` to report that release. When production serves no verified
+release (`release_id` null), it deploys the committed artifacts as before.
+
+If production is down and `/api/meta` cannot be read, the deploy stops. Re-run
+it with the `data_release_tag` input set to the release that should be served.

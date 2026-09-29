@@ -11,6 +11,11 @@ name: Azure beta deploy
 
 on:
   workflow_dispatch:
+    inputs:
+      data_release_tag:
+        description: Exact groundtruth-release-<release_id> to serve. Empty keeps the release live in production.
+        required: false
+        type: string
   push:
     branches: [master, main]
     paths:
@@ -54,9 +59,6 @@ jobs:
           curl -fsSL "$ARTIFACT_URL" -o /tmp/lookup_cache.tgz
           tar -xzf /tmp/lookup_cache.tgz -C reports/generated/lookup_cache --strip-components=1
 
-      - name: Require release manifest for deploy
-        run: test -f reports/generated/lookup_cache/manifest.json
-
       - name: Install uv
         uses: astral-sh/setup-uv@v5
         with:
@@ -68,15 +70,43 @@ jobs:
       - name: Install runtime deps for verify
         run: uv sync --extra web --frozen --no-dev
 
-      - name: Verify release artifacts
-        run: uv run groundtruth release verify-artifacts
-
       - name: Azure login
         uses: azure/login@v2
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      # Code deploys must not replace weekly data with the committed lookup_cache.
+      - name: Keep the live verified data release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RG: ${{ secrets.METRIK_AZURE_RESOURCE_GROUP }}
+          REQUESTED_TAG: ${{ inputs.data_release_tag }}
+        run: |
+          set -euo pipefail
+          tag="$REQUESTED_TAG"
+          if [ -z "$tag" ]; then
+            fqdn="$(az containerapp show -n ca-metrik-api -g "$RG" --query properties.configuration.ingress.fqdn -o tsv)"
+            if ! meta="$(curl -fsS --retry 3 --max-time 20 "https://$fqdn/api/meta")"; then
+              echo "Cannot read the live data release from /api/meta; re-run with data_release_tag." >&2
+              exit 1
+            fi
+            live="$(printf '%s' "$meta" | python3 -c 'import json, sys; print(json.load(sys.stdin).get("release_id") or "")')"
+            if [ -n "$live" ]; then tag="groundtruth-release-$live"; fi
+          fi
+          if [ -z "$tag" ]; then
+            echo "No verified data release is live; deploying the committed artifacts."
+            exit 0
+          fi
+          bash scripts/release/install-verified-release.sh "$tag"
+          echo "DATA_RELEASE_ID=${tag#groundtruth-release-}" >> "$GITHUB_ENV"
+
+      - name: Require release manifest for deploy
+        run: test -f reports/generated/lookup_cache/manifest.json
+
+      - name: Verify release artifacts
+        run: uv run groundtruth release verify-artifacts
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -141,6 +171,9 @@ jobs:
           curl -fsS "$APP_URL/api/health" | tee /tmp/health.json
           curl -fsS "$APP_URL/api/ready" | tee /tmp/ready.json
           curl -fsS "$APP_URL/api/rent-yield" | tee /tmp/ry.json
+          if [ -n "${DATA_RELEASE_ID:-}" ]; then
+            curl -fsS "$APP_URL/api/meta" | grep -F "\"$DATA_RELEASE_ID\""
+          fi
           code=$(curl -s -o /tmp/alerts.json -w "%{http_code}" -X POST "$APP_URL/api/alerts" \
             -H 'content-type: application/json' \
             -d '{"email":"beta@example.com","neighborhood_slug":"ulpiana"}')

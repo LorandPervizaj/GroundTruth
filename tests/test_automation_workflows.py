@@ -128,9 +128,8 @@ def test_deploy_workflow_verifies_before_deploy_and_has_rollback() -> None:
     workflow, text = _workflow(DEPLOY)
     steps = workflow["jobs"]["deploy"]["steps"]
     order = [
-        "Download exact GitHub release",
-        "Verify bundle SHA256",
-        "Verify bundle contents and identity",
+        "Validate exact release tag",
+        "Download and verify exact GitHub release",
         "Verify release again at deploy boundary",
         "Build immutable serving image",
         "Trivy scan",
@@ -148,6 +147,39 @@ def test_deploy_workflow_verifies_before_deploy_and_has_rollback() -> None:
     assert "CANDIDATE_DIGEST" in text
     assert "${RELEASE_ID}-${sha}" in text
     assert "metrik-api:latest" not in text
+
+
+def test_release_installer_verifies_before_installing() -> None:
+    script = (ROOT / "scripts" / "release" / "install-verified-release.sh").read_text(
+        encoding="utf-8"
+    )
+    checks = [
+        "^groundtruth-release-",
+        "must contain exactly",
+        "sha256sum --check --strict",
+        "groundtruth release verify-bundle",
+        "rm -rf reports/generated/lookup_cache",
+    ]
+    indexes = [script.index(check) for check in checks]
+    assert indexes == sorted(indexes)
+    assert "releases/latest" not in script
+
+
+def test_code_deploys_keep_the_live_data_release() -> None:
+    workflow, text = _workflow("azure-beta-deploy.yml")
+    steps = workflow["jobs"]["deploy"]["steps"]
+    keep = _step_index(steps, "Keep the live verified data release")
+    assert _step_index(steps, "Azure login") < keep
+    assert keep < _step_index(steps, "Verify release artifacts")
+    assert keep < _step_index(steps, "Build, scan tooling absence, push immutable tag")
+    run = steps[keep]["run"]
+    assert "/api/meta" in run
+    assert "scripts/release/install-verified-release.sh" in run
+    assert "releases/latest" not in text
+    assert (
+        _triggers(workflow)["workflow_dispatch"]["inputs"]["data_release_tag"]["required"] is False
+    )
+    assert 'grep -F "\\"$DATA_RELEASE_ID\\""' in text
 
 
 def test_workflows_never_echo_notification_secrets() -> None:
