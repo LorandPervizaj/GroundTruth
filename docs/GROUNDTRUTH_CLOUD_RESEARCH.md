@@ -1,5 +1,7 @@
 # Private GroundTruth cloud research environment
 
+> **HISTORICAL — NEVER DEPLOYED.** This Azure research design was never provisioned (see `RESEARCH_AUTOMATION_MIGRATION_AUDIT_2026-09-29.md`). Research now runs on the local Windows host: follow `LOCAL_RESEARCH_RUNNER.md`. Do not apply `infra/azure/research.bicep`.
+
 GroundTruth runs separately from the public Metrik Container App. The target is one scheduled Azure Container Apps Job, one persistent PostgreSQL Flexible Server with PostGIS, and two private Azure Files shares for pipeline state and verified bundles.
 
 ## Why this shape

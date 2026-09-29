@@ -129,3 +129,16 @@ Once authority is resolved, rehearse the two missing Alembic migrations on the
 disposable copy before aligning the source and proceeding to the local runtime.
 The full repository quality gate and deployment commissioning were not run:
 only checkpoint/evidence documents changed. Completion remains unclaimed.
+
+## Resolution — 2026-09-29
+
+The owner confirmed the September 21 corpus as authoritative. The missed
+September 28 crawl will be caught up by the first manual commissioning run.
+
+The two missing migrations were rehearsed on the disposable restore, then
+applied to `groundtruth-postgres`; normalized-listing counts were unchanged
+(migration SQL retained in `C:\MetrikResearch\logs\migration-to-head.sql`).
+`groundtruth research doctor` on the host afterwards reported PASS for
+repository, database (PostgreSQL 16.4), PostGIS 3.4.3, Alembic
+`h2i3j4k5l6m7`, durable directories, lock, and backup age; watermark and
+verified release are in bootstrap state.

@@ -1,5 +1,7 @@
 # Autonomous weekly GroundTruth pipeline — final report
 
+> **HISTORICAL.** Point-in-time report of a design. Its Azure research job was never provisioned. Current operation: `LOCAL_RESEARCH_RUNNER.md`.
+
 ## Executive summary
 
 The repository now contains a fail-closed, observable weekly GroundTruth-to-Metrik release transaction. It derives catch-up from a verified watermark, runs the existing eight-source crawl/ETL/analytics flow, applies source and data-quality gates, records statistical shadow predictions, versions and hashes the public release, packages it, and supports a separate persistent Azure research Job. A second workflow verifies the bundle again, builds an immutable serving image, deploys it to the existing Container App, checks the public contract, and automatically restores the previous image on failure. Telegram is primary notification; SMTP/Gmail is optional.
