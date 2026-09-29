@@ -167,3 +167,37 @@ def backup(label: str = typer.Option("manual")) -> None:
     from groundtruth.automation.backups import create_backup
 
     print(create_backup(label=label))
+
+
+@research_app.command("publication-candidate")
+def publication_candidate(
+    result: Path = typer.Option(..., help="Structured weekly-release run result"),
+    github_output: Path | None = typer.Option(None, help="Append key=value outputs here"),
+) -> None:
+    """Refuse anything but a verified bundle from this host's release directory."""
+    from groundtruth.automation.publication import verify_run_result
+
+    try:
+        verified = verify_run_result(result, Path(os.environ["GROUNDTRUTH_RELEASE_OUTPUT_DIR"]))
+    except Exception as exc:
+        Console().print(f"[red]Not publishable: {exc}[/red]")
+        raise typer.Exit(1) from exc
+    outputs = verified.outputs()
+    if github_output:
+        with github_output.open("a", encoding="utf-8") as handle:
+            handle.writelines(f"{key}={value}\n" for key, value in outputs.items())
+    print(json.dumps(outputs))
+
+
+@research_app.command("notify")
+def notify(message: str = typer.Argument(...)) -> None:
+    """Best-effort owner Telegram message. Delivery failure never fails the run."""
+    from groundtruth.automation.notifications import send_telegram_message
+
+    try:
+        sent = send_telegram_message(message[:3900])
+    except Exception as exc:
+        # The request URL contains the bot token; print only the exception type.
+        print(f"notification failed: {type(exc).__name__}")
+        return
+    print("notification sent" if sent else "notification skipped: Telegram not configured")

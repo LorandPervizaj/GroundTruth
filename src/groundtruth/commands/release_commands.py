@@ -2,6 +2,9 @@
 
 from __future__ import annotations
 
+import json
+from pathlib import Path
+
 import typer
 from rich.console import Console
 
@@ -30,3 +33,19 @@ def release_verify_artifacts() -> None:
     except Exception as exc:
         console.print(f"[red]{exc}[/red]")
         raise typer.Exit(1) from exc
+
+
+@release_app.command("verify-bundle")
+def release_verify_bundle(
+    bundle: Path = typer.Argument(..., help="groundtruth-release-<release_id>.tar.gz"),
+    release_id: str = typer.Option(..., help="Exact release id the bundle must carry"),
+) -> None:
+    """Verify checksum, public-only contents, and manifest identity of one bundle."""
+    from groundtruth.automation.publication import verify_bundle
+
+    try:
+        verified = verify_bundle(bundle, release_id=release_id)
+    except Exception as exc:
+        console.print(f"[red]{exc}[/red]")
+        raise typer.Exit(1) from exc
+    print(json.dumps(verified.outputs()))

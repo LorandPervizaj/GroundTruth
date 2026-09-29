@@ -31,9 +31,8 @@ def test_process_death_releases_lock(tmp_path):
     process = subprocess.Popen([sys.executable, "-c", script, str(path)], stdout=subprocess.PIPE)
     try:
         child_pid = int(process.stdout.readline().strip())
-        with pytest.raises(RuntimeError):
-            with PipelineLock(path, "overlap"):
-                pass
+        with pytest.raises(RuntimeError), PipelineLock(path, "overlap"):
+            pass
         os.kill(child_pid, signal.SIGTERM)
         process.wait(timeout=10)
         with PipelineLock(path, "recovered"):
@@ -46,8 +45,7 @@ def test_process_death_releases_lock(tmp_path):
 
 def test_cancellation_releases_lock(tmp_path):
     path = tmp_path / "weekly.lock"
-    with pytest.raises(KeyboardInterrupt):
-        with PipelineLock(path, "cancelled"):
-            raise KeyboardInterrupt
+    with pytest.raises(KeyboardInterrupt), PipelineLock(path, "cancelled"):
+        raise KeyboardInterrupt
     with PipelineLock(path, "retry"):
         pass
