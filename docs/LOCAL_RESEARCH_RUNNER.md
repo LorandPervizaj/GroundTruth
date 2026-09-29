@@ -101,6 +101,20 @@ Telegram receives: research started, pipeline result, release published,
 deployment started, deployment success or failure (with rollback status), and
 a GitHub-hosted notice whenever the research job does not succeed.
 
+A research job whose runner never comes online just sits queued; GitHub
+cancels it only after 24 hours. `groundtruth-weekly-watchdog.yml` runs on a
+GitHub-hosted runner and classifies the latest weekly run:
+
+| State | Meaning |
+| --- | --- |
+| `ok` | Succeeded, running, or queued within `max_queue_minutes` (default 45). |
+| `runner_offline` | The research job was never picked up: host asleep, off, logged out, or runner task stopped. |
+| `workflow_failed` | The runner ran the job and it failed; the alert names the failed step. |
+| `blocked` | The run has not created its research job, usually because an older run holds the concurrency group. |
+| `not_created` | No weekly run exists in the last 20 hours. |
+
+Any state other than `ok` sends a Telegram alert and fails the watchdog run.
+
 ## Manual operations
 
 ```powershell
@@ -181,6 +195,9 @@ Only after manual commissioning and the failure drills, add to
   schedule:
     - cron: "0 3 * * 1"
 ```
+
+and give `groundtruth-weekly-watchdog.yml` a later check, for example
+`cron: "0 4 * * 1"`, which is 60 minutes after the scheduled start.
 
 Do not re-add a schedule to `weekly-release-deploy.yml`. There is one weekly
 decision: research, then its verified release, then deployment.
