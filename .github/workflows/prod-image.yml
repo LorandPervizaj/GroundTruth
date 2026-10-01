@@ -39,8 +39,9 @@ jobs:
           file: Dockerfile
           load: true
           tags: metrik-api:ci
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          # Cached apt layers would keep OS packages that Trivy has since flagged.
+          pull: true
+          no-cache: true
 
       - name: Confirm research tooling is absent
         run: |

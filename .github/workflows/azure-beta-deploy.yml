@@ -122,7 +122,7 @@ jobs:
           SHA="$(git rev-parse --short HEAD)"
           LOGIN="$(az acr show -n "$ACR" --query loginServer -o tsv)"
           IMAGE="${LOGIN}/metrik-api:${SHA}"
-          docker build -t "$IMAGE" -f Dockerfile .
+          docker build --pull --no-cache -t "$IMAGE" -f Dockerfile .
           docker run --rm --entrypoint uv "$IMAGE" run python -c \
             "import importlib.util as u; assert u.find_spec('scrapy') is None; assert u.find_spec('playwright') is None; assert u.find_spec('fastapi') is not None"
           docker push "$IMAGE"
