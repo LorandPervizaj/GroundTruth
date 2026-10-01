@@ -167,7 +167,8 @@ def set_language(request: Request, pref: LangPreference) -> JSONResponse:
         "metrik_lang",
         pref.lang,
         path="/",
-        httponly=True,
+        # i18n.js reads this cookie via document.cookie; HttpOnly would hide it.
+        httponly=False,
         samesite="lax",
         secure=not settings.is_development,
     )
