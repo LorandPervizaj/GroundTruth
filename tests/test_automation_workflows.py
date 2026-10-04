@@ -201,3 +201,12 @@ def test_workflows_never_echo_notification_secrets() -> None:
         assert "research.env" not in text.replace(
             "GROUNDTRUTH_ENV_FILE: C:\\MetrikResearch\\config\\research.env", ""
         )
+
+
+def test_telegram_steps_never_block_research_or_deployment() -> None:
+    for name in (DEPLOY, RESEARCH, "groundtruth-weekly-watchdog.yml"):
+        workflow, _ = _workflow(name)
+        for job in workflow["jobs"].values():
+            for step in job.get("steps", []):
+                if "telegram" in step.get("name", "").lower():
+                    assert step.get("continue-on-error") is True, f"{name}: {step['name']}"
