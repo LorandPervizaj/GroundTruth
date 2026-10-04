@@ -35,6 +35,7 @@ class DataQualityResult:
     valid: int = 0
     quarantined: int = 0
     duplicate_candidates: int = 0
+    skipped_age: int = 0
     parse_failures: int = 0
     normalization_failures: int = 0
     error_breakdown: dict[str, int] = field(default_factory=dict)
@@ -56,9 +57,15 @@ def classify_data_quality(
     normalization_failures: int,
     validation_failures: int,
     duplicate_candidates: int = 0,
+    skipped_age: int = 0,
     field_rates: dict[str, Any] | None = None,
     threshold: DataQualityThreshold | None = None,
 ) -> DataQualityResult:
+    """Classify one ETL run.
+
+    Listings older than the crawl window are parsed and then intentionally
+    dropped (``skipped_age``), so only in-window listings must normalize.
+    """
     policy = threshold or DataQualityThreshold()
     reasons: list[str] = []
     level: QualityLevel = "GREEN"
@@ -70,7 +77,8 @@ def classify_data_quality(
     )
     validation_rate = validation_failures / normalized if normalized else 0.0
 
-    if raw >= policy.minimum_sample and normalized == 0:
+    in_window = raw - max(0, skipped_age)
+    if in_window >= policy.minimum_sample and normalized == 0:
         level = "RED"
         reasons.append("non-empty raw input produced no normalized records")
     if parse_denominator >= policy.minimum_sample:
@@ -107,6 +115,7 @@ def classify_data_quality(
         valid=max(0, normalized - validation_failures),
         quarantined=validation_failures,
         duplicate_candidates=duplicate_candidates,
+        skipped_age=max(0, skipped_age),
         parse_failures=parse_failures,
         normalization_failures=normalization_failures,
         error_breakdown=breakdown if isinstance(breakdown, dict) else {},
@@ -147,6 +156,7 @@ def collect_data_quality(session: Session, source_results: list[Any]) -> list[Da
                 normalization_failures=metrics.normalized_failed,
                 validation_failures=metrics.validation_failed,
                 duplicate_candidates=metrics.duplicate_candidates,
+                skipped_age=int((metrics.field_rates or {}).get("skipped_age") or 0),
                 field_rates=metrics.field_rates,
             )
         )
