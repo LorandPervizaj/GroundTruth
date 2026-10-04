@@ -158,6 +158,37 @@ def test_data_quality_blocks_parser_collapse() -> None:
     assert result.valid == 10
 
 
+def test_data_quality_ignores_listings_older_than_the_window() -> None:
+    result = classify_data_quality(
+        source="pro-rks",
+        scrape_run_id=191,
+        raw=64,
+        parsed=64,
+        parse_failures=0,
+        normalized=0,
+        normalization_failures=0,
+        validation_failures=0,
+        skipped_age=64,
+    )
+    assert result.level == "GREEN"
+    assert result.skipped_age == 64
+
+
+def test_data_quality_is_red_when_in_window_listings_do_not_normalize() -> None:
+    result = classify_data_quality(
+        source="pro-rks",
+        scrape_run_id=191,
+        raw=64,
+        parsed=64,
+        parse_failures=0,
+        normalized=0,
+        normalization_failures=0,
+        validation_failures=0,
+        skipped_age=40,
+    )
+    assert result.level == "RED"
+
+
 def test_weekly_release_records_verified_result(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:

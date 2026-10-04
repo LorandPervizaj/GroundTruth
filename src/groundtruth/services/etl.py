@@ -211,6 +211,7 @@ class EtlService:
 
         field_rates = self._compute_field_rates(normalized_entities)
         field_rates.error_breakdown = error_counts
+        field_rates.skipped_age = counters["skipped_age"]
         duplicate_candidates = self._count_duplicate_candidates(normalized_entities)
         kpi_report = build_parser_kpi_report(
             field_rates,

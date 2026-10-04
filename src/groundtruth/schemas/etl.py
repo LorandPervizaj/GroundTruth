@@ -37,6 +37,8 @@ class FieldExtractionRates(BaseModel):
     listing_type: float = 0.0
     error_breakdown: dict[str, int] | None = None
     parser_kpis: dict[str, Any] | None = None
+    # Count, not a percentage: parsed listings dropped as older than the crawl window.
+    skipped_age: int = 0
 
 
 class EtlMetricsSchema(BaseModel):
