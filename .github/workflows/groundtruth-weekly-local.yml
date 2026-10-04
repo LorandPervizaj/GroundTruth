@@ -49,6 +49,16 @@ jobs:
       release_tag: ${{ steps.candidate.outputs.release_tag }}
       release_id: ${{ steps.candidate.outputs.release_id }}
     steps:
+      # Host env file values are not GitHub secrets, so the runner cannot redact them on its own.
+      - name: Mask research host secrets
+        run: |
+          foreach ($line in Get-Content -LiteralPath $env:GROUNDTRUTH_ENV_FILE) {
+            if ($line -match '^\s*[A-Z0-9_]*(TOKEN|SECRET|PASSWORD|DATABASE_URL)[A-Z0-9_]*\s*=\s*(.*)$') {
+              $value = $Matches[2].Trim().Trim("'").Trim('"')
+              if ($value) { "::add-mask::$value" }
+            }
+          }
+
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           ref: ${{ github.sha }}
