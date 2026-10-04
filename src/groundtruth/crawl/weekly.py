@@ -7,6 +7,7 @@ import logging
 import math
 import os
 import subprocess
+import uuid
 from collections.abc import Callable
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass, field
@@ -224,14 +225,20 @@ def _crawl_subprocess_env() -> dict[str, str]:
     return env
 
 
-def _run_spider(spider_name: str, window: CrawlWindow, **kwargs: str) -> int | None:
+def _run_spider(
+    spider_name: str, window: CrawlWindow, *, crawl_label: str | None = None, **kwargs: str
+) -> int | None:
     """Run one spider in a subprocess; return scrape_run_id from the new run."""
     _validate_spider_name(spider_name)
-    kwargs = {
-        **kwargs,
-        "crawl_window": json.dumps(crawl_window_metadata(window), separators=(",", ":")),
+    # Jobs sharing a spider (merrjep rent/sale) run concurrently, so the run is
+    # identified by a per-job id stored in its metadata, not by spider name.
+    job_id = uuid.uuid4().hex
+    metadata = {
+        **crawl_window_metadata(window),
+        "crawl_label": crawl_label or spider_name,
+        "crawl_job_id": job_id,
     }
-    before_id = _max_scrape_run_id()
+    kwargs = {**kwargs, "crawl_window": json.dumps(metadata, separators=(",", ":"))}
     cmd = _build_crawl_command(spider_name, kwargs)
     logger.info("weekly_subprocess_crawl", spider=spider_name, command=cmd)
     result = subprocess.run(
@@ -244,7 +251,7 @@ def _run_spider(spider_name: str, window: CrawlWindow, **kwargs: str) -> int | N
     )
     if result.returncode != 0:
         raise RuntimeError(f"crawl {spider_name} exited with code {result.returncode}")
-    return _latest_scrape_run_id(spider_name, after_id=before_id)
+    return _scrape_run_id_for_job(job_id)
 
 
 def _close_stale_scrape_runs() -> None:
@@ -277,7 +284,7 @@ def _close_stale_scrape_runs() -> None:
         session.commit()
 
 
-def _latest_scrape_run_id(spider_name: str, after_id: int = 0) -> int | None:
+def _scrape_run_id_for_job(job_id: str) -> int | None:
     from sqlalchemy import text
 
     from groundtruth.database.session import get_session_factory
@@ -287,23 +294,13 @@ def _latest_scrape_run_id(spider_name: str, after_id: int = 0) -> int | None:
             text(
                 """
                 SELECT id FROM scrape_runs
-                WHERE spider_name = :spider AND id > :after_id
+                WHERE metadata->>'crawl_job_id' = :job_id
                 ORDER BY id DESC LIMIT 1
                 """
             ),
-            {"spider": spider_name, "after_id": after_id},
+            {"job_id": job_id},
         ).first()
     return int(row[0]) if row else None
-
-
-def _max_scrape_run_id() -> int:
-    from sqlalchemy import text
-
-    from groundtruth.database.session import get_session_factory
-
-    with get_session_factory()() as session:
-        row = session.execute(text("SELECT COALESCE(MAX(id), 0) FROM scrape_runs")).first()
-    return int(row[0]) if row else 0
 
 
 def _scrape_run_stats(scrape_run_id: int) -> tuple[int, int, str | None]:
@@ -452,7 +449,11 @@ def refresh_analytics(
     from groundtruth.analytics.listing_history import record_listing_observations
     from groundtruth.analytics.snapshots import generate_market_snapshots
     from groundtruth.analytics.source_skew import source_skew_report
-    from groundtruth.services.lookup_cache import build_lookup_cache
+    from groundtruth.services.lookup_cache import build_lookup_cache, stamp_related_artifact_hash
+    from groundtruth.services.rent_yield import (
+        RENT_YIELD_CACHE,
+        build_rent_yield_from_lookup_cache,
+    )
 
     out = console or Console()
     # Ensure analytics is not limited by short crawl cleanup timeouts.
@@ -489,6 +490,8 @@ def refresh_analytics(
     # orchestration function testable with a stubbed cache builder while the
     # release verifier remains the final mandatory gate.
     if cache_path.is_file():
+        build_rent_yield_from_lookup_cache()
+        stamp_related_artifact_hash(key="rent_yield", path=RENT_YIELD_CACHE)
         qa_status, qa_paths = run_statistical_qa(cache_path.parent, cache_path.parent / "_qa")
         out.print(f"[green]Statistical QA: {qa_status} ({qa_paths['summary']}).[/green]")
 
@@ -587,7 +590,7 @@ def _run_crawl_jobs(
         cp.touch()
         save_checkpoint(checkpoint)
         try:
-            scrape_run_id = _run_spider(spider, window, **kwargs)
+            scrape_run_id = _run_spider(spider, window, crawl_label=label, **kwargs)
             cp.scrape_run_id = scrape_run_id
             cp.crawl = "done" if scrape_run_id else "failed"
             cp.error = None if scrape_run_id else "no scrape_run_id"
