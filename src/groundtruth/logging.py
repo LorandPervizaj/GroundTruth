@@ -51,6 +51,8 @@ def configure_logging(settings: Settings | None = None) -> None:
     root.handlers.clear()
     root.addHandler(handler)
     root.setLevel(settings.log_level.upper())
+    # httpx logs full request URLs at INFO; the Telegram bot token is part of the URL.
+    logging.getLogger("httpx").setLevel(logging.WARNING)
 
 
 def get_logger(name: str | None = None, **initial_context: Any) -> structlog.stdlib.BoundLogger:
