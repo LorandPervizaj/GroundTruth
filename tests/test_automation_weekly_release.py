@@ -6,7 +6,11 @@ from types import SimpleNamespace
 import pytest
 
 from groundtruth.automation.data_quality import DataQualityResult, classify_data_quality
-from groundtruth.automation.source_health import SourceHealth, classify_source_health
+from groundtruth.automation.source_health import (
+    SourceHealth,
+    classify_source_health,
+    listings_already_known,
+)
 from groundtruth.automation.state import PipelineLock, calculate_lookback_days
 from groundtruth.automation.statistical_sanity import (
     StatisticalSanityResult,
@@ -58,6 +62,42 @@ def test_source_health_uses_historical_source_baseline() -> None:
     )
     assert result.level == "RED"
     assert result.historical_median == 100
+
+
+def test_source_health_counts_already_known_listings_as_observed() -> None:
+    result = classify_source_health(
+        source="topia",
+        scrape_run_id=178,
+        completed=True,
+        listings_found=3,
+        listings_stored=3,
+        listings_already_known=395,
+        errors_count=0,
+        historical_counts=[150, 149, 160],
+    )
+    assert result.level == "GREEN"
+    assert result.listings_already_known == 395
+
+
+def test_source_health_is_red_when_nothing_was_observed() -> None:
+    result = classify_source_health(
+        source="merrjep-rent",
+        scrape_run_id=177,
+        completed=True,
+        listings_found=0,
+        listings_stored=0,
+        listings_already_known=0,
+        errors_count=0,
+        historical_counts=[650, 700, 600],
+    )
+    assert result.level == "RED"
+
+
+def test_listings_already_known_reads_spider_stats() -> None:
+    metadata = {"scrapy_stats": {"spider": {"detail_skipped_existing": 157}}}
+    assert listings_already_known(metadata) == 157
+    assert listings_already_known({}) == 0
+    assert listings_already_known(None) == 0
 
 
 def healthy_sources(_: object) -> list[SourceHealth]:
