@@ -201,6 +201,13 @@ def test_deploys_wait_for_the_new_revision_before_checking_it() -> None:
     rollback = steps[_step_index(steps, "Restore previous production image after failure")]["run"]
     assert "--revision-suffix" in rollback
     assert "wait-for-revision.sh" in rollback
+    tooling = steps[_step_index(steps, "Check out deploy tooling")]["with"]
+    assert "ref" not in tooling
+    for step in steps:
+        run = step.get("run", "")
+        for script in ("wait-for-revision.sh", "smoke.ps1"):
+            if script in run:
+                assert f".deploy-tools/scripts/azure/{script}" in run
 
     workflow, _ = _workflow("azure-beta-deploy.yml")
     steps = workflow["jobs"]["deploy"]["steps"]
