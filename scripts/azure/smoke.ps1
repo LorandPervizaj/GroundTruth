@@ -8,6 +8,10 @@ param(
 
 $ErrorActionPreference = "Stop"
 $BaseUrl = $BaseUrl.TrimEnd("/")
+# Runs on Windows hosts and Linux GitHub runners, which have no TEMP variable or curl.exe.
+$TempDir = [System.IO.Path]::GetTempPath()
+$Curl = if ($IsWindows) { "curl.exe" } else { "curl" }
+$NullDevice = if ($IsWindows) { "NUL" } else { "/dev/null" }
 
 function Hit([string]$Method, [string]$Path, $Body = $null, $Headers = $null) {
   $uri = "$BaseUrl$Path"
@@ -34,13 +38,13 @@ function Hit([string]$Method, [string]$Path, $Body = $null, $Headers = $null) {
       try { $code = [int]$resp.StatusCode } catch { $code = 0 }
     }
     # Prefer curl for reliable non-2xx body capture on Windows PowerShell 7.
-    $tmp = Join-Path $env:TEMP ("metrik-smoke-" + [guid]::NewGuid().ToString("n") + ".json")
+    $tmp = Join-Path $TempDir ("metrik-smoke-" + [guid]::NewGuid().ToString("n") + ".json")
     if ($Method -eq "GET") {
-      $code = curl.exe -sS -m 60 -o $tmp -w "%{http_code}" $uri
+      $code = & $Curl -sS -m 60 -o $tmp -w "%{http_code}" $uri
     } elseif ($null -ne $Body) {
-      $payload = Join-Path $env:TEMP ("metrik-smoke-body-" + [guid]::NewGuid().ToString("n") + ".json")
+      $payload = Join-Path $TempDir ("metrik-smoke-body-" + [guid]::NewGuid().ToString("n") + ".json")
       Set-Content -Path $payload -Value ($Body | ConvertTo-Json -Compress) -NoNewline
-      $code = curl.exe -sS -m 60 -o $tmp -w "%{http_code}" -X $Method $uri -H "content-type: application/json" --data-binary "@$payload"
+      $code = & $Curl -sS -m 60 -o $tmp -w "%{http_code}" -X $Method $uri -H "content-type: application/json" --data-binary "@$payload"
     }
     if (Test-Path $tmp) { $text = Get-Content $tmp -Raw -ErrorAction SilentlyContinue }
     Write-Host "$Method $Path -> $code $($text.Substring(0, [Math]::Min(160, ($text ?? '').Length)))"
@@ -78,9 +82,9 @@ if ([int]$valuate.StatusCode -ne $ExpectedValuationStatus) {
   throw "valuate expected $ExpectedValuationStatus, got $($valuate.StatusCode)"
 }
 
-$badCtFile = Join-Path $env:TEMP "metrik-badct.txt"
+$badCtFile = Join-Path $TempDir "metrik-badct.txt"
 Set-Content -Path $badCtFile -Value "x" -NoNewline
-$badCt = curl.exe -sS -m 30 -o NUL -w "%{http_code}" -X POST "$BaseUrl/api/contact" -H "content-type: text/plain" --data-binary "@$badCtFile"
+$badCt = & $Curl -sS -m 30 -o $NullDevice -w "%{http_code}" -X POST "$BaseUrl/api/contact" -H "content-type: text/plain" --data-binary "@$badCtFile"
 Write-Host "POST /api/contact wrong CT -> $badCt"
 if ($badCt -ne "415") { throw "expected 415 for wrong content-type" }
 

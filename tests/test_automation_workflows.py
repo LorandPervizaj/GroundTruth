@@ -191,6 +191,35 @@ def test_code_deploys_keep_the_live_data_release() -> None:
     assert 'grep -F "\\"$DATA_RELEASE_ID\\""' in text
 
 
+def test_deploys_wait_for_the_new_revision_before_checking_it() -> None:
+    workflow, _ = _workflow(DEPLOY)
+    steps = workflow["jobs"]["deploy"]["steps"]
+    deploy = steps[_step_index(steps, "Deploy candidate revision")]["run"]
+    assert "--revision-suffix" in deploy
+    assert deploy.index("az containerapp update") < deploy.index("wait-for-revision.sh")
+    assert '"$RELEASE_ID"' in deploy.split("wait-for-revision.sh", 1)[1]
+    rollback = steps[_step_index(steps, "Restore previous production image after failure")]["run"]
+    assert "--revision-suffix" in rollback
+    assert "wait-for-revision.sh" in rollback
+
+    workflow, _ = _workflow("azure-beta-deploy.yml")
+    steps = workflow["jobs"]["deploy"]["steps"]
+    deploy = steps[_step_index(steps, "Deploy Container App revision")]["run"]
+    assert "--revision-suffix" in deploy
+    assert "DATA_RELEASE_ID" in deploy.split("wait-for-revision.sh", 1)[1]
+
+    script = (ROOT / "scripts" / "azure" / "wait-for-revision.sh").read_text(encoding="utf-8")
+    assert "latestReadyRevisionName" in script
+    assert "/api/meta" in script
+
+
+def test_smoke_script_runs_on_linux_runners() -> None:
+    script = (ROOT / "scripts" / "azure" / "smoke.ps1").read_text(encoding="utf-8")
+    assert "$env:TEMP" not in script
+    assert "curl.exe -" not in script
+    assert "-o NUL" not in script
+
+
 def test_workflows_never_echo_notification_secrets() -> None:
     for name in (DEPLOY, RESEARCH, "groundtruth-weekly-control.yml"):
         _, text = _workflow(name)
