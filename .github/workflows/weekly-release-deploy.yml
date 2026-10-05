@@ -133,9 +133,13 @@ jobs:
         run: |
           set -euo pipefail
           echo "DEPLOY_STARTED=true" >> "$GITHUB_ENV"
-          az containerapp update -g "$RESOURCE_GROUP" -n "$CONTAINER_APP" --container-name metrik-api --image "$CANDIDATE_IMAGE"
           fqdn="$(az containerapp show -g "$RESOURCE_GROUP" -n "$CONTAINER_APP" --query properties.configuration.ingress.fqdn -o tsv)"
           echo "APP_URL=https://$fqdn" >> "$GITHUB_ENV"
+          suffix="r${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          az containerapp update -g "$RESOURCE_GROUP" -n "$CONTAINER_APP" --container-name metrik-api \
+            --image "$CANDIDATE_IMAGE" --revision-suffix "$suffix" --output none
+          bash scripts/azure/wait-for-revision.sh "$RESOURCE_GROUP" "$CONTAINER_APP" \
+            "$CONTAINER_APP--$suffix" "$RELEASE_ID"
 
       - name: Verify live production contract
         shell: pwsh
@@ -167,8 +171,11 @@ jobs:
         if: ${{ failure() && env.DEPLOY_STARTED == 'true' && env.PREVIOUS_IMAGE != '' }}
         run: |
           set -euo pipefail
-          az containerapp update -g "$RESOURCE_GROUP" -n "$CONTAINER_APP" --container-name metrik-api --image "$PREVIOUS_IMAGE"
+          suffix="rb${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          az containerapp update -g "$RESOURCE_GROUP" -n "$CONTAINER_APP" --container-name metrik-api \
+            --image "$PREVIOUS_IMAGE" --revision-suffix "$suffix" --output none
           echo "ROLLBACK_ATTEMPTED=true" >> "$GITHUB_ENV"
+          bash scripts/azure/wait-for-revision.sh "$RESOURCE_GROUP" "$CONTAINER_APP" "$CONTAINER_APP--$suffix"
 
       - name: Verify rollback
         if: ${{ failure() && env.ROLLBACK_ATTEMPTED == 'true' }}

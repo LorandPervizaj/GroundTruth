@@ -142,13 +142,18 @@ jobs:
           RG: ${{ secrets.METRIK_AZURE_RESOURCE_GROUP }}
         run: |
           set -euo pipefail
+          SUFFIX="c${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
           az containerapp update \
             --name ca-metrik-api \
             --resource-group "$RG" \
             --container-name metrik-api \
-            --image "$IMAGE"
+            --image "$IMAGE" \
+            --revision-suffix "$SUFFIX" \
+            --output none
           FQDN="$(az containerapp show -n ca-metrik-api -g "$RG" --query properties.configuration.ingress.fqdn -o tsv)"
           echo "APP_URL=https://${FQDN}" >> "$GITHUB_ENV"
+          bash scripts/azure/wait-for-revision.sh "$RG" ca-metrik-api \
+            "ca-metrik-api--$SUFFIX" "${DATA_RELEASE_ID:-}"
 
       - name: Wait for readiness
         run: |
