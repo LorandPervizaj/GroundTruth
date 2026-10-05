@@ -48,6 +48,15 @@ jobs:
           ref: refs/tags/${{ inputs.release_tag }}
           persist-credentials: false
 
+      # Deploy scripts come from the workflow's own commit, not the release tag:
+      # redeploying an older release must still use current rollout checks.
+      - name: Check out deploy tooling
+        uses: actions/checkout@v4
+        with:
+          path: .deploy-tools
+          sparse-checkout: scripts/azure
+          persist-credentials: false
+
       - uses: astral-sh/setup-uv@v5
         with:
           enable-cache: true
@@ -138,12 +147,12 @@ jobs:
           suffix="r${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
           az containerapp update -g "$RESOURCE_GROUP" -n "$CONTAINER_APP" --container-name metrik-api \
             --image "$CANDIDATE_IMAGE" --revision-suffix "$suffix" --output none
-          bash scripts/azure/wait-for-revision.sh "$RESOURCE_GROUP" "$CONTAINER_APP" \
+          bash .deploy-tools/scripts/azure/wait-for-revision.sh "$RESOURCE_GROUP" "$CONTAINER_APP" \
             "$CONTAINER_APP--$suffix" "$RELEASE_ID"
 
       - name: Verify live production contract
         shell: pwsh
-        run: ./scripts/azure/smoke.ps1 -BaseUrl $env:APP_URL -ExpectedReleaseId $env:RELEASE_ID
+        run: ./.deploy-tools/scripts/azure/smoke.ps1 -BaseUrl $env:APP_URL -ExpectedReleaseId $env:RELEASE_ID
 
       - name: Record deployed revision
         run: |
@@ -175,12 +184,12 @@ jobs:
           az containerapp update -g "$RESOURCE_GROUP" -n "$CONTAINER_APP" --container-name metrik-api \
             --image "$PREVIOUS_IMAGE" --revision-suffix "$suffix" --output none
           echo "ROLLBACK_ATTEMPTED=true" >> "$GITHUB_ENV"
-          bash scripts/azure/wait-for-revision.sh "$RESOURCE_GROUP" "$CONTAINER_APP" "$CONTAINER_APP--$suffix"
+          bash .deploy-tools/scripts/azure/wait-for-revision.sh "$RESOURCE_GROUP" "$CONTAINER_APP" "$CONTAINER_APP--$suffix"
 
       - name: Verify rollback
         if: ${{ failure() && env.ROLLBACK_ATTEMPTED == 'true' }}
         shell: pwsh
-        run: ./scripts/azure/smoke.ps1 -BaseUrl $env:APP_URL
+        run: ./.deploy-tools/scripts/azure/smoke.ps1 -BaseUrl $env:APP_URL
 
       - name: Telegram success notification
         if: ${{ success() }}
