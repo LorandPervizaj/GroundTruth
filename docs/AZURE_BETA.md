@@ -1,8 +1,10 @@
 # Metrik Azure Limited Public Beta
 
-Operator guide for deploying the **public Metrik** product to Azure Container Apps.
+Provisioning and IaC reference for the **public Metrik** Container App.
 
-This is additive to the existing Docker Compose / VPS path (`docs/DEPLOYMENT.md`). The private GroundTruth research/ETL host stays separate and only publishes verified release artifacts.
+> **Status.** Routine deploys and rollbacks run through GitHub Actions; see [DEPLOYMENT.md](DEPLOYMENT.md). The manual `build-push.ps1` / `deploy.ps1` flow below is for first provisioning and break-glass use. The live app uses the Postgres sidecar fallback (EmptyDir, not durable), not Flexible Server; see [PUBLIC_DATABASE_DURABILITY_PLAN.md](PUBLIC_DATABASE_DURABILITY_PLAN.md).
+
+The private GroundTruth research host stays separate and only publishes verified release bundles.
 
 ## 1. Architecture
 
