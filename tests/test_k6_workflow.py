@@ -39,7 +39,7 @@ def test_k6_workflow_pins_k6_and_runs_the_public_read_suite() -> None:
     steps = workflow["jobs"]["performance"]["steps"]
 
     install = next(step for step in steps if step.get("name") == "Install k6")
-    assert install["uses"] == "grafana/setup-k6-action@v1"
+    assert install["uses"] == "grafana/setup-k6-action@v1.2.1"
     assert install["with"]["k6-version"] == "2.3.0"
 
     run = next(step for step in steps if step.get("name") == "Run k6 public-read suite")
