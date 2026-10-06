@@ -1,0 +1,143 @@
+name: k6 performance
+
+on:
+  pull_request:
+    branches: [master]
+    paths:
+      - "src/groundtruth/api/**"
+      - "src/groundtruth/services/**"
+      - "src/groundtruth/analytics/**"
+      - "web/**"
+      - "reports/generated/lookup_cache/**"
+      - "tests/load/**"
+      - ".github/workflows/k6.yml"
+      - "pyproject.toml"
+      - "uv.lock"
+  push:
+    branches: [master]
+    paths:
+      - "src/groundtruth/api/**"
+      - "src/groundtruth/services/**"
+      - "src/groundtruth/analytics/**"
+      - "web/**"
+      - "reports/generated/lookup_cache/**"
+      - "tests/load/**"
+      - ".github/workflows/k6.yml"
+      - "pyproject.toml"
+      - "uv.lock"
+  schedule:
+    - cron: "23 4 * * *"
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: "k6 profile"
+        required: true
+        default: smoke
+        type: choice
+        options:
+          - smoke
+          - baseline
+
+permissions:
+  contents: read
+
+concurrency:
+  group: k6-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  performance:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    services:
+      postgres:
+        image: postgis/postgis:16-3.4
+        env:
+          POSTGRES_USER: groundtruth
+          POSTGRES_PASSWORD: groundtruth_dev_password
+          POSTGRES_DB: groundtruth_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U groundtruth -d groundtruth_test"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      APP_ENV: development
+      API_RATE_LIMIT_ENABLED: "false"
+      BASE_URL: http://127.0.0.1:8000
+      DATABASE_URL: postgresql+psycopg://groundtruth:groundtruth_dev_password@localhost:5432/groundtruth_test
+      GROUNDTRUTH_TEST_DATABASE_URL: postgresql+psycopg://groundtruth:groundtruth_dev_password@localhost:5432/groundtruth_test
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        run: uv python install 3.13
+
+      - name: Install dependencies
+        run: uv sync --all-extras --frozen
+
+      - name: Apply migrations
+        run: uv run alembic upgrade head
+
+      - name: Start local Metrik
+        shell: bash
+        run: |
+          uv run groundtruth serve --no-reload > /tmp/metrik-k6.log 2>&1 &
+          echo $! > /tmp/metrik-k6.pid
+
+          for attempt in {1..45}; do
+            if curl --fail --silent --show-error "$BASE_URL/api/health" > /dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+
+          cat /tmp/metrik-k6.log
+          exit 1
+
+      - name: Select k6 profile
+        shell: bash
+        run: |
+          profile="smoke"
+          if [ "$GITHUB_EVENT_NAME" = "schedule" ]; then
+            profile="baseline"
+          elif [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then
+            profile="${{ inputs.profile }}"
+          fi
+          echo "K6_PROFILE=$profile" >> "$GITHUB_ENV"
+          echo "Using k6 profile: $profile"
+
+      - name: Install k6
+        uses: grafana/setup-k6-action@v1
+        with:
+          k6-version: "2.3.0"
+
+      - name: Run k6 public-read suite
+        shell: bash
+        run: |
+          mkdir -p artifacts
+          set -o pipefail
+          k6 run             -e BASE_URL="$BASE_URL"             -e K6_PROFILE="$K6_PROFILE"             tests/load/k6_public_api.js             | tee artifacts/k6-summary.txt
+
+      - name: Upload k6 summary
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: k6-${{ github.run_id }}-${{ github.run_attempt }}
+          path: artifacts/k6-summary.txt
+          if-no-files-found: ignore
+          retention-days: 14
+
+      - name: Show Metrik log on failure
+        if: failure()
+        run: cat /tmp/metrik-k6.log
