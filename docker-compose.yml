@@ -39,6 +39,26 @@ services:
       timeout: 5s
       retries: 20
 
+  # Disposable database for local k6 runs. Never point load tests at the research database.
+  # Start with scripts/performance/start-local-test-target.ps1 (profile "perf"); data lives in tmpfs.
+  postgres-perf:
+    image: postgis/postgis:16-3.4
+    container_name: groundtruth-perf-postgres
+    profiles: ["perf"]
+    environment:
+      POSTGRES_USER: groundtruth_perf
+      POSTGRES_PASSWORD: groundtruth_perf
+      POSTGRES_DB: groundtruth_perf
+    ports:
+      - "127.0.0.1:15434:5432"
+    tmpfs:
+      - /var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U groundtruth_perf -d groundtruth_perf"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
   pgadmin:
     image: dpage/pgadmin4:latest
     container_name: groundtruth-pgadmin

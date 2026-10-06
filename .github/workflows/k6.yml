@@ -10,6 +10,8 @@ on:
       - "web/**"
       - "reports/generated/lookup_cache/**"
       - "tests/load/**"
+      - "scripts/performance/**"
+      - "docs/PERFORMANCE_TESTING.md"
       - ".github/workflows/k6.yml"
       - "pyproject.toml"
       - "uv.lock"
@@ -22,6 +24,8 @@ on:
       - "web/**"
       - "reports/generated/lookup_cache/**"
       - "tests/load/**"
+      - "scripts/performance/**"
+      - "docs/PERFORMANCE_TESTING.md"
       - ".github/workflows/k6.yml"
       - "pyproject.toml"
       - "uv.lock"
@@ -127,14 +131,20 @@ jobs:
         run: |
           mkdir -p artifacts
           set -o pipefail
-          k6 run             -e BASE_URL="$BASE_URL"             -e K6_PROFILE="$K6_PROFILE"             tests/load/k6_public_api.js             | tee artifacts/k6-summary.txt
+          k6 run --quiet --no-usage-report \
+            --summary-trend-stats "avg,min,med,p(90),p(95),p(99),max" \
+            --summary-export "artifacts/k6-$K6_PROFILE-summary.json" \
+            -e BASE_URL="$BASE_URL" \
+            -e K6_PROFILE="$K6_PROFILE" \
+            tests/load/k6_public_api.js \
+            | tee "artifacts/k6-$K6_PROFILE.txt"
 
       - name: Upload k6 summary
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: k6-${{ github.run_id }}-${{ github.run_attempt }}
-          path: artifacts/k6-summary.txt
+          path: artifacts/
           if-no-files-found: ignore
           retention-days: 14
 
