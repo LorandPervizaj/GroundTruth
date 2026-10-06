@@ -60,10 +60,14 @@ uv run pytest
 
 ## Production (short)
 
+Production is Azure Container Apps, deployed only by GitHub Actions from verified
+GitHub Releases. It runs the Metrik **website/API**, never research crawlers.
+
 ```powershell
-uv run groundtruth release build-artifacts
-uv run groundtruth release verify-artifacts
-docker compose -f docker-compose.prod.yml --env-file .env.production up -d --build
+# Research run, then publish and deploy its verified release
+gh workflow run groundtruth-weekly-local.yml --ref master
+# Redeploy one exact verified release
+gh workflow run weekly-release-deploy.yml --ref master -f release_tag=groundtruth-release-<release_id>
 ```
 
-Production deploys the Metrik **website/API**, not research crawlers. Full guide: [DEPLOYMENT.md](DEPLOYMENT.md).
+Full guide: [DEPLOYMENT.md](DEPLOYMENT.md). Research host: [LOCAL_RESEARCH_RUNNER.md](LOCAL_RESEARCH_RUNNER.md).

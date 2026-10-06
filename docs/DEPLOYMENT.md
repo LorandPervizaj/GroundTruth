@@ -1,200 +1,121 @@
-# Metrik Production Deployment
+# Metrik production deployment
 
-Target for the first public deployment: one small VPS or VM, FastAPI app behind nginx, private Postgres, and prebuilt public artifacts copied from the private ETL host.
+Public Metrik runs on **Azure Container Apps** (`ca-metrik-api`). Images are
+built and rolled out only by GitHub Actions. The research database never
+connects to production; production receives data only through verified release
+bundles published as immutable GitHub Releases.
 
-## 1. Build Release Artifacts
+Research-side operation (runner, weekly pipeline, backups) is documented in
+[LOCAL_RESEARCH_RUNNER.md](LOCAL_RESEARCH_RUNNER.md). Azure provisioning and
+IaC are in [AZURE_BETA.md](AZURE_BETA.md).
 
-Run this on the private data/ETL machine after crawl + ETL + analytics:
+## Two deploy paths
+
+| Workflow | Trigger | What it ships |
+| --- | --- | --- |
+| `weekly-release-deploy.yml` | Called by `groundtruth-weekly-local.yml` after a release is published, or `workflow_dispatch` with an exact `release_tag` | Current code at the workflow commit **plus** the exact data release `groundtruth-release-<release_id>` |
+| `azure-beta-deploy.yml` | Push to `master` touching `src/`, `web/`, `alembic/`, `data/api/`, `Dockerfile`, dependencies, `infra/azure/`, `scripts/azure/`; or `workflow_dispatch` | New code with the **data release currently live** (read from `/api/meta`), or an explicit `data_release_tag` |
+
+Neither workflow has a schedule. A data release reaches production only after a
+research run publishes it; a code push never replaces live data with the
+committed `lookup_cache`.
+
+## Verified release contract
+
+A release bundle `groundtruth-release-<release_id>.tar.gz` plus its `.sha256`
+contains only public serving artifacts:
+
+- `lookup_cache/` (manifest with per-file SHA256, market lookup JSON,
+  `rent_comparables.json.gz`, `sale_comparables.json.gz`, `comparables_meta.json`, QA summaries)
+- `data/api/annual_report.json`, `data/api/rent_yield.json`
+
+`scripts/release/install-verified-release.sh <tag>` downloads exactly those two
+assets, runs `sha256sum --check` and `groundtruth release verify-bundle`
+(checksum, public-only paths, publishable manifest for that release id), then
+installs them. `groundtruth release verify-artifacts` re-checks manifest
+structure, per-file hashes, lookup schema, and the absence of listing-level
+fields before any image is built.
+
+## Weekly release deploy sequence
+
+1. Validate the exact tag; check out the release tag and, separately, current
+   deploy tooling from the workflow commit.
+2. Download, verify, and install the release; run `release verify-artifacts`.
+3. Build `metrik-api:<release_id>-<sha>` from `Dockerfile` (web extras only) and
+   assert Scrapy and Playwright are absent from the image.
+4. Trivy scan; any fixable HIGH or CRITICAL finding fails the deploy.
+5. Push to ACR and record the digest.
+6. Capture the currently running image and revision.
+7. `az containerapp update` with a unique revision suffix, then
+   `scripts/azure/wait-for-revision.sh` waits for that revision to be ready and
+   to report the expected release.
+8. `scripts/azure/smoke.ps1 -ExpectedReleaseId <id>` checks health, readiness,
+   meta, markets, lookup, compare, rent yield, reports, and write-endpoint
+   guards against the live URL.
+9. On any failure after the revision switch, the previous image is redeployed
+   and smoke-tested. Deployment evidence is uploaded as a workflow artifact.
+
+Telegram receives start, success, and failure (with rollback status)
+notifications when the bot secrets are configured; notification failures never
+block a deploy.
+
+## Manual operations
 
 ```powershell
-uv run groundtruth crawl weekly --stage analytics --force
-uv run groundtruth release build-artifacts
-uv run groundtruth release verify-artifacts
+# Redeploy one exact verified release (also the manual rollback for data)
+gh workflow run weekly-release-deploy.yml --ref master -f release_tag=groundtruth-release-<release_id>
+
+# Redeploy current code with a specific data release
+gh workflow run azure-beta-deploy.yml --ref master -f data_release_tag=groundtruth-release-<release_id>
 ```
 
-`verify-artifacts` checks file presence, manifest structure, per-file SHA256 hashes, valid lookup JSON / `MarketLookup` schema, and absence of forbidden listing fields (title/description/phone, etc.). Rebuild artifacts after upgrading so manifests include `sha256` / `artifact_hashes`.
+To roll back code without a workflow, point the app at a previous immutable
+image:
 
-Required artifacts:
+```bash
+az containerapp update -g <resource-group> -n ca-metrik-api --container-name metrik-api \
+  --image <acr>.azurecr.io/metrik-api:<previous-tag> --revision-suffix manual-<n>
+```
 
-- `reports/generated/lookup_cache/manifest.json`
-- `reports/generated/lookup_cache/**.json`
-- `reports/generated/lookup_cache/rent_comparables.json.gz`
-- `reports/generated/lookup_cache/sale_comparables.json.gz`
-- `reports/generated/lookup_cache/comparables_meta.json`
-- `data/api/annual_report.json`
+Release artifacts are baked into the image, so they roll back with it. Treat
+schema changes as forward-fix only.
 
-Copy `reports/generated/lookup_cache/` to the web host at the same relative path, or mount it into the app container at `/app/reports/generated`.
+## Runtime configuration
 
-## 2. Configure Production Environment
+Production refuses to start when the settings are unsafe
+(`groundtruth.startup.validate_production_settings`). Required values:
 
-Create `.env.production` from `.env.production.example`.
-
-Required production values:
-
-- `APP_ENV=production`
-- `LOG_FORMAT=json`
-- `API_DOCS_ENABLED=false`
-- `API_REQUIRE_LOOKUP_CACHE=true`
-- strong `DATABASE_URL`, `POSTGRES_USER`, and `POSTGRES_PASSWORD`
+- `APP_ENV=production`, `API_REQUIRE_LOOKUP_CACHE=true`, `API_RATE_LIMIT_ENABLED=true`, `API_DOCS_ENABLED=false`
 - `PRODUCT_WRITE_BACKEND=database`
-- `PUBLIC_BASE_URL=https://your-domain`
+- `HEALTH_CHECK_TOKEN`, at least 24 characters (protects `/api/health/perf`, `/api/metrics`, and readiness detail)
+- `FORWARDED_ALLOW_IPS` other than `*`
+- `DATABASE_URL` without development placeholder passwords, held as a Container App secret
+- `SENTRY_DSN` when `REQUIRE_SENTRY_DSN=true`
 
-Never use the development database password on a reachable host.
+Probes: liveness `/api/health` (always 200 while the process serves), readiness
+`/api/ready` (503 until lookup and comparables caches are loaded and release
+hashes verify).
 
-## 3. Migrate Database
+## Public database
 
-Run migrations before starting traffic. Preferred production path (dedicated migrate profile):
+The public database holds only application schema and product writes
+(`product_submissions`: contact, feedback, events). It is currently a Postgres
+sidecar on `EmptyDir` storage, which is **not durable**. The durable target and
+migration plan are in
+[PUBLIC_DATABASE_DURABILITY_PLAN.md](PUBLIC_DATABASE_DURABILITY_PLAN.md).
+
+## Self-hosted alternative (not production)
+
+`docker-compose.prod.yml` and `deploy/nginx/metrik.conf` run the same image behind
+nginx on a single host. They remain for local production-like QA and as a
+fallback, not as the production path.
 
 ```bash
 docker compose -f docker-compose.prod.yml --env-file .env.production --profile migrate run --rm migrate
-```
-
-Then set `RUN_MIGRATIONS_ON_START=false` so the runtime app user does not need DDL.
-
-Local/dev fallback:
-
-```bash
-uv run alembic upgrade head
-```
-
-Limited beta may still use `RUN_MIGRATIONS_ON_START=true` (transitional). Full public launch must complete runtime/migration role separation (`scripts/sql/create_runtime_role.sql`).
-
-The public app can run against a private Postgres instance. For a stricter split, use a read-only/reporting database for public lookup routes and keep raw research tables private.
-
-## 4. Start The Stack
-
-```bash
 docker compose -f docker-compose.prod.yml --env-file .env.production up -d --build
 ```
 
-Check readiness:
-
-```bash
-curl -fsS http://localhost/api/ready
-# Ops only (requires X-Health-Token, blocked at nginx edge):
-curl -fsS -H "X-Health-Token: $HEALTH_CHECK_TOKEN" http://localhost:8000/api/health/perf
-```
-
-In production `/api/ready` returns **HTTP 200** only when ready. Not-ready states return
-**HTTP 503** with JSON like `{"ok": false, "reasons": ["lookup_cache_not_loaded", ...]}`.
-Readiness requires loaded lookup/comparables caches and verified release artifact hashes.
-`curl -fsS` fails on the 503, which is what HEALTHCHECK / compose expect.
-
-## 5. nginx / TLS
-
-`deploy/nginx/metrik.conf` provides:
-
-- reverse proxy to the app container
-- gzip
-- static cache headers
-- read/write API rate-limit zones
-- small request body cap
-
-Terminate TLS at your cloud load balancer or extend the nginx config with mounted certificates. Redirect HTTP to HTTPS once certificates are installed.
-
-## 6. Product Writes
-
-Production should use:
-
-```env
-PRODUCT_WRITE_BACKEND=database
-```
-
-This writes alerts, feedback, and anonymous events to `product_submissions`. Local development can keep `PRODUCT_WRITE_BACKEND=jsonl`.
-
-## 7. Backups And Rollback
-
-### Automated backup
-
-Run on the deployment host (cron weekly recommended):
-
-```bash
-chmod +x scripts/backup_postgres.sh
-./scripts/backup_postgres.sh
-```
-
-Environment overrides: `BACKUP_DIR`, `RETENTION_DAYS`, `COMPOSE_FILE`, `ENV_FILE`.
-
-The script dumps Postgres with `pg_dump`, copies lookup cache + annual report JSON, and prunes old backups.
-
-Validate backup/restore on a disposable Postgres (does not touch production):
-
-```bash
-# Linux/macOS
-./scripts/backup_restore_drill.sh
-
-# Windows (PowerShell) — requires a running Docker daemon
-./scripts/backup_restore_drill.ps1
-```
-
-The drill creates a backup, restores it, checks a known row, then confirms a corrupt gzip is rejected.
-
-### Restore
-
-```bash
-chmod +x scripts/restore_postgres.sh
-./scripts/restore_postgres.sh backups/postgres_groundtruth_YYYYMMDDTHHMMSSZ.sql.gz
-```
-
-Restore is destructive — it drops and recreates the database. Re-copy artifact directories manually if needed.
-
-Prefer an elevated migration role for alembic upgrade and a least-privilege runtime role for the API (scripts/sql/create_runtime_role.sql). Set RUN_MIGRATIONS_ON_START=false once migrations are run separately so the app user does not need DDL.
-
-### Recovery assumptions (RPO / RTO)
-
-Documented operating assumptions for limited beta (not a contractual SLA):
-
-| Metric | Assumption | Notes |
-|--------|------------|-------|
-| RPO (data loss window) | Up to **7 days** for Postgres + release artifacts | Matches recommended weekly backup cron |
-| RTO (restore time) | **1–4 hours** for a practiced operator | Restore dump + re-attach verified `lookup_cache` + annual JSON + `/api/ready` |
-| Artifact integrity | Required | Prefer last **verified** release; never publish failed `verify_release_artifacts` |
-| Schema rollback | Prefer forward-fix | Destructive DB restore only with explicit operator approval |
-
-Evidence today: disposable Docker drill (`scripts/backup_restore_drill.*`) + corrupt gzip rejection tests. A production-volume restore must still be run once on the deployment host before calling recovery “proven in prod”.
-
-### What to back up
-
-- Postgres database
-- `reports/generated/lookup_cache/`
-- `data/api/annual_report.json`
-
-### Application / artifact rollback
-
-Operator rollback path (manual is acceptable for limited beta):
-
-1. Tag current image before upgrade: `docker tag metrik-api:latest metrik-api:previous`.
-2. On bad release: `docker tag metrik-api:previous metrik-api:latest` (or pull prior digest), then `docker compose -f docker-compose.prod.yml --env-file .env.production up -d app`.
-3. Restore the previous `reports/generated/lookup_cache/` and `data/api/annual_report.json` from backup.
-4. Confirm `GET /api/ready` returns HTTP 200 before restoring traffic.
-5. Database: only roll back schema if a migration was applied and is known-reversible; prefer forward-fix migrations. Document migration risk before each release.
-
-## 8. Security Hardening
-
-Production checklist (Sprint 1):
-
-- `PRODUCT_WRITE_BACKEND=database` (enforced at startup)
-- `HEALTH_CHECK_TOKEN` set — `/api/health/perf` and `/api/metrics` require `X-Health-Token` header (nginx blocks them at the edge)
-- `API_RATE_LIMIT_ENABLED=true` (enforced at startup; cannot be disabled in production)
-- `ALERTS_SIGNUP_ENABLED=false` until automated notifications exist
-- Security headers via nginx + FastAPI middleware
-- Rate limiting: nginx burst zones + app-level slowapi sustained limits
-- Strongly recommended: `SENTRY_DSN` (set `REQUIRE_SENTRY_DSN=true` for public production)
-
-Never use the development database password on a reachable host.
-
-## 10. First go-live checklist
-
-- [x] Release artifacts build/verify CLI (`groundtruth release build-artifacts`)
-- [x] Prod compose + nginx configs in repo
-- [x] Public docs posture (aggregates only; crawlers off public host)
-- [ ] VPS/VM provisioned; DNS A/AAAA for domain
-- [ ] `.env.production` on host (strong secrets, real `PUBLIC_BASE_URL`, `HEALTH_CHECK_TOKEN`)
-- [ ] TLS certificates mounted / LB termination
-- [ ] Copy verified `lookup_cache/` + `annual_report.json` onto host
-- [ ] `alembic upgrade head` then `docker compose -f docker-compose.prod.yml --env-file .env.production up -d --build`
-- [ ] `/api/ready` healthy; smoke home, market, statistics, rent-yield
-- [ ] Weekly backup cron + restore drill once (`scripts/backup_restore_drill.sh` or `.ps1`)
-- [ ] `SENTRY_DSN` configured (or explicitly accepted risk for internal-only beta)
-- [ ] Keep research crawlers on the private ETL machine only
-
+`scripts/backup_postgres.sh`, `scripts/restore_postgres.sh`, and
+`scripts/backup_restore_drill.{sh,ps1}` back up and restore that stack's
+database plus release artifacts. Research database backups are separate and
+described in [LOCAL_RESEARCH_RUNNER.md](LOCAL_RESEARCH_RUNNER.md).

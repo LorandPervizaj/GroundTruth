@@ -56,7 +56,10 @@ reports/generated/**
 !reports/generated/.gitkeep
 !reports/generated/lookup_cache/
 !reports/generated/lookup_cache/**
+reports/generated/lookup_cache/*.pkl
 reports/lighthouse-*.json
+# UI audit screenshots; keep written reports only
+reports/**/*.png
 backups/
 
 # Local research probes and temporary investigation notes
