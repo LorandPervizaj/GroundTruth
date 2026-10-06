@@ -1,5 +1,7 @@
 # Research automation migration audit — 2026-09-29
 
+> **HISTORICAL.** Read-only audit that led to the local research runner. Current operation: [LOCAL_RESEARCH_RUNNER.md](../LOCAL_RESEARCH_RUNNER.md); deployment: [DEPLOYMENT.md](../DEPLOYMENT.md).
+
 Read-only forensic audit of the GroundTruth/Metrik autonomous research plane.
 No files other than this report were edited. No GitHub, Azure, database, crawler,
 or Git state was changed.

@@ -1,5 +1,7 @@
 # Metrik / GroundTruth - Completion Status Audit
 
+> **HISTORICAL.** 2026-09-15 completion audit of the Compose-based `metrikqa` stack, kept as evidence. Current operation: [LOCAL_RESEARCH_RUNNER.md](../LOCAL_RESEARCH_RUNNER.md); deployment: [DEPLOYMENT.md](../DEPLOYMENT.md).
+
 **Audit Date:** 2026-09-15
 **Auditor:** Local completion pass (C:\\Projects\\FartEstate source of truth)
 **Repository State:** Local working tree ahead of origin/master (many uncommitted changes)

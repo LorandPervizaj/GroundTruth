@@ -1,5 +1,7 @@
 # Local research migration checkpoint — 2026-09-29
 
+> **HISTORICAL.** Pre-migration safety checkpoint. The migration to the local research runner is complete. Current operation: [LOCAL_RESEARCH_RUNNER.md](../LOCAL_RESEARCH_RUNNER.md); deployment: [DEPLOYMENT.md](../DEPLOYMENT.md).
+
 Status: safety fence established; database authority gate pending.
 
 - Fetched all remote refs and tags. `master` and `origin/master` both resolve

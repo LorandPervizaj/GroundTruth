@@ -68,3 +68,5 @@ All 200: `/`, `/statistics`, `/compare`, `/find`, `/valuate`, `/rent-yield`, `/a
 ## Final status
 
 **COMPLETE**
+
+> **HISTORICAL.** 2026-09-15 point-in-time verification, kept as evidence. Current operation: [LOCAL_RESEARCH_RUNNER.md](../LOCAL_RESEARCH_RUNNER.md); deployment: [DEPLOYMENT.md](../DEPLOYMENT.md).

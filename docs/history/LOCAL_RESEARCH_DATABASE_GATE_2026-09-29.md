@@ -1,5 +1,7 @@
 # Local research database gate — 2026-09-29
 
+> **HISTORICAL.** Pre-migration database gate. The migration to the local research runner is complete. Current operation: [LOCAL_RESEARCH_RUNNER.md](../LOCAL_RESEARCH_RUNNER.md); deployment: [DEPLOYMENT.md](../DEPLOYMENT.md).
+
 Status: candidate corpus identified; authority confirmation pending. No research
 automation implementation or source-database migration has been performed.
 

@@ -1,5 +1,7 @@
 # Git commit plan (freeze) — do not force-push
 
+> **HISTORICAL.** Commit plan for the 2026-09-15 freeze. No longer actionable.
+
 Branch: master (working tree dirty; **0** local commits ahead of origin).
 
 ## Exclude / never commit

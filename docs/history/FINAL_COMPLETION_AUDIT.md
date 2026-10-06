@@ -20,3 +20,5 @@ Evidence: `docs/FINAL_PRODUCTION_VERIFICATION.md`.
 ## Recommendation
 
 Treat Azure revision `ca-metrik-api--0000013` as the current limited-beta production release.
+
+> **HISTORICAL.** 2026-09-15 point-in-time audit, kept as evidence. Current operation: [LOCAL_RESEARCH_RUNNER.md](../LOCAL_RESEARCH_RUNNER.md); deployment: [DEPLOYMENT.md](../DEPLOYMENT.md).

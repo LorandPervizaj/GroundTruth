@@ -1,5 +1,7 @@
 # Pre-automation Git baseline
 
+> **HISTORICAL.** Git baseline recorded before the 2026-09 automation work.
+
 Recorded: 2026-09-23 (Europe/Berlin)
 
 ## Repository state before automation work
