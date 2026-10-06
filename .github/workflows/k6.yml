@@ -118,7 +118,7 @@ jobs:
           echo "Using k6 profile: $profile"
 
       - name: Install k6
-        uses: grafana/setup-k6-action@v1
+        uses: grafana/setup-k6-action@v1.2.1
         with:
           k6-version: "2.3.0"
 
