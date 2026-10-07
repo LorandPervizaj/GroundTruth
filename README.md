@@ -7,6 +7,67 @@ Residential real-estate **market intelligence** for Prishtina: neighborhood
 medians, inventory, rent yield, and valuation ranges, each published with its
 sample size and confidence. Aggregated statistics, not a listing board.
 
+### Live site: **[Metrik on Azure](https://ca-metrik-api.livelydune-1ec3eb9a.eastus2.azurecontainerapps.io)**
+
+`https://ca-metrik-api.livelydune-1ec3eb9a.eastus2.azurecontainerapps.io`
+
+Public, no login. The site opens in Albanian; use the **Shqip / English** toggle
+in the top-right corner to switch languages. The current release is
+`2026-W40-3578e069fab9`, with data through 4 October 2026: 11,888 active
+listings after removing 4,390 cross-portal duplicates from 16,278 raw listings.
+These figures change with each weekly release; `/api/meta` always shows the
+live values.
+
+![Metrik home page](docs/images/home.jpg)
+
+## Tour of the site
+
+All figures are **asking prices** from public portal listings, not confirmed
+transaction prices. Every number is shown with its sample size and a confidence
+level, and thin samples are flagged instead of hidden.
+
+| Page | URL | What it shows |
+| --- | --- | --- |
+| Home | [`/`](https://ca-metrik-api.livelydune-1ec3eb9a.eastus2.azurecontainerapps.io/) | Search box for any neighborhood, district, or residential complex; popular-market chips; a "find areas by budget" shortcut; a five-step "How it works" guide |
+| Market page | [`/market/neighborhood/ulpiana`](https://ca-metrik-api.livelydune-1ec3eb9a.eastus2.azurecontainerapps.io/market/neighborhood/ulpiana) | One area's sale €/m², median sale price, median rent, and active listings; comparison with the city average; sub-markets; breakdowns by property type, bedrooms, and size; price distribution; recent listings |
+| Statistics | [`/statistics`](https://ca-metrik-api.livelydune-1ec3eb9a.eastus2.azurecontainerapps.io/statistics) | Citywide annual report (active listings, rent share, median €/m², median rent), executive summary, and a downloadable PDF report |
+| Compare | [`/compare`](https://ca-metrik-api.livelydune-1ec3eb9a.eastus2.azurecontainerapps.io/compare) | Two or three neighborhoods side by side: prices, inventory, and sample confidence |
+| Rent yield | [`/rent-yield`](https://ca-metrik-api.livelydune-1ec3eb9a.eastus2.azurecontainerapps.io/rent-yield) | Gross annual yield ranking by neighborhood, with the median rent, median sale price, and sample counts behind each figure |
+| Value my property | [`/valuate`](https://ca-metrik-api.livelydune-1ec3eb9a.eastus2.azurecontainerapps.io/valuate) | Rent or sale estimate for a given area, size, and bedroom count, with a confidence range and the comparable listings it used (marked experimental) |
+| Find a neighborhood | [`/find`](https://ca-metrik-api.livelydune-1ec3eb9a.eastus2.azurecontainerapps.io/find) | Budget, size, and bedroom filters that recommend neighborhoods and show how many listings fit |
+| About, methodology | [`/about`](https://ca-metrik-api.livelydune-1ec3eb9a.eastus2.azurecontainerapps.io/about), [`/methodology`](https://ca-metrik-api.livelydune-1ec3eb9a.eastus2.azurecontainerapps.io/methodology) | Data sources, cleaning and deduplication, metric definitions, and limitations |
+| Contact / report | [`/contact`](https://ca-metrik-api.livelydune-1ec3eb9a.eastus2.azurecontainerapps.io/contact) | Contact form, data-error reports, and listing submissions; these are forwarded to the owner's Telegram chat |
+
+### Market page
+
+Search for an area, or open one from the home page chips, to get its headline
+numbers, its position against the Prishtina average, and the breakdowns behind
+them.
+
+![Ulpiana market page](docs/images/market.jpg)
+
+### Statistics and rent yield
+
+The Statistics section holds the annual report, neighborhood comparison, and
+rent-yield ranking.
+
+![Market statistics](docs/images/statistics.jpg)
+
+![Rent yield ranking](docs/images/rent-yield.jpg)
+
+### Explore: value a property or find a neighborhood
+
+The Explore section estimates fair rent or price from comparable listings and
+recommends neighborhoods that match a budget.
+
+![Value my property](docs/images/valuate.jpg)
+
+![Find a neighborhood](docs/images/find.jpg)
+
+The JSON API that backs these pages lives under `/api/` (for example
+`/api/meta`, `/api/search?q=ulpiana`, `/api/lookup/neighborhood/ulpiana`,
+`/api/rent-yield`). Interactive API docs are disabled in production.
+
 ## What this repository contains
 
 | Part | Role | Where it runs |
@@ -120,6 +181,61 @@ describes when to add the Monday cron.
 Code-only changes go through `azure-beta-deploy.yml` on pushes to `master`; it
 keeps whichever verified data release is live. Full procedure, manual
 redeploys, and runtime settings: [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
+
+## Running on Azure
+
+Metrik runs as a single Azure Container App, `ca-metrik-api`, in East US 2. Its
+infrastructure is defined in [infra/azure/](infra/azure/).
+
+| Piece | Setup |
+| --- | --- |
+| App container | `metrik-api` image from Azure Container Registry, 0.5 vCPU / 1 GiB, external HTTPS ingress to port 8000, one replica |
+| Database | PostgreSQL 16 sidecar in the same app (0.25 vCPU / 0.5 GiB) holding only schema and product writes. Its storage is `EmptyDir`, so data is lost when the replica is recycled; [PUBLIC_DATABASE_DURABILITY_PLAN.md](docs/PUBLIC_DATABASE_DURABILITY_PLAN.md) covers the move to a durable database |
+| Market data | Baked into the image from the verified release bundle (`reports/generated/lookup_cache/`), and the app refuses to start without it |
+| Runtime settings | `APP_ENV=production`, JSON logs, rate limiting on, API docs off, migrations on start; the database URL, health-check token, and Sentry DSN come from Container App secrets |
+| Logs | Log Analytics workspace attached to the Container Apps environment |
+| Deploy identity | GitHub Actions signs in to Azure with OIDC; no Azure credentials are stored in the repository |
+
+Each deploy creates a new revision. The workflow waits until
+`scripts/azure/wait-for-revision.sh` confirms that revision is healthy and
+serving the expected release, then `scripts/azure/smoke.ps1` checks the live
+pages and API. If either step fails, the previous image is redeployed and
+smoke-tested again. Provisioning notes: [docs/AZURE_BETA.md](docs/AZURE_BETA.md).
+
+## Telegram owner bot
+
+A private Telegram bot keeps the owner informed and gives remote control over
+research runs. It answers only the chat configured in `TELEGRAM_CHAT_ID`, and
+Telegram must send the webhook secret header to `/api/telegram/webhook`;
+messages from any other chat are ignored and logged.
+
+| Command | What it does |
+| --- | --- |
+| `/status` | Whether Metrik is online, plus the live release, data-through date, and QA result |
+| `/latest` | Latest verified release and its data-through date |
+| `/quality` | Latest data-quality result |
+| `/deployment` | Production release and the source commit it was built from |
+| `/sources` | Points to the source-health summary sent after each research run |
+| `/scrape` | State of the current or most recent research workflow run |
+| `/scrape_start` | Starts `groundtruth-weekly-local.yml` on the research host through the GitHub API |
+| `/scrape_stop` | Cancels a running research workflow |
+| `/help` | Lists the commands |
+
+The bot also sends messages without being asked:
+
+- **Research run:** started, pipeline result with the source-health summary,
+  release verified and published, post-run backup failure, or run failed.
+- **Deployment:** started, deployed and verified, or failed. A failure message
+  says whether the previous image was restored.
+- **Site activity:** contact messages, feedback, data-error reports, and
+  listing submissions from the public site.
+
+Configuration lives outside the repository. Workflows read
+`TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID` from GitHub secrets. The research
+host reads the same pair from `research.env` (see
+[docs/LOCAL_RESEARCH_RUNNER.md](docs/LOCAL_RESEARCH_RUNNER.md)). The live app
+needs both plus `TELEGRAM_WEBHOOK_SECRET`; the webhook returns 403 when that
+secret is missing or the request header does not match it.
 
 ## Testing and quality gates
 
