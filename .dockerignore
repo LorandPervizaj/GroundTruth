@@ -16,7 +16,6 @@ data/sources
 data/product/*.jsonl
 reports/generated/**
 !reports/generated/lookup_cache/**
-reports/METRIK
 reports/**/*.png
 backups
 *.sql

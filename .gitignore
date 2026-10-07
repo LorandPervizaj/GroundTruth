@@ -88,3 +88,7 @@ data/deduplication/*.csv
 # QA temporary artifacts
 .tmp/
 deploy/nginx/certs/*.pem
+
+# Evaluation outputs (keep the frozen baseline fixture tracked)
+results/candidate*.json
+reports/evaluation.md
