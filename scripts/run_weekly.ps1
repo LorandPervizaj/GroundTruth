@@ -264,9 +264,14 @@ try {
     & $Groundtruth @args 2>&1 | ForEach-Object {
         try { Log $_ } catch { Log "[log line omitted: encoding]" }
     }
-    & $Python (Join-Path $RepoRoot "scripts\update_home_trust_snapshot.py") 2>&1 | ForEach-Object { Log $_ }
-    Log "weekly crawl finished exit=$LASTEXITCODE"
-    exit $LASTEXITCODE
+    $crawlExit = $LASTEXITCODE
+    if ($crawlExit -eq 0) {
+        # home-trust.json is only the homepage fallback; /api/meta is authoritative.
+        & $Python (Join-Path $RepoRoot "scripts\update_home_trust_snapshot.py") 2>&1 | ForEach-Object { Log $_ }
+        if ($LASTEXITCODE -ne 0) { Log "homepage fallback snapshot refresh failed exit=$LASTEXITCODE (non-fatal)" }
+    }
+    Log "weekly crawl finished exit=$crawlExit"
+    exit $crawlExit
 } catch {
     Log "ERROR: $_"
     exit 1
