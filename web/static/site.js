@@ -136,11 +136,16 @@
 
   }
 
+  async function fetchCorpusMeta() {
+    if (window.MetrikApiCache) return window.MetrikApiCache.getJson("/api/meta");
+    const res = await fetch("/api/meta");
+    if (!res.ok) throw new Error(`Request failed: ${res.status}`);
+    return res.json();
+  }
+
   async function loadCorpusMeta() {
     try {
-      const res = await fetch("/api/meta");
-      if (!res.ok) return;
-      const meta = await res.json();
+      const meta = await fetchCorpusMeta();
       window.MetrikCorpusMeta = meta;
       applyCorpusFreshness(meta);
       document.dispatchEvent(new CustomEvent("corpus-meta", { detail: meta }));
@@ -465,6 +470,7 @@
 
   window.MetrikSite = {
     applyCorpusFreshness,
+    fetchCorpusMeta,
     loadCorpusMeta,
     initCountUp,
     ensureInfoTip,

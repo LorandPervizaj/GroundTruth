@@ -10,7 +10,7 @@ import time
 from collections.abc import Generator
 
 import pytest
-from playwright.sync_api import Browser, Page, sync_playwright
+from playwright.sync_api import Browser, Page, Route, expect, sync_playwright
 
 pytestmark = [
     pytest.mark.e2e,
@@ -76,6 +76,61 @@ def test_home_and_language_switch(page: Page) -> None:
     assert page.locator(".footer-lead").inner_text().startswith("Metrik analyzes")
     assert page.locator(".skip-link").count() == 1
     assert page.locator("main#main-content").count() == 1
+
+
+META_LISTINGS = 12345
+SNAPSHOT_LISTINGS = 999
+
+
+def _route_home_trust(page: Page, *, meta_ok: bool) -> None:
+    def meta(route: Route) -> None:
+        if not meta_ok:
+            route.fulfill(status=503, json={"detail": "unavailable"})
+            return
+        route.fulfill(
+            json={
+                "release_id": "2026-W40-test",
+                "data_through": "2026-10-04",
+                "corpus_updated_at": "2026-10-04T23:33:32Z",
+                "active_listings": META_LISTINGS,
+                "raw_listings": 16000,
+                "cross_portal_duplicates_removed": 3655,
+            }
+        )
+
+    def snapshot(route: Route) -> None:
+        route.fulfill(json={"active_listings": SNAPSHOT_LISTINGS, "updated_at": "2026-09-21"})
+
+    page.route("**/api/meta", meta)
+    page.route("**/static/home-trust.json*", snapshot)
+
+
+def _formatted(page: Page, value: int) -> str:
+    return page.evaluate("(n) => window.MetrikFormat.int(n)", value)
+
+
+def test_home_trust_counter_uses_api_meta_over_static_snapshot(page: Page) -> None:
+    _route_home_trust(page, meta_ok=True)
+    page.goto(BASE_URL)
+    listings = page.locator("#trust-listings")
+    expect(listings).to_have_text(_formatted(page, META_LISTINGS))
+    expect(page.locator("#trust-updated")).to_have_text(
+        page.evaluate("window.MetrikFormat.dateShort('2026-10-04T23:33:32Z')")
+    )
+    expect(page.locator("#home-trust-strip")).to_have_attribute("data-source", "meta")
+
+    page.locator('[data-lang="en"]').first.click()
+    expect(listings).to_have_text("12,345")
+    expect(page.locator("#trust-updated")).to_have_text(
+        page.evaluate("window.MetrikFormat.dateShort('2026-10-04T23:33:32Z')")
+    )
+
+
+def test_home_trust_counter_falls_back_to_snapshot_when_meta_fails(page: Page) -> None:
+    _route_home_trust(page, meta_ok=False)
+    page.goto(BASE_URL)
+    expect(page.locator("#trust-listings")).to_have_text(_formatted(page, SNAPSHOT_LISTINGS))
+    expect(page.locator("#home-trust-strip")).to_have_attribute("data-source", "snapshot")
 
 
 def test_statistics_loads_self_hosted_chart_library(page: Page) -> None:

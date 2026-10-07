@@ -9,11 +9,10 @@ window.MetrikSearch?.init({
   section: "homepage",
 });
 
-// Static homepage trust strip (no API compute at runtime).
-const STATIC_TRUST_FALLBACK = {
-  active_listings: 8590,
-  updated_at: "2026-06-16",
-};
+// Homepage trust strip. /api/meta is the source of truth; the static snapshot
+// is used only when the API is unavailable, because it can lag a new release.
+const TRUST_SNAPSHOT_URL = "/static/home-trust.json";
+let currentTrust = null;
 
 function animateCount(el, target) {
   const durationMs = 900;
@@ -29,63 +28,99 @@ function animateCount(el, target) {
   requestAnimationFrame(frame);
 }
 
-function renderTrustStripFromMeta(meta) {
-  const strip = document.getElementById("home-trust-strip");
-  if (!strip || !meta) return;
-  const fmt = window.MetrikFormat;
-  const listingsEl = document.getElementById("trust-listings");
-  const updatedEl = document.getElementById("trust-updated");
-  if (!listingsEl || !updatedEl) return;
-
-  listingsEl.classList.remove("skel-chip");
-  updatedEl.classList.remove("skel-chip");
-  listingsEl.removeAttribute("aria-hidden");
-  updatedEl.removeAttribute("aria-hidden");
-
-  if (meta.active_listings) {
-    animateCount(listingsEl, Number(meta.active_listings));
-  }
-  if (meta.corpus_updated_at) {
-    updatedEl.textContent = fmt.dateShort(meta.corpus_updated_at);
-  }
-  strip.hidden = false;
+function trustFromMeta(meta) {
+  const listings = Number(meta?.active_listings);
+  if (!Number.isFinite(listings) || listings <= 0) return null;
+  return {
+    source: "meta",
+    active_listings: listings,
+    updated_at: meta.corpus_updated_at || meta.data_through || null,
+  };
 }
 
-function renderTrustStripStatic() {
+function trustFromSnapshot(snap) {
+  const listings = Number(snap?.active_listings);
+  if (!Number.isFinite(listings) || listings <= 0 || typeof snap?.updated_at !== "string") {
+    return null;
+  }
+  return { source: "snapshot", active_listings: listings, updated_at: snap.updated_at };
+}
+
+function renderTrustStrip(trust, { animate }) {
   const strip = document.getElementById("home-trust-strip");
   if (!strip) return;
-  const fmt = window.MetrikFormat;
   const listingsEl = document.getElementById("trust-listings");
   const updatedEl = document.getElementById("trust-updated");
-
   if (!listingsEl || !updatedEl) return;
+
+  if (!trust) {
+    strip.hidden = true;
+    return;
+  }
+  const fmt = window.MetrikFormat;
   listingsEl.classList.remove("skel-chip");
   updatedEl.classList.remove("skel-chip");
   listingsEl.removeAttribute("aria-hidden");
   updatedEl.removeAttribute("aria-hidden");
-  animateCount(listingsEl, STATIC_TRUST_FALLBACK.active_listings);
-  updatedEl.textContent = fmt.dateShort(STATIC_TRUST_FALLBACK.updated_at);
+  strip.dataset.source = trust.source;
+
+  if (animate) {
+    animateCount(listingsEl, trust.active_listings);
+  } else {
+    listingsEl.textContent = fmt.int(trust.active_listings);
+  }
+  updatedEl.textContent = trust.updated_at ? fmt.dateShort(trust.updated_at) : "";
   strip.hidden = false;
 }
 
-async function loadStaticTrustSnapshot() {
+async function fetchMeta() {
+  if (window.MetrikCorpusMeta) return window.MetrikCorpusMeta;
+  if (window.MetrikSite?.fetchCorpusMeta) return window.MetrikSite.fetchCorpusMeta();
+  const res = await fetch("/api/meta");
+  if (!res.ok) throw new Error(`Request failed: ${res.status}`);
+  return res.json();
+}
+
+async function loadSnapshotTrust() {
   try {
-    const res = await fetch("/static/home-trust.json");
-    if (!res.ok) return;
-    const snap = await res.json();
-    if (
-      Number.isFinite(Number(snap?.active_listings)) &&
-      typeof snap?.updated_at === "string"
-    ) {
-      STATIC_TRUST_FALLBACK.active_listings = Number(snap.active_listings);
-      STATIC_TRUST_FALLBACK.updated_at = snap.updated_at;
-    }
+    const res = await fetch(TRUST_SNAPSHOT_URL);
+    if (!res.ok) return null;
+    return trustFromSnapshot(await res.json());
   } catch {
-    /* keep fallback */
+    return null;
   }
 }
 
-document.addEventListener("metrik:langchange", renderTrustStripStatic);
-document.addEventListener("corpus-meta", (e) => renderTrustStripFromMeta(e.detail));
-loadStaticTrustSnapshot().finally(renderTrustStripStatic);
-if (window.MetrikCorpusMeta) renderTrustStripFromMeta(window.MetrikCorpusMeta);
+async function loadTrust() {
+  try {
+    const fromMeta = trustFromMeta(await fetchMeta());
+    if (fromMeta) return fromMeta;
+  } catch {
+    /* fall back to the static snapshot */
+  }
+  return loadSnapshotTrust();
+}
+
+function applyTrust(trust) {
+  if (currentTrust?.source === "meta" && trust?.source !== "meta") return;
+  const unchanged =
+    currentTrust &&
+    trust &&
+    currentTrust.source === trust.source &&
+    currentTrust.active_listings === trust.active_listings &&
+    currentTrust.updated_at === trust.updated_at;
+  if (unchanged) return;
+  currentTrust = trust;
+  renderTrustStrip(trust, { animate: true });
+}
+
+loadTrust().then(applyTrust);
+
+document.addEventListener("corpus-meta", (e) => {
+  const fromMeta = trustFromMeta(e.detail);
+  if (fromMeta) applyTrust(fromMeta);
+});
+
+document.addEventListener("metrik:langchange", () => {
+  if (currentTrust) renderTrustStrip(currentTrust, { animate: false });
+});
