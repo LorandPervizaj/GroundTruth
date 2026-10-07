@@ -1839,6 +1839,9 @@ a.btn-secondary.pdf-download-btn {
   margin-top: 1.25rem;
   padding: 0.9rem 0 0;
 }
+.home-trust-strip[hidden] {
+  display: none;
+}
 .trust-stat {
   display: flex;
   flex-direction: column;

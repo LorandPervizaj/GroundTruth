@@ -326,6 +326,9 @@ docs/              Current documentation; docs/history/ holds point-in-time reco
 | [LOCAL_RESEARCH_RUNNER.md](docs/LOCAL_RESEARCH_RUNNER.md) | Research host runbook |
 | [DEPLOYMENT.md](docs/DEPLOYMENT.md) | Production deployment and rollback |
 | [PUBLIC_DATABASE_DURABILITY_PLAN.md](docs/PUBLIC_DATABASE_DURABILITY_PLAN.md) | Plan to replace the non-durable public DB sidecar |
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for development guidance and
+[SECURITY.md](SECURITY.md) for private vulnerability reporting.
 | [PERFORMANCE_TESTING.md](docs/PERFORMANCE_TESTING.md) | k6 profiles, thresholds, results |
 | [DATASET_V2_FREEZE.md](docs/DATASET_V2_FREEZE.md) | Dataset v2.0 freeze record |
 | [history/](docs/history/README.md) | Superseded audits and designs, kept as evidence |

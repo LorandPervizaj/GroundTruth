@@ -2,8 +2,12 @@
 
 JSON artifacts from `groundtruth evaluation valuate` (aggregated model metrics only — no raw listing HTML).
 
-- `baseline.json` — frozen reference metrics for merge comparisons
-- `candidate.json` — output from the current model run
+- `baseline.json` — frozen reference metrics for merge comparisons; tracked as
+  a reproducible evaluation fixture
+- `candidate.json` — local output from the current model run; ignored by Git
+
+Candidate runs are generated artifacts. Keep them locally for comparison, but
+do not commit them. The CLI recreates `candidate.json` when an evaluation is run.
 
 Regenerate baseline (requires Postgres — on Windows if the published DB port times out, check `POSTGRES_PORT` / `DATABASE_URL`, or use `scripts/run_db_cli_docker.ps1`):
 

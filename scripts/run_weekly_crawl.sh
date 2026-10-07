@@ -50,7 +50,8 @@ else
   "$GROUNDTRUTH" "${ARGS[@]}" 2>&1 | tee -a "$LOG_FILE"
 fi
 
-# Refresh static homepage trust snapshot after successful crawl/update.
+# Refresh the homepage fallback snapshot after a successful crawl (set -e stops
+# earlier on failure). /api/meta stays the authoritative homepage source.
 if [[ "$GROUNDTRUTH" == "uv run groundtruth" ]]; then
   uv run python scripts/update_home_trust_snapshot.py 2>&1 | tee -a "$LOG_FILE"
 else
