@@ -8,6 +8,7 @@ from slowapi.util import get_remote_address
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
 from starlette.responses import JSONResponse
+from starlette.types import ASGIApp, Message, Receive, Scope, Send
 
 from groundtruth.config import get_settings
 from groundtruth.logging import get_logger
@@ -80,7 +81,7 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         return response
 
 
-class MaxBodySizeMiddleware(BaseHTTPMiddleware):
+class MaxBodySizeMiddleware:
     """Reject oversized POST/PUT/PATCH bodies before handlers run."""
 
     _JSON_WRITE_PREFIXES = (
@@ -92,7 +93,14 @@ class MaxBodySizeMiddleware(BaseHTTPMiddleware):
         "/api/listing-submissions",
     )
 
-    async def dispatch(self, request: Request, call_next):
+    def __init__(self, app: ASGIApp) -> None:
+        self.app = app
+
+    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
+        if scope["type"] != "http":
+            await self.app(scope, receive, send)
+            return
+        request = Request(scope, receive)
         if request.method in ("POST", "PUT", "PATCH"):
             path = request.url.path
             if any(path.startswith(prefix) for prefix in self._JSON_WRITE_PREFIXES):
@@ -106,27 +114,60 @@ class MaxBodySizeMiddleware(BaseHTTPMiddleware):
                         client_ip=get_remote_address(request),
                         content_type=content_type or None,
                     )
-                    return JSONResponse(
+                    response = JSONResponse(
                         status_code=415,
                         content={"detail": "Content-Type must be application/json"},
                     )
+                    await response(scope, receive, send)
+                    return
+            max_bytes = get_settings().api_max_body_bytes
+
+            async def reject() -> None:
+                log_api_abuse(
+                    reason="oversized_payload",
+                    path=path,
+                    client_ip=get_remote_address(request),
+                    max_bytes=max_bytes,
+                )
+                response = JSONResponse(
+                    status_code=413, content={"detail": "Request body too large"}
+                )
+                await response(scope, receive, send)
+
             raw = request.headers.get("content-length")
             if raw:
                 try:
                     size = int(raw)
                 except ValueError:
                     size = 0
-                max_bytes = get_settings().api_max_body_bytes
                 if size > max_bytes:
-                    log_api_abuse(
-                        reason="oversized_payload",
-                        path=request.url.path,
-                        client_ip=get_remote_address(request),
-                        content_length=size,
-                        max_bytes=max_bytes,
-                    )
-                    return JSONResponse(
-                        status_code=413,
-                        content={"detail": "Request body too large"},
-                    )
-        return await call_next(request)
+                    await reject()
+                    return
+
+            # Enforce actual bytes before parsers or handlers can allocate an unbounded
+            # body or perform writes. Do not retain an unbounded list of empty frames.
+            body = bytearray()
+            while True:
+                message = await receive()
+                if message["type"] == "http.disconnect":
+                    return
+                chunk = message.get("body", b"")
+                if len(body) + len(chunk) > max_bytes:
+                    await reject()
+                    return
+                body.extend(chunk)
+                if not message.get("more_body", False):
+                    break
+            replayed = False
+
+            async def replay() -> Message:
+                nonlocal replayed
+                if not replayed:
+                    replayed = True
+                    return {"type": "http.request", "body": bytes(body), "more_body": False}
+                # Preserve downstream disconnect polling and streaming response behavior.
+                return await receive()
+
+            await self.app(scope, replay, send)
+            return
+        await self.app(scope, receive, send)
