@@ -36,6 +36,7 @@ def record(source="gjirafa", identity="1", **changes):
         observed_at=AS_OF,
         outcome="accepted",
         listing=listing,
+        publication_date_basis="source_declared",
     )
     data.update(changes)
     return QualityRecord.model_validate(data)

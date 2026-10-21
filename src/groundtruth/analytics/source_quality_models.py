@@ -23,7 +23,7 @@ class Contract(BaseModel):
 
 
 class QualityPolicy(Contract):
-    version: str = "1.0.0"
+    version: str = "1.1.0"
     weights: dict[str, float] = Field(
         default_factory=lambda: dict(
             zip(CRITERIA, (0.25, 0.20, 0.25, 0.15, 0.10, 0.05), strict=True)
@@ -75,6 +75,7 @@ class QualityRecord(Contract):
     first_seen_at: datetime | None = None
     last_seen_at: datetime | None = None
     active_verified_at: datetime | None = None
+    publication_date_basis: Literal["source_declared", "proxy", "unknown"] = "unknown"
 
     @model_validator(mode="after")
     def valid_listing(self):
@@ -153,7 +154,7 @@ class SourceAssessment(Contract):
 
 
 class QualityReport(Contract):
-    report_version: str = "1.0.0"
+    report_version: str = "1.1.0"
     scoring_policy_version: str
     generated_at: datetime
     evaluation_as_of: datetime

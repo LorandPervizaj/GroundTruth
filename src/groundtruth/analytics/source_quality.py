@@ -71,7 +71,9 @@ def assess_listing(
             "municipality": listing.city,
             "neighborhood": listing.neighborhood_id,
             "street": listing.street_id,
-            "publication": listing.listing_date,
+            "publication": listing.listing_date
+            if record.publication_date_basis == "source_declared"
+            else None,
         }
         if listing.property_type in {
             PropertyType.APARTMENT,
@@ -112,10 +114,16 @@ def assess_listing(
         checks.extend(v.correct for v in consistency)
         if checks:
             scores["consistency"] = 100 * mean(checks)
-        if listing.listing_date:
+        if listing.listing_date and record.publication_date_basis == "source_declared":
             age = (utc(as_of).date() - listing.listing_date).days
             scores["freshness"] = 0 if age < 0 else 100 * max(0, 1 - age / policy.freshness_days)
             freshness_basis = "future_publication_date" if age < 0 else "publication_date"
+        elif listing.listing_date:
+            freshness_basis = (
+                "unverified_proxy_date"
+                if record.publication_date_basis == "proxy"
+                else "unknown_date_origin"
+            )
     if scores["freshness"] is None and record.source_updated_at is not None:
         age = (utc(as_of) - utc(record.source_updated_at)).total_seconds() / 86400
         scores["freshness"] = 0 if age < 0 else 100 * max(0, 1 - age / policy.freshness_days)
@@ -146,6 +154,7 @@ def assess_listing(
         location_verification_status="verified" if location else "unknown",
         freshness_basis=freshness_basis,
         freshness_evidence={
+            "publication_date_basis": record.publication_date_basis,
             "publication_date": listing.listing_date.isoformat()
             if listing and listing.listing_date
             else None,

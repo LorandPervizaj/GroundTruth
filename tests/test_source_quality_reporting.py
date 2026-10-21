@@ -45,7 +45,7 @@ def test_deterministic_reports_and_machine_readable_schema(tmp_path):
     ):
         assert (first / name).read_bytes() == (second / name).read_bytes()
     data = QualityReport.model_validate_json((first / "source_quality_report.json").read_text())
-    assert data.scoring_policy_version == "1.0.0"
+    assert data.scoring_policy_version == "1.1.0"
     text = (first / "source_quality_report.json").read_text()
     assert "example.invalid" not in text
     assert "description" not in text
@@ -210,8 +210,10 @@ def test_pipeline_reader_includes_raw_failures_quarantine_and_pending(pipeline_s
     add_raw(session, 4)
     session.flush()
     mutations = []
+    statements = []
 
     def watch(conn, cursor, statement, parameters, context, executemany):
+        statements.append(statement)
         if not statement.lstrip().upper().startswith("SELECT"):
             mutations.append(statement)
 
@@ -219,6 +221,10 @@ def test_pipeline_reader_includes_raw_failures_quarantine_and_pending(pipeline_s
     rows = pipeline_records(session, sources=["gjirafa"], as_of=AS_OF, window_days=30)
     event.remove(session.bind, "before_cursor_execute", watch)
     assert not mutations
+    population_sql = statements[0]
+    assert "raw_payload" not in population_sql and "raw_html" not in population_sql
+    assert "description_original" not in population_sql
+    assert len(statements) == 2  # Population + batched quarantine lookup; no deferred-text queries.
     summary = build_report(rows, sources=["gjirafa"], as_of=AS_OF).sources[0]
     assert (
         summary.unique_source_listing_count,

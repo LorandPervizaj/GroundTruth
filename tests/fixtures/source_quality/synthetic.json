@@ -29,7 +29,8 @@
       "normalization_version": "1.0.0",
       "gazetteer_version": "unknown"
     },
-    "verification": []
+    "verification": [],
+    "publication_date_basis": "source_declared"
   },
   {
     "source_name": "gjirafa",
@@ -61,7 +62,8 @@
       "normalization_version": "1.0.0",
       "gazetteer_version": "unknown"
     },
-    "verification": []
+    "verification": [],
+    "publication_date_basis": "source_declared"
   },
   {
     "source_name": "gjirafa",
@@ -96,7 +98,8 @@
       "normalization_version": "1.0.0",
       "gazetteer_version": "unknown"
     },
-    "verification": []
+    "verification": [],
+    "publication_date_basis": "source_declared"
   },
   {
     "source_name": "gjirafa",
@@ -127,7 +130,8 @@
       "normalization_version": "1.0.0",
       "gazetteer_version": "unknown"
     },
-    "verification": []
+    "verification": [],
+    "publication_date_basis": "source_declared"
   },
   {
     "source_name": "merrjep",
@@ -167,7 +171,8 @@
         "correct": true,
         "kind": "location"
       }
-    ]
+    ],
+    "publication_date_basis": "source_declared"
   },
   {
     "source_name": "merrjep",
@@ -179,7 +184,8 @@
     "error_codes": [
       "parse_error"
     ],
-    "verification": []
+    "verification": [],
+    "publication_date_basis": "source_declared"
   },
   {
     "source_name": "merrjep",
@@ -209,6 +215,7 @@
       "normalization_version": "1.0.0",
       "gazetteer_version": "unknown"
     },
-    "verification": []
+    "verification": [],
+    "publication_date_basis": "source_declared"
   }
 ]

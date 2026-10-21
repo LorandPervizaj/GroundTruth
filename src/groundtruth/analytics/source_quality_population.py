@@ -3,13 +3,18 @@
 from datetime import datetime, timedelta
 
 from sqlalchemy import or_, select
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, load_only
 
 from groundtruth.analytics.source_quality import utc
 from groundtruth.analytics.source_quality_models import QualityRecord
 from groundtruth.models.etl import InvalidListing
 from groundtruth.models.pipeline import NormalizedListing, ParsedListing, RawListing
 from groundtruth.schemas.pipeline import NormalizedListingSchema
+
+# Audited parser contracts, not reputation scores. Pro-RKS derives dates from
+# image media and falls back to scrape time in services/parsing.py. Unknown future
+# adapters remain runnable without claiming that an undocumented date is publication.
+SOURCE_DECLARED_DATE_ADAPTERS = frozenset({"gjirafa", "merrjep", "vision", "topia", "myrealestate"})
 
 
 def pipeline_records(
@@ -33,6 +38,28 @@ def pipeline_records(
     )
     query = (
         select(raw, parsed, normalized)
+        .options(
+            load_only(
+                raw.id, raw.source_website, raw.source_listing_id, raw.scraped_at, raw.content_hash
+            ),
+            *[
+                load_only(
+                    *[
+                        getattr(model, name)
+                        for name in NormalizedListingSchema.model_fields
+                        if hasattr(model, name)
+                        and name
+                        not in {
+                            "description_original",
+                            "description_cleaned",
+                            "image_urls",
+                            "confidence_details",
+                        }
+                    ]
+                )
+                for model in (parsed, normalized)
+            ],
+        )
         .outerjoin(parsed, parsed.id == latest_parsed)
         .outerjoin(
             normalized,
@@ -56,6 +83,17 @@ def pipeline_records(
         failures = list(
             session.scalars(
                 select(InvalidListing)
+                .options(
+                    load_only(
+                        InvalidListing.id,
+                        InvalidListing.raw_listing_id,
+                        InvalidListing.parsed_listing_id,
+                        InvalidListing.normalized_listing_id,
+                        InvalidListing.created_at,
+                        InvalidListing.stage,
+                        InvalidListing.error_codes,
+                    )
+                )
                 .execution_options(autoflush=False)
                 .where(
                     InvalidListing.created_at <= as_of,
@@ -90,7 +128,7 @@ def pipeline_records(
                 data = {
                     name: getattr(n, name)
                     for name in NormalizedListingSchema.model_fields
-                    if hasattr(n, name)
+                    if hasattr(type(n), name)
                     and name
                     not in {
                         "description_original",
@@ -104,7 +142,7 @@ def pipeline_records(
                 data = {
                     name: getattr(p, name)
                     for name in NormalizedListingSchema.model_fields
-                    if hasattr(p, name)
+                    if hasattr(type(p), name)
                     and name
                     not in {
                         "description_original",
@@ -126,6 +164,11 @@ def pipeline_records(
                     error_codes=codes,
                     listing=listing,
                     content_hash=r.content_hash,
+                    publication_date_basis="proxy"
+                    if r.source_website == "pro-rks"
+                    else "source_declared"
+                    if r.source_website in SOURCE_DECLARED_DATE_ADAPTERS
+                    else "unknown",
                 )
             )
     return records

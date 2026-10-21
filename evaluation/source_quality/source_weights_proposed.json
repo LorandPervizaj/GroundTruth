@@ -1,0 +1,295 @@
+{
+  "evaluation_as_of": "2026-10-21 00:00:00+00:00",
+  "evaluation_snapshot_identity": "fd07c4c07c930ebb696bb7d02f009b16d4124e8289637f1811437805e1514db9",
+  "scoring_policy_version": "1.1.0",
+  "sources": [
+    {
+      "eligibility_reason": [
+        "insufficient_measurement_coverage",
+        "insufficient_independent_location_verification",
+        "insufficient_processing_coverage"
+      ],
+      "proposed_weight": 1.0,
+      "quality_score": 75.668752,
+      "segment": "all",
+      "source_id": "gjirafa",
+      "status": "insufficient_evidence"
+    },
+    {
+      "eligibility_reason": [
+        "insufficient_measurement_coverage",
+        "insufficient_independent_location_verification"
+      ],
+      "proposed_weight": 1.0,
+      "quality_score": 80.580636,
+      "segment": "sale",
+      "source_id": "gjirafa",
+      "status": "insufficient_evidence"
+    },
+    {
+      "eligibility_reason": [
+        "insufficient_measurement_coverage",
+        "insufficient_independent_location_verification"
+      ],
+      "proposed_weight": 1.0,
+      "quality_score": 80.411146,
+      "segment": "rent",
+      "source_id": "gjirafa",
+      "status": "insufficient_evidence"
+    },
+    {
+      "eligibility_reason": [
+        "insufficient_measurement_coverage",
+        "insufficient_independent_location_verification",
+        "insufficient_processing_coverage"
+      ],
+      "proposed_weight": 1.0,
+      "quality_score": 50.0,
+      "segment": "unknown",
+      "source_id": "gjirafa",
+      "status": "insufficient_evidence"
+    },
+    {
+      "eligibility_reason": [
+        "insufficient_measurement_coverage",
+        "insufficient_independent_location_verification",
+        "insufficient_processing_coverage"
+      ],
+      "proposed_weight": 1.0,
+      "quality_score": 74.579242,
+      "segment": "all",
+      "source_id": "merrjep",
+      "status": "insufficient_evidence"
+    },
+    {
+      "eligibility_reason": [
+        "insufficient_measurement_coverage",
+        "insufficient_independent_location_verification"
+      ],
+      "proposed_weight": 1.0,
+      "quality_score": 73.031407,
+      "segment": "sale",
+      "source_id": "merrjep",
+      "status": "insufficient_evidence"
+    },
+    {
+      "eligibility_reason": [
+        "insufficient_measurement_coverage",
+        "insufficient_independent_location_verification"
+      ],
+      "proposed_weight": 1.0,
+      "quality_score": 77.362242,
+      "segment": "rent",
+      "source_id": "merrjep",
+      "status": "insufficient_evidence"
+    },
+    {
+      "eligibility_reason": [
+        "insufficient_measurement_coverage",
+        "insufficient_independent_location_verification",
+        "insufficient_processing_coverage"
+      ],
+      "proposed_weight": 1.0,
+      "quality_score": 49.461072,
+      "segment": "unknown",
+      "source_id": "merrjep",
+      "status": "insufficient_evidence"
+    },
+    {
+      "eligibility_reason": [
+        "insufficient_measurement_coverage",
+        "insufficient_independent_location_verification",
+        "insufficient_processing_coverage"
+      ],
+      "proposed_weight": 1.0,
+      "quality_score": 50.209037,
+      "segment": "all",
+      "source_id": "myrealestate",
+      "status": "insufficient_evidence"
+    },
+    {
+      "eligibility_reason": [
+        "insufficient_sample",
+        "insufficient_measurement_coverage",
+        "insufficient_independent_location_verification"
+      ],
+      "proposed_weight": 1.0,
+      "quality_score": 83.027778,
+      "segment": "sale",
+      "source_id": "myrealestate",
+      "status": "insufficient_evidence"
+    },
+    {
+      "eligibility_reason": [
+        "insufficient_sample",
+        "insufficient_measurement_coverage",
+        "insufficient_independent_location_verification",
+        "insufficient_processing_coverage"
+      ],
+      "proposed_weight": 1.0,
+      "quality_score": null,
+      "segment": "rent",
+      "source_id": "myrealestate",
+      "status": "insufficient_evidence"
+    },
+    {
+      "eligibility_reason": [
+        "insufficient_measurement_coverage",
+        "insufficient_independent_location_verification",
+        "insufficient_processing_coverage"
+      ],
+      "proposed_weight": 1.0,
+      "quality_score": 50.0,
+      "segment": "unknown",
+      "source_id": "myrealestate",
+      "status": "insufficient_evidence"
+    },
+    {
+      "eligibility_reason": [
+        "insufficient_measurement_coverage",
+        "insufficient_independent_location_verification",
+        "insufficient_processing_coverage"
+      ],
+      "proposed_weight": 1.0,
+      "quality_score": 54.15978,
+      "segment": "all",
+      "source_id": "pro-rks",
+      "status": "insufficient_evidence"
+    },
+    {
+      "eligibility_reason": [
+        "insufficient_measurement_coverage",
+        "insufficient_independent_location_verification"
+      ],
+      "proposed_weight": 1.0,
+      "quality_score": 75.495283,
+      "segment": "sale",
+      "source_id": "pro-rks",
+      "status": "insufficient_evidence"
+    },
+    {
+      "eligibility_reason": [
+        "insufficient_measurement_coverage",
+        "insufficient_independent_location_verification"
+      ],
+      "proposed_weight": 1.0,
+      "quality_score": 75.673077,
+      "segment": "rent",
+      "source_id": "pro-rks",
+      "status": "insufficient_evidence"
+    },
+    {
+      "eligibility_reason": [
+        "insufficient_measurement_coverage",
+        "insufficient_independent_location_verification",
+        "insufficient_processing_coverage"
+      ],
+      "proposed_weight": 1.0,
+      "quality_score": 50.0,
+      "segment": "unknown",
+      "source_id": "pro-rks",
+      "status": "insufficient_evidence"
+    },
+    {
+      "eligibility_reason": [
+        "insufficient_measurement_coverage",
+        "insufficient_independent_location_verification",
+        "insufficient_processing_coverage"
+      ],
+      "proposed_weight": 1.0,
+      "quality_score": 52.050894,
+      "segment": "all",
+      "source_id": "topia",
+      "status": "insufficient_evidence"
+    },
+    {
+      "eligibility_reason": [
+        "insufficient_sample",
+        "insufficient_measurement_coverage",
+        "insufficient_independent_location_verification"
+      ],
+      "proposed_weight": 1.0,
+      "quality_score": 83.142857,
+      "segment": "sale",
+      "source_id": "topia",
+      "status": "insufficient_evidence"
+    },
+    {
+      "eligibility_reason": [
+        "insufficient_sample",
+        "insufficient_measurement_coverage",
+        "insufficient_independent_location_verification"
+      ],
+      "proposed_weight": 1.0,
+      "quality_score": 82.933761,
+      "segment": "rent",
+      "source_id": "topia",
+      "status": "insufficient_evidence"
+    },
+    {
+      "eligibility_reason": [
+        "insufficient_measurement_coverage",
+        "insufficient_independent_location_verification",
+        "insufficient_processing_coverage"
+      ],
+      "proposed_weight": 1.0,
+      "quality_score": 50.0,
+      "segment": "unknown",
+      "source_id": "topia",
+      "status": "insufficient_evidence"
+    },
+    {
+      "eligibility_reason": [
+        "insufficient_sample",
+        "insufficient_measurement_coverage",
+        "insufficient_independent_location_verification",
+        "insufficient_processing_coverage"
+      ],
+      "proposed_weight": 1.0,
+      "quality_score": null,
+      "segment": "all",
+      "source_id": "vision",
+      "status": "insufficient_evidence"
+    },
+    {
+      "eligibility_reason": [
+        "insufficient_sample",
+        "insufficient_measurement_coverage",
+        "insufficient_independent_location_verification",
+        "insufficient_processing_coverage"
+      ],
+      "proposed_weight": 1.0,
+      "quality_score": null,
+      "segment": "sale",
+      "source_id": "vision",
+      "status": "insufficient_evidence"
+    },
+    {
+      "eligibility_reason": [
+        "insufficient_sample",
+        "insufficient_measurement_coverage",
+        "insufficient_independent_location_verification",
+        "insufficient_processing_coverage"
+      ],
+      "proposed_weight": 1.0,
+      "quality_score": null,
+      "segment": "rent",
+      "source_id": "vision",
+      "status": "insufficient_evidence"
+    },
+    {
+      "eligibility_reason": [
+        "insufficient_sample",
+        "insufficient_measurement_coverage",
+        "insufficient_independent_location_verification",
+        "insufficient_processing_coverage"
+      ],
+      "proposed_weight": 1.0,
+      "quality_score": null,
+      "segment": "unknown",
+      "source_id": "vision",
+      "status": "insufficient_evidence"
+    }
+  ],
+  "status": "PROPOSED \u2014 NOT ACTIVE"
+}
