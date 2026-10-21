@@ -281,7 +281,7 @@ def test_dispatch_and_etl_quarantine(monkeypatch):
         spider_version="0.1.0-harta",
     )
     parsed = ParsingService().parse_raw(raw)
-    assert parsed.parser_version == "0.1.0-harta"
+    assert parsed.parser_version == "0.2.0-harta"
     service = EtlService(MagicMock())
     service._raw_repo = MagicMock()
     service._raw_repo.list_unparsed.return_value = [raw]
@@ -328,19 +328,28 @@ def test_raw_pipeline_reuses_store_and_commits_bounded_items(monkeypatch):
     pipeline = HartaRawListingPipeline()
     pipeline._session = MagicMock()
     pipeline._scrape_run = SimpleNamespace(metadata_={"source": "harta"})
+    pipeline._scrape_run_repo = MagicMock()
+    pipeline._items_stored = 0
+    pipeline._pipeline_service = MagicMock()
     spider = HartaSpider()
     spider._detail_checks[KEY] = {"summary_fingerprint": "f", "checked_at": NOW.isoformat()}
-    store = MagicMock(side_effect=lambda item, spider: item)
     close = MagicMock()
-    monkeypatch.setattr(RawListingPipeline, "process_item", store)
     monkeypatch.setattr(RawListingPipeline, "close_spider", close)
-    item = {"source_website": "harta"}
+    item = spider.build_listing_item(
+        source_listing_id=KEY,
+        original_url="https://harta.info/property/" + KEY,
+        raw_payload={"property": prop()},
+    )
     assert pipeline.process_item(item, spider) is item
-    store.assert_called_once_with(item, spider)
+    stored_schema = pipeline._pipeline_service.store_raw.call_args.args[0]
+    assert (
+        stored_schema.source_listing_id == KEY
+        and stored_schema.content_hash == item["content_hash"]
+    )
     pipeline._session.commit.assert_called_once()
     pipeline.close_spider(spider)
     assert pipeline._scrape_run.metadata_["harta_detail_checks"][KEY]["summary_fingerprint"] == "f"
-    close.assert_called_once_with(spider)
+    pipeline._scrape_run_repo.fail_run.assert_called_once()
 
 
 def test_harta_dedup_compatibility_never_promotes_over_existing_sources():

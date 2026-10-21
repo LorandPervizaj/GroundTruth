@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import re
 import unicodedata
+from datetime import UTC, datetime
 from typing import Any
 from uuid import UUID
 
@@ -14,6 +15,10 @@ from groundtruth.portals.registry import get_portal
 
 INDEX_URL = "https://harta.info/prona/banesa/prishtine"
 PARSER_VERSION = get_portal("harta").parser_version
+DEFAULT_MAX_LISTINGS = 75
+DEFAULT_MAX_REQUESTS = 110
+DEFAULT_MAX_SECONDS = 300
+DEFAULT_RECHECK_DAYS = 7
 
 
 class HartaContractError(ValueError):
@@ -102,6 +107,7 @@ def property_from_html(html: str) -> dict:
     prop = hydration_field(html, "property")
     if not isinstance(prop, dict):
         raise HartaContractError("Malformed property object")
+    issues = []
     # The observed hydration features omit rental_period while the public
     # RealEstateListing JSON-LD explicitly declares it. Retain that evidence.
     for text in Selector(text=html).css('script[type="application/ld+json"]::text').getall():
@@ -111,10 +117,39 @@ def property_from_html(html: str) -> dict:
             continue
         if isinstance(ld, dict) and ld.get("@type") == "RealEstateListing":
             for fact in ld.get("additionalProperty", []):
+                if not isinstance(fact, dict):
+                    raise HartaContractError("Malformed JSON-LD property facts")
                 if fact.get("name") == "Rental Period":
                     features = dict(prop.get("features") or {})
+                    if features.get("rental_period") not in (None, fact.get("value")):
+                        issues.append("harta_conflicting_rental_period")
                     features.setdefault("rental_period", fact.get("value"))
                     prop["features"] = features
+                if fact.get("name") == "Property Type" and fact.get("value") != prop.get(
+                    "property_type"
+                ):
+                    issues.append("harta_conflicting_property_type")
+    prop["contract_issues"] = sorted(set(issues))
+    visible = " ".join(
+        Selector(text=html)
+        .xpath("//text()[not(ancestor::script) and not(ancestor::style)]")
+        .getall()
+    )
+    relative = re.search(r"shpallur me[^·]{0,80}·\s*(sot|dje|today|yesterday)\b", folded(visible))
+    if relative:
+        prop["relative_publication_label"] = relative.group(1)
+        try:
+            published = datetime.fromisoformat(
+                str(prop.get("created_at")).replace("Z", "+00:00")
+            ).date()
+            # Two-day tolerance avoids claiming a disagreement from timezone or
+            # local-midnight differences. Absolute publication remains authority.
+            age = (datetime.now(UTC).date() - published).days
+            expected_age = 1 if relative.group(1) in {"dje", "yesterday"} else 0
+            if abs(age - expected_age) > 2:
+                prop["contract_issues"].append("harta_relative_publication_conflict")
+        except ValueError:
+            pass
     return prop
 
 
@@ -174,6 +209,8 @@ _FIELDS = frozenset(
         "longitude",
         "condition",
         "construction_status",
+        "contract_issues",
+        "relative_publication_label",
     }
 )
 _FEATURES = frozenset({"rental_period", "furnished", "floor_levels", "elevator", "parking"})
@@ -189,7 +226,28 @@ def minimized_property(prop: dict) -> dict:
     result["features"] = {k: v for k, v in features.items() if k in _FEATURES}
     text = Selector(text=str(prop.get("description") or "")).xpath("string(.)").get("")
     # Only explicit labelled asking-price and area facts, never free text/contacts.
-    prices = re.findall(r"[ÇçCc]mimi\s*[:=]\s*([\d., ]+)\s*(?:€|EUR)", text)
+    prices = []
+    per_sqm_prices = []
+    for match in re.finditer(r"[ÇçCc]mimi\s*[:=]\s*([\d.,\s]+)\s*(?:€|EUR)(\s*/\s*m[²2])?", text):
+        (per_sqm_prices if match.group(2) else prices).append(match.group(1).strip())
     areas = re.findall(r"(?:[Ss]ip[eë]rfaqja|[Ss]ip[eë]rfaqe)\s*[:=]\s*([\d.,]+)\s*m[²2]", text)
-    result["description_facts"] = {"asking_prices": prices, "areas_sqm": areas}
+    normalized_text = folded(text)
+    result["description_facts"] = {
+        "asking_prices": prices,
+        "areas_sqm": areas,
+        "per_sqm_prices": per_sqm_prices,
+        "transaction_types": [
+            kind
+            for kind, pattern in [
+                ("rent", r"\b(?:me qira|jepet me qira)\b"),
+                ("sale", r"\b(?:shitet|ne shitje)\b"),
+            ]
+            if re.search(pattern, normalized_text)
+        ],
+        "non_apartment_type": bool(
+            re.search(
+                r"^\s*(?:shitet|jepet me qira)\s+(?:shtepi|vile|toke|lokal)\b", normalized_text
+            )
+        ),
+    }
     return result

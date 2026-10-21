@@ -80,16 +80,27 @@ def _build_crawl_command(spider_name: str, kwargs: dict[str, str]) -> list[str]:
     cmd = [*_groundtruth_base_cmd(), "crawl"]
 
     if spider_name == "harta":
-        return [
-            *cmd,
-            "harta",
-            "--max-listings",
-            "75",
-            "--max-requests",
-            "110",
-            "--recheck-days",
-            "7",
-        ]
+        from groundtruth.scrapers.harta_contract import (
+            DEFAULT_MAX_LISTINGS,
+            DEFAULT_MAX_REQUESTS,
+            DEFAULT_MAX_SECONDS,
+            DEFAULT_RECHECK_DAYS,
+        )
+
+        result = [*cmd, "harta"]
+        for key, default in [
+            ("max_listings", str(DEFAULT_MAX_LISTINGS)),
+            ("max_requests", str(DEFAULT_MAX_REQUESTS)),
+            ("max_seconds", str(DEFAULT_MAX_SECONDS)),
+            ("recheck_days", str(DEFAULT_RECHECK_DAYS)),
+        ]:
+            value = kwargs.get(key, default)
+            if not value.isdigit() or int(value) < 1:
+                raise ValueError("Invalid Harta budget: " + key)
+            result.extend(["--" + key.replace("_", "-"), value])
+        if crawl_window := kwargs.get("crawl_window"):
+            result.extend(["--crawl-window", crawl_window])
+        return result
 
     if spider_name == "merrjep":
         cmd.extend(["merrjep", "--detail"])
@@ -230,4 +241,4 @@ def _weekly_spider_jobs(window: CrawlWindow) -> list[tuple[str, str, dict[str, s
 
 def harta_research_job() -> tuple[str, str, dict[str, str]]:
     """Explicitly selected only; never part of the automatic weekly job list."""
-    return ("harta", "harta", {"max_listings": "75", "max_requests": "110"})
+    return ("harta", "harta", {})  # Defaults owned by the Harta contract module.
