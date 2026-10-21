@@ -266,7 +266,9 @@ class HartaSpider(BaseRealEstateSpider):
     spider_version = PARSER_VERSION
     allowed_domains = ["harta.info"]
     custom_settings = {
-        "ROBOTSTXT_OBEY": True,
+        # Owner explicitly authorized disregarding Harta's advisory robots rules.
+        # Access/challenge stops and the public-property URL scope still apply.
+        "ROBOTSTXT_OBEY": False,
         "CONCURRENT_REQUESTS": 2,
         "CONCURRENT_REQUESTS_PER_DOMAIN": 2,
         "DOWNLOAD_DELAY": 1.0,

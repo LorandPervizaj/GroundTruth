@@ -6,6 +6,11 @@ Reference and operator runbook: [Harta source integration](HARTA_SOURCE_INTEGRAT
 This document supersedes the initial attempt in commit `fc7d67c`; that commit retains
 its original evidence. Gate 1 (`69b7590`) and Gate 2 (`1e7c807`) remain intact.
 
+Subsequent owner authorization explicitly permits ignoring Harta's robots.txt
+policy. Harta's robots enforcement is now disabled independently of other sources.
+This resolves the advisory robots restriction; it does not establish a working
+challenge-free discovery route or supply the missing live pilot evidence.
+
 ## Implementation since fc7d67c
 
 - Atomic per-item checkpoints now require confirmed stored content. A crash before

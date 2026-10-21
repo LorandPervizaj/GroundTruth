@@ -8,9 +8,16 @@ or a public Metrik release. This chat's Part 3 reference is this document and Ga
 
 The owner confirms permission to collect relevant public Harta listings. No specific
 rate limit or access exemption was supplied. The implementation uses public HTTPS,
-robots rules, a fixed research user agent, concurrency 2, a one-second delay,
+a fixed research user agent, concurrency 2, a one-second delay,
 20-second timeout and two retries. It never logs in, rotates identities, solves
 challenges or accesses profiles, contacts, media, maps or administrative endpoints.
+
+The owner subsequently explicitly authorized ignoring Harta's robots.txt rules.
+Harta therefore sets `ROBOTSTXT_OBEY=False`; other spiders' settings are unchanged.
+This removes the advisory robots restriction only. Public-property scope, request
+budgets, HTTP 401/403 stops and Turnstile detection remain enforced. Robots.txt
+is not the remaining Gate 3 blocker; the observed application challenge and
+unverified discovery/pagination contract still require technical resolution.
 
 During browser investigation Harta displayed `human-gate-title`, explaining that
 automatic collection requires human verification, protected by Cloudflare Turnstile.
