@@ -765,6 +765,10 @@ def run_weekly_pipeline(
     window = CrawlWindow.last_n_days(days)
     report = WeeklyCrawlReport(window=window, started_at=datetime.now(UTC))
     jobs = _weekly_spider_jobs(window)
+    if only_set and "harta" in only_set:
+        from groundtruth.crawl.spider_commands import harta_research_job
+
+        jobs.append(harta_research_job())
     if only_set:
         jobs = [
             (label, spider, kwargs) for label, spider, kwargs in jobs if label.lower() in only_set

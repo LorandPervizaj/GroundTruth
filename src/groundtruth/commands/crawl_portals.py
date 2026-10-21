@@ -9,6 +9,45 @@ console = Console()
 crawl_app = typer.Typer(help="Scraping commands")
 
 
+@crawl_app.command("harta")
+def crawl_harta(
+    max_listings: int = typer.Option(75, min=1, max=1000),
+    max_pages: int = typer.Option(1, min=1, max=100),
+    max_requests: int = typer.Option(110, min=1, max=2000),
+    recheck_days: int = typer.Option(7, min=1),
+    report_path: str = typer.Option("reports/generated/harta_crawl_report.json"),
+    crawl_window: str | None = typer.Option(None),
+) -> None:
+    """Private Harta adapter. Gate 3 is BLOCKED; resolve source access before use."""
+    from scrapy.crawler import CrawlerProcess
+    from scrapy.utils.project import get_project_settings
+
+    process = CrawlerProcess(get_project_settings())
+    crawler = process.create_crawler("harta")
+    process.crawl(
+        crawler,
+        max_listings=str(max_listings),
+        max_pages=str(max_pages),
+        max_requests=str(max_requests),
+        recheck_days=str(recheck_days),
+        report_path=report_path,
+        crawl_window=crawl_window,
+    )
+    process.start()
+    reason = crawler.stats.get_value("finish_reason") if crawler.stats else None
+    if (
+        reason != "finished"
+        or not crawler.spider
+        or crawler.spider.errors_count
+        or crawler.spider.metrics["parse_failures"]
+        or crawler.spider.metrics["request_failures"]
+        or not crawler.spider.metrics["detail_success"]
+    ):
+        console.print("[red]Harta crawl incomplete; inspect the private crawl report.[/red]")
+        raise typer.Exit(1)
+    console.print("Harta raw crawl finished. Run groundtruth etl run --source harta.")
+
+
 def _run_gjirafa_crawl(
     *,
     spider_name: str,

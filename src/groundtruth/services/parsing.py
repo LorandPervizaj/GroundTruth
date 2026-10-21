@@ -37,6 +37,7 @@ from groundtruth.provenance.rules import (
     TYPE_TITLE_INFER,
 )
 from groundtruth.schemas.pipeline import ParsedListingSchema
+from groundtruth.services.harta_parsing import HartaParsingService
 from groundtruth.services.merrjep_parsing import MerrJepParsingService
 from groundtruth.services.myrealestate_parsing import MyRealEstateParsingService
 from groundtruth.services.pro_rks_parsing import ProRksParsingService
@@ -116,6 +117,17 @@ class ParsingService:
             return self._parse_topia(raw)
         if raw.source_website == "myrealestate":
             return self._parse_myrealestate(raw)
+        if raw.source_website == "harta":
+            schema = HartaParsingService().parse_payload(
+                dict(raw.raw_payload or {}),
+                url=raw.original_url,
+                raw_listing_id=raw.id,
+                scrape_run_id=raw.scrape_run_id,
+                spider_version=raw.spider_version,
+            )
+            if schema.source_listing_id != raw.source_listing_id:
+                raise ValueError("Harta raw/property identity mismatch")
+            return schema
         raise ValueError(f"No parser for source: {raw.source_website}")
 
     def _parse_topia(self, raw: RawListing) -> ParsedListingSchema:

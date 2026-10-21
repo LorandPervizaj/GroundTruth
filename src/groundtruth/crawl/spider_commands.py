@@ -20,6 +20,7 @@ KNOWN_WEEKLY_SPIDERS = frozenset(
         "vision",
         "topia",
         "myrealestate",
+        "harta",
     }
 )
 _NUMERIC_KWARGS = frozenset({"max_pages", "max_age_days", "max_age_months", "skip_existing_days"})
@@ -77,6 +78,18 @@ def _build_crawl_command(spider_name: str, kwargs: dict[str, str]) -> list[str]:
     _validate_spider_name(spider_name)
     _validate_crawl_kwargs(kwargs)
     cmd = [*_groundtruth_base_cmd(), "crawl"]
+
+    if spider_name == "harta":
+        return [
+            *cmd,
+            "harta",
+            "--max-listings",
+            "75",
+            "--max-requests",
+            "110",
+            "--recheck-days",
+            "7",
+        ]
 
     if spider_name == "merrjep":
         cmd.extend(["merrjep", "--detail"])
@@ -213,3 +226,8 @@ def _weekly_spider_jobs(window: CrawlWindow) -> list[tuple[str, str, dict[str, s
             },
         ),
     ]
+
+
+def harta_research_job() -> tuple[str, str, dict[str, str]]:
+    """Explicitly selected only; never part of the automatic weekly job list."""
+    return ("harta", "harta", {"max_listings": "75", "max_requests": "110"})

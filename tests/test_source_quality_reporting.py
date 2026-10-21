@@ -72,7 +72,7 @@ def test_cli_fixture_and_normal_help(tmp_path):
     ]
     result = CliRunner().invoke(app, args)
     assert result.exit_code == 0, result.output
-    assert "24 source/segment summaries and 1 listing assessments" in result.output
+    assert "28 source/segment summaries and 1 listing assessments" in result.output
     assert (tmp_path / "out/source_quality_report.json").exists()
     assert "source-quality" in CliRunner().invoke(app, ["analytics", "--help"]).output
 

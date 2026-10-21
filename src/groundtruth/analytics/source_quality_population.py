@@ -14,7 +14,9 @@ from groundtruth.schemas.pipeline import NormalizedListingSchema
 # Audited parser contracts, not reputation scores. Pro-RKS derives dates from
 # image media and falls back to scrape time in services/parsing.py. Unknown future
 # adapters remain runnable without claiming that an undocumented date is publication.
-SOURCE_DECLARED_DATE_ADAPTERS = frozenset({"gjirafa", "merrjep", "vision", "topia", "myrealestate"})
+SOURCE_DECLARED_DATE_ADAPTERS = frozenset(
+    {"gjirafa", "merrjep", "vision", "topia", "myrealestate", "harta"}
+)
 
 
 def pipeline_records(
