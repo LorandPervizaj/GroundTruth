@@ -1,0 +1,489 @@
+{
+  "$defs": {
+    "ListingAssessment": {
+      "additionalProperties": false,
+      "properties": {
+        "error_codes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Error Codes",
+          "type": "array"
+        },
+        "error_origin": {
+          "title": "Error Origin",
+          "type": "string"
+        },
+        "freshness_basis": {
+          "title": "Freshness Basis",
+          "type": "string"
+        },
+        "freshness_evidence": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "title": "Freshness Evidence",
+          "type": "object"
+        },
+        "location_precision_score": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Location Precision Score"
+        },
+        "location_verification_status": {
+          "title": "Location Verification Status",
+          "type": "string"
+        },
+        "observation_id": {
+          "title": "Observation Id",
+          "type": "integer"
+        },
+        "observed_criterion_coverage": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Observed Criterion Coverage",
+          "type": "number"
+        },
+        "outcome": {
+          "title": "Outcome",
+          "type": "string"
+        },
+        "quality_score": {
+          "maximum": 100,
+          "minimum": 0,
+          "title": "Quality Score",
+          "type": "number"
+        },
+        "scores": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "title": "Scores",
+          "type": "object"
+        },
+        "segment": {
+          "title": "Segment",
+          "type": "string"
+        },
+        "source_listing_id": {
+          "title": "Source Listing Id",
+          "type": "string"
+        },
+        "source_name": {
+          "title": "Source Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source_name",
+        "source_listing_id",
+        "observation_id",
+        "segment",
+        "outcome",
+        "scores",
+        "quality_score",
+        "observed_criterion_coverage",
+        "location_precision_score",
+        "location_verification_status",
+        "freshness_basis",
+        "freshness_evidence",
+        "error_codes",
+        "error_origin"
+      ],
+      "title": "ListingAssessment",
+      "type": "object"
+    },
+    "QualityPolicy": {
+      "additionalProperties": false,
+      "properties": {
+        "duplicate_threshold": {
+          "default": 85,
+          "exclusiveMinimum": 0,
+          "maximum": 100,
+          "title": "Duplicate Threshold",
+          "type": "number"
+        },
+        "freshness_days": {
+          "default": 180,
+          "exclusiveMinimum": 0,
+          "title": "Freshness Days",
+          "type": "integer"
+        },
+        "maximum_weight": {
+          "default": 1.25,
+          "minimum": 1,
+          "title": "Maximum Weight",
+          "type": "number"
+        },
+        "minimum_coverage": {
+          "default": 0.9,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Minimum Coverage",
+          "type": "number"
+        },
+        "minimum_location_verification": {
+          "default": 0.8,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Minimum Location Verification",
+          "type": "number"
+        },
+        "minimum_processed_fraction": {
+          "default": 0.95,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Minimum Processed Fraction",
+          "type": "number"
+        },
+        "minimum_sample": {
+          "default": 30,
+          "minimum": 1,
+          "title": "Minimum Sample",
+          "type": "integer"
+        },
+        "minimum_weight": {
+          "default": 0.75,
+          "exclusiveMinimum": 0,
+          "maximum": 1,
+          "title": "Minimum Weight",
+          "type": "number"
+        },
+        "unknown_imputation": {
+          "default": 50,
+          "maximum": 100,
+          "minimum": 0,
+          "title": "Unknown Imputation",
+          "type": "number"
+        },
+        "version": {
+          "default": "1.0.0",
+          "title": "Version",
+          "type": "string"
+        },
+        "weights": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "title": "Weights",
+          "type": "object"
+        }
+      },
+      "title": "QualityPolicy",
+      "type": "object"
+    },
+    "SourceAssessment": {
+      "additionalProperties": false,
+      "properties": {
+        "accepted_count": {
+          "title": "Accepted Count",
+          "type": "integer"
+        },
+        "completeness_score": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Completeness Score"
+        },
+        "consistency_score": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Consistency Score"
+        },
+        "criterion_sample_counts": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "title": "Criterion Sample Counts",
+          "type": "object"
+        },
+        "cross_portal_comparable_count": {
+          "title": "Cross Portal Comparable Count",
+          "type": "integer"
+        },
+        "cross_portal_duplicate_listing_count": {
+          "title": "Cross Portal Duplicate Listing Count",
+          "type": "integer"
+        },
+        "eligibility_reason": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Eligibility Reason",
+          "type": "array"
+        },
+        "error_code_counts": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "title": "Error Code Counts",
+          "type": "object"
+        },
+        "error_origin_counts": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "title": "Error Origin Counts",
+          "type": "object"
+        },
+        "freshness_score": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Freshness Score"
+        },
+        "historical_reliability_score": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Historical Reliability Score"
+        },
+        "location_precision_score": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Location Precision Score"
+        },
+        "location_score": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Location Score"
+        },
+        "location_verification_status": {
+          "title": "Location Verification Status",
+          "type": "string"
+        },
+        "observed_criterion_coverage": {
+          "title": "Observed Criterion Coverage",
+          "type": "number"
+        },
+        "pending_count": {
+          "title": "Pending Count",
+          "type": "integer"
+        },
+        "proposed_weight": {
+          "title": "Proposed Weight",
+          "type": "number"
+        },
+        "records_examined": {
+          "title": "Records Examined",
+          "type": "integer"
+        },
+        "rejected_count": {
+          "title": "Rejected Count",
+          "type": "integer"
+        },
+        "repeated_observation_count": {
+          "title": "Repeated Observation Count",
+          "type": "integer"
+        },
+        "score_status": {
+          "title": "Score Status",
+          "type": "string"
+        },
+        "segment": {
+          "title": "Segment",
+          "type": "string"
+        },
+        "source_name": {
+          "title": "Source Name",
+          "type": "string"
+        },
+        "source_quality_score": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Source Quality Score"
+        },
+        "unique_source_listing_count": {
+          "title": "Unique Source Listing Count",
+          "type": "integer"
+        },
+        "unknown_criteria": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Unknown Criteria",
+          "type": "array"
+        },
+        "validity_score": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Validity Score"
+        },
+        "weight_status": {
+          "title": "Weight Status",
+          "type": "string"
+        },
+        "within_source_content_duplicate_count": {
+          "title": "Within Source Content Duplicate Count",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "source_name",
+        "segment",
+        "records_examined",
+        "unique_source_listing_count",
+        "accepted_count",
+        "rejected_count",
+        "pending_count",
+        "repeated_observation_count",
+        "within_source_content_duplicate_count",
+        "cross_portal_duplicate_listing_count",
+        "cross_portal_comparable_count",
+        "validity_score",
+        "completeness_score",
+        "location_score",
+        "location_precision_score",
+        "location_verification_status",
+        "consistency_score",
+        "freshness_score",
+        "historical_reliability_score",
+        "unknown_criteria",
+        "criterion_sample_counts",
+        "observed_criterion_coverage",
+        "source_quality_score",
+        "score_status",
+        "proposed_weight",
+        "weight_status",
+        "eligibility_reason",
+        "error_code_counts",
+        "error_origin_counts"
+      ],
+      "title": "SourceAssessment",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "evaluation_as_of": {
+      "format": "date-time",
+      "title": "Evaluation As Of",
+      "type": "string"
+    },
+    "evaluation_window": {
+      "additionalProperties": {
+        "format": "date-time",
+        "type": "string"
+      },
+      "title": "Evaluation Window",
+      "type": "object"
+    },
+    "generated_at": {
+      "format": "date-time",
+      "title": "Generated At",
+      "type": "string"
+    },
+    "input_fingerprint": {
+      "title": "Input Fingerprint",
+      "type": "string"
+    },
+    "listings": {
+      "items": {
+        "$ref": "#/$defs/ListingAssessment"
+      },
+      "title": "Listings",
+      "type": "array"
+    },
+    "population": {
+      "default": "raw_versions_observed_in_window; latest_per_source_listing; all_outcomes",
+      "title": "Population",
+      "type": "string"
+    },
+    "report_version": {
+      "default": "1.0.0",
+      "title": "Report Version",
+      "type": "string"
+    },
+    "scoring_policy": {
+      "$ref": "#/$defs/QualityPolicy"
+    },
+    "scoring_policy_version": {
+      "title": "Scoring Policy Version",
+      "type": "string"
+    },
+    "sources": {
+      "items": {
+        "$ref": "#/$defs/SourceAssessment"
+      },
+      "title": "Sources",
+      "type": "array"
+    }
+  },
+  "required": [
+    "scoring_policy_version",
+    "generated_at",
+    "evaluation_as_of",
+    "evaluation_window",
+    "input_fingerprint",
+    "scoring_policy",
+    "sources",
+    "listings"
+  ],
+  "title": "QualityReport",
+  "type": "object"
+}

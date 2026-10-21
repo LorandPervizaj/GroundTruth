@@ -11,6 +11,7 @@ from groundtruth.commands.etl_commands import etl_app
 from groundtruth.commands.pipeline_commands import pipeline_app
 from groundtruth.commands.release_commands import release_app
 from groundtruth.commands.research_commands import research_app
+from groundtruth.commands.source_quality_commands import source_quality_app
 from groundtruth.config import PROJECT_ROOT, get_settings, load_external_env
 from groundtruth.logging import configure_logging, get_logger
 
@@ -79,6 +80,7 @@ app.add_typer(valuate_app, name="valuate")
 
 analytics_app = typer.Typer(help="Product and ops analytics")
 app.add_typer(analytics_app, name="analytics")
+analytics_app.add_typer(source_quality_app, name="source-quality")
 
 evaluation_app = typer.Typer(help="Model evaluation harnesses")
 app.add_typer(evaluation_app, name="evaluation")
