@@ -166,7 +166,7 @@ def in_scope(prop: dict) -> bool:
     return (
         folded(prop.get("city")) in {"prishtine", "prishtina", "pristina"}
         and prop.get("property_type") in {"apartment", "condo", "studio"}
-        and prop.get("listing_type") in {"buy", "rent"}
+        and prop.get("listing_type") in {"buy", "sale", "rent"}
     )
 
 

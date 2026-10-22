@@ -1,203 +1,128 @@
 # Harta research source integration
 
-Status on 2026-10-21: **recovery adapter 0.2.0-harta, live verification BLOCKED**.
-See [Gate 3 evidence](HARTA_GATE_3.md). This is not approval for weekly collection
-or a public Metrik release. This chat's Part 3 reference is this document and Gate 3.
+Status on 2026-10-22: **Gate 3 PASS for the bounded private research integration**.
+This document and [Gate 3 evidence](HARTA_GATE_3.md) are this chat's implementation references.
+The original broader plan remains [GroundTruth plan](GROUNDTRUTH_SOURCE_QUALITY_HARTA_PLAN.md).
+No weekly or public release is enabled.
 
-## Authorization and observed access boundary
+## Observed public request contract
 
-The owner confirms permission to collect relevant public Harta listings. No specific
-rate limit or access exemption was supplied. The implementation uses public HTTPS,
-a fixed research user agent, concurrency 2, a one-second delay,
-20-second timeout and two retries. It never logs in, rotates identities, solves
-challenges or accesses profiles, contacts, media, maps or administrative endpoints.
+The current public frontend bootstraps `GET https://harta.info/api/security/csrf`,
+then sends read-only `POST https://harta.info/api/local-db` operations with the
+server-issued `x-harta-csrf-token`, normal session cookies, Origin and Referer.
+This route returned actual properties and powers this adapter. The earlier bare
+POST's 403 did not establish that this ordinary CSRF flow was unavailable.
+The token remains in memory and is never logged or persisted. No login, stealth,
+identity rotation, fabricated Turnstile token or challenge solver is implemented.
+HTTP 401/403 and challenge responses still stop collection.
 
-The owner subsequently explicitly authorized ignoring Harta's robots.txt rules.
-Harta therefore sets `ROBOTSTXT_OBEY=False`; other spiders' settings are unchanged.
-This removes the advisory robots restriction only. Public-property scope, request
-budgets, HTTP 401/403 stops and Turnstile detection remain enforced. Robots.txt
-is not the remaining Gate 3 blocker; the observed application challenge and
-unverified discovery/pagination contract still require technical resolution.
+The owner explicitly authorized public-property collection and ignoring Harta's
+robots.txt exclusions. Only Harta sets `ROBOTSTXT_OBEY=False`. Fixed identity:
+`GroundTruthResearch/0.1 (authorized public property research)`. Concurrency 2,
+one-second randomized delay, AutoThrottle target 1, 20-second timeout, two bounded
+retries. No profiles, owner/agent records, contacts, media, maps or admin operations.
+The earlier browser HumanGate observation remains historical evidence, not a claim
+that every public read-only interface rejects normal public sessions.
 
-During browser investigation Harta displayed `human-gate-title`, explaining that
-automatic collection requires human verification, protected by Cloudflare Turnstile.
-Collection stopped. **Do not use direct HTTP or a different endpoint to circumvent
-this observed restriction.** An access arrangement with Harta must resolve it before
-any further live run. No clearance is inferred from the general scraping permission.
+`harta_api.py` permits only bounded `properties` selects with explicit columns:
 
-The recovery recheck at approximately 19:09–19:11 UTC reproduced the application
-dialog in a public browser context. Images/media/fonts, Mapbox and tracking
-requests were blocked during this inspection. Public robots/category HTTP requests
-still returned 200 without a challenge body; category inventory remained zero.
-Current client code owns the dialog and loads Cloudflare's Turnstile widget: this
-is an application HumanGate, distinct from a Cloudflare edge/WAF challenge page.
-No approved authenticated session or collector route/token is configured.
+- Status `active`; city exactly Prishtinë/Prishtina/Prishtine/Pristina.
+- Apartment/condo/studio; transaction buy/sale/rent. Explicit nonmonthly rental
+  periods are excluded before details; unknown periods enter normal validation.
+- Order `created_at` descending, UUID ascending; inclusive `range` pages of 25.
+- Detail reads add UUID equality and limit 1. No wildcard selection or writes.
 
-### Harta administrator access requirements
+Two five-row probes verified disjoint range pages; the live pilot used two 25-row
+pages. The API `count` equals returned-page length even when another page exists;
+it is **not** a trusted inventory total. Short pages terminate the filtered scan;
+first-page empty results, malformed objects and stalled pagination fail explicitly.
+Pilot record/page limits produce `bounded_complete`, never full inventory coverage.
+Offset pagination over changing inventory is not a snapshot: duplicates are tracked,
+and concurrent inserts/updates can shift pages. No absence implies removal.
 
-No message has been sent. Provide these requirements to the source administrator:
+Public `/property/<UUID>` HTML worked for all 30 reviewed records. The bounded
+TanStack literal reader and JSON-LD extraction remain available for independent
+checks and legacy fixtures; category HTML is not the live discovery route.
+The earlier empty category and failing map function are superseded as collector
+interfaces, not evidence of empty inventory. No map-function replay is required.
 
-- Identity: `GroundTruthResearch/0.1 (authorized public property research)`.
-  Observed egress IP and UTC time are recorded privately in
-  `.tmp/harta-recovery/egress-observation.json`. Stability is unverified; confirm
-  fixed egress from the actual crawler host and Harta logs before allowlisting.
-  A user-agent string alone is not an authenticated identity.
-- Host/method: read-only HTTPS GET on `harta.info`, `/robots.txt`,
-  `/prona/banesa/prishtine`, and `/property/<UUID-or-observed-slug>`. If using the
-  observed public listing server function, confirm its current deployment ID,
-  payload, Prishtina/category/monthly filters, pagination/cap and trusted total.
-  No broad `/api/local-db` permission is needed or requested.
-- Configuration: scoped trusted-client recognition in the application HumanGate,
-  plus an edge/WAF exception if needed; alternatively a Harta-defined read-only
-  listing route with a scoped revocable credential. Route/header names must come
-  from Harta. No site-wide protection changes or challenge-solving flow.
-- Proposed limits for agreement: concurrency 2, one-second randomized delay with
-  AutoThrottle, 20-second timeout, two bounded retries, 110 requests and 300 seconds
-  per initial pilot. Honor Harta's lower approved limits and Retry-After.
-- Data scope: active Prishtina apartments/studios, sale and explicitly monthly
-  rentals, UUID, asking-price/area units, address, dates, optional rooms and source
-  coordinates. Contacts, profiles, media and analytics are unnecessary.
-- Discovery repair: resolve the empty category versus map discrepancy and observed
-  `COALESCE` type error, or supply a working approved alternative. Confirm first and
-  next pages/cursors, filter behavior and reliable completion signals.
-- Logging: UTC, client identity, method/path, status/request ID, latency and
-  retry/challenge counters; exclude credentials and raw property text.
+## Existing architecture and field meanings
 
-The smallest external unblock is an administrator-confirmed, working read-only
-listing route for this client, with valid filters and pagination. A WAF exception
-alone does not address the application HumanGate or the discovery defect.
+The adapter uses BaseRealEstateSpider, existing raw persistence, ScrapeRun metadata,
+parser 0.2.0-harta, normal normalization, validation, parsed-linked quarantine and
+source-quality policy 1.1.0. No schema migration or alternative store was introduced.
+Registry priority remains 6, `weekly=False`, `public=False`; six existing sources,
+winner priorities and public parser allowlist are unchanged.
 
-## Observed source contract
-
-Public pages inspected on 2026-10-21:
-
-| Public surface | Observed behavior / integration consequence |
+| Source field | Handling |
 |---|---|
-| `/robots.txt` | Public pages allowed; `/api/`, `/profile`, `/dashboard`, `/lovable/` excluded. |
-| `/pronat`, `/me-qira` | Server-rendered public previews; browser map loads a different inventory. Previews are not complete discovery. |
-| `/prona/banesa/prishtine` | Frontend route explicitly selects apartment/condo and Prishtina aliases, but returned **zero**, contradicting matching map listings. Not a reliable empty-market signal. |
-| Public map frontend response | Observed GET `/_serverFn/2aa15913d61c7649952f4708ca3873509d830e6b390357e063048a8977b1041b` with bbox, filters, listingType, zoom, limit. Response reported `COALESCE types jsonb and text[] cannot be matched`. No invented API or replay of this failing function is wired into the spider. |
-| `/property/<slug>-<id-prefix>` | Public property HTML contains TanStack hydration `property:$R[n]={...}` and `RealEstateListing` JSON-LD. Full UUID inside the property is authoritative. Frontend also constructs `/property/<UUID>`; this URL form remains live-unverified here. |
+| UUID | Stable source identity, verified against requested detail UUID. |
+| city/type/transaction/status | Exact scope and active state checked again on details. |
+| price_total / price_unit | Explicit total preferred; price fallback only for total. Per-m²/payment/deposit figures never become total price. Numeric locale groups validated. |
+| living_area | Interior area for normalized area; absent remains unknown and quarantined. |
+| surface_area / sqft | Total area/legacy alias retained separately; never silently converted into interior area or interpreted as square feet. HTML may derive sqft from surface_area. |
+| features.rental_period | Explicit monthly evidence required. JSON-LD can supplement legacy HTML; unknown or conflicting periods remain validation issues. |
+| description | Full text discarded; only labelled numeric consistency facts and transaction/property conflict flags retained. |
+| address/street/municipality | Source evidence retained and passed through existing resolver; no fabricated location. |
+| coordinates | Source map-pin provenance, sanity checked, never independent location verification. |
+| created_at / updated_at | Publication/update evidence distinct from collection/check time; absent dates remain unknown. |
+| bedrooms/bathrooms/floor/furnished | Explicit values only; no inference from area. |
 
-The literal reader accepts only the observed strings, numbers, booleans, null,
-objects, arrays and inline `$R[n]=` assignments. It executes no JavaScript and rejects
-expressions, references, missing fields, excessive nesting and oversized responses.
-Version/shape changes fail closed.
+Pre-storage allowlists remove contacts, profiles, owner/agent IDs, media, promotion
+metadata and full HTML/description. Parser checks include conflicting totals,
+transaction/property claims, interior exceeding total, incompatible municipality,
+invalid coordinates and stale relative publication labels. Kosovo bounds establish
+sanity only. The live first sample has interior area for just 1 of 50 records;
+49 quarantines are a material source limitation, not permission to weaken validation.
 
-The category frontend loader requests at most 24 records. No reliable pagination
-or change-feed contract was established. **The current spider reads one bounded
-category response; `max_pages` is a compatibility budget, not implemented pagination.**
-It does not broaden discovery to the whole site or fabricate page parameters.
-Repairing/confirming targeted discovery is essential before claiming completeness
-or attempting the requested 50–100 listing pilot.
+## Incremental collection and recovery
 
-## Implementation map
+Two bounded state queries load latest UUID/time/hash for up to 10,000 identities and
+metadata from 100 recent runs. New or changed summaries fetch details; unchanged
+ones skip details until a seven-day recheck. Fingerprints cover selected summary
+price, area, rooms, scope, address, coordinates and publication fields. The public
+summary projection has no reliable updated_at/change feed or description: changes
+only in unselected fields are reconciled at the periodic detail recheck.
 
-| Component | Integration |
-|---|---|
-| `scrapers/harta_contract.py` | Public HTML extraction, strict municipality/type filtering, UUID identity, pre-storage allowlist. |
-| `scrapers/spiders/harta.py` | BaseRealEstateSpider, bounded requests, source-only middleware, raw persistence subclass, run checkpoints and aggregate report. |
-| `services/harta_parsing.py`, `services/parsing.py` | Version `0.2.0-harta`, source dispatch, raw/payload identity agreement, typed values and provenance. |
-| `services/normalization.py` | Existing price/area normalizers, gazetteer and source-coordinate path reused without modifying its behavior. |
-| `services/etl.py` | Existing validator runs; Harta critical source issues append validation failures and enter normal parsed-linked quarantine. Other sources take their previous path. |
-| `portals/registry.py`, `versions.py` | Seventh registered source, last priority 6, `weekly=False`, `public=False`. The six existing active parser versions remain the public corpus allowlist. |
-| `crawl/spider_commands.py`, `crawl/weekly.py` | Explicit research selection registered; automatic default job list unchanged. |
-| `analytics/source_quality_population.py` | Absolute source `created_at` publication contract recognized; existing policy 1.1.0 unchanged. |
+Each detail's raw content and checkpoint commit atomically through the existing
+pipeline/repository and source-local savepoint. A checkpoint must match stored
+content hash and fingerprint version. Malformed, legacy, future and unpersisted
+checkpoints cannot skip requests. Duplicate content is confirmed before checkpoint
+advancement; summary fingerprints never alter raw detail hashes. Interruption
+tests exercise recovery from committed items without spider close.
 
-No migration, alternative listing database or alternate ETL system was introduced.
-The raw pipeline subclass calls existing persistence and commits bounded individual
-items; successful detail checks are saved in the existing scrape-run metadata.
-This also avoids a later duplicate rollback discarding earlier Harta inserts.
+The scan restarts filtered pages; it does not claim a persistent snapshot cursor.
+No ETag/Last-Modified support has been established. Explicit 404/410 or empty scoped
+detail reads produce bounded unavailability observations, not permanent deletion.
+Retries, bytes, status, parse/persistence errors, deadlines and request budgets are
+reported. Retry-After over 60 seconds stops for a later run. `bounded_complete`
+means the selected budget ended normally; errors and partial discovery still fail.
 
-## Field meanings and conservative decisions
+## Operator runbook
 
-| Harta field | GroundTruth handling |
-|---|---|
-| `id` | Full source UUID, independent of price/title/address; mismatch rejected. |
-| `city`, `property_type`, `listing_type` | Exact Prishtina aliases; apartment/condo/studio; buy/rent. Ambiguous municipality, other category or unsupported transaction rejected. |
-| `status` | Only active property accepted by parser. 404/410 counted as unavailable, without permanent deletion or whole-source inference. |
-| `price_total`, `price`, `price_unit` | Explicit total preferred; `price` fallback only for `total`. €/m² never treated as total. Missing/contradictory totals quarantined. |
-| `features.rental_period` | Monthly must be explicit. If hydration omits it, public JSON-LD `Rental Period` can supply evidence. Missing/daily period quarantined. |
-| `living_area` | Interior area used for normalized area. |
-| `surface_area`, `sqft` | Source total area and legacy total field; not silently substituted for interior or interpreted as square feet. Missing interior quarantined. Gross/interior differences retained as different concepts. |
-| Description | Not retained. Only explicit labelled asking-price/area facts survive for discrepancy checks; ambiguous formatting quarantined. No price inferred from deposits/garage fees. |
-| Address/city/neighborhood | Raw municipality/address retained; source street or first address component preserved and passed through existing resolver. No fabricated neighborhood/street. |
-| `latitude`, `longitude` | Existing `source_coords` path; provenance explicitly unverified map pin. Never independent location verification. |
-| `created_at` | Absolute publication timestamp, separate from scrape/check time and `updated_at`; missing/invalid stays unknown. |
-| Bedrooms/bathrooms/floor/furnished | Explicit structured values only; missing remains missing. Single `floor_levels` value may supply floor. No room inference from size. |
-
-Raw HTML, descriptions, contacts, owner/agent identifiers, profiles, images,
-promotion metadata and environmental/analytical data are excluded before storage.
-The observed diagnostic page had structured rent differing from its explicit
-description asking price, and total area with no interior area. Both issues are
-detected. This single example does not establish source-wide accuracy.
-
-## Incremental and recovery behavior
-
-Existing Harta raw identity/time/hash is read by UUID (up to 10,000 latest identities).
-The fingerprint covers summary identity, city/type/transaction, title, price, area,
-rooms and any available update time. New/changed summaries request details;
-identical summaries skip them until a seven-day detail recheck is due. Rechecks
-are anchored to detail checks committed atomically with confirmed stored content,
-including unchanged captures with no new raw version. Pending callbacks cannot
-advance checkpoints. Checkpoint content hashes must match stored content before
-reuse. Raw detail hashes exclude summary fingerprints, avoiding artificial detail
-versions for summary-only changes. Restart preserves each committed item's progress
-even if close_spider never ran; unstored new items remain discoverable.
-
-The scan restarts the bounded index instead of persisting an invented pagination
-cursor. State loading uses two queries: latest identity/time/hash rows and metadata
-for 100 recent runs; raw payloads/HTML are not loaded. Fingerprint version 2 includes
-availability, address, coordinates, area concepts and publication/update metadata
-where summaries supply them. Legacy/malformed/future/content-mismatched checkpoints
-cannot skip details. Lookup bounds or reversions to older raw content can cause
-extra requests at larger scale;
-they cannot make an unknown identity count as stored. Raw uniqueness and content
-hashes remain authoritative. Absence from this partial index is never removal.
-Conditional requests are not implemented: ETag/Last-Modified support was not
-established. Detail summaries are not trusted indefinitely.
-
-Every request including retries/robots is subject to the 110-request default cap.
-HTTP 429/temporary errors back off; Retry-After seconds and HTTP dates are honored.
-A cooldown over 60 seconds stops the run for a later retry. HTTP 401/403 or a
-challenge stops access immediately. Network exceptions have bounded Scrapy retries.
-Request, response-byte, status, detail, exclusion/change/recheck and parse counters
-are recorded. Configurable wall time and crawl-window metadata pass through weekly
-selection. Reports distinguish empty-unverified scope, schema changes, access
-stops, request budgets and partial discovery. Partial runs are failed in the
-existing scrape-run lifecycle. All-unchanged runs are not failed merely because
-zero details were fetched; they still remain partial until discovery completeness
-is verified. Seen IDs and explicit 404/410 observations are retained without
-inferring permanent removal from a missing partial result.
-
-Parser 0.2.0 accepts validated EUR/€ and European/English number groups. Explicit
-per-m² description prices remain separate from total asking prices. New quarantine
-checks cover transaction/property and JSON-LD period disagreement, interior exceeding
-total, clearly stale today/yesterday labels, neighboring-municipality addresses and
-invalid coordinate ranges. Kosovo bounds are a sanity check, not municipal or
-physical verification. Street numbers and construction-state evidence are retained.
-
-## Operator commands after source access/discovery is resolved
-
-Do not run these to work around the current verification gate:
+Load the private research database environment and verify its destination before
+running these commands. The verified local pilot used rema on loopback port 15432.
 
 ```powershell
-.venv/Scripts/groundtruth.exe crawl harta --max-listings 75 --max-pages 1 --max-requests 110 --max-seconds 300 --recheck-days 7
+.venv/Scripts/groundtruth.exe crawl harta --max-listings 50 --max-pages 2 --max-requests 70 --max-seconds 240 --recheck-days 7
 .venv/Scripts/groundtruth.exe etl run --source harta
 .venv/Scripts/groundtruth.exe analytics source-quality report --source harta --as-of <UTC-ISO-TIME> --days 30 --segment --output reports/generated/harta/quality
 ```
 
-Use the documented private research database environment, never a production URL.
-Explicit weekly selection is available through `crawl weekly --only harta --stage crawl`;
-check current CLI help before execution. It is never appended to automatic jobs,
-even if Gate 3 later passes. Operator enablement remains a separate decision.
+Default limits are 75 details, 4 pages, 110 requests and 300 seconds. A page limit
+also bounds scans consisting entirely of unchanged or excluded summaries. Join
+crawl metrics to ETL by scrape_run_id; the spider does not claim valid counts.
+For parser upgrades use existing source-scoped `etl run --source harta --reprocess`
+after reviewing the intended raw population. Never point tests at the research DB.
 
-After a parser upgrade, replay existing Harta raws with the established
-`etl run --source harta --reprocess` command after reviewing the research run scope.
-No source download is required for parser replay. Parse version/validation outcomes
-remain in the existing parsed/normalized/quarantine tables, not a duplicate state
-table. These operator examples were not executed against live data in recovery.
+Explicit research weekly selection exists through `crawl weekly --only harta
+--stage crawl`; it is not an automatic job. The collector is ready for explicit,
+bounded private research runs with quarantine monitoring; the measured sample has
+only 2% usable records. Before expanding to recurring production collection, assess
+inventory coverage and seek better interior-area evidence. Any area-policy change
+requires explicit review. Public inclusion and deployment remain separate decisions.
 
-Generated reports stay local under `reports/generated/`. Quality weights remain
-neutral **1.00**, proposed and inactive; independent location and publisher history
-remain unknown. Historical six-source evaluations are not rewritten.
+Private reports remain under `reports/generated/harta/`. Source quality is
+provisional: the 50-record first population scores 46.415, with weight 1.00 proposed
+and inactive. Unknown independent location and historical reliability remain
+unknown. Historical six-source evaluations are preserved.

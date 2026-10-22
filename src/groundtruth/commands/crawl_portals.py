@@ -19,14 +19,14 @@ crawl_app = typer.Typer(help="Scraping commands")
 @crawl_app.command("harta")
 def crawl_harta(
     max_listings: int = typer.Option(DEFAULT_MAX_LISTINGS, min=1, max=1000),
-    max_pages: int = typer.Option(1, min=1, max=100),
+    max_pages: int = typer.Option(4, min=1, max=100),
     max_requests: int = typer.Option(DEFAULT_MAX_REQUESTS, min=1, max=2000),
     max_seconds: int = typer.Option(DEFAULT_MAX_SECONDS, min=1, max=3600),
     recheck_days: int = typer.Option(DEFAULT_RECHECK_DAYS, min=1),
     report_path: str = typer.Option("reports/generated/harta_crawl_report.json"),
     crawl_window: str | None = typer.Option(None),
 ) -> None:
-    """Private Harta adapter. Gate 3 is BLOCKED; resolve source access before use."""
+    """Bounded private Harta research crawl; public and automatic jobs stay disabled."""
     from scrapy.crawler import CrawlerProcess
     from scrapy.utils.project import get_project_settings
 
@@ -49,7 +49,7 @@ def crawl_harta(
         or not crawler.spider
         or crawler.spider.errors_count
         or crawler.spider.metrics["parse_failures"]
-        or crawler.spider.run_status() != "complete"
+        or crawler.spider.run_status() not in {"complete", "bounded_complete"}
     ):
         console.print("[red]Harta crawl incomplete; inspect the private crawl report.[/red]")
         raise typer.Exit(1)

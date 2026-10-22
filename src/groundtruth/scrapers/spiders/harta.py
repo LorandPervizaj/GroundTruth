@@ -1,4 +1,4 @@
-"""Conservative public HTML Harta adapter. Live verification is blocked; see Gate 3."""
+"""Bounded public Harta property reads with ordinary CSRF session and checkpoints."""
 
 from __future__ import annotations
 
@@ -15,12 +15,18 @@ from scrapy.downloadermiddlewares.retry import get_retry_request
 from scrapy.exceptions import CloseSpider, IgnoreRequest
 from twisted.internet.defer import Deferred
 
+from groundtruth.scrapers.harta_api import (
+    CSRF_URL,
+    DATA_URL,
+    PAGE_SIZE,
+    operation,
+    validate_read_request,
+)
 from groundtruth.scrapers.harta_contract import (
     DEFAULT_MAX_LISTINGS,
     DEFAULT_MAX_REQUESTS,
     DEFAULT_MAX_SECONDS,
     DEFAULT_RECHECK_DAYS,
-    INDEX_URL,
     PARSER_VERSION,
     HartaContractError,
     check_access,
@@ -155,7 +161,7 @@ class HartaRawListingPipeline(RawListingPipeline):
     def close_spider(self, spider):
         metadata = dict(self._scrape_run.metadata_ or {})
         metadata["harta_metrics"] = spider.metrics
-        metadata["harta_discovery_complete"] = False
+        metadata["harta_discovery_complete"] = spider.discovery_complete
         metadata["harta_status"] = spider.run_status()
         metadata["harta_seen_ids"] = sorted(spider._seen)
         metadata["harta_unavailable_observations"] = spider._unavailable
@@ -166,7 +172,7 @@ class HartaRawListingPipeline(RawListingPipeline):
             listings_stored=self._items_stored,
             errors_count=spider.errors_count,
         )
-        if spider.run_status() != "complete":
+        if spider.run_status() not in {"complete", "bounded_complete"}:
             self._scrape_run_repo.fail_run(self._scrape_run, "Harta: " + spider.run_status())
         self._session.commit()
         self._session.close()
@@ -184,9 +190,16 @@ class HartaAccessMiddleware:
                 path.path == "/robots.txt"
                 or path.path == "/prona/banesa/prishtine"
                 or path.path.startswith("/property/")
+                or (request.url == CSRF_URL and request.method == "GET")
+                or (request.url == DATA_URL and request.method == "POST")
             )
         ):
             raise IgnoreRequest("Harta URL outside public property contract")
+        if request.url == DATA_URL:
+            try:
+                validate_read_request(request.body)
+            except HartaContractError as exc:
+                raise IgnoreRequest(str(exc)) from None
         if (
             spider._blocked
             or spider.metrics["requests"] >= spider.max_requests
@@ -196,7 +209,11 @@ class HartaAccessMiddleware:
             spider.crawler.engine.close_spider(spider, "harta_budget_or_access_stop")
             raise IgnoreRequest("Harta request budget/access stop")
         spider.metrics["requests"] += 1
-        kind = "requests_detail" if path.path.startswith("/property/") else "requests_discovery"
+        kind = (
+            "requests_detail"
+            if path.path.startswith("/property/") or request.meta.get("harta_kind") == "detail"
+            else "requests_discovery"
+        )
         spider.metrics[kind] += 1
         spider.metrics["requests_retry"] += int(request.meta.get("retry_times", 0) > 0)
 
@@ -278,7 +295,7 @@ class HartaSpider(BaseRealEstateSpider):
         "RETRY_HTTP_CODES": [],
         "AUTOTHROTTLE_ENABLED": True,
         "AUTOTHROTTLE_TARGET_CONCURRENCY": 1.0,
-        "COOKIES_ENABLED": False,
+        "COOKIES_ENABLED": True,  # Normal public CSRF session; no login/challenge cookie.
         "USER_AGENT": "GroundTruthResearch/0.1 (authorized public property research)",
         "DOWNLOAD_MAXSIZE": 2_000_000,
         "ITEM_PIPELINES": {
@@ -297,7 +314,7 @@ class HartaSpider(BaseRealEstateSpider):
     def __init__(
         self,
         max_listings=str(DEFAULT_MAX_LISTINGS),
-        max_pages="1",
+        max_pages="4",
         max_requests=str(DEFAULT_MAX_REQUESTS),
         max_seconds=str(DEFAULT_MAX_SECONDS),
         recheck_days=str(DEFAULT_RECHECK_DAYS),
@@ -328,6 +345,12 @@ class HartaSpider(BaseRealEstateSpider):
         self._started_clock = monotonic()
         self._scheduled = 0
         self._pages = 0
+        self._csrf = None
+        self._api_mode = False
+        self._api_finished = False
+        self.discovery_complete = False
+        self._offsets = set()
+        self._api_page_ids = set()
         self.started_at = datetime.now(UTC)
         self.metrics = dict.fromkeys(
             [
@@ -375,7 +398,100 @@ class HartaSpider(BaseRealEstateSpider):
         return spider
 
     async def start(self):
-        yield scrapy.Request(INDEX_URL, callback=self.parse_index_page)
+        self._api_mode = True
+        yield scrapy.Request(CSRF_URL, callback=self.parse_public_session, dont_filter=True)
+
+    def _api_request(self, body, callback, *, meta=None):
+        return scrapy.Request(
+            DATA_URL,
+            method="POST",
+            body=json.dumps(body).encode(),
+            headers={
+                "Content-Type": "application/json",
+                "x-harta-csrf-token": self._csrf,
+                "Origin": "https://harta.info",
+                "Referer": "https://harta.info/pronat",
+            },
+            callback=callback,
+            meta=meta or {},
+        )
+
+    def parse_public_session(self, response):
+        try:
+            body = response.json()
+            token = body["token"]
+            if not isinstance(token, str) or not token:
+                raise ValueError("Missing public session token")
+        except (ValueError, KeyError, TypeError):
+            self._stop_reason = "public_session_unavailable"
+            raise CloseSpider("harta_public_session_unavailable") from None
+        self._csrf = token  # In memory only; never persisted or logged.
+        yield self._api_request(operation(), self.parse_api_index, meta={"offset": 0})
+
+    def parse_api_index(self, response):
+        self._pages += 1
+        offset = int(response.meta["offset"])
+        if offset in self._offsets:
+            self._stop_reason = "repeated_pagination_cursor"
+            raise CloseSpider("harta_repeated_pagination_cursor")
+        self._offsets.add(offset)
+        try:
+            body = response.json()
+            props = body["data"]
+            if body.get("error") or not isinstance(props, list) or len(props) > PAGE_SIZE:
+                raise ValueError("Invalid public listing response")
+        except (ValueError, KeyError, TypeError):
+            self._stop_reason = "source_schema_change"
+            raise CloseSpider("harta_api_contract_error") from None
+        # API 'count' was observed to equal returned-page length even when more
+        # pages exist. It is NOT a trusted inventory total.
+        if not props and offset == 0:
+            self._stop_reason = "empty_scope_unverified"
+            raise CloseSpider("harta_empty_api_scope_unverified")
+        try:
+            page_ids = {listing_id(p) for p in props}
+        except (HartaContractError, TypeError):
+            self._stop_reason = "source_schema_change"
+            raise CloseSpider("harta_api_identity_error") from None
+        advanced = bool(page_ids - self._api_page_ids)
+        self._api_page_ids.update(page_ids)
+        yield from self._schedule_summaries(props, api=True)
+        if len(props) == PAGE_SIZE and not advanced:
+            self._stop_reason = "pagination_did_not_advance"
+            raise CloseSpider("harta_pagination_did_not_advance")
+        if self._stop_reason == "bounded_complete":
+            self._api_finished = True
+        elif len(props) < PAGE_SIZE:
+            self.discovery_complete = True
+            self._api_finished = True
+        elif self._pages >= self.max_pages or self._scheduled >= self.limit:
+            self._api_finished = True
+        else:
+            yield self._api_request(
+                operation(offset=offset + PAGE_SIZE),
+                self.parse_api_index,
+                meta={"offset": offset + PAGE_SIZE},
+            )
+
+    def parse_api_detail(self, response):
+        try:
+            body = response.json()
+            props = body["data"]
+            if body.get("error") or not isinstance(props, list) or len(props) > 1:
+                raise ValueError("Invalid property detail result")
+            if not props:
+                self.metrics["removed"] += 1
+                self._unavailable[response.meta["source_id"]] = {
+                    "state": "no_longer_active_or_in_scope",
+                    "observed_at": datetime.now(UTC).isoformat(),
+                }
+                return
+            yield self._property_item(
+                props[0], response.meta, "https://harta.info/property/" + response.meta["source_id"]
+            )
+        except (HartaContractError, ValueError, KeyError, TypeError):
+            self.metrics["parse_failures"] += 1
+            self._stop_reason = "detail_parse_failure"
 
     def parse_index_page(self, response):
         self._pages += 1
@@ -391,8 +507,20 @@ class HartaSpider(BaseRealEstateSpider):
             # The observed category page is inconsistent with the map inventory.
             self._stop_reason = "empty_scope_unverified"
             raise CloseSpider("harta_empty_discovery_unverified")
+        yield from self._schedule_summaries(props)
+
+    def _schedule_summaries(self, props, *, api=False):
         for p in props:
             self.metrics["discovered"] += 1
+            if (
+                api
+                and isinstance(p, dict)
+                and p.get("listing_type") == "rent"
+                and isinstance(p.get("features"), dict)
+                and p["features"].get("rental_period") not in {None, "monthly"}
+            ):
+                self.metrics["excluded"] += 1
+                continue
             if not isinstance(p, dict) or not in_scope(p):
                 self.metrics["excluded"] += 1
                 continue
@@ -445,11 +573,22 @@ class HartaSpider(BaseRealEstateSpider):
                 self.metrics["unchanged"] += 1
                 continue
             if self._scheduled >= self.limit:
-                self._stop_reason = "record_budget_reached"
+                self._stop_reason = "bounded_complete" if api else "record_budget_reached"
                 break
             self.metrics[reason] += 1
             self._scheduled += 1
             self.metrics["detail_requests"] += 1
+            if api:
+                yield self._api_request(
+                    operation(source_id=key),
+                    self.parse_api_detail,
+                    meta={
+                        "source_id": key,
+                        "summary_fingerprint": fingerprint,
+                        "harta_kind": "detail",
+                    },
+                )
+                continue
             yield scrapy.Request(
                 "https://harta.info/property/" + key,
                 callback=self.parse_listing_page,
@@ -459,8 +598,8 @@ class HartaSpider(BaseRealEstateSpider):
                     "handle_httpstatus_list": [404, 410],
                 },
             )
-        # No source pagination contract was observed. Do not fabricate page URLs
-        # or infer removal from absence in this bounded/possibly partial index.
+        # Neither a bounded API scan nor the legacy HTML index implies removals
+        # for identities absent from the selected pages.
 
     def parse_listing_page(self, response):
         if response.status in {404, 410}:
@@ -472,22 +611,24 @@ class HartaSpider(BaseRealEstateSpider):
             return
         try:
             prop = property_from_html(response.text)
-            if listing_id(prop) != response.meta["source_id"] or not in_scope(prop):
-                raise HartaContractError("Harta identity/scope changed")
-            payload = {
-                "property": minimized_property(prop),
-            }
+            yield self._property_item(prop, response.meta, response.url)
         except (HartaContractError, ValueError, TypeError):
             self.metrics["parse_failures"] += 1
             self._stop_reason = "detail_parse_failure"
-            return
+
+    def _property_item(self, prop, meta, url):
+        if listing_id(prop) != meta["source_id"] or not in_scope(prop):
+            raise HartaContractError("Harta identity/scope changed")
+        payload = {
+            "property": minimized_property(prop),
+        }
         self.metrics["detail_success"] += 1
         self._detail_checks[listing_id(prop)] = {
             "checked_at": datetime.now(UTC).isoformat(),
-            "summary_fingerprint": response.meta["summary_fingerprint"],
+            "summary_fingerprint": meta["summary_fingerprint"],
         }
-        yield self.build_listing_item(
-            source_listing_id=listing_id(prop), original_url=response.url, raw_payload=payload
+        return self.build_listing_item(
+            source_listing_id=listing_id(prop), original_url=url, raw_payload=payload
         )
 
     def closed(self, reason):
@@ -511,7 +652,7 @@ class HartaSpider(BaseRealEstateSpider):
                     "scoring_policy_version": "1.1.0",
                     "duration_seconds": round(monotonic() - self._started_clock, 3),
                     "discovery_pages": self._pages,
-                    "discovery_complete": False,
+                    "discovery_complete": self.discovery_complete,
                     "trusted_total": None,
                     "detail_fetch_avoidance_rate": self.metrics["unchanged"] / len(self._seen)
                     if self._seen
@@ -524,7 +665,11 @@ class HartaSpider(BaseRealEstateSpider):
                     "requests_per_usable_listing": None,
                     "bytes_per_usable_listing": None,
                     "etl_status": "not_run_by_spider; join existing ETL metrics by run_id",
-                    "coverage": "bounded public category page; pagination unverified",
+                    "coverage": (
+                        "scoped public API range pagination; no trusted inventory total"
+                        if self._api_mode
+                        else "legacy bounded public HTML index; pagination unverified"
+                    ),
                     "live_pilot_verified": False,
                 },
                 indent=2,
@@ -533,7 +678,7 @@ class HartaSpider(BaseRealEstateSpider):
         )
 
     def run_status(self):
-        if self._stop_reason:
+        if self._stop_reason and self._stop_reason != "bounded_complete":
             return self._stop_reason
         if self.metrics["persistence_failures"]:
             return "failed_persistence"
@@ -541,4 +686,6 @@ class HartaSpider(BaseRealEstateSpider):
             return "source_schema_change"
         if self.metrics["request_failures"]:
             return "network_errors_observed"
-        return "partial_discovery"  # No complete discovery contract verified yet.
+        if self._api_mode and self._api_finished:
+            return "complete" if self.discovery_complete else "bounded_complete"
+        return "partial_discovery"  # Legacy HTML or interrupted API discovery.

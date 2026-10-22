@@ -1,188 +1,149 @@
 # Harta.info — Gate 3 recovery result
 
-**2026-10-21 · Status BLOCKED · Adapter 0.2.0-harta · Operator weekly enablement NOT READY.**
-
+**2026-10-22 · PASS for bounded private research integration · Public API collector implemented and piloted.**
 Reference and operator runbook: [Harta source integration](HARTA_SOURCE_INTEGRATION.md).
-This document supersedes the initial attempt in commit `fc7d67c`; that commit retains
-its original evidence. Gate 1 (`69b7590`) and Gate 2 (`1e7c807`) remain intact.
+This supersedes the access-blocked report at `9f3025e`; Git preserves earlier evidence.
+Gate 1 (`69b7590`) and Gate 2 (`1e7c807`) remain intact.
 
-Subsequent owner authorization explicitly permits ignoring Harta's robots.txt
-policy. Harta's robots enforcement is now disabled independently of other sources.
-This resolves the advisory robots restriction; it does not establish a working
-challenge-free discovery route or supply the missing live pilot evidence.
+## Implementation and access
 
-## Implementation since fc7d67c
+Since `fc7d67c`, recovery added atomic raw/checkpoint persistence, bounded state
+loading, parser 0.2.0 semantic validation, budgets and richer failure reporting.
+The current change replaces empty category discovery with the public frontend's
+observed properties read interface, ordinary server-issued CSRF session, exact
+scope filters and 25-row inclusive range pagination. No stealth, proxy rotation,
+CAPTCHA solving or fake verification tokens are implemented. The owner explicitly
+authorized public-property collection and Harta's robots override. Other sources'
+settings are unchanged. A normal CSRF-backed POST returned 200; the earlier bare
+POST's 403 was not proof this public session interface required a Turnstile bypass.
+HTTP 401/403/challenge stops remain. No administrator message was sent.
 
-- Atomic per-item checkpoints now require confirmed stored content. A crash before
-  spider close preserves committed progress; unpersisted callbacks cannot skip work.
-- Latest source UUID/time/hash lookup uses two bounded queries and avoids loading raw
-  payloads. Legacy, malformed, future or mismatched checkpoint evidence is ignored.
-- Summary fingerprints include source availability/address/coordinate/area/date fields
-  where exposed. Summary metadata no longer changes raw detail content hashes.
-- The existing raw pipeline/repositories remain in use. Source-local savepoints
-  contain duplicate constraints without the base pipeline batch commit separating
-  raw content from its checkpoint. Repeated details do not
-  create duplicate raw versions. No new schema, index, broker or listing store.
-- Parser version 0.2.0 handles validated Kosovo/European/English number separators,
-  separates total versus per-m²/payment/deposit figures, preserves interior versus
-  total area, and quarantines additional source contradictions. Source street
-  numbers, construction status and coordinate provenance are retained.
-- Wall-time limits, request/status/retry/byte counts and explicit incomplete statuses
-  improve reporting. Partial discovery is failed in scrape-run tracking, rather
-  than being reported completed merely because requests ended successfully.
-- Seen IDs and explicit 404/410 observations are retained as bounded run evidence;
-  partial discovery/challenges never imply mass removal.
-- Weekly command construction forwards budgets and crawl-window metadata. Harta
-  stays excluded from default jobs and public corpus versions; other source paths,
-  fixed winner priorities and scoring policy are unchanged.
+## Discovery and measured pilot
 
-## Source discovery and access: verified facts and limits
+Active Prishtina apartment/condo/studio sales and rentals are filtered at source;
+explicit daily/nonmonthly rentals are excluded. Unknown rental periods quarantine.
+Five-row probes verified disjoint pages; the live pilot fetched two 25-row pages.
+The API count is page length, not a trusted inventory total. Both runs ended
+`bounded_complete`, with discovery_complete=false. Neither establishes full
+municipality coverage. Offset pagination is not a snapshot of changing inventory.
+No identities were inferred removed from absence.
 
-Recovery baseline: `fc7d67cac4bee4363806673444dcc5568f7b1518` on
-`codex/harta-integration`; work continues on `codex/harta-gate3-recovery`.
-
-Fresh direct HTTP checks around 19:09 UTC:
-
-| Surface | HTTP | Body bytes | Result |
-|---|---:|---:|---|
-| Public robots.txt | 200 | 183 | Public pages allowed; /api/, /profile/, /dashboard/, /lovable/ excluded |
-| Prishtina apartment category | 200 | 22,667 | Zero inventory; no challenge body |
-| Current frontend JS bundle | 200 | 2,500,044 | Application owns HumanGate and loads Turnstile |
-
-A public browser inspection reproduced the HumanGate on the map route at roughly
-19:11 UTC. Collection stopped without interacting with or bypassing the challenge.
-Images, media, fonts, Mapbox and analytics tracking were blocked during this
-recovery browser session. Blocked map assets also limit interpretation of that
-session's displayed map count; it is not new inventory/completeness evidence.
-
-The initial attempt observed actual matching map properties while the category
-returned zero, and a lightweight public map response reported
-`COALESCE types jsonb and text[] cannot be matched`. This failing function was not
-replayed to circumvent the gate. The precise discrepancy cause remains unverified;
-it must not be attributed to caching or separate populations without evidence.
-The category's 24-record loader is not a verified pagination/completeness contract.
-
-Neither local environment file supplies Harta access configuration. No approved
-authenticated session was available, so authenticated/public comparison was not
-performed. Detail retrieval was not retested after the gate. HTTP 200 public
-HTML is not treated as a technical exemption from the observed application policy.
-
-The administrator requirements in the integration runbook specify identity,
-observed-egress evidence, exact read-only paths, a proposed conservative rate,
-application/WAF configuration, required data fields and log minimization. No
-administrator message was sent and no source configuration was changed.
-
-## Live pilot and performance
+First capture: 2026-10-21 20:52:01–20:53:15 UTC, run 217.
+Repeat: 2026-10-22 07:07:13–07:07:26 UTC, run 218.
+Docker Desktop was stopped between captures; the local research container was
+restarted before ETL and repeat. Failed connection attempts performed no ingestion.
 
 | Metric | First pilot | Incremental rerun |
-|---|---|---|
-| Status | BLOCKED before pilot | NOT RUN |
-| Requests | 0 | 0 |
-| Eligible listings discovered | Unavailable | Unavailable |
-| New ingested records | 0 | 0 |
-| Changed / unchanged records | Unavailable | Unavailable |
-| Detail requests | 0 | 0 |
-| Valid normalized records | 0 | 0 |
-| Persisted quarantine records | 0 | 0 |
-| Bytes transferred | 0 | 0 |
-| Live request savings | Unavailable | Unavailable |
+|---|---:|---:|
+| HTTP requests / responses | 53 / 53 | 4 / 4 |
+| Eligible summaries | 50 | 50 |
+| New / changed / unchanged | 50 / 0 / 0 | 0 / 1 / 49 |
+| Detail requests / successes | 50 / 50 | 1 / 1 |
+| Discovery requests, including CSRF | 3 | 3 |
+| Parsed / normalized versions | 50 / 50 | 1 / 1 |
+| Valid normalized versions | 1 | 0 |
+| Quarantined versions | 49 | 1 |
+| Response bytes | 49,865 | 7,235 |
+| Duration seconds | 73.656 | 13.192 |
+| HTTP 429 / 403 / retries / persistence failures | 0 / 0 / 0 / 0 | 0 / 0 / 0 / 0 |
 
-Diagnostic access checks above are separate from pilot metrics. No full six-source
-crawl, research database ingestion, production write, schema migration, public
-statistics regeneration, Azure deployment or recurring enablement was performed.
+The repeat avoided 49 of 50 detail fetches (98%), reduced total requests 92.45%
+and bytes 85.49%. It captured one actual source change rather than reporting it
+unchanged. First-run cost per usable listing is 53 requests and 49,865 bytes;
+repeat cost per usable listing is undefined because no new version passed validation.
+These are measured bounded runs, not whole-site performance projections.
 
-**Separate synthetic scheduling result:** 50 synthetic summaries scheduled 51
-requests initially (one discovery + 50 details) and one discovery on the identical
-repeat, avoiding 50 detail requests (98.04% of scheduled requests). These are
-in-memory scheduling counts, not HTTP measurements, usable-listing counts or live
-performance. Crash/dedup persistence is verified separately through actual ORM
-repository tests. No live concurrency tuning is justified by these fixtures.
+Database audit: 50 Harta identities, 51 raw/parsed/normalized versions, one versioned
+identity and zero duplicate UUID/content-hash groups. The additional version is the
+changed listing. Non-Harta raw 65,631 (max 76,701), parsed 63,588 (max 312,381),
+normalized 63,585 (max 312,364): unchanged from baseline. No six-source crawl,
+schema migration, public statistics refresh, Azure deployment or push occurred.
 
-Local evidence: `reports/generated/harta/fixture_incremental_comparison.json`.
+## Source quality and independent checks
 
-## Data quality and GroundTruth integration
+All first-pilot records parsed and normalized; validation accepted 1 and rejected 49.
+49 lack explicit interior living_area. One also lacks a valid total price; another
+has price_too_low. Total surface_area is retained separately and never substituted
+for interior. Thirty first-run identities in deterministic hash order, supplemented
+by the one interior-area-present record (31 total: 25 sales and 6 rentals), were
+compared with independently extracted public property HTML.
+All 31 returned 200. Numeric strings, date formats and the HTML total-area alias
+were compared semantically. Missing-in-both is missingness agreement, not coverage.
 
-The redacted observed-response fixture preserves public field shape and the
-previous diagnostic's structured/description price disagreement and absent
-interior area. Identity, address and coordinates are redacted; no free-text
-contacts, profiles or images are retained. This remains one diagnostic, not the
-required 30 independently checked records. No 95% extraction accuracy claim is made.
+Of the original 30 records, 29 historical price representations agreed and one
+listing changed price between captures. One of the 29 had no valid asking price;
+agreement on missingness does not count as present-price accuracy. The
+new raw version from run 218 agrees with a further public HTML check. The reviewed
+scope, price/units and area evidence agree after accounting for that source change.
+No present field was fabricated to improve completeness. Independent comparisons
+found agreement for 30 present prices (including the reconciled source change),
+31 total-area values and the one present interior-area value. End-to-end database
+checks passed for all 31 identities, parsed/normalized prices, area handling,
+transaction/property type, municipality, preserved address, dates and quarantine
+outcomes. No unsupported interior values were created for the other 30.
+These are **automated representation comparisons**, not independent publisher
+audits or physical location checks. The acceptance target is at least 95% accuracy
+for source-present critical fields, not 95% interior-area coverage; it is met in
+this sample, with the very small interior-area evidence explicitly qualified.
 
-Real ORM tests use isolated in-memory SQLite tables for RawListing, ScrapeRun,
-ParsedListing, NormalizedListing, InvalidListing, EtlMetrics and DataLineage. They
-exercise inherited raw persistence, duplicate constraints, interrupted-run checkpoint
-loading, parser dispatch, existing normalization, actual ETL quarantine persistence
-and the existing quality calculator. SQLite's JSONB spelling and PostgreSQL-like
-ISO temporal insert casts are adapted in the test harness. This is not a claim
-that a live PostgreSQL pilot has run. Ordinary tests make no source requests.
+Unchanged scoring policy 1.1.0, first 50-record population:
 
-Additional cases cover locale separators, studio/missing rooms/2+1, payment-plan
-and per-m² distinctions, wrong municipalities, conflicting transaction/property
-claims, coordinate sanity, absolute/relative date conflicts, wall limits and
-weekly option forwarding. Existing Harta/existing-six-source dedup regressions
-preserve the prior winner over a higher-confidence Harta candidate.
+| Dimension | Score |
+|---|---:|
+| Validity | 2.0 |
+| Completeness | 69.625 |
+| Independent location | UNKNOWN |
+| Consistency | 100.0, only 1 comparable accepted record |
+| Freshness | 93.4 |
+| Historical reliability | UNKNOWN |
+| Composite | 46.415, provisional |
+| Proposed weight | 1.00, inactive, insufficient evidence |
 
-Quality policy **1.1.0** is unchanged. The actual empty pilot population produces
-**no_data**, sample **0**, coverage **0%**, all six dimensions and composite
-**UNKNOWN**, proposed weight **1.00**, inactive. The ORM fixture's rejected record
-score is synthetic test evidence and is not mixed into the real source report.
+Location precision 24.2 is separate from independent location correctness.
+Generic ETL golden-corpus accuracy printed in logs is not Harta pilot accuracy.
+The separate 35-sale/15-rental reports and unknown criterion coverage remain
+available locally; historical six-source reports were not rewritten.
 
-## QA
+## QA and repository preservation
 
-Focused recovery/Harta/registry tests: **71 passed**. Final broader regression:
-**176 passed** in 13.33 seconds, covering Harta, ORM recovery, quality, registry,
-validation, normalization, corpus, dedup, failure safety and weekly orchestration.
-Log: `.tmp/harta-recovery/regression-final.log`. Ruff check/format cover all eight
-changed Python files; `crawl harta --help` succeeds with `--max-seconds`. Full suite:
+Final full suite: **869 passed, 45 skipped, 1 pre-existing failure**, 3 warnings,
+70.93 seconds. Known unchanged failure:
+`test_legacy_weekly_runners_keep_crawl_exit_code[run_weekly.ps1]` expects literal
+`exit $LASTEXITCODE`; the pre-existing dirty runner uses `exit $result`.
+No tests were weakened. Final focused Harta tests: **70 passed in 8.99 seconds**;
+Ruff check and formatting pass for the five changed Python files. New API tests
+cover ordinary CSRF, read-only scope,
+page count versus inventory total, malformed/empty/stalled responses, minimized
+details, unchanged skipping, daily exclusions and pagination through excluded pages.
+Existing ORM tests cover interruption recovery, duplicate content, ETL quarantine,
+quality compatibility and preservation of six-source dedup winner priority.
 
-```powershell
-.venv/Scripts/python.exe -m pytest -q --tb=short
-```
+Branch `codex/harta-public-api`, baseline `9f3025e`. Only task-owned source,
+tests and the two existing Harta documents are staged for this change. All 360
+pre-existing modified/untracked files were SHA-256 verified unchanged. Private
+source evidence, tokens, URLs with credentials and generated reports stay outside
+Git. The original plan and unrelated frontend/automation changes are preserved.
 
-Result: **863 passed, 45 skipped, 1 pre-existing failure, 3 warnings** in 58.94 seconds.
-Log: `.tmp/harta-recovery/full-suite-final.log`. This final run includes the
-savepoint/checkpoint and shared-default updates.
+Local evidence: `reports/generated/harta/{first,repeat}_crawl.json`,
+`{first,repeat}_etl.json`, `database_audit.json`, `public_html_review.json`,
+`etl_review.json`, `quality/`, and `reports/generated/harta_pilot_report.json`.
+Logs and preservation hashes: `.tmp/harta-api-integration/`.
 
-Unchanged known failure:
-`tests/test_home_trust_snapshot.py::test_legacy_weekly_runners_keep_crawl_exit_code[run_weekly.ps1]`.
-The pre-existing runner uses `exit $result` while the test expects literal
-`exit $LASTEXITCODE`. Both files are hash-verified untouched. Skips retain existing
-opt-in E2E, dedicated database and platform/tool prerequisites. No test was weakened
-to hide a source extraction or persistence failure.
+## Gate 3 and operational readiness
 
-## Artifacts and Git preservation
+**PASS for the bounded private research collector.** A real 50-record pilot,
+31 independent detail checks, source-present critical-field comparisons, real
+incremental replay, persistence audit and relevant regressions support the decision.
+Low source completeness is represented by quarantine and the provisional quality
+score; it is not hidden or treated as an extraction success for missing fields.
+Whole-municipality inventory completeness and physical location accuracy are not
+established by this bounded pilot. The collector is ready for explicitly selected
+private research runs with the documented budgets and quarantine monitoring.
+Recurring production enablement is not authorized or performed. Registry remains
+weekly=false/public=false, priority 6 and quality weight 1.00 inactive.
 
-- `docs/HARTA_SOURCE_INTEGRATION.md`: current source contract, field meanings,
-  administrator requirements and operator runbook.
-- `tests/fixtures/harta/observed_redacted.json`: sanitized observed shape.
-- `reports/generated/harta_pilot_report.json`: latest BLOCKED recovery evidence.
-- `reports/generated/harta/quality/`: unchanged calculator's empty-population JSON,
-  CSV and schema.
-- `reports/generated/harta/fixture_incremental_comparison.json`: labelled synthetic
-  scheduling comparison.
-- `.tmp/harta-recovery/`: baseline hashes, access evidence, egress observation and QA
-  logs. Private captures, IP observations and research outputs are not committed.
-
-Baseline: 242 modified tracked files, empty index and 118 existing untracked files
-under detailed status. All 360 pre-existing changed/untracked file hashes are
-preserved. Recovery edits only task-owned files; no partial staging of the dirty
-weekly runner is required this time. The original plan and unrelated QA/frontend/
-automation work remain outside the commit. No reset/clean/stash, push or deployment.
-
-## Gate 3 and smallest external action
-
-**BLOCKED.** Essential authorized access and complete targeted discovery remain
-unavailable. Local fixes do not satisfy the live evidence gate. Automatic weekly
-collection and public inclusion stay disabled.
-
-The smallest precise external action is for Harta's administrator to confirm a
-working read-only listing route for the crawler's confirmed egress/trusted identity,
-resolve the application HumanGate for that route, and provide functioning Prishtina
-apartment sale/monthly-rent filters with pagination/completion semantics. A WAF-only
-allowlist or successful empty category response is insufficient.
-
-After that, verify connectivity/discovery with a few actual details; run the 50–100
-eligible-record private pilot, independently review at least 30, measure critical
-price/area accuracy and quarantines, run an equivalent incremental replay and
-interruption recovery, then regenerate quality and Gate 3 evidence. Operator weekly
-enablement remains a separate decision even after PASS.
+The main source-data improvement is obtaining trustworthy interior-area values or
+a documented source definition showing which area concept is supplied. Any policy
+change to accept total area needs explicit review; do not relabel it as interior.
+Before expanding recurring collection, assess inventory coverage and operational
+quarantine usefulness. Public release remains a separate controlled decision.
