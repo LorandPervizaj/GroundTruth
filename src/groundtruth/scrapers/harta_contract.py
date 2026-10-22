@@ -12,6 +12,7 @@ from uuid import UUID
 from parsel import Selector
 
 from groundtruth.portals.registry import get_portal
+from groundtruth.scrapers.harta_area import extract_area_facts
 
 INDEX_URL = "https://harta.info/prona/banesa/prishtine"
 PARSER_VERSION = get_portal("harta").parser_version
@@ -213,7 +214,19 @@ _FIELDS = frozenset(
         "relative_publication_label",
     }
 )
-_FEATURES = frozenset({"rental_period", "furnished", "floor_levels", "elevator", "parking"})
+_FEATURES = frozenset(
+    {
+        "rental_period",
+        "furnished",
+        "floor_levels",
+        "elevator",
+        "parking",
+        "street",
+        "locality",
+        "neighborhood",
+        "village",
+    }
+)
 
 
 def minimized_property(prop: dict) -> dict:
@@ -233,6 +246,7 @@ def minimized_property(prop: dict) -> dict:
     areas = re.findall(r"(?:[Ss]ip[eë]rfaqja|[Ss]ip[eë]rfaqe)\s*[:=]\s*([\d.,]+)\s*m[²2]", text)
     normalized_text = folded(text)
     result["description_facts"] = {
+        "area_measurements": extract_area_facts(text),
         "asking_prices": prices,
         "areas_sqm": areas,
         "per_sqm_prices": per_sqm_prices,

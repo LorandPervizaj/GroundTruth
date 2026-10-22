@@ -94,7 +94,55 @@ class HartaParsingService:
             issues.append("harta_missing_total_price")
         if p.get("price_unit") == "total" and price and number(p.get("price")) not in (None, price):
             issues.append("harta_conflicting_structured_price")
-        interior, total = number(p.get("living_area")), number(p.get("surface_area"))
+        facts = p.get("description_facts")
+        if facts is None:
+            facts = minimized_property(p)["description_facts"]
+        measurements = facts.get("area_measurements", [])
+        interior, surface = number(p.get("living_area")), number(p.get("surface_area"))
+        claims = {
+            value
+            for f in measurements
+            if f.get("concept") in {"net", "interior"}
+            and (value := number(f.get("value_raw"))) is not None
+        }
+        gross_claims = {
+            value
+            for f in measurements
+            if f.get("concept") == "gross" and (value := number(f.get("value_raw"))) is not None
+        }
+        total_claims = {
+            value
+            for f in measurements
+            if f.get("concept") == "total" and (value := number(f.get("value_raw"))) is not None
+        }
+        area_basis = "living_area" if interior else "unknown"
+        if len(claims) > 1 or (
+            interior and any(abs(v - interior) > Decimal("0.5") for v in claims)
+        ):
+            issues.append("harta_conflicting_interior_area")
+        elif not interior and len(claims) == 1:
+            interior = next(iter(claims))
+            area_basis = "description_explicit_net_or_interior"
+        if len(gross_claims) > 1:
+            issues.append("harta_conflicting_gross_area")
+        gross = next(iter(gross_claims)) if len(gross_claims) == 1 else None
+        declared_total = next(iter(total_claims)) if len(total_claims) == 1 else None
+        if len(total_claims) > 1:
+            issues.append("harta_conflicting_total_area")
+        surface_concepts = {
+            f["concept"]
+            for f in measurements
+            if surface
+            and number(f.get("value_raw")) == surface
+            and f.get("concept") in {"net", "interior", "gross", "total"}
+        }
+        surface_basis = (
+            next(iter(surface_concepts))
+            if len(surface_concepts) == 1
+            else "ambiguous"
+            if surface_concepts
+            else "unspecified"
+        )
         # sqft is a legacy field labelled m² by this site, NOT square feet. Do not
         # use it to guess an interior area when only total/gross is supplied.
         area = interior
@@ -103,26 +151,41 @@ class HartaParsingService:
         if p.get("surface_unit") not in (None, "m2"):
             issues.append("harta_unsupported_area_unit")
             area = None
-        facts = p.get("description_facts")
-        if facts is None:
-            facts = minimized_property(p)["description_facts"]
         for value in facts.get("asking_prices", []):
             v = number(str(value).replace(" ", ""))
             if v is None:
                 issues.append("harta_ambiguous_description_price")
             elif price and v != price:
                 issues.append("harta_description_price_conflict")
-        for value in facts.get("areas_sqm", []):
+        # Versioned labelled facts avoid comparing gross/terrace/actual area to
+        # interior. Legacy captures retain their previous conservative checks.
+        for value in facts.get("areas_sqm", []) if "area_measurements" not in facts else []:
             v = number(value)
             if v is None or (area and abs(v - area) > Decimal("0.5")):
+                issues.append("harta_description_area_conflict")
+        for fact in measurements:
+            value = number(fact.get("value_raw"))
+            if (
+                fact.get("concept") == "unspecified"
+                and interior
+                and (value is None or value not in {interior, surface, gross, declared_total})
+            ):
                 issues.append("harta_description_area_conflict")
         declared_types = facts.get("transaction_types", [])
         if (rent and "sale" in declared_types) or (not rent and "rent" in declared_types):
             issues.append("harta_description_transaction_conflict")
         if facts.get("non_apartment_type"):
             issues.append("harta_description_property_type_conflict")
-        if interior and total and interior > total:
+        if interior and (
+            (gross and interior > gross)
+            or (declared_total and interior > declared_total)
+            or (surface and surface_basis in {"gross", "total"} and interior > surface)
+        ):
             issues.append("harta_interior_exceeds_total_area")
+        # Unspecified source surface remains a separate assertion, not an
+        # invented total. An inconsistent smaller surface requires review.
+        if interior and surface and interior > surface and surface_basis == "unspecified":
+            issues.append("harta_interior_exceeds_total_area")  # Legacy quarantine code.
         if re.search(r"\b(?:fushe kosov[ae]|obiliq)\b", folded(p.get("address"))):
             issues.append("harta_address_municipality_conflict")
         latitude, longitude = None, None
@@ -144,7 +207,7 @@ class HartaParsingService:
         if floor is None and len(levels) == 1:
             floor = integer(levels[0])
         address = p.get("address")
-        street = p.get("street")
+        street = p.get("street") or features.get("street")
         if not street and address and "," in address:
             street = address.split(",", 1)[0].strip()
         street_number = re.search(r"\b(\d+[A-Za-z]?)$", str(street or ""))
@@ -164,7 +227,7 @@ class HartaParsingService:
             currency=Currency.EUR,
             area_sqm=float(area) if area else None,
             city="Prishtina",
-            neighborhood_raw=p.get("neighborhood"),
+            neighborhood_raw=p.get("neighborhood") or features.get("neighborhood"),
             street_raw=street,
             bedrooms=integer(p.get("bedrooms")),
             bathrooms=integer(p.get("bathrooms")),
@@ -180,10 +243,37 @@ class HartaParsingService:
                 "address_raw": address,
                 "street_number_raw": street_number.group(1) if street_number else None,
                 "municipality_raw": p.get("city"),
-                "area_basis": "living_area" if area else "unknown",
+                "area_basis": area_basis if area else "unknown",
                 "living_area_raw": str(interior) if interior else None,
-                "total_area_raw": str(total) if total else None,
-                "area_concepts_differ": bool(interior and total and interior != total),
+                # Kept as a legacy compatibility alias, not proof of total area.
+                "total_area_raw": str(surface) if surface else None,
+                "surface_area_raw": str(surface) if surface else None,
+                "surface_area_basis": surface_basis,
+                "gross_area_raw": str(gross) if gross else None,
+                "declared_total_area_raw": str(declared_total) if declared_total else None,
+                "area_measurements": measurements,
+                "area_concepts_differ": bool(interior and surface and interior != surface),
+                "area_provenance": "source_declared_unverified",
+                "location_evidence": {
+                    "source_listing_id": source_id,
+                    "source_url": url,
+                    "raw_listing_id": raw_listing_id,
+                    "verification_status": "unverified_source_assertion",
+                    "address_origin": "property.address",
+                    "street_origin": "property.street"
+                    if p.get("street")
+                    else "property.features.street"
+                    if features.get("street")
+                    else "address_component",
+                    "neighborhood_origin": "property.neighborhood"
+                    if p.get("neighborhood")
+                    else "property.features.neighborhood"
+                    if features.get("neighborhood")
+                    else None,
+                    "locality_raw": features.get("locality"),
+                    "village_raw": features.get("village"),
+                    "candidate_only": True,
+                },
                 "price_unit": p.get("price_unit"),
                 "price_per_m2_raw": p.get("price_per_m2"),
                 "publication_date_basis": "source_declared" if published else "unknown",

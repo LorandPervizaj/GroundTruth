@@ -2,6 +2,12 @@
 
 **2026-10-22 · PASS for bounded private research integration · Public API collector implemented and piloted.**
 Reference and operator runbook: [Harta source integration](HARTA_SOURCE_INTEGRATION.md).
+**Follow-up area diagnosis:** original cohort now has 3 accepted / 47 quarantined;
+collection expansion is paused. Current source contract is parser 0.3.0-harta.
+The original Gate 3 pilot below remains historical evidence; source data usefulness
+is limited despite collector correctness. See the runbook's area diagnosis section.
+Follow-up QA: 894 passed, 45 skipped, the same pre-existing runner failure; Ruff
+passes. Quality is now 48.815 provisional, neutral weight 1.00 inactive.
 This supersedes the access-blocked report at `9f3025e`; Git preserves earlier evidence.
 Gate 1 (`69b7590`) and Gate 2 (`1e7c807`) remain intact.
 

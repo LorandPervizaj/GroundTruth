@@ -40,7 +40,8 @@ from groundtruth.scrapers.hashing import content_hash
 from groundtruth.scrapers.pipelines import RawListingPipeline
 from groundtruth.scrapers.spiders.base import BaseRealEstateSpider
 
-FINGERPRINT_VERSION = 2
+# Recheck older captures once so the new area/location facts are actually stored.
+FINGERPRINT_VERSION = 3
 
 
 def load_harta_state(session):

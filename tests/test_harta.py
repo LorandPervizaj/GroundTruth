@@ -281,7 +281,7 @@ def test_dispatch_and_etl_quarantine(monkeypatch):
         spider_version="0.1.0-harta",
     )
     parsed = ParsingService().parse_raw(raw)
-    assert parsed.parser_version == "0.2.0-harta"
+    assert parsed.parser_version == "0.3.0-harta"
     service = EtlService(MagicMock())
     service._raw_repo = MagicMock()
     service._raw_repo.list_unparsed.return_value = [raw]

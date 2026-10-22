@@ -90,7 +90,7 @@ PORTALS: Final[tuple[PortalConfig, ...]] = (
     PortalConfig(
         name="harta",
         spider="harta",
-        parser_version="0.2.0-harta",
+        parser_version="0.3.0-harta",
         display_name="Portal G",
         source_priority=6,
         weekly=False,
