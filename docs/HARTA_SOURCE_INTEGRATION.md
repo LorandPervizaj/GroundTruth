@@ -5,6 +5,10 @@ This document and [Gate 3 evidence](HARTA_GATE_3.md) are this chat's implementat
 The original broader plan remains [GroundTruth plan](GROUNDTRUTH_SOURCE_QUALITY_HARTA_PLAN.md).
 No weekly or public release is enabled. **Area diagnosis: collection expansion is
 paused; 3/50 original identities now pass validation, with 47 still quarantined.**
+The [cross-source identity pilot](HARTA_CROSS_SOURCE_MATCHING_PILOT.md) reviewed
+40 primary pairs but established no verified apartment identities. Research
+matching support and field transfer remain disabled. Six-portal calibration was
+assessed separately; every proposed source weight remains 1.00 inactive.
 
 ## Observed public request contract
 

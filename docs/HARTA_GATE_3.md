@@ -8,6 +8,9 @@ The original Gate 3 pilot below remains historical evidence; source data usefuln
 is limited despite collector correctness. See the runbook's area diagnosis section.
 Follow-up QA: 894 passed, 45 skipped, the same pre-existing runner failure; Ruff
 passes. Quality is now 48.815 provisional, neutral weight 1.00 inactive.
+The subsequent [identity-matching pilot](HARTA_CROSS_SOURCE_MATCHING_PILOT.md)
+does not pass its evidence gate: 40 unresolved primary pairs, matching support
+not enabled. Collector correctness does not imply verified apartment identity.
 This supersedes the access-blocked report at `9f3025e`; Git preserves earlier evidence.
 Gate 1 (`69b7590`) and Gate 2 (`1e7c807`) remain intact.
 

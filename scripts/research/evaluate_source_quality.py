@@ -219,7 +219,9 @@ def safe_snapshot(records: list[QualityRecord]) -> list[dict]:
     return snapshot
 
 
-def eligible_population(session: Session, as_of: datetime) -> list[dict]:
+def eligible_population(
+    session: Session, as_of: datetime, sources: list[str] | None = None
+) -> list[dict]:
     return [
         dict(r)
         for r in session.execute(
@@ -235,7 +237,7 @@ def eligible_population(session: Session, as_of: datetime) -> list[dict]:
     """),
             {
                 "as_of": as_of,
-                "sources": sorted(all_portal_names()),
+                "sources": sources or sorted(all_portal_names()),
                 "parser_versions": list(parser_versions().values()),
                 "cutoff_date": (as_of - timedelta(days=365)).date(),
             },
@@ -338,7 +340,9 @@ def collection_review(
 
 
 def run(args) -> None:
-    sources = sorted(all_portal_names())
+    sources = sorted(set(getattr(args, "sources", None) or all_portal_names()))
+    if not set(sources) <= all_portal_names():
+        raise ValueError("Evaluation contains an unregistered source")
     as_of = utc(datetime.fromisoformat(args.as_of.replace("Z", "+00:00")))
     output = Path(args.output)
     if output.exists() and any(output.iterdir()):
@@ -366,7 +370,8 @@ def run(args) -> None:
                 observation_window_days=args.days,
                 historical_window_days=args.history_days,
                 scoring_policy_version=QualityPolicy().version,
-                registered_sources=sources,
+                registered_sources=sorted(all_portal_names()),
+                evaluated_sources=sources,
             )
             baseline["snapshot_identity"] = hashlib.sha256(
                 json.dumps(baseline, sort_keys=True, default=str).encode()
@@ -390,7 +395,7 @@ def run(args) -> None:
             )
             audits = audit_rows(session, historical_processed, as_of)
             collection = collection_review(session, as_of, records, args.days)
-            eligible = eligible_population(session, as_of)
+            eligible = eligible_population(session, as_of, sources)
             eligible_ids = {r["raw_listing_id"]: r["normalized_id"] for r in eligible}
             compatible = [
                 r for r in latest_records(historical_processed) if r.observation_id in eligible_ids
@@ -498,6 +503,7 @@ def main():
     parser.add_argument("--as-of", required=True)
     parser.add_argument("--days", type=int, default=30)
     parser.add_argument("--history-days", type=int, default=140)
+    parser.add_argument("--sources", nargs="+", choices=sorted(all_portal_names()))
     parser.add_argument("--output", default="reports/generated/source_quality/part2/evaluation")
     args = parser.parse_args()
     if args.days < 1 or args.history_days < args.days:
