@@ -99,7 +99,10 @@ def evaluate_golden_rows(rows: list[dict[str, str]]) -> GoldenEvaluation | None:
 
             if row.get("correct_price"):
                 denominators["price"] += 1
-                expected = Decimal(str(row["correct_price"]).replace(",", ""))
+                # An explicit missing-price expectation is still a scored trial:
+                # unresolved unit/area evidence must produce quarantine, not a guess.
+                label = str(row["correct_price"]).strip()
+                expected = None if label == "MISSING" else Decimal(label.replace(",", ""))
                 actual = (
                     parsed.rent_price
                     if parsed.listing_type == ListingType.RENT

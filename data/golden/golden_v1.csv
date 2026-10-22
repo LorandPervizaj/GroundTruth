@@ -5527,7 +5527,7 @@ Per me shume informata mund te na kontaktoni ne numrin
 
 
 049 124 677
-+383 49 124 677",850 EUR,106,850.00,106.0,,sale,85000.00,106.0,Spitalit,sale,,ground_truth_auto,Labeled from raw HTML + gazetteer validation
++383 49 124 677",850 EUR,106,850.00,106.0,,sale,MISSING,106.0,Spitalit,sale,,ground_truth_auto,Labeled from raw HTML + gazetteer validation
 random,banesa-50327,Banese me qira ne lagjen Emshir 2+1,"Banesë me qira në lagjen Emshir, kompleksi Lesna, banesa ka ngrohje qendrore me Termokos eshte e mobiluar ne teresi
 Sipërfaqe:70
 Çmimi i qirasë:270 per afatgjate
@@ -5641,7 +5641,7 @@ Sallon me kuzhine, 2 dhoma gjumi, njera eshte me banjo brenda, 2 terasa, korrido
 Per me shume informata mund te na kontaktoni ne kete numer telefoni:
 044 393 777
 WhatsApp & Viber
-+383 44 393 777","1,000 EUR",97,1000.00,97.0,Arbëria,sale,100000.00,97.0,Arberia,sale,,ground_truth_auto,Labeled from raw HTML + gazetteer validation
++383 44 393 777","1,000 EUR",97,1000.00,97.0,Arbëria,sale,MISSING,97.0,Arberia,sale,,ground_truth_auto,Labeled from raw HTML + gazetteer validation
 random,banesa-81136,Banesë me qira te Mati 1,"Lëshohet me qira banesa te Muharrem Fejza. Banesa është e mobiluar në tërësi, e gatshme dhe shumë e përshtatshme për banim.
 Banesa ka të gjitha pajisjet e nevojshme funksionale.
 Ka hapësirë parkimi.
@@ -5779,7 +5779,7 @@ bit.ly/2htS4cY
 ,  ose mund të na kontaktoni në këtë numër telefoni
 044/393-777
 WhatsApp & Viber
-+383 44 393 777",850 EUR,58,850.00,58.0,Mati,sale,85000.00,58.0,Mati 1,sale,,ground_truth_auto,Labeled from raw HTML + gazetteer validation
++383 44 393 777",850 EUR,58,850.00,58.0,Mati,sale,49300.00,58.0,Mati 1,sale,,ground_truth_auto,Labeled from raw HTML + gazetteer validation
 random,banesa-41550,Banese me qira ne lagjen e Spitalit,"Leshohet banese me qira ne lagjen e Spitalit,Te Super Viva
 Banesa ka kete renditje:
 - 2 dhoma gjumi
@@ -8800,7 +8800,7 @@ Per me shume informata mund te na kontaktoni ne numrin
 049 124 677
 +383 49 124 677
 
-",980 EUR,98,980.00,98.0,,sale,98000.00,98.0,AKTASH,sale,,ground_truth_auto,Labeled from raw HTML + gazetteer validation
+",980 EUR,98,980.00,98.0,,sale,96040.00,98.0,AKTASH,sale,,ground_truth_auto,Labeled from raw HTML + gazetteer validation
 random,banesa-73010,Banesë me qira në Emshir,"Lëshohet me qira banesa në Emshir, te kompleksi Dardha. E mobiluar në tërësi dhe shumë e përshtatshme për banim.
 
 Banesa ndodhet në katin e 3 dhe posedon ashensor, sistemin e ngrohjes e ka me Termokos.
@@ -10765,7 +10765,7 @@ Per me shume informata mund te na kontaktoni ne numrin
 049 124 677
 +383 49 124 677
 
-","1,200 EUR",91,1200.00,91.0,,sale,120000.00,91.0,ARBERI,sale,,ground_truth_auto,Labeled from raw HTML + gazetteer validation
+","1,200 EUR",91,1200.00,91.0,,sale,MISSING,91.0,ARBERI,sale,,ground_truth_auto,Labeled from raw HTML + gazetteer validation
 low_confidence,banesa-30274,Shitet banese te Qafa,"Shitet banese te Qafa, eshte komplet e mobiluar, gjendet ne katin e 4, perkthimi i baneses behet menjehere.
 
 Siperfaqe: 57m2, neto - 88m2 bruto
@@ -10776,7 +10776,7 @@ Sallon me kuzhine, 2 dhoma gjumi, banjo, 2 ballkona, posedon edhe podrumin.
 Per me shume informata rreth kesaj banese mund te na shkruani linkun me id ose nje screenshot te shpalljes, apo nje kerkese tuajen per banesa tjera, ne kete numer telefoni:
 044 393 777
 WhatsApp & Viber
-+383 44 393 777","1,750 EUR",57,1750.00,57.0,,sale,175000.00,57.0,Qafa,sale,,ground_truth_auto,Labeled from raw HTML + gazetteer validation
++383 44 393 777","1,750 EUR",57,1750.00,57.0,,sale,MISSING,57.0,Qafa,sale,,ground_truth_auto,Labeled from raw HTML + gazetteer validation
 low_confidence,banesa-77124,Banesë në shitje në Arbëri,"SHITET banesa në Arbëri, te Komuna e Re, afër Merdianit dhe restaurantit Proka.
 Banesa është e mobiluar, shumë e përshtatshme për banim dhe ka hapësirë të mjaftueshme per familjarë.
 Sistemin e ngrohjes e ka me Termokos.
@@ -10825,7 +10825,7 @@ Sallon me kuzhine, 2 dhoma gjumi, 2 banjo, ballkon, korridor.
 Per me shume informata rreth kesaj banese mund te na shkruani linkun me id ose nje screenshot te shpalljes, apo nje kerkese tuajen per banesa tjera, ne kete numer telefoni:
 045 19 0019
 WhatsApp & Viber
-+383 45 190 019",800 EUR,94,800.00,94.0,,sale,80000.00,94.0,Emshir,sale,,ground_truth_auto,Labeled from raw HTML + gazetteer validation
++383 45 190 019",800 EUR,94,800.00,94.0,,sale,MISSING,94.0,Emshir,sale,,ground_truth_auto,Labeled from raw HTML + gazetteer validation
 low_confidence,banesa-58382,SHITET SUPER BANESA NE BREGUN E DIELLIT !,"Në Bregun e Diellit, Kompleksi ""Dafina"" -Banesat e Standardit. Shitet Banesa 3+1
 Banesa organizohet nga korridori shpërndarës, salloni i ndenjes bashkë me këndin e gatimit i cili është i veçuar dhe me dalje në ballkon, Tri dhomat e gjumit, një tualet, një WC, një ballkon dhe Depo (shpajz).
 📌Vendndodhja: Rruga Rrahim Ademi
@@ -10884,7 +10884,7 @@ bit.ly/3n3a6PU
 
 Per me shume informata mund te na kontaktoni ne numrin
 049 124 677
-+383 49 124 677","1,100 EUR",91,1100.00,91.0,,sale,110000.00,91.0,ARBERI,sale,,ground_truth_auto,Labeled from raw HTML + gazetteer validation
++383 49 124 677","1,100 EUR",91,1100.00,91.0,,sale,MISSING,91.0,ARBERI,sale,,ground_truth_auto,Labeled from raw HTML + gazetteer validation
 low_confidence,banesa-81027,Banesë në shitje te Lagjia e Muhaxherëve,"SHITET banesa te Lagjia e Muhaxhereve, afër Kulles së Zotnisë. Banesa është e re dhe e gatshme për banim.
 Nodhet në katin e 4.
 Sipërfaqe: 62m²
@@ -10933,7 +10933,7 @@ bit.ly/3n3a6PU
 
 Per me shume informata mund te na kontaktoni ne numrin
 049 124 677
-+383 49 124 677","1,300 EUR",109,1300.00,109.0,,sale,130000.00,109.0,EMSHIR,sale,,ground_truth_auto,Labeled from raw HTML + gazetteer validation
++383 49 124 677","1,300 EUR",109,1300.00,109.0,,sale,MISSING,109.0,EMSHIR,sale,,ground_truth_auto,Labeled from raw HTML + gazetteer validation
 low_confidence,banesa-81721,Shitet banesa te Prishtina e Re,"SHITET banesa te Premium Residence. Banesa është e re.
 Ndodhet në katin e 2, ka ashensor.
 Sipërfaqe: 90m²
@@ -11025,7 +11025,7 @@ Renditja:
 Per me shume na kontaktoni ne kete numer telefoni:
 044 393 777
 WhatsApp & Viber
-+383 44 393 777","1,400 EUR",135,1400.00,135.0,,sale,140000.00,135.0,Bregu i Diellit,sale,,ground_truth_auto,Labeled from raw HTML + gazetteer validation
++383 44 393 777","1,400 EUR",135,1400.00,135.0,,sale,189000.00,135.0,Bregu i Diellit,sale,,ground_truth_auto,Labeled from raw HTML + gazetteer validation
 low_confidence,banesa-79199,Lokal në shitje në Arbëri,"Lokal ne shitje– Prishinë, lagjja Arberia
 Ofrohet për #shitje lokali me sipërfaqe 88m², në Prishtinë! Lokali gjendet në lagjen Arberia ,rrugën Vicianum , në objektin Tregtia, afer me Komunen e re.me qasje direkte në rrugën kryesore dhe në të dy anët e objektit.🏙
 Gjendet në katin e parë dhe është tërësisht funksional. Objekti posedon hapësirë të mjaftueshme edhe për parking.
@@ -12916,7 +12916,7 @@ bit.ly/3n3a6PU
 
 Per me shume informata mund te na kontaktoni ne numrin
 049 124 677 WhatsApp dhe Viber +383 49 124 677
-044 333 511 WhatsApp dhe Viber +383 44 333 511","1,600 EUR",133,1600.00,133.0,Muhaxhere,sale,160000.00,133.0,Muhaxherve,sale,,ground_truth_auto,Labeled from raw HTML + gazetteer validation
+044 333 511 WhatsApp dhe Viber +383 44 333 511","1,600 EUR",133,1600.00,133.0,Muhaxhere,sale,212800.00,133.0,Muhaxherve,sale,,ground_truth_auto,Labeled from raw HTML + gazetteer validation
 invalid,banesa-75701,Shitet banesa ne lagjen Arberia,"SHITET banesa 72 m² në Prishtinë - Arbëri ( ish Dragodan), kati 3, objektet e para mbi hekurudhe me pamje nga lindja (ku shihet kompet qyteti), me saktë afer objetit te Komunes se Re, ne rrugen ku gjindet market Conad dhe Cacttus (perballë kafes se bicikletave). Ndertues dhe projektues i kompleksit banesor eshte kompania J&M Inxhinjering Sh.p.k.
 
 Banesa shitet me mobile, e po ashtu mund te përdoret edhe per afarizëm!
@@ -13013,7 +13013,7 @@ bit.ly/3n3a6PU
 
 Per me shume informata mund te na kontaktoni ne numrin
 049 124 677 WhatsApp dhe Viber +383 49 124 677
-044 333 511 WhatsApp dhe Viber +383 44 333 511","1,300 EUR",65,1300.00,65.0,Spitali,sale,130000.00,65.0,Spitalit,sale,,ground_truth_auto,Labeled from raw HTML + gazetteer validation
+044 333 511 WhatsApp dhe Viber +383 44 333 511","1,300 EUR",65,1300.00,65.0,Spitali,sale,84500.00,65.0,Spitalit,sale,,ground_truth_auto,Labeled from raw HTML + gazetteer validation
 invalid,banesa-41687,Shitet banesa ne lagjen Bregu i diellit,"Banesë ne shitje në lagjen Bregu i diellit. Banesa eshte e mobiluar ne tersi e renovuar. Hymja e baneses eshte ne menaxhim te NPB. Ka infrastrukture te rregullt. Ka parkingun para, park, fushe, shetitore etj.
 Kati: 5-te
 Sipërfaqe:86m2
@@ -13044,7 +13044,7 @@ Qmimi: 1030 € m2
 Per informata shtese na kontaktoni ne numrin e telefonit:
 044 393 777
 WhatsApp & Viber
-+383 44 393 777","1,030 EUR",107,1030.00,107.0,Bregu i Diellit,sale,103000.00,107.0,Bregu i diellit,sale,,ground_truth_auto,Labeled from raw HTML + gazetteer validation
++383 44 393 777","1,030 EUR",107,1030.00,107.0,Bregu i Diellit,sale,110210.00,107.0,Bregu i diellit,sale,,ground_truth_auto,Labeled from raw HTML + gazetteer validation
 invalid,banesa-75371,Banesë me qira në Arbëri,"Banesë me qira në lagjen Arberia,ne rrugen Ferid Curri,te banesat afer Minimax,perballe me Meridian market dhe Hotel Adore.Banesa eshte e mobiluar ne teresi.Lift funksional.
 Kati:2
 Sipërfaqe:65 m2
@@ -13097,7 +13097,7 @@ Qmimi 1000 € m2
 Per me shume informata rreth kesaj banese mund te na shkruani linkun me id ose nje screenshot te shpalljes, apo nje kerkese tuajen per banesa tjera, ne kete numer telefoni:
 045 190 019
 WhatsApp & Viber
-+383 45 190 019","1,000 EUR",56,1000.00,56.0,Arbëria,sale,100000.00,56.0,Arberia,sale,,ground_truth_auto,Labeled from raw HTML + gazetteer validation
++383 45 190 019","1,000 EUR",56,1000.00,56.0,Arbëria,sale,MISSING,56.0,Arberia,sale,,ground_truth_auto,Labeled from raw HTML + gazetteer validation
 invalid,banesa-32418,Super banese ne shitje ne lagjen Bregu i diellit,"Shitet banese ne lagjen Mati 1, afer shkolles fillore "" Pavaresia. Banesa eshte ndertim i ri e pamobiluar, 108m2.
 
 Renditja:
@@ -13108,7 +13108,7 @@ Sallon me kuzhine, 3 dhoma gjumi, 2 banjo, 2 ballkona, korridor.
 Per me shume informata rreth kesaj banese mund te na shkruani linkun me id ose nje screenshot te shpalljes, apo nje kerkese tuajen per banesa tjera, ne kete numer telefoni:
 044 393 777
 WhatsApp & Viber
-+383 44 393 777",780 EUR,108,780.00,108.0,Bregu i Diellit,sale,78000.00,108.0,Bregu i diellit,sale,,ground_truth_auto,Labeled from raw HTML + gazetteer validation
++383 44 393 777",780 EUR,108,780.00,108.0,Bregu i Diellit,sale,84240.00,108.0,Bregu i diellit,sale,,ground_truth_auto,Labeled from raw HTML + gazetteer validation
 invalid,banesa-80256,Banesë me qira në Aktash,"Lëshohet me qira banesa/garsoniere në lagjen Aktash, afër Ministrise se Arsimit dhe Fakultetit Ekonomik rruga Agim Ramadani. Banesa është e mobiluar në tërësi dhe e përshtatshme për banim.
 Banesa ka të gjitha pajisjet fuksionale. Sistemin e ngrohjes e ka me Termokos.
 Çmimi: i diskutueshem
@@ -13253,7 +13253,7 @@ bit.ly/3n3a6PU
 
 Per me shume informata mund te na kontaktoni ne numrin
 049 124 677 WhatsApp dhe Viber +383 49 124 677
-044 333 511 WhatsApp dhe Viber +383 44 333 511","1,200 EUR",61,1200.00,61.0,Emshir,sale,120000.00,61.0,Emshir,sale,,ground_truth_auto,Labeled from raw HTML + gazetteer validation
+044 333 511 WhatsApp dhe Viber +383 44 333 511","1,200 EUR",61,1200.00,61.0,Emshir,sale,MISSING,61.0,Emshir,sale,,ground_truth_auto,Labeled from raw HTML + gazetteer validation
 invalid,banesa-75018,Banese ne shitje ne Lagje te Spitalit,"Shitet banese ne Lagje te Spitalit me dalje te rruga A. Banesa gjendet ne katin e 4-te, siperfaqe prej 94m2
 Renditja:
 - Sallon
@@ -13269,7 +13269,7 @@ bit.ly/3n3a6PU
 
 Per me shume informata mund te na kontaktoni ne numrin
 049 124 677 WhatsApp dhe Viber +383 49 124 677
-044 333 511 WhatsApp dhe Viber +383 44 333 511","1,280 EUR",94,1280.00,94.0,Spitali,sale,128000.00,94.0,Spitalit,sale,,ground_truth_auto,Labeled from raw HTML + gazetteer validation
+044 333 511 WhatsApp dhe Viber +383 44 333 511","1,280 EUR",94,1280.00,94.0,Spitali,sale,120320.00,94.0,Spitalit,sale,,ground_truth_auto,Labeled from raw HTML + gazetteer validation
 invalid,banesa-55806,Banese me qira(Pa mobile) ne lagjen Arberia 2+1,"2 Banesë me qera në lagjen Arberia,(PA MOBILIE) ne rrugen Ferid Curri/Kosturi ,afer Meridian Market dhe Minimax , prane Ambasades Amerikane e pa banuar me pare,kompleksi Butrinti Group e gatshme  .Banesa eshte e pamobiluar vetem kuzhina e montuar .Lift funksional
 Kati:2
 Sipërfaqe:92m2
@@ -13366,7 +13366,7 @@ bit.ly/3n3a6PU
 Per me shume informata mund te na kontaktoni ne numrin
 049 124 677 WhatsApp dhe Viber +383 49 124 677
 044 333 511 WhatsApp dhe Viber +383 44 333 511
-","1,250 EUR",65,1250.00,65.0,Spitali,sale,125000.00,65.0,Spitalit,sale,,ground_truth_auto,Labeled from raw HTML + gazetteer validation
+","1,250 EUR",65,1250.00,65.0,Spitali,sale,81250.00,65.0,Spitalit,sale,,ground_truth_auto,Labeled from raw HTML + gazetteer validation
 invalid,banesa-53072,Shitet banesa ne lagjen Tophane,"SHITET Banesë  në lagjen Tophane, rruga Pjeter Bogdani afer qendres dhe Viva Fresh dhe Baholleve, eshte e mobiluar ne teresi,
 Kati:6 lift funksional, nxemja me kallda
 Sipërfaqe:47m2
@@ -15174,7 +15174,7 @@ Renditja:
 *Ballkon
 *Korridor
 
-Për më shumë infor",880 EUR,57,880.00,57.0,Arbëria,sale,88000.00,57.0,Arberia,sale,,ground_truth_auto,Labeled from raw HTML + gazetteer validation
+Për më shumë infor",880 EUR,57,880.00,57.0,Arbëria,sale,50160.00,57.0,Arberia,sale,,ground_truth_auto,Labeled from raw HTML + gazetteer validation
 random,banesa-79416,Banese me qira ne Breg te diellit,"Banesë me qera në Breg të Diellit
 ✳️ Rruga Gazmend Zajmi, te market Vipros dhe Meridian, me 60m2, kati 6 me lift, me sistem te ngrohjes me Termokos, me kushte shumë të mira banimi është e mobiluar si dhe ka këtë renditje:
 ✳️ Dhomë e dites me kuzhinë

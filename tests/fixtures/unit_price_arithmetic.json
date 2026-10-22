@@ -1,0 +1,10 @@
+{
+  "provenance": "Minimized literal price/area evidence from the four archived Gjirafa records reviewed in independent-evidence-1.0.0. No contacts, source URLs or full descriptions.",
+  "area_semantics": "Source-advertised area; not independently established interior or gross. Use the same unique quoted area for arithmetic without conversion.",
+  "cases": [
+    {"case": "UP-01", "raw_record_id": 26890, "price_raw": "1,300 EUR", "area_raw": "80", "description": "Banesa gjendet në katin e 5-të dhe ka sipërfaqe prej 80m². Çmimi: 1300€ m²", "old_total": "130000.00", "expected_total": "104000.00", "expected_rate": "1300.00"},
+    {"case": "UP-02", "raw_record_id": 27285, "price_raw": "850 EUR", "area_raw": "60", "description": "Banesa 60m2 ne shitje. Çmimi i shitjes 850€/m2 ndersa ne baz te kerkeses mund te ofrohet edhe garazhda ne Bodrum qe vjen me çmim ekstra prej 6.000€", "old_total": "85000.00", "expected_total": "51000.00", "expected_rate": "850.00"},
+    {"case": "UP-03", "raw_record_id": 45140, "price_raw": "1,150 EUR", "area_raw": "82", "description": "Banesë 82 m² në #Shitje. Çmimi i Shitjes 1150 € / m²", "old_total": "115000.00", "expected_total": "94300.00", "expected_rate": "1150.00"},
+    {"case": "UP-04", "raw_record_id": 76665, "price_raw": "1,400 EUR", "area_raw": "135", "description": "Shitet Banesa duplex. Banesa ka 135m2. Çmimi: 1400 € m2", "old_total": "140000.00", "expected_total": "189000.00", "expected_rate": "1400.00"}
+  ]
+}
