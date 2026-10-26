@@ -17,7 +17,7 @@ pytestmark = [
     pytest.mark.skipif(os.getenv("RUN_E2E") != "1", reason="set RUN_E2E=1"),
 ]
 
-BASE_URL = "http://127.0.0.1:8765"
+BASE_URL = os.getenv("METRIK_E2E_BASE_URL", "http://127.0.0.1:8765").rstrip("/")
 
 
 def _wait_for_server(timeout: float = 20.0) -> None:
@@ -33,6 +33,15 @@ def _wait_for_server(timeout: float = 20.0) -> None:
 
 @pytest.fixture(scope="module")
 def browser() -> Generator[Browser, None, None]:
+    if os.getenv("METRIK_E2E_BASE_URL"):
+        # Release gates exercise the already-running immutable local QA image.
+        if not BASE_URL.startswith(("http://127.0.0.1:", "http://localhost:")):
+            pytest.fail("External E2E target must be an authorized loopback QA origin")
+        with sync_playwright() as playwright:
+            instance = playwright.chromium.launch()
+            yield instance
+            instance.close()
+        return
     env = {
         **os.environ,
         "APP_ENV": "development",

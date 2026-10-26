@@ -25,3 +25,10 @@ backups
 *.key
 *.pfx
 *.p12
+/security/
+/research/
+/release/
+/tests/
+/docs/
+/migration-to-oracle/
+/QA/
