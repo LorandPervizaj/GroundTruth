@@ -9,8 +9,6 @@ from datetime import UTC, datetime
 from typing import Any
 from uuid import UUID
 
-from parsel import Selector
-
 from groundtruth.portals.registry import get_portal
 from groundtruth.scrapers.harta_area import extract_area_facts
 
@@ -93,6 +91,9 @@ class _Literal:
 
 
 def hydration_field(html: str, field: str) -> Any:
+    # Optional research dependency; importing CLI defaults must work in the web image.
+    from parsel import Selector
+
     check_access(html)
     if len(html) > 2_000_000:
         raise HartaContractError("HTML size limit")
@@ -105,6 +106,8 @@ def hydration_field(html: str, field: str) -> Any:
 
 
 def property_from_html(html: str) -> dict:
+    from parsel import Selector
+
     prop = hydration_field(html, "property")
     if not isinstance(prop, dict):
         raise HartaContractError("Malformed property object")
@@ -231,6 +234,8 @@ _FEATURES = frozenset(
 
 def minimized_property(prop: dict) -> dict:
     """Allowlist before raw persistence; descriptions reduced to consistency facts."""
+    from parsel import Selector
+
     listing_id(prop)
     result = {k: v for k, v in prop.items() if k in _FIELDS}
     features = prop.get("features") or {}
