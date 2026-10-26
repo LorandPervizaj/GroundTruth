@@ -24,4 +24,7 @@ def visit(x):
  elif isinstance(x,list):
   for v in x:visit(v)
 visit(schema)
+expected=json.loads((E/'image-inspection.json').read_text())['artifact_hashes']['data/api/rent_yield.json']
+actual=subprocess.check_output(['docker','exec','metrik-rc-app-20261026','sha256sum','/app/data/api/rent_yield.json'],text=True).split()[0]
+assert actual==expected,'Public GET mutated the hashed rent-yield release artifact'
 (E/'qa-api.json').write_text(json.dumps({'checks':checks,'passed':len(checks),'privacy_fields_checked':sorted(forbidden),'production_data_used':False},indent=2),encoding='utf8');print(json.dumps(checks))

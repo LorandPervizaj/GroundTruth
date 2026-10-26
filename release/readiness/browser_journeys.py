@@ -17,7 +17,7 @@ with sync_playwright()as pw:
    if path.startswith('/compare'):expect(page.locator('#compare-results')).to_be_visible(timeout=20000)
    if path=='/rent-yield':expect(page.locator('#yield-body tr').first).to_be_visible(timeout=20000)
    if path=='/find':
-    page.locator('#find-submit').click();page.wait_for_function("!document.querySelector('#find-results').classList.contains('hidden') || !document.querySelector('#find-empty').classList.contains('hidden')")
+    page.locator('#find-submit').click();expect(page.locator('#find-results:not(.hidden), #find-empty:not(.hidden)')).to_be_visible(timeout=30000)
    if path=='/valuate':
     page.locator('#neighborhood-input').fill('Ulpiana');page.locator('.metrik-search-item').filter(has_text='Ulpiana').first.click();page.locator('#submit-btn').click();expect(page.locator('#results')).to_be_visible(timeout=30000)
    assert not page.evaluate('document.documentElement.scrollWidth > document.documentElement.clientWidth'),(name,path,'horizontal overflow')
@@ -27,4 +27,4 @@ with sync_playwright()as pw:
   (E/f'{name}-browser-events.json').write_text(json.dumps({'page_errors':errors,'http_errors':network},indent=2),encoding='utf8')
   context.close()
  browser.close()
-(E/'browser-journeys.json').write_text(json.dumps({'journeys':results,'passed':len(results),'browser':'Chromium','origin':base,'production_tested':False},indent=2),encoding='utf8');print(json.dumps({'passed':len(results)}))
+(E/'browser-journeys.json').write_text(json.dumps({'journeys':results,'passed':len(results),'browser':'Chromium','origin':base,'production_tested':False,'image_digest':json.loads((E/'release-identity.json').read_text())['image_manifest_digest']},indent=2),encoding='utf8');print(json.dumps({'passed':len(results)}))

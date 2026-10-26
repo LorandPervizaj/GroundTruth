@@ -20,7 +20,7 @@ env={'APP_ENV':'production','DATABASE_URL':f'postgresql+psycopg://groundtruth_te
 cmd=['docker','run','-d','--name',app,'--network',network,'--label','metrik.rc=20261026','-p','127.0.0.1:18765:8000']
 for k,v in env.items():cmd+=['-e',k+'='+v]
 cid=run(cmd+[image]);ready=False
-for _ in range(30):
+for _ in range(120):
  try:
   with urllib.request.urlopen('http://127.0.0.1:18765/api/ready',timeout=3)as r:ready=r.status==200
   if ready:break

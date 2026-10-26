@@ -22,7 +22,12 @@ for p in(root/'reports/generated/lookup_cache').glob('*comparables.json.gz'):
  assert all(not FORBIDDEN_LISTING_FIELD_KEYS.intersection(r)for r in rows)
  comparables[p.name]=len(rows)
 from groundtruth.cli import app
-print(json.dumps({'uid':os.getuid(),'required_paths':required,'forbidden_paths_absent':forbidden,'verification':verified,'artifact_hashes':hashes,'comparables_rows_checked':comparables,'dependency_versions':{p:importlib.metadata.version(p)for p in ['brotli','certifi','pillow','fastapi','starlette','uvicorn']},'cli_import':True}))
+from groundtruth.gazetteers.version import compute_gazetteer_version
+from groundtruth.gazetteers.location_resolver import LocationResolver,resolve_listing_location
+resolution=resolve_listing_location(LocationResolver(),neighborhood_raw='Sllovenia Sport')
+assert set(resolution.parent_relationships)=={'aktash-muhaxhere','qendra'}
+assert resolution.market_entity_id=='market_subarea:sllovenia-sport'
+print(json.dumps({'uid':os.getuid(),'required_paths':required,'forbidden_paths_absent':forbidden,'verification':verified,'artifact_hashes':hashes,'comparables_rows_checked':comparables,'dependency_versions':{p:importlib.metadata.version(p)for p in ['brotli','certifi','pillow','fastapi','starlette','uvicorn']},'cli_import':True,'runtime_reference_fingerprint':compute_gazetteer_version(),'sllovenia_runtime_parents':list(resolution.parent_relationships)}))
 '''
 result=subprocess.run(['docker','run','--rm','--network','none','--read-only','--entrypoint','/app/.venv/bin/python',image,'-c',code],capture_output=True,text=True)
 assert result.returncode==0,result.stderr

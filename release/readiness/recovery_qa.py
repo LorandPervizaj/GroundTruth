@@ -21,10 +21,14 @@ try:
  c=httpx.Client(base_url=base,timeout=20)
  receipt['db_down_cached_lookup_status']=c.get('/api/lookup/neighborhood/ulpiana').status_code
  receipt['db_down_readiness_status']=c.get('/api/ready').status_code
- response=c.post('/api/contact',json={'name':'QA outage','email':'qa-outage@example.invalid','message':'Synthetic local outage persistence check.'})
+ body={'name':'QA outage','email':'qa-outage@example.invalid','message':'Synthetic local outage persistence check.'}
+ response=c.post('/api/contact',json=body)
  receipt['db_down_write_status']=response.status_code
  assert receipt['db_down_cached_lookup_status']==200
  assert receipt['db_down_write_status']==503,response.text
+ retry=c.post('/api/contact',json=body)
+ receipt['identical_retry_during_outage_status']=retry.status_code
+ assert retry.status_code==503,retry.text
 finally:
  (E/'recovery-qa-progress.json').write_text(json.dumps(receipt,indent=2),encoding='utf8')
  run(['docker','start',db])
@@ -40,5 +44,11 @@ for _ in range(20):
  time.sleep(1)
 receipt['recovered_readiness_status']=httpx.get(base+'/api/ready',timeout=10).status_code
 assert receipt['recovered_readiness_status']==200
+retry=httpx.post(base+'/api/contact',json=body,timeout=20)
+receipt['identical_retry_after_recovery_status']=retry.status_code
+receipt['identical_retry_after_recovery_result']=retry.json().get('status')
+assert retry.status_code==200 and retry.json().get('status')=='ok',retry.text
+receipt['recovered_write_durable_count']=sql('SELECT count(*) FROM product_submissions')
+assert int(receipt['recovered_write_durable_count'])==int(before.split('|')[0])+1
 receipt['public_production_recoverability_proven']=False
 (E/'recovery-qa.json').write_text(json.dumps(receipt,indent=2),encoding='utf8');print(json.dumps(receipt))
