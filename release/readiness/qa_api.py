@@ -4,7 +4,7 @@ import httpx,json,subprocess,hashlib
 E=Path('C:/Projects/FartEstate/release/readiness/evidence');base='http://127.0.0.1:18765'
 c=httpx.Client(base_url=base,timeout=30);checks=[]
 def check(method,path,expected=200,**kwargs):
- r=c.request(method,path,**kwargs);checks.append({'method':method,'path':path,'status':r.status_code,'expected':expected});assert r.status_code==expected,checks[-1];return r
+ r=c.request(method,path,**kwargs);checks.append({'method':method,'path':path,'status':r.status_code,'expected':expected});(E/'qa-api-progress.json').write_text(json.dumps(checks,indent=2),encoding='utf8');assert r.status_code==expected,checks[-1];return r
 for path in ['/api/ready','/api/meta','/api/neighborhoods','/api/markets','/api/methodology','/api/rent-yield','/api/lookup/neighborhood/ulpiana','/api/search?q=Ulpiana','/api/compare?neighborhoods=ulpiana,arberia']:
  check('GET',path)
 for path in ['/api/metrics','/docs','/openapi.json','/.env','/research/prishtina_location_demo/phase5/processed/phase5_listing_replay.csv','/data/raw','/security/AUDIT_STATUS.md']:
@@ -15,7 +15,7 @@ check('POST','/api/budget-match',json={'listing_type':'rent','max_budget_eur':50
 check('POST','/api/valuate',json={'valuation_type':'rent','neighborhood':'Ulpiana','area_sqm':78,'bedrooms':2})
 check('POST','/api/contact',422,json={'name':'RC'})
 check('POST','/api/contact',json={'name':'Release QA','email':'release-qa@example.invalid','topic':'other','message':'Synthetic local release QA persistence check.'})
-check('POST','/api/alerts',503,json={'email':'release-qa@example.invalid','neighborhood':'Ulpiana'})
+check('POST','/api/alerts',503,json={'email':'release-qa@example.invalid','neighborhood_slug':'ulpiana'})
 schema=check('GET','/api/lookup/neighborhood/ulpiana').json();forbidden={'phone','email','description_original','raw_payload','raw_html','contact'}
 def visit(x):
  if isinstance(x,dict):

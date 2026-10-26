@@ -115,17 +115,46 @@ def test_database_backend_rolls_back_on_commit_failure(
     settings = get_settings()
     monkeypatch.setattr(settings, "product_write_backend", "database")
     monkeypatch.setattr(settings, "product_submission_dedupe_seconds", 0)
-
     session = MagicMock()
     session.commit.side_effect = RuntimeError("disk full")
     factory = MagicMock(return_value=session)
     with (
-        patch(
-            "groundtruth.services.product_submissions.get_session_factory",
-            return_value=factory,
-        ),
+        patch("groundtruth.services.product_submissions.get_session_factory", return_value=factory),
         pytest.raises(RuntimeError, match="disk full"),
     ):
         append_product_submission("feedback", {"issue": "wrong_price"})
     session.rollback.assert_called_once()
     get_settings.cache_clear()
+
+
+def test_failed_database_write_does_not_mark_retry_as_duplicate(monkeypatch):
+    from groundtruth.config import get_settings
+
+    settings = get_settings()
+    monkeypatch.setattr(settings, "product_write_backend", "database")
+    monkeypatch.setattr(settings, "product_submission_dedupe_seconds", 300)
+    session = MagicMock()
+    session.commit.side_effect = [RuntimeError("unavailable"), None]
+    payload = {"message": "same retry after storage failure"}
+    with patch("groundtruth.services.product_submissions.get_session_factory", return_value=lambda: session):
+        with pytest.raises(RuntimeError, match="unavailable"):
+            append_product_submission("contact", payload)
+        append_product_submission("contact", payload)
+        with pytest.raises(DuplicateSubmission):
+            append_product_submission("contact", payload)
+    assert session.commit.call_count == 2
+    session.rollback.assert_called_once()
+
+
+def test_failed_jsonl_write_remains_retryable(tmp_path, monkeypatch):
+    from groundtruth.config import get_settings
+
+    settings = get_settings()
+    monkeypatch.setattr(settings, "product_write_backend", "jsonl")
+    monkeypatch.setattr(settings, "product_log_dir", tmp_path)
+    with (
+        patch.object(Path, "open", side_effect=OSError("disk full")),
+        pytest.raises(OSError, match="disk full"),
+    ):
+        append_product_submission("contact", {"message": "retry"})
+    append_product_submission("contact", {"message": "retry"})

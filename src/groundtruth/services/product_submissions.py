@@ -32,7 +32,7 @@ def _submission_fingerprint(kind: str, payload: dict[str, Any]) -> str:
     return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
 
 
-def _remember_or_reject(fingerprint: str, *, window_seconds: int) -> None:
+def _remember_or_reject(fingerprint: str, *, window_seconds: int) -> float:
     now = time.monotonic()
     with _dedupe_lock:
         expired = [key for key, ts in _recent_hashes.items() if now - ts > window_seconds]
@@ -42,6 +42,7 @@ def _remember_or_reject(fingerprint: str, *, window_seconds: int) -> None:
         if previous is not None and now - previous <= window_seconds:
             raise DuplicateSubmission(fingerprint)
         _recent_hashes[fingerprint] = now
+    return now
 
 
 def clear_submission_dedupe_cache() -> None:
@@ -58,8 +59,22 @@ def append_product_submission(kind: str, payload: dict[str, Any]) -> None:
     settings = get_settings()
     window = max(0, int(settings.product_submission_dedupe_seconds))
     fingerprint = _submission_fingerprint(kind, payload)
+    reservation = None
     if window > 0:
-        _remember_or_reject(fingerprint, window_seconds=window)
+        reservation = _remember_or_reject(fingerprint, window_seconds=window)
+
+    try:
+        _persist_product_submission(kind, payload)
+    except Exception:
+        # A failed durable write must remain retryable, never a successful duplicate.
+        with _dedupe_lock:
+            if reservation is not None and _recent_hashes.get(fingerprint) == reservation:
+                _recent_hashes.pop(fingerprint, None)
+        raise
+
+
+def _persist_product_submission(kind: str, payload: dict[str, Any]) -> None:
+    settings = get_settings()
 
     row = {
         "ts": datetime.now(UTC).isoformat(),
