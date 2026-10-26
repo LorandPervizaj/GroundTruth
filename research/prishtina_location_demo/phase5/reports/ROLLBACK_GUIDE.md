@@ -1,8 +1,12 @@
 # Git and rollback
 
 Original HEAD: `882bac71e243ba73a5203a93bfac6aa028185f43`. Original branch:
-`codex/unit-price-historical-impact`. Original checkout remains at that branch with its existing
-dirty work preserved. Implementation branch: `codex/prishtina-phase5` in
+`codex/unit-price-historical-impact`. Existing dirty source work is preserved. Concurrent work
+subsequently moved that checkout to `chore/oracle-migration-prep` at
+`8dbe01fa47ef3450b6949e7ecf39a2873583a7c2`; its committed delta is confined to
+`migration-to-oracle/`. Phase5 did not perform that branch switch or commit.
+See validation/concurrent_git_drift.json for the observation receipt. No reset or
+checkout is performed against that work. Implementation branch: `codex/prishtina-phase5` in
 `C:/Users/lorandp/.codex/worktrees/prishtina-phase5/FartEstate`. The exact focused commit and final status are recorded in
 validation/git_final.json; no remote push is authorized.
 
