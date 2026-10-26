@@ -1,0 +1,5 @@
+processed/
+validation/
+rollback/
+baseline/
+__pycache__/

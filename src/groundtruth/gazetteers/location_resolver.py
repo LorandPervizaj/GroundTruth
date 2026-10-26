@@ -2,13 +2,16 @@
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
+from functools import lru_cache
 
 from groundtruth.gazetteers.location_tree import (
     LocationTree,
     load_location_tree,
     normalize_text,
 )
+from groundtruth.gazetteers.market_graph import parent_market_slugs
 
 # Complex names that appear in marketing copy (brand names), not as locations.
 DESCRIPTION_COMPLEX_FALSE_POSITIVES = frozenset({"ontex"})
@@ -31,6 +34,30 @@ class LocationResolution:
     invalid_reason: str | None = None
     match_type: str = "missing"
     vague_nh_only: bool = False
+    market_entity_id: str | None = None
+    market_subarea_slug: str | None = None
+    parent_relationships: tuple[str, ...] = ()
+    physical_street_slug: str | None = None
+    proximity_mentions: tuple[str, ...] = ()
+
+
+def location_term_matches(norm: str, term: str) -> bool:
+    """Whole-token location assertions; nearby/developer claims are enrichment."""
+    for match in re.finditer(r"(?<!\w)" + re.escape(term) + r"(?!\w)", norm):
+        prefix = norm[max(0, match.start() - 90) : match.start()]
+        if re.search(
+            r"(?:afer|prane|perballe|opposite|near|pamje nga|rrug\w* per|\d+\s*min\w* nga|ndertuar nga|ndertim nga|investitor)\s+(?:(?:te|e|i|t|sh|f|m|u|park\w*|shkoll\w*|kompleks\w*)\s+){0,5}$",
+            prefix,
+        ):
+            continue
+        if term in {"germia", "germi", "germise"} and re.search(r"park\w*\s+(?:te\s+)?$", prefix):
+            continue
+        if term in {"germia", "germi", "germise"} and re.match(
+            r"\s+park\w*\b", norm[match.end() :]
+        ):
+            continue
+        return True
+    return False
 
 
 @dataclass
@@ -54,7 +81,26 @@ def resolve_listing_location(
     city: str | None = None,
 ) -> LocationResolution:
     """Prefer title/address fields over description to avoid brand-name false positives."""
-    structured = " ".join(filter(None, [title, neighborhood_raw, street_raw, complex_raw]))
+    original = normalize_text(" ".join(filter(None, [title, description])))
+    fields = [title]
+    for value in [neighborhood_raw, street_raw, complex_raw]:
+        if not value:
+            continue
+        term = normalize_text(value)
+        if (
+            original
+            and re.search(r"(?<!\w)" + re.escape(term) + r"(?!\w)", original)
+            and not location_term_matches(original, term)
+        ):
+            continue
+        if (
+            re.fullmatch(r"(?:rruga|rr) [abc]", term)
+            and original
+            and not location_term_matches(original, term)
+        ):
+            continue
+        fields.append(value)
+    structured = " ".join(filter(None, fields))
     structured_res = LocationResolution()
     if structured.strip():
         structured_res = resolver.resolve(structured, city=city)
@@ -63,6 +109,16 @@ def resolve_listing_location(
             or structured_res.district_slug
             or structured_res.complex_slug
         ) and not structured_res.invalid_location:
+            if description:
+                refined = resolver.resolve(
+                    " ".join(filter(None, [structured, description])), city=city
+                )
+                if (
+                    refined.neighborhood_slug == structured_res.neighborhood_slug
+                    and refined.district_slug
+                    and not refined.complex_slug
+                ):
+                    return refined
             return structured_res
 
     full = " ".join(filter(None, [structured, description]))
@@ -100,6 +156,7 @@ def _complex_term_in_text(text: str, complex_slug: str, resolver: LocationResolv
 class LocationResolver:
     def __init__(self, tree: LocationTree | None = None) -> None:
         self._tree = tree or load_location_tree()
+        self._scan_unfiltered = lru_cache(maxsize=16384)(self._scan_unfiltered)
 
     def resolve(self, text: str, *, city: str | None = None) -> LocationResolution:
         if city and normalize_text(city) not in ("prishtina", "pristina", "prishtine"):
@@ -111,7 +168,17 @@ class LocationResolver:
 
         hits = self._scan(norm)
         if not hits:
-            return LocationResolution()
+            return LocationResolution(
+                proximity_mentions=tuple(
+                    sorted(
+                        {
+                            h.term
+                            for h in self._scan_unfiltered(norm)
+                            if not location_term_matches(norm, h.term)
+                        }
+                    )
+                )
+            )
 
         complex_hit = self._best(hits, "complex")
         district_hit = self._best(hits, "district")
@@ -198,31 +265,76 @@ class LocationResolver:
         elif nh_slug:
             match_type = "neighborhood"
 
-        return LocationResolution(
+        result = LocationResolution(
             neighborhood_slug=nh_slug,
             district_slug=district_slug,
             complex_slug=complex_slug,
             match_type=match_type,
             vague_nh_only=vague,
         )
+        subarea = district_slug or (nh_slug if parent_market_slugs(nh_slug) else None)
+        result.market_subarea_slug = subarea
+        result.parent_relationships = parent_market_slugs(subarea) or (
+            (nh_slug,) if subarea and nh_slug else ()
+        )
+        result.market_entity_id = (
+            ("market_subarea:" + subarea)
+            if subarea
+            else ("market_neighborhood:" + nh_slug)
+            if nh_slug
+            else None
+        )
+        road = re.search(r"\b(?:adresa|adresen|rruga fizike)\s+(?:rruga|rr)\s+([abc])\b", norm)
+        if road:
+            result.physical_street_slug = "rruga-" + road[1]
+        result.proximity_mentions = tuple(
+            sorted(
+                {
+                    h.term
+                    for h in self._scan_unfiltered(norm)
+                    if not location_term_matches(norm, h.term)
+                }
+            )
+        )
+        return result
 
     def _scan(self, norm: str) -> list[_Hit]:
+        hits = self._scan_unfiltered(norm)
+        result = []
+        for hit in hits:
+            if not location_term_matches(norm, hit.term):
+                continue
+            if (
+                hit.kind == "complex"
+                and hit.slug in {"royal-mall", "maxi-24", "fivestar", "tregtia"}
+                and not re.search(
+                    r"\b(?:(?:ne )?kompleks(?:in|i|it)?|brenda kompleks(?:it)?|ne objekt(?:in)?|banesat e)\s+"
+                    + re.escape(hit.term)
+                    + r"\b",
+                    norm,
+                )
+            ):
+                continue
+            result.append(hit)
+        return result
+
+    def _scan_unfiltered(self, norm: str) -> list[_Hit]:
         hits: list[_Hit] = []
         for slug, nh in self._tree.neighborhoods.items():
             for term in (nh.name, slug, *nh.aliases):
                 t = normalize_text(term)
-                if t and t in norm:
+                if t and f" {t} " in f" {norm} ":
                     hits.append(_Hit("neighborhood", slug, t, len(t)))
         for slug, gs in self._tree.gazetteer_to_neighborhood.items():
             t = normalize_text(slug.replace("-", " "))
-            if t and t in norm:
+            if t and f" {t} " in f" {norm} ":
                 hits.append(_Hit("neighborhood", gs, t, len(t)))
         for slug, d in self._tree.districts.items():
             for term in (d.name, slug.replace("-", " "), *d.aliases):
                 t = normalize_text(term)
                 if not t or len(t) < 3:
                     continue
-                if t in norm:
+                if f" {t} " in f" {norm} ":
                     hits.append(
                         _Hit("district", slug, t, len(t), neighborhood_slug=d.neighborhood_slug)
                     )
@@ -231,7 +343,7 @@ class LocationResolver:
                 t = normalize_text(term)
                 if not t or len(t) < 4:
                     continue
-                if t in norm:
+                if f" {t} " in f" {norm} ":
                     hits.append(
                         _Hit(
                             "complex",
@@ -276,11 +388,11 @@ class LocationResolver:
                 continue
             for term in (nh.name, slug.replace("-", " "), *nh.aliases):
                 t = normalize_text(term)
-                if t and len(t) >= 3 and t in norm:
+                if t and len(t) >= 3 and location_term_matches(norm, t):
                     candidates.append((len(t), slug))
             for gs in nh.gazetteer_slugs:
                 t = normalize_text(gs.replace("-", " "))
-                if t and len(t) >= 3 and t in norm:
+                if t and len(t) >= 3 and location_term_matches(norm, t):
                     candidates.append((len(t), slug))
         if not candidates:
             return None

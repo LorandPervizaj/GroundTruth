@@ -1,9 +1,9 @@
-# DRAFT — Prishtina location tree (user-defined v0.3)
+# Phase5 market semantics; legacy scalar tree compatibility retained
 # Levels: city → neighborhood → district | complex (direct)
 # Review: docs/LOCATION_TREE_DRAFT.md
 
-version: draft-0.3
-updated: 2026-06-11
+version: phase5-market-1
+updated: "2026-10-26"
 
 resolution:
   order: [city, neighborhood, district, complex]
@@ -33,7 +33,7 @@ resolution:
       result: { neighborhood: matiqan }
     - text: "Rruga B"
       result: { neighborhood: matiqan, district: rruga-b }
-    - text: "Royal Mall"
+    - text: "Banesë në kompleksin Royal Mall"
       result: { neighborhood: matiqan, district: rruga-b, complex: royal-mall }
     - text: "Narteli, Emshir"
       result: { neighborhood: emshir, complex: narteli }
@@ -49,29 +49,32 @@ city:
     # ─── MATIQAN ──────────────────────────────────────────────────────────────
     - name: Matiqan
       slug: matiqan
-      aliases: [Mati, Matiçan, Matican]
+      aliases: ["Mati", "Matiçan", "Matican", "Mati 1", "Mati I", "Mati 1 - Jugu", "BL Mati 1", "Lagjja Mati 1", "te Mati 1", "ne Mati 1", "Kompleksi Mati", "MAT 1", "Mati 2", "Mati II", "Mati 2 - Veriu", "BL Mati 2", "Mati 1 - Veri", "te Mati 2", "ne Mati 2", "Mati 3", "Mati i Vjetër", "Mati i Vjeter", "Mati i Vieter", "BL Mati 3", "Matiqan", "Maticani", "Maticanit"]
       gazetteer_slugs: [mati, mati-2, mati-3, matican]
       status: pilot
       notes: "Mati/Matiçan are suffix aliases. Mati 1/2/3 are districts, not the NH name."
       districts:
         - name: Rruga B
           slug: rruga-b
+          aliases: ["Rr. B", "Rrugën B", "Rrugës B", "Rrugen B", "Rruges B"]
           type: street_district
           complexes:
-            - { name: Royal Mall, slug: royal-mall, aliases: [Royal Mall] }
+            - {name: Royal Mall, slug: royal-mall, aliases: [Royal Mall, Kompleksi Royal Mall, afer Royal Mall, afër Royal Mall, mbrapa Royal Mall, ne Royal Mall, perballe Royal Mall, perballë Royal Mall, pranë Royal Mall, te Royal Mall]}
             - { name: Maxi 24, slug: maxi-24, aliases: [Maxi, Maxi 24] }
             - { name: Fivestar, slug: fivestar, aliases: [Five Star, Fivestar] }
 
         - name: Rruga A
           slug: rruga-a
+          aliases: ["Rr. A", "Rrugën A", "Rrugës A", "Rrugen A", "Rruges A"]
           type: street_district
 
         - name: Rruga C
           slug: rruga-c
+          aliases: ["Rr. C", "Rrugën C", "Rrugës C", "Rrugen C", "Rruges C"]
           type: street_district
           complexes:
-            - { name: Tregtia, slug: tregtia }
-            - { name: Rethi i Matit, slug: rethi-i-matit, aliases: [Rrethi i Matit] }
+            - {name: Tregtia, slug: tregtia, aliases: [Tregtia]}
+            - {name: Rethi i Matit, slug: rethi-i-matit, aliases: [Rrethi i Matit, Rethi i Matit]}
 
         - name: Rruga Muharrem Fejza
           slug: muharrem-fejza
@@ -98,7 +101,7 @@ city:
     # ─── BREGU I DIELLIT ──────────────────────────────────────────────────────
     - name: Bregu i Diellit
       slug: bregu-i-diellit
-      aliases: [Bregu]
+      aliases: ["Bregu", "Bregu i Diellit", "Sunny Hill", "Kodra e Diellit", "Breg i Diellit", "Bregun e diellit", "Bregun e Diellit", "Bregun e Dielit", "BREGUN E DIELLIT", "Bregun", "Bregun e Dilliet"]
       status: draft
       districts:
         - { name: Shkolla Iliria, slug: shkolla-iliria, type: landmark }
@@ -106,16 +109,17 @@ city:
         - { name: Lagja e Profesorëve, slug: lagja-e-profesoreve, type: district }
         - { name: Route 66, slug: route-66, type: landmark }
       complexes_direct:
-        - { name: Banesat e Kuqe, slug: banesat-e-kuqe }
-        - { name: Banesat e Bardha, slug: banesat-e-bardha, aliases: [Banesat e Bardhe] }
-        - { name: Banesat e Hint, slug: banesat-e-hint, aliases: [Banesat e Hinta] }
-        - { name: Te Standardi, slug: te-standardi }
-        - { name: Ontex, slug: ontex }
-        - { name: Banesat e Reja, slug: banesat-e-reja }
+        - {name: Banesat e Kuqe, slug: banesat-e-kuqe, aliases: [Banesat e Kuqe]}
+        - {name: Banesat e Bardha, slug: banesat-e-bardha, aliases: [Banesat e Bardhe, Banesat e Bardha]}
+        - {name: Banesat e Hint, slug: banesat-e-hint, aliases: [Banesat e Hinta, Banesat e Hint]}
+        - {name: Te Standardi, slug: te-standardi, aliases: [Te Standardi]}
+        - {name: Ontex, slug: ontex, aliases: [Ontex]}
+        - {name: Banesat e Reja, slug: banesat-e-reja, aliases: [Banesat e Reja]}
 
     # ─── KALABRI / EMSHIR ─────────────────────────────────────────────────────
     - name: Kalabri / Emshir
       slug: emshir
+      aliases: ["Kalabria", "Kalabri", "Emshir", "Emshiri", "Në Kalabri", "Në Emshir", "Emsir", "Emshirit", "te Emshiri", "te emshiri", "Emshir 2+1", "ne Emshir", "Kalabrisë", "Kalabrise", "Kalabri Prishtine", "ne Kalabria", "te Kalabria", "Lagja Kalabria", "Emshire"]
       canonical_slug: emshir
       merged: [kalabria]
       status: draft
@@ -126,14 +130,15 @@ city:
         - { name: Ambulanta, slug: ambulanta, type: landmark, aliases: [Ambullanta] }
         - { name: Ujsjellësi, slug: ujsjellsi, type: landmark }
       complexes_direct:
-        - { name: Banesat e Arabëve, slug: banesat-e-arabeve, aliases: [Banesat E arabve] }
-        - { name: Gardeni, slug: gardeni }
-        - { name: Narteli, slug: narteli, requires_parent: emshir }
-        - { name: Prishtina Stars, slug: prishtina-stars }
+        - {name: Banesat e Arabëve, slug: banesat-e-arabeve, aliases: [Banesat E arabve, Banesat e Arabëve]}
+        - {name: Gardeni, slug: gardeni, aliases: [Gardeni]}
+        - {name: Narteli, slug: narteli, requires_parent: emshir, aliases: [Narteli]}
+        - {name: Prishtina Stars, slug: prishtina-stars, aliases: [Prishtina Stars]}
 
     # ─── DRAGODAN / ARBËRI ────────────────────────────────────────────────────
     - name: Dragodan / Arbëri
       slug: arberia
+      aliases: ["Arbëria", "Arberia", "Dragodan", "Dragodani", "Arbëri", "Arberi", "te Arberia", "ne Arberi", "Arbëria 1", "Arbëria 2", "Arberia 1", "Arberia 2", "BL Arbëria 1", "BL Arbëria 2", "Arberia 1+1", "Arberia 2+1", "Dragodanit", "ne Dragodan", "te Dragodan", "Lagja e Dragodanit", "Lagjja e Dragodanit"]
       canonical_slug: arberia
       merged: [dragodan]
       status: draft
@@ -145,6 +150,7 @@ city:
     # ─── TASLIXHE ─────────────────────────────────────────────────────────────
     - name: Taslixhe
       slug: taslixhe
+      aliases: ["Taslixhe", "Taslixhes", "Tasligje", "Tasligjë", "ne Tasligje"]
       status: draft
       districts:
         - { name: Taslixhe 1, slug: taslixhe-1 }
@@ -155,15 +161,16 @@ city:
     # ─── SOFALIA ──────────────────────────────────────────────────────────────
     - name: Sofalia
       slug: sofalia
-      aliases: [Sofali]
+      aliases: ["Sofali", "Sofalia", "Gërmia", "Germia", "Gërmi", "Germi", "Sofalisë", "Sofalise", "Sofalis", "Gërmisë", "Germise", "Gerrmi"]
       status: draft
       districts:
         - { name: Tokebashqe, slug: tokebashqe, type: landmark }
-        - { name: Gërmia, slug: germia-sofalia, aliases: [Gerrmi], review: "vs Gërmia NH — disambiguate" }
+        - {name: Gërmia, slug: germia-sofalia, aliases: [Gerrmi], review: vs Gërmia NH — disambiguate, resolution_enabled: false}
 
     # ─── TOPHANE ──────────────────────────────────────────────────────────────
     - name: Tophane
       slug: tophane
+      aliases: ["Tophane", "Tophanes", "Tophanit", "Tophane 2+1"]
       status: draft
       districts:
         - { name: Meto Bajraktari, slug: meto-bajraktari, type: school, aliases: [MetoBajraktari] }
@@ -171,6 +178,7 @@ city:
     # ─── QAFA ─────────────────────────────────────────────────────────────────
     - name: Qafa
       slug: qafa
+      aliases: ["Qafa", "Qafës", "Qafes", "Qafa e Prishtines", "te Qafa", "Qafa_2+1", "te Qafa_2+1"]
       status: draft
       districts:
         - { name: Te kafet e vogla, slug: te-kafet-e-vogla, type: landmark }
@@ -178,7 +186,7 @@ city:
     # ─── QENDRA ───────────────────────────────────────────────────────────────
     - name: Qendra
       slug: qendra
-      aliases: [Qender]
+      aliases: ["Qender", "Qendra", "Qendër", "Qendres", "Center", "Centrum", "Qender 2+1", "ne Qender"]
       status: draft
       districts:
         - { name: Sheshi Nënë Terezë, slug: sheshi-nene-tereze, aliases: [Sheshi Nenterez] }
@@ -196,6 +204,7 @@ city:
     # ─── PEJTON / LAKRISHTE ───────────────────────────────────────────────────
     - name: Pejton / Lakrishte
       slug: pejton-lakrishte
+      aliases: ["Pejton", "Lakrishta", "Lakrishte", "Lakërishta", "Lakriste", "Lakrishtes", "Lakrisht", "Pejton - Lakërishta", "BL Pejton-Lakërishta", "Pejtone", "Pejtonit", "Pejton / Lakrishte"]
       gazetteer_slugs: [pejton, lakrishte]
       status: draft
       districts:
@@ -205,34 +214,36 @@ city:
         - { name: Hekurudha, slug: hekurudha, type: landmark }
         - { name: Xhevdet Doda / Stefan Gjeçovi, slug: xhevdet-doda, type: school, aliases: [Stefan Gjeqova] }
       complexes_direct:
-        - { name: Narteli, slug: narteli, requires_parent: pejton-lakrishte }
-        - { name: Benidona, slug: benidona }
-        - { name: Dugagjini Center, slug: dugagjini-center }
-        - { name: Prishtina City Center, slug: prishtina-city-center }
-        - { name: Bagolina / Derand Hotel, slug: bagolina-derand, aliases: [Bagolina, Derand Hotel] }
+        - {name: Narteli, slug: narteli, requires_parent: pejton-lakrishte, aliases: [Narteli]}
+        - {name: Benidona, slug: benidona, aliases: [Benidona]}
+        - {name: Dugagjini Center, slug: dugagjini-center, aliases: [Dugagjini Center]}
+        - {name: Prishtina City Center, slug: prishtina-city-center, aliases: [Prishtina City Center]}
+        - {name: Bagolina / Derand Hotel, slug: bagolina-derand, aliases: [Bagolina, Derand Hotel, Bagolina / Derand Hotel]}
 
     # ─── DARDANIA ─────────────────────────────────────────────────────────────
     - name: Dardania
       slug: dardania
+      aliases: ["Dardani", "Dardanisë", "Dardanise", "Dardania", "Dardania 1+1", "ne Dardania", "lagjen Dardania", "ne Dardani"]
       status: draft
       districts:
         - { name: Parku, slug: parku-dardania, type: landmark }
         - { name: Xhamia e Dardanisë, slug: xhamia-dardanise }
         - { name: Kurrizi, slug: kurrizi-dardania, aliases: [Kurriz] }
         - { name: Bill Klinton, slug: bill-klinton, type: landmark }
-        - { name: Shkolla Dardania, slug: shkolla-dardania, aliases: [Dardania] }
+        - {name: Shkolla Dardania, slug: shkolla-dardania, aliases: [Shkollës Dardania, Shkollen Dardania, Shkolles Dardania, Shkolla Dardani, Sh.F.M.U. Dardania]}
         - { name: Xhemail Mustafa, slug: xhemail-mustafa, type: school }
         - { name: Posta, slug: posta-dardania }
         - { name: Santea, slug: santea }
         - { name: Lorik Center, slug: lorik-center }
         - { name: Termokosi, slug: termokosi }
       complexes_direct:
-        - { name: Banesat e Gjelbra, slug: banesat-e-gjelbra, aliases: [Banesat e gjelberta] }
-        - { name: Eliabi, slug: eliabi }
+        - {name: Banesat e Gjelbra, slug: banesat-e-gjelbra, aliases: [Banesat e gjelberta, Banesat e Gjelbra]}
+        - {name: Eliabi, slug: eliabi, aliases: [Eliabi]}
 
     # ─── 4 LULLAT / LLULLAT / DODONA ──────────────────────────────────────────
     - name: 4 Lullat / Llullat / Dodona
       slug: llullat-dodona
+      aliases: ["Dodona", "4 Llullat", "4 Lullat", "Llullat", "Dodonës", "Dodonas", "Dodon", "te 4 Llullat", "te llullat", "4 Lullat / Dodona"]
       gazetteer_slugs: [llullat, dodona]
       status: draft
       districts:
@@ -252,50 +263,50 @@ city:
     - name: Aktash / Muhaxherë
       slug: aktash-muhaxhere
       gazetteer_slugs: [aktash, muhaxhere]
-      aliases: [Lagjja e Muhaxherve]
+      aliases: ["Lagjja e Muhaxherve", "Aktash", "Aktashi", "Aktasit", "Muhaxhere", "Muhaxherë", "Muhaxherve", "Muhaxhereve", "Muhaxherëve", "Lagjia e Muhaxherëve", "Lagjia e Muhaxhereve", "Lagje te Muhaxherve", "lagje te muhaxherve", "Muhaxhereve 2+1", "ne Muhaxhere", "Aktash / Muhaxherë", "Muhagjerve"]
       status: draft
       districts:
-        - { name: Parku i Qytetit, slug: parku-i-qytetit-aktash }
+        - {name: Parku i Qytetit, slug: parku-i-qytetit-aktash, aliases: [Parkun e Qytetit, Parkut të Qytetit]}
         - { name: Extrm Pizza, slug: extrm-pizza, type: landmark }
         - { name: Naim Frashëri, slug: naim-frashri }
         - { name: Ambasada e Zvicrës, slug: ambasada-zviceres }
         - { name: Kulla e Zontit, slug: kulla-e-zontit }
         - { name: Hotel Afa, slug: hotel-afa }
       complexes_direct:
-        - { name: Ivy Residence, slug: ivy-residence, aliases: [Ivy Reisdence] }
-        - { name: Olive Bakery, slug: olive-bakery }
-        - { name: Sonder, slug: sonder }
+        - {name: Ivy Residence, slug: ivy-residence, aliases: [Ivy Reisdence, Ivy Residence]}
+        - {name: Olive Bakery, slug: olive-bakery, aliases: [Olive Bakery]}
+        - {name: Sonder, slug: sonder, aliases: [Sonder]}
 
     # ─── SPITALI ──────────────────────────────────────────────────────────────
     - name: Lagja e Spitalit
       slug: spitali
-      aliases: [Spitali, QKUK]
+      aliases: ["Spitali", "QKUK", "Spitalit", "Lagja e Spitalit", "Lagjja e Spitalit", "Lagjen e Spitalit", "Lagjes se Spitalit", "Lagje te Spitalit", "lagje te spitalit", "Lagje te spitalit", "Spitalit 2+1", "te Spitali", "te spitali", "Spital", "Lagjja e spitalit"]
       status: draft
       districts:
         - { name: QKUK, slug: qkuk, type: landmark }
         - { name: Rruga Holger Pedersen, slug: rruga-holger-pedersen, aliases: [Rruga Holeger Pederson] }
         - { name: Pallati i Drejtësisë, slug: pallati-drejtesise }
       complexes_direct:
-        - { name: Royal City, slug: royal-city, note: "NOT Royal Mall" }
+        - {name: Royal City, slug: royal-city, note: NOT Royal Mall, aliases: [Royal City, Kompleksi Royal City, Royal City Prishtina, Royal Residence, ne Royal City, te Royal City]}
 
     # ─── ULPIANA ──────────────────────────────────────────────────────────────
     - name: Ulpiana
       slug: ulpiana
-      aliases: [Ulpiane]
+      aliases: ["Ulpiane", "Ulpiana", "Ulpianë", "Lagjja Ulpiana", "Ulpiane 1+1", "Ulpiane 2+1", "te Ulpiana", "Ulpian"]
       status: draft
       districts:
         - { name: Fontana, slug: fontana }
         - { name: Hasan Prishtina, slug: hasan-prishtina, aliases: [Hasn Prishtina] }
         - { name: Soliterat, slug: soliterat }
       complexes_direct:
-        - { name: Beni Dona, slug: beni-dona }
-        - { name: Laburatora, slug: laburatora }
-        - { name: Interex, slug: interex, aliases: [Interksi] }
+        - {name: Beni Dona, slug: beni-dona, aliases: [Beni Dona]}
+        - {name: Laburatora, slug: laburatora, aliases: [Laburatora]}
+        - {name: Interex, slug: interex, aliases: [Interksi, Interex]}
 
     # ─── VETERNIK ─────────────────────────────────────────────────────────────
     - name: Veternik
       slug: veternik
-      aliases: [Veterniku]
+      aliases: ["Veterniku", "Veternik", "Veternikut", "Veterrnik", "Veternik Ne Spitalin Amerikan"]
       status: draft
       districts:
         - { name: Gorenje, slug: gorenje, aliases: [Gorenja] }
@@ -307,6 +318,7 @@ city:
     # ─── HAJVALI ──────────────────────────────────────────────────────────────
     - name: Hajvali
       slug: hajvali
+      aliases: ["Hajvali", "Hajvalia", "Hajvalit"]
       city: Prishtina
       status: draft
       notes: "Prishtina — gazetteer city field needs update in Phase 2b"
@@ -316,7 +328,7 @@ city:
     # ─── VELANIA ──────────────────────────────────────────────────────────────
     - name: Velania
       slug: velania
-      aliases: [Velani]
+      aliases: ["Velani", "Velania", "Velanisë", "Velanise", "Velanis"]
       status: draft
       districts:
         - { name: Shpia e Rugovës, slug: shpia-e-rugoves }
@@ -326,17 +338,20 @@ city:
     # ─── MARIGONA (small NHs — Prishtina only) ────────────────────────────────
     - name: Marigona Residence
       slug: marigona-residence
+      aliases: ["Marigona Residence"]
       status: draft
       notes: "Small outskirts NH — parent is Prishtina only"
 
     - name: Marigona Hill
       slug: marigona-hill
+      aliases: ["Marigona Hill"]
       status: draft
       notes: "Small outskirts NH — parent is Prishtina only"
 
     # ─── KOLOVICE ─────────────────────────────────────────────────────────────
     - name: Kolovice
       slug: kolovice
+      aliases: ["Kolovice", "Kolovica"]
       status: draft
       notes: "Own neighborhood — not Kolonija"
       districts:
@@ -349,7 +364,7 @@ city:
     - name: Vranjevc / Kodra e Trimave
       slug: vranjevc-kodra-trimave
       gazetteer_slugs: [kodra-e-trimave]
-      aliases: [Vrajnefc]
+      aliases: ["Vrajnefc", "Vranjevc", "Vranjevci", "Kodra e Trimave", "Kodres e Trimave", "Trimat", "Vranjevc / Kodra e Trimave"]
       status: draft
       districts:
         - { name: Çigllat, slug: cigllat, aliases: [Cigllanat] }
@@ -357,11 +372,23 @@ city:
         - { name: Raiffeisen Bank, slug: raiffeisen-bank, aliases: [Rajajze Bank] }
         - { name: Princi i Arbërit, slug: princi-i-arbrit }
 
+    - name: Sllovenia Sport
+      slug: sllovenia-sport
+      aliases:
+      - Sllovenia Sporti
+      - te Sllovenia Sport
+      - Slovenia Sport
+      - Sllovenia Sport
+      - Sllovenia e Sportit
+      - Sllovenia Sportit
+      - Slovenia e Sportit
+      market_entity_type: market_subarea
+      legacy_neighborhood_id: 47
+
   neighborhoods_tbd:
     - { name: Bardhosh, slug: bardhosh }
     - { name: Bledi, slug: bledi }
     - { name: Bregu i Zi, slug: bregu-i-zi }
-    - { name: Gërmia, slug: germia }
     - { name: Kishnicë, slug: kishnice }
     - { name: Kodra e Diellit 2, slug: kodra-e-diellit-2 }
     - { name: Kolonija, slug: kolonija }
@@ -371,8 +398,6 @@ city:
     - { name: Remizë, slug: remize }
     - { name: Rilindja, slug: rilindja }
     - { name: Sharri, slug: sharri }
-    - { name: Sllovenia Sport, slug: sllovenia-sport }
-    - { name: Sunny Hill, slug: sunny-hill }
     - { name: Taukbahçe, slug: taukbahce }
     - { name: Toplane, slug: toplane }
 

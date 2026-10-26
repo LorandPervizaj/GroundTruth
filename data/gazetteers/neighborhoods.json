@@ -44,7 +44,8 @@
       "Kodra e Diellit",
       "Kodra e Diellit",
       "Sunny Hill"
-    ]
+    ],
+    "canonical_slug": "bregu-i-diellit"
   },
   {
     "id": 4,
@@ -67,15 +68,14 @@
       "BL Arbëria 2",
       "Arberia 1+1",
       "Arberia 2+1",
-      "te Arberia",
-      "ne Arberi",
       "Dragodan",
       "Dragodani",
       "Dragodanit",
       "ne Dragodan",
       "te Dragodan",
       "Lagja e Dragodanit",
-      "Lagjja e Dragodanit"
+      "Lagjja e Dragodanit",
+      "Arbëria"
     ]
   },
   {
@@ -92,7 +92,8 @@
       "Ulpiana",
       "Ulpiane 1+1",
       "Ulpiane 2+1",
-      "te Ulpiana"
+      "te Ulpiana",
+      "Ulpian"
     ]
   },
   {
@@ -126,7 +127,9 @@
       "Bregun e Diellit",
       "Bregun e Dielit",
       "BREGUN E DIELLIT",
-      "Bregu i Diellit"
+      "Sunny Hill",
+      "Bregun",
+      "Bregun e Dilliet"
     ]
   },
   {
@@ -188,7 +191,12 @@
       "Kalabri Prishtine",
       "ne Kalabria",
       "te Kalabria",
-      "Lagja Kalabria"
+      "Lagja Kalabria",
+      "Kalabri",
+      "Emshir",
+      "Në Kalabri",
+      "Në Emshir",
+      "Emshire"
     ]
   },
   {
@@ -358,7 +366,14 @@
     "aliases": [
       "Sofalisë",
       "Sofalise",
-      "Sofalis"
+      "Sofalis",
+      "Sofalia",
+      "Sofali",
+      "Gërmia",
+      "Germia",
+      "Gërmi",
+      "Germi",
+      "Gerrmi"
     ]
   },
   {
@@ -423,7 +438,8 @@
       "Germia",
       "Gërmisë",
       "Germise"
-    ]
+    ],
+    "canonical_slug": "sofalia"
   },
   {
     "id": 26,
@@ -686,7 +702,10 @@
     "aliases": [
       "Sllovenia Sporti",
       "te Sllovenia Sport",
-      "Slovenia Sport"
+      "Slovenia Sport",
+      "Sllovenia e Sportit",
+      "Sllovenia Sportit",
+      "Slovenia e Sportit"
     ]
   },
   {
@@ -777,7 +796,9 @@
     "centroid_lng": 21.17,
     "aliases": [
       "Pejton",
-      "Lakrishte"
+      "Lakrishte",
+      "Lakrishta",
+      "Lakërishta"
     ]
   },
   {
@@ -818,7 +839,8 @@
     "centroid_lng": 21.168,
     "aliases": [
       "Muhaxherë",
-      "Lagjja e Muhaxherve"
+      "Lagjja e Muhaxherve",
+      "Muhagjerve"
     ]
   },
   {
@@ -830,7 +852,9 @@
     "centroid_lng": 21.162,
     "aliases": [
       "Llullat",
-      "4 Lullat"
+      "4 Lullat",
+      "Dodona",
+      "4 Llullat"
     ]
   },
   {
@@ -841,7 +865,9 @@
     "centroid_lat": 42.656,
     "centroid_lng": 21.182,
     "aliases": [
-      "Vranjevc"
+      "Vranjevc",
+      "Vranjevci",
+      "Kodra e Trimave"
     ]
   }
 ]

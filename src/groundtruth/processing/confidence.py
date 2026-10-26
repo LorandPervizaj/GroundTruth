@@ -41,6 +41,7 @@ class ConfidenceFactors:
     building_match_type: str = "missing"
     location_invalid: bool = False
     location_invalid_reason: str | None = None
+    location_semantics: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
@@ -125,6 +126,7 @@ class ConfidenceScorer:
                 "validation_passed": is_valid,
                 "geocode_score": round(geocode_score, 4),
                 "provenance_fields": list(provenance.keys()) if provenance else [],
+                "location_semantics": factors.location_semantics,
             },
         )
 

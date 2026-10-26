@@ -1,0 +1,1868 @@
+{
+  "version": "phase5-market-1",
+  "entity_types": [
+    "municipality",
+    "settlement",
+    "market_neighborhood",
+    "market_subarea",
+    "physical_street",
+    "street_corridor_market_area",
+    "residential_complex",
+    "building",
+    "official_local_community",
+    "landmark",
+    "administrative_area"
+  ],
+  "relationship_types": [
+    "same_market_identity",
+    "canonical_alias_of",
+    "market_subarea_of",
+    "market_area_overlaps",
+    "physical_street_in_area",
+    "corridor_named_after_street",
+    "complex_in_market_area",
+    "building_in_complex",
+    "near_landmark",
+    "official_street_in_local_community",
+    "possible_same_geographic_entity"
+  ],
+  "entities": {
+    "market_neighborhood:dardania": {
+      "slug": "dardania",
+      "type": "market_neighborhood",
+      "legacy_id": 1
+    },
+    "market_neighborhood:lakrishte": {
+      "slug": "lakrishte",
+      "type": "market_neighborhood",
+      "legacy_id": 2
+    },
+    "market_neighborhood:sunny-hill": {
+      "slug": "sunny-hill",
+      "type": "market_neighborhood",
+      "legacy_id": 3
+    },
+    "market_neighborhood:arberia": {
+      "slug": "arberia",
+      "type": "market_neighborhood",
+      "legacy_id": 4
+    },
+    "market_neighborhood:ulpiana": {
+      "slug": "ulpiana",
+      "type": "market_neighborhood",
+      "legacy_id": 5
+    },
+    "market_neighborhood:qendra": {
+      "slug": "qendra",
+      "type": "market_neighborhood",
+      "legacy_id": 6
+    },
+    "market_neighborhood:bregu-i-diellit": {
+      "slug": "bregu-i-diellit",
+      "type": "market_neighborhood",
+      "legacy_id": 7
+    },
+    "market_neighborhood:veternik": {
+      "slug": "veternik",
+      "type": "market_neighborhood",
+      "legacy_id": 8
+    },
+    "market_neighborhood:kalabri": {
+      "slug": "kalabri",
+      "type": "market_neighborhood",
+      "legacy_id": 9
+    },
+    "market_neighborhood:hajvali": {
+      "slug": "hajvali",
+      "type": "market_neighborhood",
+      "legacy_id": 10
+    },
+    "market_neighborhood:emshir": {
+      "slug": "emshir",
+      "type": "market_neighborhood",
+      "legacy_id": 11
+    },
+    "market_neighborhood:spitali": {
+      "slug": "spitali",
+      "type": "market_neighborhood",
+      "legacy_id": 12
+    },
+    "market_neighborhood:pejton": {
+      "slug": "pejton",
+      "type": "market_neighborhood",
+      "legacy_id": 13
+    },
+    "market_neighborhood:dragodan": {
+      "slug": "dragodan",
+      "type": "market_neighborhood",
+      "legacy_id": 14
+    },
+    "market_neighborhood:aktash": {
+      "slug": "aktash",
+      "type": "market_neighborhood",
+      "legacy_id": 15
+    },
+    "market_neighborhood:taukbahce": {
+      "slug": "taukbahce",
+      "type": "market_neighborhood",
+      "legacy_id": 16
+    },
+    "market_neighborhood:velania": {
+      "slug": "velania",
+      "type": "market_neighborhood",
+      "legacy_id": 17
+    },
+    "market_neighborhood:kodra-e-trimave": {
+      "slug": "kodra-e-trimave",
+      "type": "market_neighborhood",
+      "legacy_id": 18
+    },
+    "market_neighborhood:mati": {
+      "slug": "mati",
+      "type": "market_neighborhood",
+      "legacy_id": 19,
+      "canonical_entity_id": "market_subarea:mati-1"
+    },
+    "market_neighborhood:sofalia": {
+      "slug": "sofalia",
+      "type": "market_neighborhood",
+      "legacy_id": 20
+    },
+    "market_neighborhood:sharri": {
+      "slug": "sharri",
+      "type": "market_neighborhood",
+      "legacy_id": 21
+    },
+    "market_neighborhood:toplane": {
+      "slug": "toplane",
+      "type": "market_neighborhood",
+      "legacy_id": 22
+    },
+    "market_neighborhood:kurrizi": {
+      "slug": "kurrizi",
+      "type": "market_neighborhood",
+      "legacy_id": 23
+    },
+    "market_neighborhood:kolonija": {
+      "slug": "kolonija",
+      "type": "market_neighborhood",
+      "legacy_id": 24
+    },
+    "market_neighborhood:germia": {
+      "slug": "germia",
+      "type": "market_neighborhood",
+      "legacy_id": 25
+    },
+    "market_neighborhood:matican": {
+      "slug": "matican",
+      "type": "market_neighborhood",
+      "legacy_id": 26
+    },
+    "market_neighborhood:tophane": {
+      "slug": "tophane",
+      "type": "market_neighborhood",
+      "legacy_id": 27
+    },
+    "market_neighborhood:kishnice": {
+      "slug": "kishnice",
+      "type": "market_neighborhood",
+      "legacy_id": 28
+    },
+    "market_neighborhood:rilindja": {
+      "slug": "rilindja",
+      "type": "market_neighborhood",
+      "legacy_id": 29
+    },
+    "market_neighborhood:dodona": {
+      "slug": "dodona",
+      "type": "market_neighborhood",
+      "legacy_id": 30
+    },
+    "market_neighborhood:remize": {
+      "slug": "remize",
+      "type": "market_neighborhood",
+      "legacy_id": 31
+    },
+    "market_neighborhood:bardhosh": {
+      "slug": "bardhosh",
+      "type": "market_neighborhood",
+      "legacy_id": 32
+    },
+    "market_neighborhood:llukar": {
+      "slug": "llukar",
+      "type": "market_neighborhood",
+      "legacy_id": 33
+    },
+    "market_neighborhood:parku-i-qytetit": {
+      "slug": "parku-i-qytetit",
+      "type": "market_neighborhood",
+      "legacy_id": 48,
+      "canonical_entity_id": "market_subarea:parku-i-qytetit-aktash"
+    },
+    "market_neighborhood:llullat": {
+      "slug": "llullat",
+      "type": "market_neighborhood",
+      "legacy_id": 49
+    },
+    "market_neighborhood:kalabria": {
+      "slug": "kalabria",
+      "type": "market_neighborhood",
+      "legacy_id": 35
+    },
+    "market_neighborhood:kodra-e-diellit-2": {
+      "slug": "kodra-e-diellit-2",
+      "type": "market_neighborhood",
+      "legacy_id": 36
+    },
+    "market_neighborhood:qafa": {
+      "slug": "qafa",
+      "type": "market_neighborhood",
+      "legacy_id": 37
+    },
+    "market_neighborhood:bledi": {
+      "slug": "bledi",
+      "type": "market_neighborhood",
+      "legacy_id": 38
+    },
+    "market_neighborhood:perparimi": {
+      "slug": "perparimi",
+      "type": "market_neighborhood",
+      "legacy_id": 39
+    },
+    "market_neighborhood:taslixhe": {
+      "slug": "taslixhe",
+      "type": "market_neighborhood",
+      "legacy_id": 40
+    },
+    "market_neighborhood:muhaxhere": {
+      "slug": "muhaxhere",
+      "type": "market_neighborhood",
+      "legacy_id": 46
+    },
+    "market_neighborhood:bregu-i-zi": {
+      "slug": "bregu-i-zi",
+      "type": "market_neighborhood",
+      "legacy_id": 41
+    },
+    "market_neighborhood:fushe-kosove": {
+      "slug": "fushe-kosove",
+      "type": "market_neighborhood",
+      "legacy_id": 42
+    },
+    "market_neighborhood:prizren": {
+      "slug": "prizren",
+      "type": "market_neighborhood",
+      "legacy_id": 43
+    },
+    "market_neighborhood:peja": {
+      "slug": "peja",
+      "type": "market_neighborhood",
+      "legacy_id": 44
+    },
+    "market_neighborhood:gjakove": {
+      "slug": "gjakove",
+      "type": "market_neighborhood",
+      "legacy_id": 45
+    },
+    "market_neighborhood:matiqan": {
+      "slug": "matiqan",
+      "type": "market_neighborhood",
+      "legacy_id": 54
+    },
+    "market_neighborhood:pejton-lakrishte": {
+      "slug": "pejton-lakrishte",
+      "type": "market_neighborhood",
+      "legacy_id": 55
+    },
+    "market_neighborhood:marigona-residence": {
+      "slug": "marigona-residence",
+      "type": "market_neighborhood",
+      "legacy_id": 56
+    },
+    "market_neighborhood:marigona-hill": {
+      "slug": "marigona-hill",
+      "type": "market_neighborhood",
+      "legacy_id": 57
+    },
+    "market_neighborhood:kolovice": {
+      "slug": "kolovice",
+      "type": "market_neighborhood",
+      "legacy_id": 58
+    },
+    "market_neighborhood:aktash-muhaxhere": {
+      "slug": "aktash-muhaxhere",
+      "type": "market_neighborhood",
+      "legacy_id": 59
+    },
+    "market_neighborhood:llullat-dodona": {
+      "slug": "llullat-dodona",
+      "type": "market_neighborhood",
+      "legacy_id": 60
+    },
+    "market_neighborhood:vranjevc-kodra-trimave": {
+      "slug": "vranjevc-kodra-trimave",
+      "type": "market_neighborhood",
+      "legacy_id": 61
+    },
+    "market_subarea:prishtina-e-re": {
+      "slug": "prishtina-e-re",
+      "type": "market_subarea",
+      "legacy_neighborhood_id": 34
+    },
+    "market_subarea:parku-i-qytetit-aktash": {
+      "slug": "parku-i-qytetit-aktash",
+      "type": "market_subarea",
+      "legacy_neighborhood_id": 48
+    },
+    "market_subarea:sllovenia-sport": {
+      "slug": "sllovenia-sport",
+      "type": "market_subarea",
+      "legacy_neighborhood_id": 47
+    },
+    "market_subarea:mati-1": {
+      "slug": "mati-1",
+      "type": "market_subarea",
+      "legacy_neighborhood_id": 19
+    },
+    "market_subarea:mati-2": {
+      "slug": "mati-2",
+      "type": "market_subarea",
+      "legacy_neighborhood_id": 52
+    },
+    "market_subarea:mati-3": {
+      "slug": "mati-3",
+      "type": "market_subarea",
+      "legacy_neighborhood_id": 53
+    },
+    "market_subarea:rruga-a": {
+      "slug": "rruga-a",
+      "type": "market_subarea",
+      "legacy_neighborhood_id": null,
+      "roles": [
+        "market_subarea",
+        "street_corridor_market_area"
+      ]
+    },
+    "market_subarea:rruga-b": {
+      "slug": "rruga-b",
+      "type": "market_subarea",
+      "legacy_neighborhood_id": null,
+      "roles": [
+        "market_subarea",
+        "street_corridor_market_area"
+      ]
+    },
+    "market_subarea:rruga-c": {
+      "slug": "rruga-c",
+      "type": "market_subarea",
+      "legacy_neighborhood_id": null,
+      "roles": [
+        "market_subarea",
+        "street_corridor_market_area"
+      ]
+    },
+    "market_subarea:muharrem-fejza": {
+      "slug": "muharrem-fejza",
+      "type": "market_subarea",
+      "legacy_neighborhood_id": null
+    },
+    "market_subarea:ndue-perlleshi": {
+      "slug": "ndue-perlleshi",
+      "type": "market_subarea",
+      "legacy_neighborhood_id": null
+    },
+    "physical_street:rruga-a": {
+      "slug": "rruga-a",
+      "type": "physical_street",
+      "legacy_relationship_policy": "Preserve JSON street parent assertions separately; no verified physical relocation."
+    },
+    "physical_street:rruga-b": {
+      "slug": "rruga-b",
+      "type": "physical_street",
+      "legacy_relationship_policy": "Preserve JSON street parent assertions separately; no verified physical relocation."
+    },
+    "physical_street:rruga-c": {
+      "slug": "rruga-c",
+      "type": "physical_street",
+      "legacy_relationship_policy": "Preserve JSON street parent assertions separately; no verified physical relocation."
+    },
+    "residential_complex:mati-1": {
+      "slug": "mati-1",
+      "type": "residential_complex",
+      "legacy_id": 1,
+      "reference_provenance": "existing_JSON_assertion_not_independently_verified"
+    },
+    "residential_complex:bs-group": {
+      "slug": "bs-group",
+      "type": "residential_complex",
+      "legacy_id": 2,
+      "reference_provenance": "existing_JSON_assertion_not_independently_verified"
+    },
+    "residential_complex:green-hill": {
+      "slug": "green-hill",
+      "type": "residential_complex",
+      "legacy_id": 3,
+      "reference_provenance": "existing_JSON_assertion_not_independently_verified"
+    },
+    "residential_complex:arberia-residence": {
+      "slug": "arberia-residence",
+      "type": "residential_complex",
+      "legacy_id": 4,
+      "reference_provenance": "existing_JSON_assertion_not_independently_verified"
+    },
+    "residential_complex:lesna-residence": {
+      "slug": "lesna-residence",
+      "type": "residential_complex",
+      "legacy_id": 5,
+      "reference_provenance": "existing_JSON_assertion_not_independently_verified"
+    },
+    "residential_complex:mati-2": {
+      "slug": "mati-2",
+      "type": "residential_complex",
+      "legacy_id": 6,
+      "reference_provenance": "existing_JSON_assertion_not_independently_verified"
+    },
+    "residential_complex:dardania-residence": {
+      "slug": "dardania-residence",
+      "type": "residential_complex",
+      "legacy_id": 7,
+      "reference_provenance": "existing_JSON_assertion_not_independently_verified"
+    },
+    "residential_complex:ulpiana-residence": {
+      "slug": "ulpiana-residence",
+      "type": "residential_complex",
+      "legacy_id": 8,
+      "reference_provenance": "existing_JSON_assertion_not_independently_verified"
+    },
+    "residential_complex:sunny-hill-residence": {
+      "slug": "sunny-hill-residence",
+      "type": "residential_complex",
+      "legacy_id": 9,
+      "reference_provenance": "existing_JSON_assertion_not_independently_verified"
+    },
+    "residential_complex:emshir-residence": {
+      "slug": "emshir-residence",
+      "type": "residential_complex",
+      "legacy_id": 10,
+      "reference_provenance": "existing_JSON_assertion_not_independently_verified"
+    },
+    "residential_complex:va-residence-4": {
+      "slug": "va-residence-4",
+      "type": "residential_complex",
+      "legacy_id": 12,
+      "reference_provenance": "existing_JSON_assertion_not_independently_verified"
+    },
+    "residential_complex:pika-comfort": {
+      "slug": "pika-comfort",
+      "type": "residential_complex",
+      "legacy_id": 13,
+      "reference_provenance": "existing_JSON_assertion_not_independently_verified"
+    },
+    "residential_complex:cima-2": {
+      "slug": "cima-2",
+      "type": "residential_complex",
+      "legacy_id": 14,
+      "reference_provenance": "existing_JSON_assertion_not_independently_verified"
+    },
+    "residential_complex:garden-building": {
+      "slug": "garden-building",
+      "type": "residential_complex",
+      "legacy_id": 15,
+      "reference_provenance": "existing_JSON_assertion_not_independently_verified"
+    },
+    "residential_complex:royal-mall": {
+      "slug": "royal-mall",
+      "type": "residential_complex",
+      "legacy_id": 100,
+      "reference_provenance": "existing_JSON_assertion_not_independently_verified"
+    },
+    "residential_complex:maxi-24": {
+      "slug": "maxi-24",
+      "type": "residential_complex",
+      "legacy_id": 101,
+      "reference_provenance": "existing_JSON_assertion_not_independently_verified"
+    },
+    "residential_complex:fivestar": {
+      "slug": "fivestar",
+      "type": "residential_complex",
+      "legacy_id": 102,
+      "reference_provenance": "existing_JSON_assertion_not_independently_verified"
+    },
+    "residential_complex:tregtia": {
+      "slug": "tregtia",
+      "type": "residential_complex",
+      "legacy_id": 103,
+      "reference_provenance": "existing_JSON_assertion_not_independently_verified"
+    },
+    "residential_complex:rethi-i-matit": {
+      "slug": "rethi-i-matit",
+      "type": "residential_complex",
+      "legacy_id": 104,
+      "reference_provenance": "existing_JSON_assertion_not_independently_verified"
+    },
+    "residential_complex:banesat-e-kuqe": {
+      "slug": "banesat-e-kuqe",
+      "type": "residential_complex",
+      "legacy_id": 105,
+      "reference_provenance": "existing_JSON_assertion_not_independently_verified"
+    },
+    "residential_complex:banesat-e-bardha": {
+      "slug": "banesat-e-bardha",
+      "type": "residential_complex",
+      "legacy_id": 106,
+      "reference_provenance": "existing_JSON_assertion_not_independently_verified"
+    },
+    "residential_complex:banesat-e-hint": {
+      "slug": "banesat-e-hint",
+      "type": "residential_complex",
+      "legacy_id": 107,
+      "reference_provenance": "existing_JSON_assertion_not_independently_verified"
+    },
+    "residential_complex:te-standardi": {
+      "slug": "te-standardi",
+      "type": "residential_complex",
+      "legacy_id": 108,
+      "reference_provenance": "existing_JSON_assertion_not_independently_verified"
+    },
+    "residential_complex:ontex": {
+      "slug": "ontex",
+      "type": "residential_complex",
+      "legacy_id": 109,
+      "reference_provenance": "existing_JSON_assertion_not_independently_verified"
+    },
+    "residential_complex:banesat-e-reja": {
+      "slug": "banesat-e-reja",
+      "type": "residential_complex",
+      "legacy_id": 110,
+      "reference_provenance": "existing_JSON_assertion_not_independently_verified"
+    },
+    "residential_complex:banesat-e-arabeve": {
+      "slug": "banesat-e-arabeve",
+      "type": "residential_complex",
+      "legacy_id": 111,
+      "reference_provenance": "existing_JSON_assertion_not_independently_verified"
+    },
+    "residential_complex:gardeni": {
+      "slug": "gardeni",
+      "type": "residential_complex",
+      "legacy_id": 112,
+      "reference_provenance": "existing_JSON_assertion_not_independently_verified"
+    },
+    "residential_complex:prishtina-stars": {
+      "slug": "prishtina-stars",
+      "type": "residential_complex",
+      "legacy_id": 114,
+      "reference_provenance": "existing_JSON_assertion_not_independently_verified"
+    },
+    "residential_complex:narteli": {
+      "slug": "narteli",
+      "type": "residential_complex",
+      "legacy_id": 115,
+      "reference_provenance": "existing_JSON_assertion_not_independently_verified"
+    },
+    "residential_complex:benidona": {
+      "slug": "benidona",
+      "type": "residential_complex",
+      "legacy_id": 116,
+      "reference_provenance": "existing_JSON_assertion_not_independently_verified"
+    },
+    "residential_complex:dugagjini-center": {
+      "slug": "dugagjini-center",
+      "type": "residential_complex",
+      "legacy_id": 117,
+      "reference_provenance": "existing_JSON_assertion_not_independently_verified"
+    },
+    "residential_complex:prishtina-city-center": {
+      "slug": "prishtina-city-center",
+      "type": "residential_complex",
+      "legacy_id": 118,
+      "reference_provenance": "existing_JSON_assertion_not_independently_verified"
+    },
+    "residential_complex:bagolina-derand": {
+      "slug": "bagolina-derand",
+      "type": "residential_complex",
+      "legacy_id": 119,
+      "reference_provenance": "existing_JSON_assertion_not_independently_verified"
+    },
+    "residential_complex:banesat-e-gjelbra": {
+      "slug": "banesat-e-gjelbra",
+      "type": "residential_complex",
+      "legacy_id": 120,
+      "reference_provenance": "existing_JSON_assertion_not_independently_verified"
+    },
+    "residential_complex:eliabi": {
+      "slug": "eliabi",
+      "type": "residential_complex",
+      "legacy_id": 121,
+      "reference_provenance": "existing_JSON_assertion_not_independently_verified"
+    },
+    "residential_complex:ivy-residence": {
+      "slug": "ivy-residence",
+      "type": "residential_complex",
+      "legacy_id": 122,
+      "reference_provenance": "existing_JSON_assertion_not_independently_verified"
+    },
+    "residential_complex:olive-bakery": {
+      "slug": "olive-bakery",
+      "type": "residential_complex",
+      "legacy_id": 123,
+      "reference_provenance": "existing_JSON_assertion_not_independently_verified"
+    },
+    "residential_complex:sonder": {
+      "slug": "sonder",
+      "type": "residential_complex",
+      "legacy_id": 124,
+      "reference_provenance": "existing_JSON_assertion_not_independently_verified"
+    },
+    "residential_complex:royal-city": {
+      "slug": "royal-city",
+      "type": "residential_complex",
+      "legacy_id": 125,
+      "reference_provenance": "existing_JSON_assertion_not_independently_verified"
+    },
+    "residential_complex:beni-dona": {
+      "slug": "beni-dona",
+      "type": "residential_complex",
+      "legacy_id": 126,
+      "reference_provenance": "existing_JSON_assertion_not_independently_verified"
+    },
+    "residential_complex:laburatora": {
+      "slug": "laburatora",
+      "type": "residential_complex",
+      "legacy_id": 127,
+      "reference_provenance": "existing_JSON_assertion_not_independently_verified"
+    },
+    "residential_complex:interex": {
+      "slug": "interex",
+      "type": "residential_complex",
+      "legacy_id": 128,
+      "reference_provenance": "existing_JSON_assertion_not_independently_verified"
+    },
+    "physical_street:muharrem-fejza": {
+      "slug": "muharrem-fejza",
+      "type": "physical_street",
+      "legacy_id": 1,
+      "reference_provenance": "existing_JSON_assertion_not_independently_verified"
+    },
+    "physical_street:nena-tereza": {
+      "slug": "nena-tereza",
+      "type": "physical_street",
+      "legacy_id": 4,
+      "reference_provenance": "existing_JSON_assertion_not_independently_verified"
+    },
+    "physical_street:rruga-pejtonit": {
+      "slug": "rruga-pejtonit",
+      "type": "physical_street",
+      "legacy_id": 5,
+      "reference_provenance": "existing_JSON_assertion_not_independently_verified"
+    },
+    "physical_street:rruga-dardanise": {
+      "slug": "rruga-dardanise",
+      "type": "physical_street",
+      "legacy_id": 6,
+      "reference_provenance": "existing_JSON_assertion_not_independently_verified"
+    },
+    "physical_street:rruga-emshirit": {
+      "slug": "rruga-emshirit",
+      "type": "physical_street",
+      "legacy_id": 7,
+      "reference_provenance": "existing_JSON_assertion_not_independently_verified"
+    },
+    "physical_street:rruga-spitalit": {
+      "slug": "rruga-spitalit",
+      "type": "physical_street",
+      "legacy_id": 8,
+      "reference_provenance": "existing_JSON_assertion_not_independently_verified"
+    },
+    "physical_street:rruga-ulpianes": {
+      "slug": "rruga-ulpianes",
+      "type": "physical_street",
+      "legacy_id": 9,
+      "reference_provenance": "existing_JSON_assertion_not_independently_verified"
+    },
+    "physical_street:garibaldi": {
+      "slug": "garibaldi",
+      "type": "physical_street",
+      "legacy_id": 10,
+      "reference_provenance": "existing_JSON_assertion_not_independently_verified"
+    },
+    "physical_street:rruga-veternikut": {
+      "slug": "rruga-veternikut",
+      "type": "physical_street",
+      "legacy_id": 11,
+      "reference_provenance": "existing_JSON_assertion_not_independently_verified"
+    },
+    "physical_street:rruga-dragodanit": {
+      "slug": "rruga-dragodanit",
+      "type": "physical_street",
+      "legacy_id": 12,
+      "reference_provenance": "existing_JSON_assertion_not_independently_verified"
+    },
+    "physical_street:ndue-perlleshi": {
+      "slug": "ndue-perlleshi",
+      "type": "physical_street",
+      "legacy_id": 15,
+      "reference_provenance": "existing_JSON_assertion_not_independently_verified"
+    },
+    "physical_street:sokol-sopi": {
+      "slug": "sokol-sopi",
+      "type": "physical_street",
+      "legacy_id": 16,
+      "reference_provenance": "existing_JSON_assertion_not_independently_verified"
+    },
+    "building:tower-a-mati-1": {
+      "slug": "tower-a-mati-1",
+      "type": "building",
+      "legacy_id": 1,
+      "reference_provenance": "existing_JSON_assertion_not_independently_verified"
+    },
+    "building:tower-b-mati-1": {
+      "slug": "tower-b-mati-1",
+      "type": "building",
+      "legacy_id": 2,
+      "reference_provenance": "existing_JSON_assertion_not_independently_verified"
+    },
+    "building:lesna-a": {
+      "slug": "lesna-a",
+      "type": "building",
+      "legacy_id": 3,
+      "reference_provenance": "existing_JSON_assertion_not_independently_verified"
+    },
+    "building:lesna-b": {
+      "slug": "lesna-b",
+      "type": "building",
+      "legacy_id": 4,
+      "reference_provenance": "existing_JSON_assertion_not_independently_verified"
+    },
+    "building:bs-group-a": {
+      "slug": "bs-group-a",
+      "type": "building",
+      "legacy_id": 5,
+      "reference_provenance": "existing_JSON_assertion_not_independently_verified"
+    },
+    "market_subarea:shkolla-iliria": {
+      "slug": "shkolla-iliria",
+      "type": "market_subarea",
+      "legacy_district_id": 9,
+      "legacy_parent_assertion": "bregu-i-diellit",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:fakulteti-teknik": {
+      "slug": "fakulteti-teknik",
+      "type": "market_subarea",
+      "legacy_district_id": 10,
+      "legacy_parent_assertion": "bregu-i-diellit",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:lagja-e-profesoreve": {
+      "slug": "lagja-e-profesoreve",
+      "type": "market_subarea",
+      "legacy_district_id": 11,
+      "legacy_parent_assertion": "bregu-i-diellit",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:route-66": {
+      "slug": "route-66",
+      "type": "market_subarea",
+      "legacy_district_id": 12,
+      "legacy_parent_assertion": "bregu-i-diellit",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:don-bosko": {
+      "slug": "don-bosko",
+      "type": "market_subarea",
+      "legacy_district_id": 13,
+      "legacy_parent_assertion": "emshir",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:7-marsi": {
+      "slug": "7-marsi",
+      "type": "market_subarea",
+      "legacy_district_id": 14,
+      "legacy_parent_assertion": "emshir",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:goldeni": {
+      "slug": "goldeni",
+      "type": "market_subarea",
+      "legacy_district_id": 15,
+      "legacy_parent_assertion": "emshir",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:ambulanta": {
+      "slug": "ambulanta",
+      "type": "market_subarea",
+      "legacy_district_id": 16,
+      "legacy_parent_assertion": "emshir",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:ujsjellsi": {
+      "slug": "ujsjellsi",
+      "type": "market_subarea",
+      "legacy_district_id": 17,
+      "legacy_parent_assertion": "emshir",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:te-kfori": {
+      "slug": "te-kfori",
+      "type": "market_subarea",
+      "legacy_district_id": 18,
+      "legacy_parent_assertion": "arberia",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:ambasada-amerikane": {
+      "slug": "ambasada-amerikane",
+      "type": "market_subarea",
+      "legacy_district_id": 19,
+      "legacy_parent_assertion": "arberia",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:te-shkallet-dragodanit": {
+      "slug": "te-shkallet-dragodanit",
+      "type": "market_subarea",
+      "legacy_district_id": 20,
+      "legacy_parent_assertion": "arberia",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:taslixhe-1": {
+      "slug": "taslixhe-1",
+      "type": "market_subarea",
+      "legacy_district_id": 21,
+      "legacy_parent_assertion": "taslixhe",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:taslixhe-2": {
+      "slug": "taslixhe-2",
+      "type": "market_subarea",
+      "legacy_district_id": 22,
+      "legacy_parent_assertion": "taslixhe",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:taslixhe-3": {
+      "slug": "taslixhe-3",
+      "type": "market_subarea",
+      "legacy_district_id": 23,
+      "legacy_parent_assertion": "taslixhe",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:taslixhe-4": {
+      "slug": "taslixhe-4",
+      "type": "market_subarea",
+      "legacy_district_id": 24,
+      "legacy_parent_assertion": "taslixhe",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:tokebashqe": {
+      "slug": "tokebashqe",
+      "type": "market_subarea",
+      "legacy_district_id": 25,
+      "legacy_parent_assertion": "sofalia",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:germia-sofalia": {
+      "slug": "germia-sofalia",
+      "type": "market_subarea",
+      "legacy_district_id": 26,
+      "legacy_parent_assertion": "sofalia",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:meto-bajraktari": {
+      "slug": "meto-bajraktari",
+      "type": "market_subarea",
+      "legacy_district_id": 27,
+      "legacy_parent_assertion": "tophane",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:te-kafet-e-vogla": {
+      "slug": "te-kafet-e-vogla",
+      "type": "market_subarea",
+      "legacy_district_id": 28,
+      "legacy_parent_assertion": "qafa",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:sheshi-nene-tereze": {
+      "slug": "sheshi-nene-tereze",
+      "type": "market_subarea",
+      "legacy_district_id": 29,
+      "legacy_parent_assertion": "qendra",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:sheshi-skenderbeu": {
+      "slug": "sheshi-skenderbeu",
+      "type": "market_subarea",
+      "legacy_district_id": 30,
+      "legacy_parent_assertion": "qendra",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:sheshi-zahir-pajaziti": {
+      "slug": "sheshi-zahir-pajaziti",
+      "type": "market_subarea",
+      "legacy_district_id": 31,
+      "legacy_parent_assertion": "qendra",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:grand-hotel": {
+      "slug": "grand-hotel",
+      "type": "market_subarea",
+      "legacy_district_id": 32,
+      "legacy_parent_assertion": "qendra",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:katedralja": {
+      "slug": "katedralja",
+      "type": "market_subarea",
+      "legacy_district_id": 33,
+      "legacy_parent_assertion": "qendra",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:universiteti-prishtines": {
+      "slug": "universiteti-prishtines",
+      "type": "market_subarea",
+      "legacy_district_id": 34,
+      "legacy_parent_assertion": "qendra",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:biblioteka-kombetare": {
+      "slug": "biblioteka-kombetare",
+      "type": "market_subarea",
+      "legacy_district_id": 35,
+      "legacy_parent_assertion": "qendra",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:newborn": {
+      "slug": "newborn",
+      "type": "market_subarea",
+      "legacy_district_id": 36,
+      "legacy_parent_assertion": "qendra",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:rilindja-boraramizi": {
+      "slug": "rilindja-boraramizi",
+      "type": "market_subarea",
+      "legacy_district_id": 37,
+      "legacy_parent_assertion": "qendra",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:garibaldi": {
+      "slug": "garibaldi",
+      "type": "market_subarea",
+      "legacy_district_id": 38,
+      "legacy_parent_assertion": "qendra",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:faik-konica": {
+      "slug": "faik-konica",
+      "type": "market_subarea",
+      "legacy_district_id": 39,
+      "legacy_parent_assertion": "qendra",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:ambasada-italiane": {
+      "slug": "ambasada-italiane",
+      "type": "market_subarea",
+      "legacy_district_id": 40,
+      "legacy_parent_assertion": "pejton-lakrishte",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:ramiz-stiku": {
+      "slug": "ramiz-stiku",
+      "type": "market_subarea",
+      "legacy_district_id": 41,
+      "legacy_parent_assertion": "pejton-lakrishte",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:perball-santes": {
+      "slug": "perball-santes",
+      "type": "market_subarea",
+      "legacy_district_id": 42,
+      "legacy_parent_assertion": "pejton-lakrishte",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:hekurudha": {
+      "slug": "hekurudha",
+      "type": "market_subarea",
+      "legacy_district_id": 43,
+      "legacy_parent_assertion": "pejton-lakrishte",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:xhevdet-doda": {
+      "slug": "xhevdet-doda",
+      "type": "market_subarea",
+      "legacy_district_id": 44,
+      "legacy_parent_assertion": "pejton-lakrishte",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:parku-dardania": {
+      "slug": "parku-dardania",
+      "type": "market_subarea",
+      "legacy_district_id": 45,
+      "legacy_parent_assertion": "dardania",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:xhamia-dardanise": {
+      "slug": "xhamia-dardanise",
+      "type": "market_subarea",
+      "legacy_district_id": 46,
+      "legacy_parent_assertion": "dardania",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:kurrizi-dardania": {
+      "slug": "kurrizi-dardania",
+      "type": "market_subarea",
+      "legacy_district_id": 47,
+      "legacy_parent_assertion": "dardania",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:bill-klinton": {
+      "slug": "bill-klinton",
+      "type": "market_subarea",
+      "legacy_district_id": 48,
+      "legacy_parent_assertion": "dardania",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:shkolla-dardania": {
+      "slug": "shkolla-dardania",
+      "type": "market_subarea",
+      "legacy_district_id": 49,
+      "legacy_parent_assertion": "dardania",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:xhemail-mustafa": {
+      "slug": "xhemail-mustafa",
+      "type": "market_subarea",
+      "legacy_district_id": 50,
+      "legacy_parent_assertion": "dardania",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:posta-dardania": {
+      "slug": "posta-dardania",
+      "type": "market_subarea",
+      "legacy_district_id": 51,
+      "legacy_parent_assertion": "dardania",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:santea": {
+      "slug": "santea",
+      "type": "market_subarea",
+      "legacy_district_id": 52,
+      "legacy_parent_assertion": "dardania",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:lorik-center": {
+      "slug": "lorik-center",
+      "type": "market_subarea",
+      "legacy_district_id": 53,
+      "legacy_parent_assertion": "dardania",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:termokosi": {
+      "slug": "termokosi",
+      "type": "market_subarea",
+      "legacy_district_id": 54,
+      "legacy_parent_assertion": "dardania",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:sami-frashri": {
+      "slug": "sami-frashri",
+      "type": "market_subarea",
+      "legacy_district_id": 55,
+      "legacy_parent_assertion": "llullat-dodona",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:4-lullat": {
+      "slug": "4-lullat",
+      "type": "market_subarea",
+      "legacy_district_id": 56,
+      "legacy_parent_assertion": "llullat-dodona",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:teatri-dodona": {
+      "slug": "teatri-dodona",
+      "type": "market_subarea",
+      "legacy_district_id": 57,
+      "legacy_parent_assertion": "llullat-dodona",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:shkolla-sami-frashri": {
+      "slug": "shkolla-sami-frashri",
+      "type": "market_subarea",
+      "legacy_district_id": 58,
+      "legacy_parent_assertion": "llullat-dodona",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:ahmet-gashi": {
+      "slug": "ahmet-gashi",
+      "type": "market_subarea",
+      "legacy_district_id": 59,
+      "legacy_parent_assertion": "llullat-dodona",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:elena-gjika": {
+      "slug": "elena-gjika",
+      "type": "market_subarea",
+      "legacy_district_id": 60,
+      "legacy_parent_assertion": "llullat-dodona",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:pazari-llullat": {
+      "slug": "pazari-llullat",
+      "type": "market_subarea",
+      "legacy_district_id": 61,
+      "legacy_parent_assertion": "llullat-dodona",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:aba": {
+      "slug": "aba",
+      "type": "market_subarea",
+      "legacy_district_id": 62,
+      "legacy_parent_assertion": "llullat-dodona",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:riga": {
+      "slug": "riga",
+      "type": "market_subarea",
+      "legacy_district_id": 63,
+      "legacy_parent_assertion": "llullat-dodona",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:skenda": {
+      "slug": "skenda",
+      "type": "market_subarea",
+      "legacy_district_id": 64,
+      "legacy_parent_assertion": "llullat-dodona",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:domi-i-pleqve": {
+      "slug": "domi-i-pleqve",
+      "type": "market_subarea",
+      "legacy_district_id": 65,
+      "legacy_parent_assertion": "llullat-dodona",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:extrm-pizza": {
+      "slug": "extrm-pizza",
+      "type": "market_subarea",
+      "legacy_district_id": 67,
+      "legacy_parent_assertion": "aktash-muhaxhere",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:naim-frashri": {
+      "slug": "naim-frashri",
+      "type": "market_subarea",
+      "legacy_district_id": 68,
+      "legacy_parent_assertion": "aktash-muhaxhere",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:ambasada-zviceres": {
+      "slug": "ambasada-zviceres",
+      "type": "market_subarea",
+      "legacy_district_id": 69,
+      "legacy_parent_assertion": "aktash-muhaxhere",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:kulla-e-zontit": {
+      "slug": "kulla-e-zontit",
+      "type": "market_subarea",
+      "legacy_district_id": 70,
+      "legacy_parent_assertion": "aktash-muhaxhere",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:hotel-afa": {
+      "slug": "hotel-afa",
+      "type": "market_subarea",
+      "legacy_district_id": 71,
+      "legacy_parent_assertion": "aktash-muhaxhere",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:qkuk": {
+      "slug": "qkuk",
+      "type": "market_subarea",
+      "legacy_district_id": 72,
+      "legacy_parent_assertion": "spitali",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:rruga-holger-pedersen": {
+      "slug": "rruga-holger-pedersen",
+      "type": "market_subarea",
+      "legacy_district_id": 73,
+      "legacy_parent_assertion": "spitali",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:pallati-drejtesise": {
+      "slug": "pallati-drejtesise",
+      "type": "market_subarea",
+      "legacy_district_id": 74,
+      "legacy_parent_assertion": "spitali",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:fontana": {
+      "slug": "fontana",
+      "type": "market_subarea",
+      "legacy_district_id": 75,
+      "legacy_parent_assertion": "ulpiana",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:hasan-prishtina": {
+      "slug": "hasan-prishtina",
+      "type": "market_subarea",
+      "legacy_district_id": 76,
+      "legacy_parent_assertion": "ulpiana",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:soliterat": {
+      "slug": "soliterat",
+      "type": "market_subarea",
+      "legacy_district_id": 77,
+      "legacy_parent_assertion": "ulpiana",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:gorenje": {
+      "slug": "gorenje",
+      "type": "market_subarea",
+      "legacy_district_id": 78,
+      "legacy_parent_assertion": "veternik",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:albi-mall": {
+      "slug": "albi-mall",
+      "type": "market_subarea",
+      "legacy_district_id": 80,
+      "legacy_parent_assertion": "veternik",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:fshati-nderkombetar": {
+      "slug": "fshati-nderkombetar",
+      "type": "market_subarea",
+      "legacy_district_id": 81,
+      "legacy_parent_assertion": "veternik",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:lagjja-qendresa": {
+      "slug": "lagjja-qendresa",
+      "type": "market_subarea",
+      "legacy_district_id": 82,
+      "legacy_parent_assertion": "veternik",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:afrim-gashi": {
+      "slug": "afrim-gashi",
+      "type": "market_subarea",
+      "legacy_district_id": 83,
+      "legacy_parent_assertion": "hajvali",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:shpia-e-rugoves": {
+      "slug": "shpia-e-rugoves",
+      "type": "market_subarea",
+      "legacy_district_id": 84,
+      "legacy_parent_assertion": "velania",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:vorri-i-rugoves": {
+      "slug": "vorri-i-rugoves",
+      "type": "market_subarea",
+      "legacy_district_id": 85,
+      "legacy_parent_assertion": "velania",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:sos-velania": {
+      "slug": "sos-velania",
+      "type": "market_subarea",
+      "legacy_district_id": 86,
+      "legacy_parent_assertion": "velania",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:kolovica-e-re": {
+      "slug": "kolovica-e-re",
+      "type": "market_subarea",
+      "legacy_district_id": 87,
+      "legacy_parent_assertion": "kolovice",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:kolovica-e-vjeter": {
+      "slug": "kolovica-e-vjeter",
+      "type": "market_subarea",
+      "legacy_district_id": 88,
+      "legacy_parent_assertion": "kolovice",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:kolovica-e-eperme": {
+      "slug": "kolovica-e-eperme",
+      "type": "market_subarea",
+      "legacy_district_id": 89,
+      "legacy_parent_assertion": "kolovice",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:shkolla-e-gjelber": {
+      "slug": "shkolla-e-gjelber",
+      "type": "market_subarea",
+      "legacy_district_id": 90,
+      "legacy_parent_assertion": "kolovice",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:cigllat": {
+      "slug": "cigllat",
+      "type": "market_subarea",
+      "legacy_district_id": 91,
+      "legacy_parent_assertion": "vranjevc-kodra-trimave",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:zenel-hajdini": {
+      "slug": "zenel-hajdini",
+      "type": "market_subarea",
+      "legacy_district_id": 92,
+      "legacy_parent_assertion": "vranjevc-kodra-trimave",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:raiffeisen-bank": {
+      "slug": "raiffeisen-bank",
+      "type": "market_subarea",
+      "legacy_district_id": 93,
+      "legacy_parent_assertion": "vranjevc-kodra-trimave",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "market_subarea:princi-i-arbrit": {
+      "slug": "princi-i-arbrit",
+      "type": "market_subarea",
+      "legacy_district_id": 94,
+      "legacy_parent_assertion": "vranjevc-kodra-trimave",
+      "reference_provenance": "legacy_JSON_market_tree_not_new_property_verification"
+    },
+    "landmark:germia-park": {
+      "slug": "germia-park",
+      "name": "Gërmia Park",
+      "type": "landmark",
+      "policy": "Source proximity is not market membership; no polygon or property verification supplied."
+    },
+    "landmark:parku-i-qytetit": {
+      "slug": "parku-i-qytetit",
+      "name": "Parku i Qytetit",
+      "type": "landmark",
+      "policy": "Source proximity is not market membership; no polygon or property verification supplied."
+    },
+    "landmark:sllovenia-sport": {
+      "slug": "sllovenia-sport",
+      "name": "Sllovenia Sport",
+      "type": "landmark",
+      "policy": "Source proximity is not market membership; no polygon or property verification supplied."
+    },
+    "landmark:shkolla-dardania": {
+      "slug": "shkolla-dardania",
+      "name": "Shkolla Dardania",
+      "type": "landmark",
+      "policy": "Source proximity is not market membership; no polygon or property verification supplied."
+    },
+    "landmark:royal-mall": {
+      "slug": "royal-mall",
+      "name": "Royal Mall",
+      "type": "landmark",
+      "policy": "Source proximity is not market membership; no polygon or property verification supplied."
+    },
+    "landmark:maxi-24": {
+      "slug": "maxi-24",
+      "name": "Maxi 24",
+      "type": "landmark",
+      "policy": "Source proximity is not market membership; no polygon or property verification supplied."
+    }
+  },
+  "relationships": [
+    {
+      "subject": "market_subarea:prishtina-e-re",
+      "predicate": "market_subarea_of",
+      "object": "market_neighborhood:veternik",
+      "evidence": "owner_confirmed_product_semantics_20261026"
+    },
+    {
+      "subject": "market_subarea:parku-i-qytetit-aktash",
+      "predicate": "market_subarea_of",
+      "object": "market_neighborhood:aktash-muhaxhere",
+      "evidence": "owner_confirmed_product_semantics_20261026"
+    },
+    {
+      "subject": "market_subarea:sllovenia-sport",
+      "predicate": "market_subarea_of",
+      "object": "market_neighborhood:aktash-muhaxhere",
+      "evidence": "owner_confirmed_product_semantics_20261026"
+    },
+    {
+      "subject": "market_subarea:sllovenia-sport",
+      "predicate": "market_subarea_of",
+      "object": "market_neighborhood:qendra",
+      "evidence": "owner_confirmed_product_semantics_20261026"
+    },
+    {
+      "subject": "market_subarea:mati-1",
+      "predicate": "market_subarea_of",
+      "object": "market_neighborhood:matiqan",
+      "evidence": "owner_confirmed_product_semantics_20261026"
+    },
+    {
+      "subject": "market_subarea:mati-2",
+      "predicate": "market_subarea_of",
+      "object": "market_neighborhood:matiqan",
+      "evidence": "owner_confirmed_product_semantics_20261026"
+    },
+    {
+      "subject": "market_subarea:mati-3",
+      "predicate": "market_subarea_of",
+      "object": "market_neighborhood:matiqan",
+      "evidence": "owner_confirmed_product_semantics_20261026"
+    },
+    {
+      "subject": "market_subarea:rruga-a",
+      "predicate": "market_subarea_of",
+      "object": "market_neighborhood:matiqan",
+      "evidence": "owner_confirmed_product_semantics_20261026"
+    },
+    {
+      "subject": "market_subarea:rruga-b",
+      "predicate": "market_subarea_of",
+      "object": "market_neighborhood:matiqan",
+      "evidence": "owner_confirmed_product_semantics_20261026"
+    },
+    {
+      "subject": "market_subarea:rruga-c",
+      "predicate": "market_subarea_of",
+      "object": "market_neighborhood:matiqan",
+      "evidence": "owner_confirmed_product_semantics_20261026"
+    },
+    {
+      "subject": "market_subarea:muharrem-fejza",
+      "predicate": "market_subarea_of",
+      "object": "market_neighborhood:matiqan",
+      "evidence": "owner_confirmed_product_semantics_20261026"
+    },
+    {
+      "subject": "market_subarea:ndue-perlleshi",
+      "predicate": "market_subarea_of",
+      "object": "market_neighborhood:matiqan",
+      "evidence": "owner_confirmed_product_semantics_20261026"
+    },
+    {
+      "subject": "market_subarea:rruga-a",
+      "predicate": "corridor_named_after_street",
+      "object": "physical_street:rruga-a",
+      "evidence": "owner_confirmed_entity_type_distinction"
+    },
+    {
+      "subject": "market_subarea:rruga-b",
+      "predicate": "corridor_named_after_street",
+      "object": "physical_street:rruga-b",
+      "evidence": "owner_confirmed_entity_type_distinction"
+    },
+    {
+      "subject": "market_subarea:rruga-c",
+      "predicate": "corridor_named_after_street",
+      "object": "physical_street:rruga-c",
+      "evidence": "owner_confirmed_entity_type_distinction"
+    },
+    {
+      "subject": "market_neighborhood:dragodan",
+      "predicate": "canonical_alias_of",
+      "object": "market_neighborhood:arberia",
+      "evidence": "owner_confirmed_product_equivalence"
+    },
+    {
+      "subject": "market_neighborhood:kalabria",
+      "predicate": "canonical_alias_of",
+      "object": "market_neighborhood:emshir",
+      "evidence": "owner_confirmed_product_equivalence"
+    },
+    {
+      "subject": "market_neighborhood:lakrishte",
+      "predicate": "canonical_alias_of",
+      "object": "market_neighborhood:pejton-lakrishte",
+      "evidence": "owner_confirmed_product_equivalence"
+    },
+    {
+      "subject": "market_neighborhood:pejton",
+      "predicate": "canonical_alias_of",
+      "object": "market_neighborhood:pejton-lakrishte",
+      "evidence": "owner_confirmed_product_equivalence"
+    },
+    {
+      "subject": "market_neighborhood:kodra-e-trimave",
+      "predicate": "canonical_alias_of",
+      "object": "market_neighborhood:vranjevc-kodra-trimave",
+      "evidence": "owner_confirmed_product_equivalence"
+    },
+    {
+      "subject": "market_neighborhood:dodona",
+      "predicate": "canonical_alias_of",
+      "object": "market_neighborhood:llullat-dodona",
+      "evidence": "owner_confirmed_product_equivalence"
+    },
+    {
+      "subject": "market_neighborhood:llullat",
+      "predicate": "canonical_alias_of",
+      "object": "market_neighborhood:llullat-dodona",
+      "evidence": "owner_confirmed_product_equivalence"
+    },
+    {
+      "subject": "market_neighborhood:germia",
+      "predicate": "canonical_alias_of",
+      "object": "market_neighborhood:sofalia",
+      "evidence": "owner_confirmed_product_equivalence"
+    },
+    {
+      "subject": "market_neighborhood:sunny-hill",
+      "predicate": "canonical_alias_of",
+      "object": "market_neighborhood:bregu-i-diellit",
+      "evidence": "owner_confirmed_product_equivalence"
+    },
+    {
+      "subject": "residential_complex:mati-1",
+      "predicate": "complex_in_market_area",
+      "object": "market_neighborhood:mati",
+      "evidence": "existing_JSON_reference_assertion_not_new_geographic_verification"
+    },
+    {
+      "subject": "residential_complex:bs-group",
+      "predicate": "complex_in_market_area",
+      "object": "market_neighborhood:pejton-lakrishte",
+      "evidence": "existing_JSON_reference_assertion_not_new_geographic_verification"
+    },
+    {
+      "subject": "residential_complex:green-hill",
+      "predicate": "complex_in_market_area",
+      "object": "market_neighborhood:bregu-i-diellit",
+      "evidence": "existing_JSON_reference_assertion_not_new_geographic_verification"
+    },
+    {
+      "subject": "residential_complex:arberia-residence",
+      "predicate": "complex_in_market_area",
+      "object": "market_neighborhood:arberia",
+      "evidence": "existing_JSON_reference_assertion_not_new_geographic_verification"
+    },
+    {
+      "subject": "residential_complex:lesna-residence",
+      "predicate": "complex_in_market_area",
+      "object": "market_neighborhood:pejton-lakrishte",
+      "evidence": "existing_JSON_reference_assertion_not_new_geographic_verification"
+    },
+    {
+      "subject": "residential_complex:mati-2",
+      "predicate": "complex_in_market_area",
+      "object": "market_neighborhood:matiqan",
+      "evidence": "existing_JSON_reference_assertion_not_new_geographic_verification"
+    },
+    {
+      "subject": "residential_complex:dardania-residence",
+      "predicate": "complex_in_market_area",
+      "object": "market_neighborhood:dardania",
+      "evidence": "existing_JSON_reference_assertion_not_new_geographic_verification"
+    },
+    {
+      "subject": "residential_complex:ulpiana-residence",
+      "predicate": "complex_in_market_area",
+      "object": "market_neighborhood:ulpiana",
+      "evidence": "existing_JSON_reference_assertion_not_new_geographic_verification"
+    },
+    {
+      "subject": "residential_complex:sunny-hill-residence",
+      "predicate": "complex_in_market_area",
+      "object": "market_neighborhood:bregu-i-diellit",
+      "evidence": "existing_JSON_reference_assertion_not_new_geographic_verification"
+    },
+    {
+      "subject": "residential_complex:emshir-residence",
+      "predicate": "complex_in_market_area",
+      "object": "market_neighborhood:emshir",
+      "evidence": "existing_JSON_reference_assertion_not_new_geographic_verification"
+    },
+    {
+      "subject": "residential_complex:va-residence-4",
+      "predicate": "complex_in_market_area",
+      "object": "market_neighborhood:mati",
+      "evidence": "existing_JSON_reference_assertion_not_new_geographic_verification"
+    },
+    {
+      "subject": "residential_complex:pika-comfort",
+      "predicate": "complex_in_market_area",
+      "object": "market_neighborhood:mati",
+      "evidence": "existing_JSON_reference_assertion_not_new_geographic_verification"
+    },
+    {
+      "subject": "residential_complex:cima-2",
+      "predicate": "complex_in_market_area",
+      "object": "market_neighborhood:mati",
+      "evidence": "existing_JSON_reference_assertion_not_new_geographic_verification"
+    },
+    {
+      "subject": "residential_complex:garden-building",
+      "predicate": "complex_in_market_area",
+      "object": "market_neighborhood:pejton-lakrishte",
+      "evidence": "existing_JSON_reference_assertion_not_new_geographic_verification"
+    },
+    {
+      "subject": "residential_complex:royal-mall",
+      "predicate": "complex_in_market_area",
+      "object": "market_neighborhood:matiqan",
+      "evidence": "existing_JSON_reference_assertion_not_new_geographic_verification"
+    },
+    {
+      "subject": "residential_complex:maxi-24",
+      "predicate": "complex_in_market_area",
+      "object": "market_neighborhood:matiqan",
+      "evidence": "existing_JSON_reference_assertion_not_new_geographic_verification"
+    },
+    {
+      "subject": "residential_complex:fivestar",
+      "predicate": "complex_in_market_area",
+      "object": "market_neighborhood:matiqan",
+      "evidence": "existing_JSON_reference_assertion_not_new_geographic_verification"
+    },
+    {
+      "subject": "residential_complex:tregtia",
+      "predicate": "complex_in_market_area",
+      "object": "market_neighborhood:matiqan",
+      "evidence": "existing_JSON_reference_assertion_not_new_geographic_verification"
+    },
+    {
+      "subject": "residential_complex:rethi-i-matit",
+      "predicate": "complex_in_market_area",
+      "object": "market_neighborhood:matiqan",
+      "evidence": "existing_JSON_reference_assertion_not_new_geographic_verification"
+    },
+    {
+      "subject": "residential_complex:banesat-e-kuqe",
+      "predicate": "complex_in_market_area",
+      "object": "market_neighborhood:bregu-i-diellit",
+      "evidence": "existing_JSON_reference_assertion_not_new_geographic_verification"
+    },
+    {
+      "subject": "residential_complex:banesat-e-bardha",
+      "predicate": "complex_in_market_area",
+      "object": "market_neighborhood:bregu-i-diellit",
+      "evidence": "existing_JSON_reference_assertion_not_new_geographic_verification"
+    },
+    {
+      "subject": "residential_complex:banesat-e-hint",
+      "predicate": "complex_in_market_area",
+      "object": "market_neighborhood:bregu-i-diellit",
+      "evidence": "existing_JSON_reference_assertion_not_new_geographic_verification"
+    },
+    {
+      "subject": "residential_complex:te-standardi",
+      "predicate": "complex_in_market_area",
+      "object": "market_neighborhood:bregu-i-diellit",
+      "evidence": "existing_JSON_reference_assertion_not_new_geographic_verification"
+    },
+    {
+      "subject": "residential_complex:ontex",
+      "predicate": "complex_in_market_area",
+      "object": "market_neighborhood:bregu-i-diellit",
+      "evidence": "existing_JSON_reference_assertion_not_new_geographic_verification"
+    },
+    {
+      "subject": "residential_complex:banesat-e-reja",
+      "predicate": "complex_in_market_area",
+      "object": "market_neighborhood:bregu-i-diellit",
+      "evidence": "existing_JSON_reference_assertion_not_new_geographic_verification"
+    },
+    {
+      "subject": "residential_complex:banesat-e-arabeve",
+      "predicate": "complex_in_market_area",
+      "object": "market_neighborhood:emshir",
+      "evidence": "existing_JSON_reference_assertion_not_new_geographic_verification"
+    },
+    {
+      "subject": "residential_complex:gardeni",
+      "predicate": "complex_in_market_area",
+      "object": "market_neighborhood:emshir",
+      "evidence": "existing_JSON_reference_assertion_not_new_geographic_verification"
+    },
+    {
+      "subject": "residential_complex:prishtina-stars",
+      "predicate": "complex_in_market_area",
+      "object": "market_neighborhood:emshir",
+      "evidence": "existing_JSON_reference_assertion_not_new_geographic_verification"
+    },
+    {
+      "subject": "residential_complex:narteli",
+      "predicate": "complex_in_market_area",
+      "object": "market_neighborhood:pejton-lakrishte",
+      "evidence": "existing_JSON_reference_assertion_not_new_geographic_verification"
+    },
+    {
+      "subject": "residential_complex:benidona",
+      "predicate": "complex_in_market_area",
+      "object": "market_neighborhood:pejton-lakrishte",
+      "evidence": "existing_JSON_reference_assertion_not_new_geographic_verification"
+    },
+    {
+      "subject": "residential_complex:dugagjini-center",
+      "predicate": "complex_in_market_area",
+      "object": "market_neighborhood:pejton-lakrishte",
+      "evidence": "existing_JSON_reference_assertion_not_new_geographic_verification"
+    },
+    {
+      "subject": "residential_complex:prishtina-city-center",
+      "predicate": "complex_in_market_area",
+      "object": "market_neighborhood:pejton-lakrishte",
+      "evidence": "existing_JSON_reference_assertion_not_new_geographic_verification"
+    },
+    {
+      "subject": "residential_complex:bagolina-derand",
+      "predicate": "complex_in_market_area",
+      "object": "market_neighborhood:pejton-lakrishte",
+      "evidence": "existing_JSON_reference_assertion_not_new_geographic_verification"
+    },
+    {
+      "subject": "residential_complex:banesat-e-gjelbra",
+      "predicate": "complex_in_market_area",
+      "object": "market_neighborhood:dardania",
+      "evidence": "existing_JSON_reference_assertion_not_new_geographic_verification"
+    },
+    {
+      "subject": "residential_complex:eliabi",
+      "predicate": "complex_in_market_area",
+      "object": "market_neighborhood:dardania",
+      "evidence": "existing_JSON_reference_assertion_not_new_geographic_verification"
+    },
+    {
+      "subject": "residential_complex:ivy-residence",
+      "predicate": "complex_in_market_area",
+      "object": "market_neighborhood:aktash-muhaxhere",
+      "evidence": "existing_JSON_reference_assertion_not_new_geographic_verification"
+    },
+    {
+      "subject": "residential_complex:olive-bakery",
+      "predicate": "complex_in_market_area",
+      "object": "market_neighborhood:aktash-muhaxhere",
+      "evidence": "existing_JSON_reference_assertion_not_new_geographic_verification"
+    },
+    {
+      "subject": "residential_complex:sonder",
+      "predicate": "complex_in_market_area",
+      "object": "market_neighborhood:aktash-muhaxhere",
+      "evidence": "existing_JSON_reference_assertion_not_new_geographic_verification"
+    },
+    {
+      "subject": "residential_complex:royal-city",
+      "predicate": "complex_in_market_area",
+      "object": "market_neighborhood:spitali",
+      "evidence": "existing_JSON_reference_assertion_not_new_geographic_verification"
+    },
+    {
+      "subject": "residential_complex:beni-dona",
+      "predicate": "complex_in_market_area",
+      "object": "market_neighborhood:ulpiana",
+      "evidence": "existing_JSON_reference_assertion_not_new_geographic_verification"
+    },
+    {
+      "subject": "residential_complex:laburatora",
+      "predicate": "complex_in_market_area",
+      "object": "market_neighborhood:ulpiana",
+      "evidence": "existing_JSON_reference_assertion_not_new_geographic_verification"
+    },
+    {
+      "subject": "residential_complex:interex",
+      "predicate": "complex_in_market_area",
+      "object": "market_neighborhood:ulpiana",
+      "evidence": "existing_JSON_reference_assertion_not_new_geographic_verification"
+    }
+  ],
+  "alias_groups": {
+    "arberia": [
+      "Arbëria",
+      "Arberia",
+      "Dragodan",
+      "Dragodani"
+    ],
+    "emshir": [
+      "Kalabria",
+      "Kalabri",
+      "Emshir",
+      "Emshiri",
+      "Emshire",
+      "Në Kalabri",
+      "Në Emshir"
+    ],
+    "pejton-lakrishte": [
+      "Pejton",
+      "Lakrishta",
+      "Lakrishte",
+      "Lakërishta"
+    ],
+    "vranjevc-kodra-trimave": [
+      "Vranjevc",
+      "Vranjevci",
+      "Kodra e Trimave"
+    ],
+    "llullat-dodona": [
+      "Dodona",
+      "4 Llullat",
+      "4 Lullat",
+      "Llullat"
+    ],
+    "sofalia": [
+      "Sofalia",
+      "Sofali",
+      "Gërmia",
+      "Germia",
+      "Gërmi",
+      "Germi"
+    ],
+    "bregu-i-diellit": [
+      "Bregu i Diellit",
+      "Sunny Hill"
+    ]
+  },
+  "canonical_redirects": {
+    "dragodan": "arberia",
+    "kalabria": "emshir",
+    "lakrishte": "pejton-lakrishte",
+    "pejton": "pejton-lakrishte",
+    "kodra-e-trimave": "vranjevc-kodra-trimave",
+    "dodona": "llullat-dodona",
+    "llullat": "llullat-dodona",
+    "germia": "sofalia",
+    "sunny-hill": "bregu-i-diellit"
+  },
+  "parents": {
+    "prishtina-e-re": [
+      "veternik"
+    ],
+    "parku-i-qytetit-aktash": [
+      "aktash-muhaxhere"
+    ],
+    "sllovenia-sport": [
+      "aktash-muhaxhere",
+      "qendra"
+    ],
+    "mati-1": [
+      "matiqan"
+    ],
+    "mati-2": [
+      "matiqan"
+    ],
+    "mati-3": [
+      "matiqan"
+    ],
+    "rruga-a": [
+      "matiqan"
+    ],
+    "rruga-b": [
+      "matiqan"
+    ],
+    "rruga-c": [
+      "matiqan"
+    ],
+    "muharrem-fejza": [
+      "matiqan"
+    ],
+    "ndue-perlleshi": [
+      "matiqan"
+    ]
+  },
+  "provenance": "Owner product-market definitions, Phase5. Official geography is separate; no new property verification or boundaries.",
+  "entity_redirects": {
+    "market_neighborhood:mati": "market_subarea:mati-1",
+    "market_neighborhood:mati-2": "market_subarea:mati-2",
+    "market_neighborhood:mati-3": "market_subarea:mati-3",
+    "market_neighborhood:prishtina-e-re": "market_subarea:prishtina-e-re",
+    "market_neighborhood:parku-i-qytetit": "market_subarea:parku-i-qytetit-aktash",
+    "market_neighborhood:sllovenia-sport": "market_subarea:sllovenia-sport"
+  }
+}
