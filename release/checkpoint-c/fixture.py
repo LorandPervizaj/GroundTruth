@@ -208,6 +208,7 @@ def app(image, name=APP, port=18765, migrate=False):
         ALERTS_SIGNUP_ENABLED="false",
         API_RATE_LIMIT_CONTACT="1000/hour",
         API_RATE_LIMIT_EVENTS="1000/minute",
+        API_RATE_LIMIT_LANG="1000/hour",
         API_RATE_LIMIT_VALUATE="1000/minute",
         DATABASE_POOL_SIZE="2",
         DATABASE_MAX_OVERFLOW="0",

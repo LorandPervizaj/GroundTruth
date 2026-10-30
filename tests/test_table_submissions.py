@@ -24,9 +24,9 @@ from groundtruth.services.table_submissions import SubmissionTable
 @pytest.fixture
 def store():
     value = os.environ.get("TEST_TABLE_EMULATOR_CONNECTION_STRING", "")
-    if not any(
-        f"TableEndpoint=http://127.0.0.1:{port}/localmetrik" in value for port in (26402, 27402)
-    ):
+    allowed = [f"TableEndpoint=http://127.0.0.1:{port}/localmetrik" for port in (26402, 27402)]
+    allowed.append("TableEndpoint=http://metrik-c-table:10002/localmetrik")
+    if not any(endpoint in value for endpoint in allowed):
         pytest.skip("Owned loopback Azurite fixture required")
     svc = TableServiceClient.from_connection_string(value)
     client = svc.create_table("BudgetTest" + uuid4().hex)
