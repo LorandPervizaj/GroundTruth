@@ -13,7 +13,7 @@ from sqlalchemy.orm import Session
 
 from groundtruth.analytics.corpus import active_corpus_bundle
 from groundtruth.analytics.coverage import build_neighborhood_coverage_table
-from groundtruth.analytics.cross_dedup import cross_dedup_stats
+from groundtruth.analytics.cross_dedup import CrossDedupStats, cross_dedup_stats
 from groundtruth.analytics.valuation import MIN_COMPARABLES, _confidence_label
 from groundtruth.config import PROJECT_ROOT
 from groundtruth.models.reference import Neighborhood
@@ -268,7 +268,11 @@ def build_coverage_snapshot(
     municipalities_covered = sum(1 for row in municipality_rows if row.covered)
 
     bundle = active_corpus_bundle(session)
-    dedup_stats = cross_dedup_stats(bundle.deduped)
+    dedup_stats = (
+        CrossDedupStats(0, 0, 0, 0, 0)
+        if bundle.deduped.empty
+        else cross_dedup_stats(bundle.deduped)
+    )
     dup_rate = (
         round(100.0 * dedup_stats.duplicates_removed / dedup_stats.raw_listings, 1)
         if dedup_stats.raw_listings

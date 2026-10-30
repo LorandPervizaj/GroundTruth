@@ -21,5 +21,5 @@ else
 fi
 
 echo "Starting Metrik API..."
-export PRODUCT_WRITE_BACKEND="${PRODUCT_WRITE_BACKEND:-database}"
+export PRODUCT_WRITE_BACKEND="${PRODUCT_WRITE_BACKEND:-azure_table}"
 exec uv run groundtruth serve-production --host 0.0.0.0 --port 8000 --workers 1

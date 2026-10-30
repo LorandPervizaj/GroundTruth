@@ -66,7 +66,19 @@ def build_neighborhood_coverage_table(session: Session) -> pd.DataFrame:
             }
         )
 
-    table = pd.DataFrame(rows)
+    table = pd.DataFrame(
+        rows,
+        columns=[
+            "neighborhood_id",
+            "neighborhood",
+            "rent_comps",
+            "sale_comps",
+            "rent_estimate_ready",
+            "sale_estimate_ready",
+            "rent_pct_of_city",
+            "sale_pct_of_city",
+        ],
+    )
     return table.sort_values(
         ["rent_estimate_ready", "rent_comps", "sale_comps"], ascending=[False, False, False]
     )

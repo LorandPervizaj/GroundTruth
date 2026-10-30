@@ -134,6 +134,7 @@ def test_failed_database_write_does_not_mark_retry_as_duplicate(monkeypatch):
     monkeypatch.setattr(settings, "product_write_backend", "database")
     monkeypatch.setattr(settings, "product_submission_dedupe_seconds", 300)
     session = MagicMock()
+    session.execute.return_value.scalar.return_value = None
     session.commit.side_effect = [RuntimeError("unavailable"), None]
     payload = {"message": "same retry after storage failure"}
     with patch("groundtruth.services.product_submissions.get_session_factory", return_value=lambda: session):

@@ -37,6 +37,14 @@ def evaluate_readiness(settings: Settings) -> dict[str, Any]:
         db_ok = _database_reachable()
         if not db_ok:
             reasons.append("database_unavailable")
+        if settings.product_write_backend == "azure_table":
+            try:
+                from groundtruth.services.table_submissions import active_store
+
+                if not active_store().healthy():
+                    reasons.append("submission_store_unavailable")
+            except Exception:
+                reasons.append("submission_store_unavailable")
 
     ok = not reasons
     payload: dict[str, Any] = {"ok": ok}

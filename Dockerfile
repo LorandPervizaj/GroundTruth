@@ -1,11 +1,13 @@
 # Metrik production runtime — web API only (no Scrapy/Playwright research stack).
-FROM python:3.13-slim AS runtime
+FROM python:3.13-slim@sha256:2d44738ebf4ce5f63b9d9ea871e9c7cfdc0426f7b0c97cac915fd88ded1d86bb AS runtime
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     UV_SYSTEM_PYTHON=1 \
     APP_ENV=production \
-    LOG_FORMAT=json
+    LOG_FORMAT=json \
+    PRODUCT_WRITE_BACKEND=azure_table \
+    UV_NO_SYNC=1
 
 WORKDIR /app
 
@@ -14,7 +16,7 @@ RUN apt-get update \
     && apt-get upgrade -y --no-install-recommends \
     && apt-get install -y --no-install-recommends curl ca-certificates \
     && rm -rf /var/lib/apt/lists/* \
-    && pip install --no-cache-dir uv
+    && pip install --no-cache-dir uv==0.11.19
 
 COPY pyproject.toml uv.lock README.md ./
 COPY src ./src

@@ -6,9 +6,11 @@ import hashlib
 import json
 import threading
 import time
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any
+
+from sqlalchemy import text
 
 from groundtruth.config import get_settings
 from groundtruth.database.session import get_session_factory
@@ -57,6 +59,13 @@ def append_product_submission(kind: str, payload: dict[str, Any]) -> None:
     Raises on database/IO failure so callers do not report false durable success.
     """
     settings = get_settings()
+    if settings.product_write_backend == "azure_table":
+        from groundtruth.services.table_submissions import active_store
+
+        active_store().append(
+            kind, payload, window_seconds=max(0, int(settings.product_submission_dedupe_seconds))
+        )
+        return
     window = max(0, int(settings.product_submission_dedupe_seconds))
     fingerprint = _submission_fingerprint(kind, payload)
     reservation = None
@@ -83,6 +92,29 @@ def _persist_product_submission(kind: str, payload: dict[str, Any]) -> None:
     if settings.product_write_backend == "database":
         session = get_session_factory()()
         try:
+            window = max(0, int(settings.product_submission_dedupe_seconds))
+            if window:
+                fingerprint = _submission_fingerprint(kind, payload)
+                # One transaction-wide lock serializes identical submissions across
+                # processes/revisions; durable state remains authoritative after restart.
+                lock_key = int.from_bytes(bytes.fromhex(fingerprint)[:8], signed=True)
+                session.execute(text("SELECT pg_advisory_xact_lock(:key)"), {"key": lock_key})
+                stored_payload = "payload" if "ts" in payload else "(payload - 'ts')"
+                duplicate = session.execute(
+                    text(
+                        "SELECT id FROM product_submissions WHERE kind=:kind "
+                        "AND created_at >= :cutoff AND "
+                        + stored_payload
+                        + " = CAST(:payload AS jsonb) LIMIT 1"
+                    ),
+                    {
+                        "kind": kind,
+                        "cutoff": datetime.now(UTC) - timedelta(seconds=window),
+                        "payload": json.dumps(payload, sort_keys=True, ensure_ascii=False),
+                    },
+                ).scalar()
+                if duplicate is not None:
+                    raise DuplicateSubmission(fingerprint)
             session.add(ProductSubmission(kind=kind, payload=row))
             session.commit()
         except Exception:

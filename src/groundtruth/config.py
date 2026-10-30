@@ -57,7 +57,11 @@ class Settings(BaseSettings):
     reports_templates_dir: Path = Field(default=PROJECT_ROOT / "reports" / "templates")
     reports_generated_dir: Path = Field(default=PROJECT_ROOT / "reports" / "generated")
     product_log_dir: Path = Field(default=PROJECT_ROOT / "data" / "product")
-    product_write_backend: Literal["jsonl", "database"] = "jsonl"
+    product_write_backend: Literal["jsonl", "database", "azure_table"] = "jsonl"
+    product_table_endpoint: str = ""
+    product_table_name: str = "MetrikSubmissions"
+    product_table_identity_client_id: str = ""
+    product_table_connection_string: str | None = None
 
     # Deduplication
     dedup_fuzzy_threshold: float = 85.0
