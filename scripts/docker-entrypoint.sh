@@ -7,7 +7,7 @@ cd /app
 if [ "${RUN_MIGRATIONS_ON_START:-true}" = "true" ]; then
   echo "Running database migrations..."
   i=0
-  until uv run alembic upgrade head; do
+  until /app/.venv/bin/alembic upgrade head; do
     i=$((i + 1))
     if [ "$i" -ge 30 ]; then
       echo "Database migrations failed after ${i} attempts" >&2
@@ -22,4 +22,4 @@ fi
 
 echo "Starting Metrik API..."
 export PRODUCT_WRITE_BACKEND="${PRODUCT_WRITE_BACKEND:-azure_table}"
-exec uv run groundtruth serve-production --host 0.0.0.0 --port 8000 --workers 1
+exec /app/.venv/bin/groundtruth serve-production --host 0.0.0.0 --port 8000 --workers 1

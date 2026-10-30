@@ -6,8 +6,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     UV_SYSTEM_PYTHON=1 \
     APP_ENV=production \
     LOG_FORMAT=json \
-    PRODUCT_WRITE_BACKEND=azure_table \
-    UV_NO_SYNC=1
+    PRODUCT_WRITE_BACKEND=azure_table
 
 WORKDIR /app
 
@@ -16,7 +15,7 @@ RUN apt-get update \
     && apt-get upgrade -y --no-install-recommends \
     && apt-get install -y --no-install-recommends curl ca-certificates \
     && rm -rf /var/lib/apt/lists/* \
-    && pip install --no-cache-dir uv==0.11.19
+    && pip install --no-cache-dir uv==0.13.4
 
 COPY pyproject.toml uv.lock README.md ./
 COPY src ./src
@@ -41,8 +40,10 @@ RUN uv sync --extra web --frozen --no-dev \
     && rm -rf /usr/local/lib/python3.13/site-packages/pip \
               /usr/local/lib/python3.13/site-packages/pip-*.dist-info \
               /usr/local/lib/python3.13/ensurepip \
+              /usr/local/lib/python3.13/site-packages/uv \
+              /usr/local/lib/python3.13/site-packages/uv-*.dist-info \
               /root/.cache /tmp/* \
-    && rm -f /usr/local/bin/pip /usr/local/bin/pip3 /usr/local/bin/pip3.13 \
+    && rm -f /usr/local/bin/pip /usr/local/bin/pip3 /usr/local/bin/pip3.13 /usr/local/bin/uv /usr/local/bin/uvx \
     && sed -i 's/\r$//' ./scripts/docker-entrypoint.sh \
     && chmod +x ./scripts/docker-entrypoint.sh
 
