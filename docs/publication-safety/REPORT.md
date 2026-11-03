@@ -6,7 +6,7 @@
 
 Runtime/workflow commit: `92b05c887ec084fff8af718784bcfbe3e423a0a4` on `codex/publication-safety-20261103`, based on the actual deployed Table-compatible source `889184ff8a24ac0dacd87433cc71a5405bd23b7b`. The implementation preserves the preferred frontend and all public market artifact bytes from that baseline. No historical, research, SQL or Table records were rewritten by this remediation. The original checkout remains on its original branch/HEAD with its pre-existing work preserved.
 
-The exact test/documentation commit and file lists are recorded in local Git history after this runtime commit. Source/workflow files are committed separately from regression tests and this documentation. The final source-identity verification and preservation receipts are retained under ignored `.tmp/` and in the original checkout's private preservation folder.
+Primary regression/documentation commit: `4e27ebd770a1d48445f63c3ae3ddcece779c76f6`. Its validated source tree is `42285f37a66b28345e9393055efc09a61d75611d`. Runtime and file lists are recoverable with `git show --stat` for these commits; this final receipt adds the supplemental digest-adapter test without changing runtime code. Source/workflow files are committed separately from regression tests and this documentation. The final source-identity verification and preservation receipts are retained under ignored `.tmp/` and in the original checkout's private preservation folder.
 
 ## Findings and fixes
 
@@ -38,6 +38,8 @@ $env:PYTHONPATH="$PWD/src"
 # The Table emulator connection and restart-script variables point ONLY at the owned 127.0.0.1:27402 fixture.
 .venv/Scripts/python.exe -m pytest tests/test_deployment_safety.py tests/test_deployment_interfaces.py tests/test_weekend_publication.py tests/test_automation_workflows.py tests/test_automation_weekly_release.py tests/test_release_verify.py tests/test_release_metadata.py tests/test_release_publication.py tests/test_ready_api.py tests/test_production_cache_startup.py tests/test_production_hardening.py tests/test_release_gazetteer_bootstrap.py tests/test_product_submissions.py tests/test_product_event_logging.py tests/test_table_identity.py tests/test_table_submissions.py tests/test_phase5_locations.py -q --disable-warnings --junitxml=.tmp/final-tests.xml
 ```
+
+A subsequent supplemental interface run passed **13 tests in 5.20 seconds**, including one newly added real Docker-adapter digest-mismatch regression (only CLI transport mocked). The other 12 overlap the combined suite, yielding **240 distinct passed tests** across the retained final receipts. A redundant combined rerun was rejected by automatic approval review without a detailed reason; it was not retried or claimed as executed. The completed 239-test combined receipt and 13-test supplemental receipt remain intact; no runtime code changed between them.
 
 The three skips are unchanged SQL reference-sequence tests because an isolated PostgreSQL test database was not configured. They do not hide Table persistence or deployment tests; those ran. One existing warning is retained. No browser/E2E or new production image scan/deployment is claimed by this local run.
 

@@ -142,3 +142,27 @@ def test_guard_generator_changes_only_approved_revision_binding():
     policy["guard_source"] += "# changed"
     with pytest.raises(ValueError, match="source differs"):
         cache_guard(policy, "ca-metrik-api--new")
+
+
+def test_pulled_registry_digest_mismatch_is_rejected(monkeypatch):
+    """Exercise the real Docker adapter, with only CLI transport mocked."""
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location(
+        "publication_cli", ROOT / "scripts/azure/safe_deploy.py"
+    )
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    expected = "registry.example/metrik@sha256:" + "1" * 64
+    wrong = "registry.example/metrik@sha256:" + "2" * 64
+
+    def run(*args):
+        if args[1] == "pull":
+            return ""
+        return json.dumps([{"RepoDigests": [wrong], "Config": {"Labels": {}}}])
+
+    monkeypatch.setattr(module, "run", run)
+    with pytest.raises(ValueError, match="digest differs"):
+        module.Azure({"app_name": "ca-metrik-api", "resource_group": "example"}).inspect_image(
+            expected
+        )
