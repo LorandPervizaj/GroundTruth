@@ -1,30 +1,58 @@
-# Deploy one exact, already-verified GroundTruth GitHub Release to public Metrik.
-# Called by groundtruth-weekly-local.yml after publication, or dispatched by hand
-# with an exact tag for redeploys. It never searches for a "latest" release and
-# has no schedule of its own.
-
 name: Deploy verified weekly release
-
 on:
-  workflow_call:
-    inputs:
-      release_tag:
-        description: Exact tag, groundtruth-release-<release_id>
-        required: true
-        type: string
   workflow_dispatch:
     inputs:
       release_tag:
-        description: Exact tag, groundtruth-release-<release_id>
         required: true
         type: string
-
+      tooling_source_sha:
+        required: true
+        type: string
+      tooling_tree_sha:
+        required: true
+        type: string
+      serving_source_sha:
+        required: true
+        type: string
+      serving_tree_sha:
+        required: true
+        type: string
+      expected_state:
+        required: true
+        type: string
+      approve_deployment:
+        type: boolean
+        default: false
+  workflow_call:
+    inputs:
+      release_tag:
+        required: true
+        type: string
+      tooling_source_sha:
+        required: true
+        type: string
+      tooling_tree_sha:
+        required: true
+        type: string
+      serving_source_sha:
+        required: true
+        type: string
+      serving_tree_sha:
+        required: true
+        type: string
+      expected_state:
+        required: true
+        type: string
+      approve_deployment:
+        required: true
+        type: boolean
+# One lock for every app writer, including callers of this reusable workflow.
 concurrency:
-  group: metrik-weekly-release-deploy
+  group: metrik-ca-metrik-api-production
   cancel-in-progress: false
-
 jobs:
   deploy:
+    if: ${{ inputs.approve_deployment && vars.METRIK_DEPLOY_ENABLED == 'true' && vars.METRIK_OPERATOR_WINDOW == 'exclusive' }}
     runs-on: ubuntu-latest
     environment: azure-beta
     permissions:
@@ -32,200 +60,117 @@ jobs:
       id-token: write
     env:
       RELEASE_TAG: ${{ inputs.release_tag }}
-      RESOURCE_GROUP: ${{ vars.METRIK_AZURE_RESOURCE_GROUP }}
-      CONTAINER_APP: ${{ vars.METRIK_AZURE_CONTAINER_APP }}
-      ACR_NAME: ${{ vars.METRIK_AZURE_ACR_NAME }}
+      TOOLING_SOURCE_SHA: ${{ inputs.tooling_source_sha }}
+      TOOLING_TREE_SHA: ${{ inputs.tooling_tree_sha }}
+      RUNNING_TOOLING_SHA: ${{ github.workflow_sha }}
+      SERVING_SOURCE_SHA: ${{ inputs.serving_source_sha }}
+      SERVING_TREE_SHA: ${{ inputs.serving_tree_sha }}
+      EXPECTED_STATE: ${{ inputs.expected_state }}
+      GH_TOKEN: ${{ github.token }}
+      METRIK_DEPLOY_ENABLED: ${{ vars.METRIK_DEPLOY_ENABLED }}
+      METRIK_OPERATOR_WINDOW: ${{ vars.METRIK_OPERATOR_WINDOW }}
+      METRIK_DEPLOY_HEALTH_TOKEN: ${{ secrets.METRIK_AZURE_HEALTH_CHECK_TOKEN }}
     steps:
-      - name: Validate exact release tag
+      - name: Validate immutable approval inputs
         run: |
           set -euo pipefail
           [[ "$RELEASE_TAG" =~ ^groundtruth-release-[0-9A-Za-z][0-9A-Za-z._-]{0,99}$ ]]
-          echo "RELEASE_ID=${RELEASE_TAG#groundtruth-release-}" >> "$GITHUB_ENV"
-          echo "BUNDLE_NAME=$RELEASE_TAG.tar.gz" >> "$GITHUB_ENV"
-
-      - uses: actions/checkout@v4
-        with:
-          ref: refs/tags/${{ inputs.release_tag }}
-          persist-credentials: false
-
-      # Deploy scripts come from the workflow's own commit, not the release tag:
-      # redeploying an older release must still use current rollout checks.
-      - name: Check out deploy tooling
+          [[ "$TOOLING_SOURCE_SHA" =~ ^[0-9a-f]{40}$ ]]
+          [[ "$TOOLING_TREE_SHA" =~ ^[0-9a-f]{40}$ ]]
+          test "$RUNNING_TOOLING_SHA" = "$TOOLING_SOURCE_SHA"
+          [[ "$SERVING_SOURCE_SHA" =~ ^[0-9a-f]{40}$ ]]
+          [[ "$SERVING_TREE_SHA" =~ ^[0-9a-f]{40}$ ]]
+          [[ "$EXPECTED_STATE" =~ ^[0-9a-f]{64}$ ]]
+          test -n "$METRIK_DEPLOY_HEALTH_TOKEN"
+      - name: Check out reviewed deployment tooling
         uses: actions/checkout@v4
         with:
-          path: .deploy-tools
-          sparse-checkout: scripts/azure
+          ref: ${{ inputs.tooling_source_sha }}
+          fetch-depth: 0
+          path: tools
           persist-credentials: false
-
-      - uses: astral-sh/setup-uv@v5
+      - name: Check out independent serving source
+        uses: actions/checkout@v4
         with:
-          enable-cache: true
-
-      - name: Install serving environment
+          ref: ${{ inputs.serving_source_sha }}
+          fetch-depth: 0
+          path: source
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@v5
+      - name: Install locked validation environment
         run: |
           uv python install 3.13
-          uv sync --extra web --frozen --no-dev
-
-      - name: Download and verify exact GitHub release
-        env:
-          GH_TOKEN: ${{ github.token }}
-          RELEASE_ASSETS_DIR: /tmp/release-assets
-        run: bash scripts/release/install-verified-release.sh "$RELEASE_TAG"
-
-      - name: Verify release again at deploy boundary
-        run: uv run groundtruth release verify-artifacts
-
-      - name: Telegram deployment started
-        continue-on-error: true
-        env:
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          uv sync --project tools --extra web --frozen --no-dev
+          echo "PYTHONPATH=$GITHUB_WORKSPACE/tools/src" >> "$GITHUB_ENV"
+      - name: Verify exact data bundle and independent source approval
         run: |
-          set +e
-          if [ -z "$TELEGRAM_BOT_TOKEN" ] || [ -z "$TELEGRAM_CHAT_ID" ]; then exit 0; fi
-          text="🚀 Metrik deployment started
-          Release: $RELEASE_ID
-          Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
-          curl -fsS --retry 2 "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
-            --data-urlencode "chat_id=$TELEGRAM_CHAT_ID" \
-            --data-urlencode "text=$text" >/dev/null
-
-      - name: Azure login with OIDC
+          set -euo pipefail
+          mkdir assets
+          gh release download "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --dir assets
+          python3 tools/scripts/azure/make_approval.py --source source --tools tools --assets assets --output approval.json
+          uv run --project tools --no-sync python tools/scripts/azure/safe_deploy.py source --source-root source --approval approval.json --output source-verification.json
+      - name: Install verified data into serving build context
+        working-directory: source
+        env:
+          RELEASE_ASSETS_DIR: ${{ github.workspace }}/install-assets
+        run: |
+          uv sync --extra web --frozen --no-dev
+          bash ../tools/scripts/release/install-verified-release.sh "$RELEASE_TAG"
+          uv run --no-sync groundtruth release verify-artifacts
+      - uses: docker/setup-buildx-action@v3
+      - name: Azure login
         uses: azure/login@v2
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-
-      - uses: docker/setup-buildx-action@v3
-
-      - name: Build immutable serving image
+      - name: Verify approved baseline before build
+        run: |
+          uv run --project tools --no-sync python tools/scripts/azure/safe_deploy.py inspect --output baseline.json
+          python3 -c 'import json,os; assert json.load(open("baseline.json"))["fingerprint"] == os.environ["EXPECTED_STATE"]'
+      - name: Build and verify reviewed serving image
         run: |
           set -euo pipefail
-          login="$(az acr show -n "$ACR_NAME" --query loginServer -o tsv)"
-          sha="$(git rev-parse --short HEAD)"
-          image="$login/metrik-api:${RELEASE_ID}-${sha}"
-          docker build -f Dockerfile -t "$image" --load .
-          docker run --rm --entrypoint uv "$image" run python -c \
-            "import importlib.util as u; assert u.find_spec('scrapy') is None; assert u.find_spec('playwright') is None; assert u.find_spec('fastapi') is not None"
-          echo "CANDIDATE_IMAGE=$image" >> "$GITHUB_ENV"
-          echo "CANDIDATE_TAG=${RELEASE_ID}-${sha}" >> "$GITHUB_ENV"
-
-      - name: Trivy scan
+          LOGIN=$(az acr show -n acrmetrikbetalgy2mu --query loginServer -o tsv)
+          IMAGE="$LOGIN/metrik-api:data-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          DATA_RELEASE_ID=$(python3 -c 'import json;print(json.load(open("approval.json"))["release_id"])')
+          DATA_SOURCE_SHA=$(python3 -c 'import json;print(json.load(open("approval.json"))["data_source_sha"])')
+          BUNDLE_SHA256=$(python3 -c 'import json;print(json.load(open("approval.json"))["bundle_sha256"])')
+          docker build --provenance=false --label "org.opencontainers.image.revision=$SERVING_SOURCE_SHA" --label "io.metrik.data-release-id=$DATA_RELEASE_ID" --label "io.metrik.data-source-sha=$DATA_SOURCE_SHA" --label "io.metrik.bundle-sha256=$BUNDLE_SHA256" -t "$IMAGE" source
+          docker run --rm --entrypoint /app/.venv/bin/groundtruth "$IMAGE" release verify-artifacts
+          docker run --rm --entrypoint /app/.venv/bin/python "$IMAGE" -c "import importlib.util as u; assert u.find_spec('scrapy') is None; assert u.find_spec('playwright') is None; assert u.find_spec('azure.data.tables') is not None"
+          echo "IMAGE=$IMAGE" >> "$GITHUB_ENV"
+          docker inspect "$IMAGE" --format '{{.Id}}' > build-config-digest.txt
+      - name: Trivy release gate
         uses: aquasecurity/trivy-action@v0.36.0
         with:
-          image-ref: ${{ env.CANDIDATE_IMAGE }}
-          format: table
-          exit-code: "1"
+          image-ref: ${{ env.IMAGE }}
+          exit-code: '1'
           severity: CRITICAL,HIGH
           ignore-unfixed: true
-
-      - name: Push immutable serving image
+      - name: Push and prove immutable build identity
         run: |
           set -euo pipefail
-          az acr login --name "$ACR_NAME"
-          docker push "$CANDIDATE_IMAGE"
-          digest="$(az acr repository show --name "$ACR_NAME" --image "metrik-api:$CANDIDATE_TAG" --query digest -o tsv)"
-          test -n "$digest"
-          echo "CANDIDATE_DIGEST=$digest" >> "$GITHUB_ENV"
-
-      - name: Capture current production target
+          az acr login -n acrmetrikbetalgy2mu
+          docker push "$IMAGE"
+          DIGEST=$(az acr repository show -n acrmetrikbetalgy2mu --image "${IMAGE#*/}" --query digest -o tsv)
+          IMMUTABLE="${IMAGE%:*}@$DIGEST"
+          docker buildx imagetools inspect "$IMMUTABLE" --raw > image-manifest.json
+          python3 -c 'import json; assert json.load(open("image-manifest.json"))["config"]["digest"] == open("build-config-digest.txt").read().strip()'
+          echo "CANDIDATE_IMAGE_DIGEST=$IMMUTABLE" >> "$GITHUB_ENV"
+      - name: Capture deploy validate promote and verify with guarded rollback
         run: |
-          set -euo pipefail
-          previous_image="$(az containerapp show -g "$RESOURCE_GROUP" -n "$CONTAINER_APP" --query 'properties.template.containers[?name==`metrik-api`].image | [0]' -o tsv)"
-          previous_revision="$(az containerapp show -g "$RESOURCE_GROUP" -n "$CONTAINER_APP" --query properties.latestReadyRevisionName -o tsv)"
-          test -n "$previous_image"
-          echo "PREVIOUS_IMAGE=$previous_image" >> "$GITHUB_ENV"
-          echo "PREVIOUS_REVISION=$previous_revision" >> "$GITHUB_ENV"
-
-      - name: Deploy candidate revision
-        run: |
-          set -euo pipefail
-          echo "DEPLOY_STARTED=true" >> "$GITHUB_ENV"
-          fqdn="$(az containerapp show -g "$RESOURCE_GROUP" -n "$CONTAINER_APP" --query properties.configuration.ingress.fqdn -o tsv)"
-          echo "APP_URL=https://$fqdn" >> "$GITHUB_ENV"
-          suffix="r${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
-          az containerapp update -g "$RESOURCE_GROUP" -n "$CONTAINER_APP" --container-name metrik-api \
-            --image "$CANDIDATE_IMAGE" --revision-suffix "$suffix" --output none
-          bash .deploy-tools/scripts/azure/wait-for-revision.sh "$RESOURCE_GROUP" "$CONTAINER_APP" \
-            "$CONTAINER_APP--$suffix" "$RELEASE_ID"
-
-      - name: Verify live production contract
-        shell: pwsh
-        run: ./.deploy-tools/scripts/azure/smoke.ps1 -BaseUrl $env:APP_URL -ExpectedReleaseId $env:RELEASE_ID
-
-      - name: Record deployed revision
-        run: |
-          revision="$(az containerapp show -g "$RESOURCE_GROUP" -n "$CONTAINER_APP" --query properties.latestReadyRevisionName -o tsv)"
-          echo "DEPLOYED_REVISION=$revision" >> "$GITHUB_ENV"
-          printf '%s\n' \
-            "release_tag=$RELEASE_TAG" \
-            "release_id=$RELEASE_ID" \
-            "bundle=$BUNDLE_NAME" \
-            "bundle_sha256=$(cut -d' ' -f1 "/tmp/release-assets/$BUNDLE_NAME.sha256")" \
-            "image=$CANDIDATE_IMAGE" \
-            "digest=$CANDIDATE_DIGEST" \
-            "revision=$revision" \
-            "previous_image=$PREVIOUS_IMAGE" \
-            "previous_revision=$PREVIOUS_REVISION" | tee deployment-summary.txt
-
-      - name: Upload deployment evidence
+          uv run --project tools --no-sync python tools/scripts/azure/safe_deploy.py apply --approval approval.json --image "$CANDIDATE_IMAGE_DIGEST" --revision "ca-metrik-api--pub-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" --output deployment-receipt.json
+      - name: Retain deployment evidence
+        if: ${{ always() }}
         uses: actions/upload-artifact@v4
         with:
-          name: deployment-${{ env.RELEASE_ID }}
-          path: deployment-summary.txt
+          name: publication-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            approval.json
+            source-verification.json
+            baseline.json
+            build-config-digest.txt
+            image-manifest.json
+            deployment-receipt.json
           retention-days: 90
-
-      - name: Restore previous production image after failure
-        if: ${{ failure() && env.DEPLOY_STARTED == 'true' && env.PREVIOUS_IMAGE != '' }}
-        run: |
-          set -euo pipefail
-          suffix="rb${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
-          az containerapp update -g "$RESOURCE_GROUP" -n "$CONTAINER_APP" --container-name metrik-api \
-            --image "$PREVIOUS_IMAGE" --revision-suffix "$suffix" --output none
-          echo "ROLLBACK_ATTEMPTED=true" >> "$GITHUB_ENV"
-          bash .deploy-tools/scripts/azure/wait-for-revision.sh "$RESOURCE_GROUP" "$CONTAINER_APP" "$CONTAINER_APP--$suffix"
-
-      - name: Verify rollback
-        if: ${{ failure() && env.ROLLBACK_ATTEMPTED == 'true' }}
-        shell: pwsh
-        run: ./.deploy-tools/scripts/azure/smoke.ps1 -BaseUrl $env:APP_URL
-
-      - name: Telegram success notification
-        if: ${{ success() }}
-        continue-on-error: true
-        env:
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        run: |
-          set -euo pipefail
-          if [ -z "$TELEGRAM_BOT_TOKEN" ] || [ -z "$TELEGRAM_CHAT_ID" ]; then exit 0; fi
-          text="✅ Metrik deployment SUCCESS
-          Release: $RELEASE_ID
-          Image: $CANDIDATE_IMAGE
-          Digest: $CANDIDATE_DIGEST
-          Revision: $DEPLOYED_REVISION
-          Production verification: passed"
-          curl -fsS --retry 2 "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
-            --data-urlencode "chat_id=$TELEGRAM_CHAT_ID" \
-            --data-urlencode "text=$text" >/dev/null
-
-      - name: Telegram failure notification
-        if: ${{ failure() }}
-        continue-on-error: true
-        env:
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        run: |
-          set +e
-          if [ -z "$TELEGRAM_BOT_TOKEN" ] || [ -z "$TELEGRAM_CHAT_ID" ]; then exit 0; fi
-          text="❌ Metrik deployment FAILURE
-          Release: ${RELEASE_ID:-unknown}
-          Candidate: ${CANDIDATE_IMAGE:-not built}
-          Previous image: ${PREVIOUS_IMAGE:-unchanged}
-          Rollback attempted: ${ROLLBACK_ATTEMPTED:-false}
-          Previous production should be checked immediately.
-          Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
-          curl -fsS --retry 2 "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
-            --data-urlencode "chat_id=$TELEGRAM_CHAT_ID" \
-            --data-urlencode "text=$text" >/dev/null

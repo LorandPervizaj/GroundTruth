@@ -1,0 +1,50 @@
+
+import os,time,json,subprocess,ipaddress
+from pathlib import Path
+from urllib.parse import urlparse
+from sqlalchemy import create_engine,text
+EXPECTED=__EXPECTED__
+assert os.environ.get('CONTAINER_APP_REVISION')==EXPECTED['revision'],'Unexpected replica revision'
+u=urlparse(os.environ['DATABASE_URL'])
+assert u.hostname in {'127.0.0.1','localhost'} and (u.port or 5432)==5432,'Cache must be local sidecar'
+assert u.username==EXPECTED['user'] and u.path.lstrip('/')==EXPECTED['database'],'Unexpected cache identity'
+assert os.environ['PRODUCT_WRITE_BACKEND']=='azure_table','SQL authority prohibited'
+engine=create_engine(os.environ['DATABASE_URL'],connect_args={'connect_timeout':3})
+for attempt in range(60):
+ try:
+  with engine.connect() as db:db.execute(text('SELECT 1'))
+  break
+ except Exception:
+  if attempt==59:raise
+  time.sleep(1)
+with engine.connect() as db:
+ identity=list(db.execute(text('SELECT current_database(),current_user,inet_server_addr()::text,inet_server_port()')).one())
+ assert identity[:2]==[EXPECTED['database'],EXPECTED['user']] and ipaddress.ip_interface(identity[2]).ip.is_loopback and identity[3]==5432,'Nonlocal SQL server'
+ system=str(db.execute(text('SELECT system_identifier FROM pg_control_system()')).scalar())
+ assert system!=EXPECTED['forbidden_source_system'],'Refusing original serving SQL instance'
+ tables=[tuple(x)for x in db.execute(text("SELECT schemaname,tablename FROM pg_tables WHERE schemaname NOT IN ('pg_catalog','information_schema') ORDER BY schemaname,tablename"))]
+ names=[t for s,t in tables if s=='public']
+ if tables:
+  assert set(tables)=={('public',t)for t in EXPECTED['tables']},'Unexpected initialized cache schema'
+  assert db.execute(text('SELECT version_num FROM alembic_version')).scalar()=='h2i3j4k5l6m7','Unexpected initialized cache head'
+  initialize=False
+ else:
+  initialize=True
+receipt=dict(revision=EXPECTED['revision'],host=u.hostname,database=EXPECTED['database'],user=EXPECTED['user'],server_identity=identity,system_identifier=system,source_instance_excluded=True,tables_before=len(tables),verified_empty_before_alembic=initialize,initialized=initialize,head='h2i3j4k5l6m7')
+if initialize:
+ # Only this existing tested versioned command can perform SQL initialization.
+ r=subprocess.run(['/app/.venv/bin/alembic','upgrade','head'],cwd='/app',capture_output=True,text=True)
+ if r.returncode:
+  print('C_CACHE_INIT_FAILED',flush=True)
+  raise SystemExit(r.returncode)
+with engine.connect() as db:
+ final=[t for t, in db.execute(text("SELECT tablename FROM pg_tables WHERE schemaname='public' ORDER BY tablename"))]
+ assert final==EXPECTED['tables'],'Cache table set mismatch'
+ assert db.execute(text('SELECT version_num FROM alembic_version')).scalar()=='h2i3j4k5l6m7'
+ assert db.execute(text('SELECT count(*) FROM product_submissions')).scalar()==0,'SQL must never hold submissions'
+receipt['tables_after']=len(final)
+Path('/tmp/checkpoint-c-cache-schema.json').write_text(json.dumps(receipt))
+print('C_CACHE_SCHEMA_GUARD '+json.dumps(receipt),flush=True)
+engine.dispose()
+os.environ['RUN_MIGRATIONS_ON_START']='false'
+os.execv('/app/scripts/docker-entrypoint.sh',['/app/scripts/docker-entrypoint.sh'])

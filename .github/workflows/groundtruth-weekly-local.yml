@@ -21,7 +21,23 @@ on:
         description: Deploy the verified release to public Metrik after publication
         required: false
         type: boolean
-        default: true
+        default: false
+      serving_source_sha:
+        description: Explicit reviewed Table-compatible application SHA
+        required: false
+        type: string
+      tooling_source_sha:
+        required: false
+        type: string
+      tooling_tree_sha:
+        required: false
+        type: string
+      serving_tree_sha:
+        required: false
+        type: string
+      expected_state:
+        required: false
+        type: string
 
 permissions:
   contents: read
@@ -104,6 +120,10 @@ jobs:
           RESULT: ${{ steps.pipeline.outputs.result }}
         run: uv run --no-sync groundtruth research publication-candidate --result $env:RESULT --github-output $env:GITHUB_OUTPUT
 
+      - name: Reject coupled research publication and deployment
+        if: ${{ inputs.deploy }}
+        run: throw 'Use deploy=false; then review the saved bundle and explicit publication approval separately.'
+
       - name: Publish immutable GitHub release
         env:
           GH_TOKEN: ${{ github.token }}
@@ -150,13 +170,19 @@ jobs:
 
   deploy:
     needs: research
-    if: ${{ needs.research.result == 'success' && needs.research.outputs.release_tag != '' && (github.event_name == 'schedule' || inputs.deploy) }}
+    if: ${{ needs.research.result == 'success' && needs.research.outputs.release_tag != '' && inputs.deploy && vars.METRIK_DEPLOY_ENABLED == 'true' && vars.METRIK_OPERATOR_WINDOW == 'exclusive' }}
     permissions:
       contents: read
       id-token: write
     uses: ./.github/workflows/weekly-release-deploy.yml
     with:
       release_tag: ${{ needs.research.outputs.release_tag }}
+      tooling_source_sha: ${{ inputs.tooling_source_sha }}
+      tooling_tree_sha: ${{ inputs.tooling_tree_sha }}
+      serving_source_sha: ${{ inputs.serving_source_sha }}
+      serving_tree_sha: ${{ inputs.serving_tree_sha }}
+      expected_state: ${{ inputs.expected_state }}
+      approve_deployment: ${{ inputs.deploy }}
     secrets: inherit
 
   report-research-failure:

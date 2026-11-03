@@ -1,0 +1,63 @@
+{
+  "app_name": "ca-metrik-api",
+  "resource_group": "rg-metrik-beta-eus2",
+  "app_id": "/subscriptions/c73c2fd1-9b7f-4221-a868-757128f2e416/resourceGroups/rg-metrik-beta-eus2/providers/Microsoft.App/containerapps/ca-metrik-api",
+  "minimum_serving_sha": "889184ff8a24ac0dacd87433cc71a5405bd23b7b",
+  "protected_files": {
+    "src/groundtruth/config.py": "e63c54432c39e0b2b8cbb32c87390c97432360aef54c556f67a22c6416a794a6",
+    "src/groundtruth/startup.py": "8e629c274e30fd26e7e452ec3c3b7864af7c18502a1758ed643b077bcfacfbb5",
+    "src/groundtruth/services/table_submissions.py": "f8ac27860c394e09b6aedc220049dcd491d4c591c05fbbe807939dd128f0f32f",
+    "src/groundtruth/services/readiness.py": "2648436c8c9526f9a7a0d74cac4e64545648ff224c55e4d29b22057c26731cfe",
+    "src/groundtruth/services/artifact_integrity.py": "4a52ff63fa61447de88d240f08a2ee45bfe472aa47b48e5a15a34bfdfa2c0196",
+    "scripts/docker-entrypoint.sh": "848d17231fbb06a0cea98da0dbd743660cbc1597252feb3f3a6dbb6a6ab4c525",
+    "src/groundtruth/release.py": "ac5eb144aeb0e0088188d8ea3817db134fe5566513245f8a9807aee949235974",
+    "Dockerfile": "3796f8de532bb9b906cda591917bb6f8b2a3ed77260741c30db4cf86bdb1d1e8",
+    "src/groundtruth/cli.py": "66f1aa583638d3dd26418a844e547dbd82ab70224f5956cf3e57e4bad3000b0d",
+    "src/groundtruth/services/product_submissions.py": "a0834b4b03790b821f17671603bf045bc75a96c4387a6b8d89170ce7493cf9b9",
+    "src/groundtruth/services/product_analytics.py": "7432c590f7fed06f109af65429349738d077159324d0e5ae52d461523ff6fa42"
+  },
+  "volumes": [
+    {
+      "name": "pgdata",
+      "storageType": "EmptyDir"
+    }
+  ],
+  "previous_guard_hashes": [
+    "a3d0389bd11b4fe79cbd73208446ef8c4a6509397aa39c62e574f322ec5c40a0"
+  ],
+  "compatible_previous_images": [
+    "acrmetrikbetalgy2mu.azurecr.io/metrik-api@sha256:dbe95c0584a7b914651205fe736a6bd2d45e1b7ee5345ce3737d00055f833d29"
+  ],
+  "previous_releases": {
+    "ca-metrik-api--phase5-c-889184ff8a24": "2026-W43-saved-oct18-104743-24f9036dc88f-deps"
+  },
+  "cache_expected": {
+    "user": "metrik",
+    "database": "metrik",
+    "forbidden_source_system": "7702035686450352163",
+    "tables": [
+      "alembic_version",
+      "buildings",
+      "canonical_properties",
+      "complexes",
+      "data_lineage",
+      "districts",
+      "etl_metrics",
+      "invalid_listings",
+      "listing_lifecycle_states",
+      "listing_observations",
+      "listing_sources",
+      "market_snapshots",
+      "neighborhoods",
+      "normalized_listings",
+      "parsed_listings",
+      "price_history",
+      "product_submissions",
+      "property_events",
+      "raw_listings",
+      "scrape_runs",
+      "streets"
+    ]
+  },
+  "guard_template_sha256": "cb53f92225872378adb456a54e8c62ecda8ec86d84a3ed78116b935c475b66fb"
+}
