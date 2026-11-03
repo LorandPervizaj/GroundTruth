@@ -1,0 +1,8 @@
+{
+  "simulation": "Candidate is latest ready but receives zero public traffic; old revision serves same release ID",
+  "exit_code": 0,
+  "stdout": "attempt=1 latest_ready=candidate revision_state=Running\nrevision candidate serves release same-data-release\n",
+  "stderr": "",
+  "result": "helper reports success without checking traffic",
+  "live_services_contacted": false
+}

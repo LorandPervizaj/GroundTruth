@@ -1,0 +1,30 @@
+{
+  "category_counts": {
+    "modified": {
+      ".dockerignore": 1,
+      ".github": 1,
+      ".gitignore": 1,
+      "README.md": 1,
+      "data": 2,
+      "docker-compose.yml": 1,
+      "docs": 2,
+      "release": 8,
+      "reports": 216,
+      "scripts": 6,
+      "src": 12,
+      "tests": 7,
+      "web": 1
+    },
+    "untracked": {
+      ".playwright-cli": 112,
+      "QA": 113,
+      "docs": 1,
+      "release": 280,
+      "research": 1475,
+      "scripts": 1,
+      "src": 3,
+      "tests": 4
+    }
+  },
+  "reason": "Original source work requires separate review; generated artifacts are retained; private captures, security workspace, credentials and databases remain excluded. No original checkout file was staged."
+}

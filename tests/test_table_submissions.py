@@ -28,10 +28,15 @@ def store():
     allowed.append("TableEndpoint=http://metrik-c-table:10002/localmetrik")
     if not any(endpoint in value for endpoint in allowed):
         pytest.skip("Owned loopback Azurite fixture required")
-    svc = TableServiceClient.from_connection_string(value)
+    svc = TableServiceClient.from_connection_string(
+        value, retry_total=0, connection_timeout=2, read_timeout=3
+    )
     client = svc.create_table("BudgetTest" + uuid4().hex)
     yield SubmissionTable(client)
-    svc.delete_table(client.table_name)
+    fresh = TableServiceClient.from_connection_string(
+        value, retry_total=0, connection_timeout=2, read_timeout=3
+    )
+    fresh.delete_table(client.table_name)
 
 
 def test_concurrency_and_rolling_window_keep_history(store):
@@ -110,3 +115,50 @@ def test_import_preserves_ids_payloads_timestamps_and_is_restartable(store):
     with pytest.raises(ValueError):
         store.import_legacy([{**rows[0], "payload": {"message": "conflicting"}}])
     assert len(store.records()) == 2
+
+
+def test_real_loopback_emulator_restart_preserves_record_and_retry_guard(store):
+    """Actual SDK writes and process restart; never runs against Azure."""
+    import subprocess
+    import time
+    from pathlib import Path
+
+    script = os.environ.get("TEST_TABLE_RESTART_SCRIPT", "")
+    owned = Path(__file__).resolve().parent / "table_emulator.ps1"
+    if os.name != "nt" or not script or Path(script).resolve() != owned:
+        pytest.skip("Owned Windows loopback emulator restart control required")
+    body = {"message": "publication safety isolated restart verification"}
+    store.append("event", body, window_seconds=300)
+    before = store.records()
+    # Azurite's local Loki backing store autosaves on a timer. This is emulator
+    # disk persistence, not a claim about Azure's durability implementation.
+    time.sleep(6)
+    # A long-lived child must not inherit Popen's captured pipe handles on Windows.
+    with (owned.parent.parent / ".tmp/table-emulator/restart-test.log").open("w") as log:
+        subprocess.run(
+            ["pwsh", "-NoProfile", "-File", str(owned), "-Mode", "Restart"],
+            check=True,
+            stdout=log,
+            stderr=subprocess.STDOUT,
+            timeout=30,
+        )
+    # Recreate the application client too; don't reuse sockets from the stopped process.
+    service = TableServiceClient.from_connection_string(
+        os.environ["TEST_TABLE_EMULATOR_CONNECTION_STRING"],
+        retry_total=0,
+        connection_timeout=2,
+        read_timeout=3,
+    )
+    restarted = SubmissionTable(service.get_table_client(store.client.table_name))
+    for attempt in range(20):
+        try:
+            after = restarted.records()
+            break
+        except Exception:
+            if attempt == 19:
+                raise
+            time.sleep(0.5)
+    assert after == before
+    with pytest.raises(DuplicateSubmission):
+        restarted.append("event", body, window_seconds=300)
+    assert restarted.records() == before

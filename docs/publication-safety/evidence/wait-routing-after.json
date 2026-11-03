@@ -1,0 +1,8 @@
+{
+  "simulation": "Candidate is latest ready but receives zero public traffic; old revision serves same release ID",
+  "exit_code": 2,
+  "stdout": "",
+  "stderr": "Readiness cannot establish serving release identity; use safe_deploy.py.\n",
+  "live_services_contacted": false,
+  "result": "Legacy readiness-as-promotion shortcut rejected"
+}
