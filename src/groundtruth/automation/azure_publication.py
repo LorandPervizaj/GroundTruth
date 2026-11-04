@@ -26,6 +26,21 @@ def gh(*args: str) -> str:
     return result.stdout.strip()
 
 
+def require_publication_enabled() -> None:
+    """Both repository and protected-environment gates must explicitly allow writes."""
+    from groundtruth.automation.deployment import require
+
+    for scope, name in (
+        ("actions/variables", "METRIK_PUBLICATION_ENABLED"),
+        ("environments/azure-beta/variables", "METRIK_ENV_PUBLICATION_ENABLED"),
+    ):
+        row = json.loads(gh("api", f"repos/{REPOSITORY}/{scope}/{name}"))
+        require(
+            isinstance(row, dict) and row.get("value") == "true",
+            "Publication is disabled by the operator gate",
+        )
+
+
 def publish_and_dispatch(
     result_path: Path,
     release_dir: Path,
@@ -51,6 +66,7 @@ def publish_and_dispatch(
     )
     approval = load_approval(approval_path, approval_sha256)
     require(bool(approval.tooling_ref), "Explicit reviewed workflow branch/tag required")
+    require_publication_enabled()
     candidate = verify_run_result(result_path, release_dir)
     require(
         candidate.release_id == approval.release_id

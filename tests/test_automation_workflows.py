@@ -229,3 +229,23 @@ def test_telegram_steps_never_block_research_or_deployment() -> None:
             for step in job.get("steps", []):
                 if "telegram" in step.get("name", "").lower():
                     assert step.get("continue-on-error") is True, f"{name}: {step['name']}"
+
+
+def test_publication_is_default_off_and_requires_environment_review():
+    workflow, text = _workflow(RESEARCH)
+    assert _triggers(workflow)["workflow_dispatch"]["inputs"]["publish"]["default"] is False
+    research = workflow["jobs"]["research"]
+    assert research["environment"] == "azure-beta"
+    publish = research["steps"][_step_index(research["steps"], "Publish immutable GitHub release")]
+    assert "inputs.publish" in publish["if"]
+    assert "vars.METRIK_PUBLICATION_ENABLED == 'true'" in publish["if"]
+
+
+def test_deployment_requires_distinct_repository_and_environment_gates():
+    workflow, text = _workflow(DEPLOY)
+    job = workflow["jobs"]["deploy"]
+    assert "vars.METRIK_DEPLOY_ENABLED == 'true'" in job["if"]
+    assert job["env"]["METRIK_DEPLOY_ENABLED"] == "${{ vars.METRIK_ENV_DEPLOY_ENABLED }}"
+    assert job["env"]["METRIK_OPERATOR_WINDOW"] == "${{ vars.METRIK_ENV_OPERATOR_WINDOW }}"
+    assert 'test "$METRIK_DEPLOY_ENABLED" = true' in text
+    assert 'test "$METRIK_OPERATOR_WINDOW" = exclusive' in text

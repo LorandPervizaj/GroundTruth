@@ -43,6 +43,18 @@ def publication(tmp_path, monkeypatch):
         calls.append(args)
         endpoint = args[-1]
         if args[:1] == ("api",):
+            if endpoint.endswith(
+                ("/METRIK_PUBLICATION_ENABLED", "/METRIK_ENV_PUBLICATION_ENABLED")
+            ):
+                return json.dumps(
+                    {
+                        "value": "false"
+                        if fault["mode"] == "publication_off"
+                        or (fault["mode"] == "publication_repo_off" and "/actions/" in endpoint)
+                        or (fault["mode"] == "publication_env_off" and "/environments/" in endpoint)
+                        else "true"
+                    }
+                )
             if "/git/commits/" in endpoint:
                 sha = endpoint.rsplit("/", 1)[1]
                 return json.dumps(
@@ -120,6 +132,9 @@ def publication(tmp_path, monkeypatch):
         "wrong_tooling",
         "bad_target",
         "moved_ref",
+        "publication_off",
+        "publication_repo_off",
+        "publication_env_off",
     ],
 )
 def test_invalid_source_or_target_never_publishes(publication, fault):

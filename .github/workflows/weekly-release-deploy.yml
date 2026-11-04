@@ -67,8 +67,8 @@ jobs:
       SERVING_TREE_SHA: ${{ inputs.serving_tree_sha }}
       EXPECTED_STATE: ${{ inputs.expected_state }}
       GH_TOKEN: ${{ github.token }}
-      METRIK_DEPLOY_ENABLED: ${{ vars.METRIK_DEPLOY_ENABLED }}
-      METRIK_OPERATOR_WINDOW: ${{ vars.METRIK_OPERATOR_WINDOW }}
+      METRIK_DEPLOY_ENABLED: ${{ vars.METRIK_ENV_DEPLOY_ENABLED }}
+      METRIK_OPERATOR_WINDOW: ${{ vars.METRIK_ENV_OPERATOR_WINDOW }}
       METRIK_DEPLOY_HEALTH_TOKEN: ${{ secrets.METRIK_AZURE_HEALTH_CHECK_TOKEN }}
     steps:
       - name: Validate immutable approval inputs
@@ -81,6 +81,8 @@ jobs:
           [[ "$SERVING_SOURCE_SHA" =~ ^[0-9a-f]{40}$ ]]
           [[ "$SERVING_TREE_SHA" =~ ^[0-9a-f]{40}$ ]]
           [[ "$EXPECTED_STATE" =~ ^[0-9a-f]{64}$ ]]
+          test "$METRIK_DEPLOY_ENABLED" = true
+          test "$METRIK_OPERATOR_WINDOW" = exclusive
           test -n "$METRIK_DEPLOY_HEALTH_TOKEN"
       - name: Check out reviewed deployment tooling
         uses: actions/checkout@v4

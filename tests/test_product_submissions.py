@@ -137,7 +137,9 @@ def test_failed_database_write_does_not_mark_retry_as_duplicate(monkeypatch):
     session.execute.return_value.scalar.return_value = None
     session.commit.side_effect = [RuntimeError("unavailable"), None]
     payload = {"message": "same retry after storage failure"}
-    with patch("groundtruth.services.product_submissions.get_session_factory", return_value=lambda: session):
+    with patch(
+        "groundtruth.services.product_submissions.get_session_factory", return_value=lambda: session
+    ):
         with pytest.raises(RuntimeError, match="unavailable"):
             append_product_submission("contact", payload)
         append_product_submission("contact", payload)

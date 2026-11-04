@@ -17,6 +17,11 @@ on:
         description: Optional catch-up interval in days (1-56). Empty uses the verified watermark.
         required: false
         type: string
+      publish:
+        description: Publish the verified data bundle only after protected-environment approval
+        required: false
+        type: boolean
+        default: false
       deploy:
         description: Deploy the verified release to public Metrik after publication
         required: false
@@ -48,6 +53,7 @@ concurrency:
 
 jobs:
   research:
+    environment: azure-beta
     if: ${{ github.ref == 'refs/heads/master' }}
     runs-on: [self-hosted, Windows, X64, groundtruth-research]
     timeout-minutes: 1440
@@ -125,6 +131,7 @@ jobs:
         run: throw 'Use deploy=false; then review the saved bundle and explicit publication approval separately.'
 
       - name: Publish immutable GitHub release
+        if: ${{ inputs.publish && vars.METRIK_PUBLICATION_ENABLED == 'true' && vars.METRIK_ENV_PUBLICATION_ENABLED == 'true' }}
         env:
           GH_TOKEN: ${{ github.token }}
           RELEASE_TAG: ${{ steps.candidate.outputs.release_tag }}
@@ -153,6 +160,7 @@ jobs:
           if (Compare-Object $assets $expected) { throw "Published assets differ from the verified bundle and checksum." }
 
       - name: Notify release verified
+        if: ${{ inputs.publish && vars.METRIK_PUBLICATION_ENABLED == 'true' && vars.METRIK_ENV_PUBLICATION_ENABLED == 'true' }}
         env:
           RELEASE_TAG: ${{ steps.candidate.outputs.release_tag }}
         run: |
