@@ -52,7 +52,7 @@ Each unchecked item is a stop gate at the indicated phase. A successful offline 
 - [x] Existing fixed resource limits, public HTTPS/RBAC-only Table configuration, scoped permissions, recovery matrix and exact-group cleanup retained.
 - [x] Offline validation: 1,114 passed / 51 skipped / 3 warnings (full suite, real local Azurite enabled); focused staging/controller/identity suite 131 passed. Ruff lint/format, actionlint (active and inactive templates), frozen lock and installed dependency checks passed.
 - [ ] Exact-commit hosted CI, including real synthetic Docker build and browser/PostgreSQL cases, must pass before execution approval.
-- [x] Production baseline captured; final comparison required before reporting preparation complete.
+- [x] Production before/after fingerprint matched at 11:06 UTC: `c09762c637dae8b10f58ab6737cb3255243eb4c22edc6964c1e4554757b1b08b`; exact original revision at 100%. Four production writers remain disabled; repository/environment gates remain false/closed. Master unchanged; all 2,249 original checkout files and its status preserved. No staging groups or installed staging workflows exist.
 
 ### Owner approval: required before any Azure installation or creation
 
