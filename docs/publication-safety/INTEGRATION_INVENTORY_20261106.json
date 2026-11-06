@@ -1,10 +1,10 @@
 {
-  "snapshot_head": "351c70e2802f47910490278c669c1ee130668e46",
+  "snapshot_head": "a70a2276dc255d398a8a628aa8745238fa4cc07a",
   "remote_master": "0b6f5ce3bc26a1b0313ae7f726e235b64c8f2d52",
   "production_source": "889184ff8a24ac0dacd87433cc71a5405bd23b7b",
   "safety_start": "92b05c887ec084fff8af718784bcfbe3e423a0a4",
   "merge_base": "0b6f5ce3bc26a1b0313ae7f726e235b64c8f2d52",
-  "file_count": 431,
+  "file_count": 433,
   "commits": [
     {
       "sha": "0327f96496416b3dd69801019fa6c10c87c9aad3",
@@ -152,9 +152,19 @@
       "predates_remediation": true
     },
     {
+      "sha": "a70a2276dc255d398a8a628aa8745238fa4cc07a",
+      "title": "Record unchanged production and original checkout",
+      "predates_remediation": false
+    },
+    {
       "sha": "a79b5290f05a96bc27800da22de246ca7374fbeb",
       "title": "Add guarded historical price remediation and scoped rollback",
       "predates_remediation": true
+    },
+    {
+      "sha": "ab1e47c8a16c589ad6149684d8eb27fd91c2804e",
+      "title": "Refresh reviewed source identities after final janitor scope checks",
+      "predates_remediation": false
     },
     {
       "sha": "b739a1bbfd29bca4023845b430d795597dde9593",
@@ -162,9 +172,19 @@
       "predates_remediation": false
     },
     {
+      "sha": "baa6e8025fe8f86ab15070a60c727118c50e96e0",
+      "title": "Record amendment preservation checks and preserve report encoding",
+      "predates_remediation": false
+    },
+    {
       "sha": "bc232dc3533a8c22e00022affc5ceb08c933ae97",
       "title": "Diagnose Harta area completeness and retain purpose-specific evidence",
       "predates_remediation": true
+    },
+    {
+      "sha": "be233bda4e98cc9cca1deeb1278f01c4f146d626",
+      "title": "Amend isolated Stage A preparation for North Central US",
+      "predates_remediation": false
     },
     {
       "sha": "d79924f236ffb0161720aeae9e507e48dcff59ec",
@@ -545,6 +565,7 @@
       "path": "deploy/staging/README.md",
       "category": "publication_deployment_safety",
       "originating_commits": [
+        "be233bda4e98cc9cca1deeb1278f01c4f146d626",
         "e68ae27f2ed75dbe1393fa49c2c1cffefd945c3d"
       ],
       "predates_remediation": false,
@@ -558,13 +579,34 @@
       "sha256": {
         "master": null,
         "production": null,
-        "head": "4e2531972d795c82b43029a85c052cc20ce747fc2db82959a1700bcccadb7992"
+        "head": "d7bc52d74056f1a43b9de54138c4a75c3bfc37aa9806e9d61c216d4d786fc31e"
+      }
+    },
+    {
+      "path": "deploy/staging/northcentralus-preflight-evidence.json",
+      "category": "publication_deployment_safety",
+      "originating_commits": [
+        "be233bda4e98cc9cca1deeb1278f01c4f146d626"
+      ],
+      "predates_remediation": false,
+      "inclusion_reason": "Explicit approval, immutable provenance, scoped deployment/staging and verified recovery.",
+      "runtime_changes_vs_master": true,
+      "runtime_differs_from_production": true,
+      "public_release_contents_change_vs_production": false,
+      "required_for_publication_patch": true,
+      "required_to_preserve_historical_integration": false,
+      "verification": "Full final-tree regression/CI plus origin review; see COMPLETION_20261106.md",
+      "sha256": {
+        "master": null,
+        "production": null,
+        "head": "bad49f5842c59f2c210644c9f3d1b99046954d37b987978eaa12372b4d2e9904"
       }
     },
     {
       "path": "deploy/staging/workflows/janitor.yml",
       "category": "publication_deployment_safety",
       "originating_commits": [
+        "be233bda4e98cc9cca1deeb1278f01c4f146d626",
         "e68ae27f2ed75dbe1393fa49c2c1cffefd945c3d"
       ],
       "predates_remediation": false,
@@ -578,13 +620,14 @@
       "sha256": {
         "master": null,
         "production": null,
-        "head": "f0e539b69a34616e6c0cfe5b1d118864dd0d454ae16f2f687db9726044c8a571"
+        "head": "c2a4e4f06bf926709457a65f240cc2007797557f45d21c8169c840a4b80e7362"
       }
     },
     {
       "path": "deploy/staging/workflows/primary-cleanup.yml",
       "category": "publication_deployment_safety",
       "originating_commits": [
+        "be233bda4e98cc9cca1deeb1278f01c4f146d626",
         "e68ae27f2ed75dbe1393fa49c2c1cffefd945c3d"
       ],
       "predates_remediation": false,
@@ -598,7 +641,7 @@
       "sha256": {
         "master": null,
         "production": null,
-        "head": "f936ef5472711dcadf6aae348d3c583c686f6306892452602af8f0fd132418a4"
+        "head": "90c1487aa658a61006b2c05fcdd20afa981ba56103ab95f3e32487ca59620342"
       }
     },
     {
@@ -932,7 +975,9 @@
       "path": "docs/publication-safety/COMPLETION_20261106.md",
       "category": "documentation",
       "originating_commits": [
-        "8f6887f64bb3dd88f039cc07e3bcb5ada12eb919"
+        "8f6887f64bb3dd88f039cc07e3bcb5ada12eb919",
+        "baa6e8025fe8f86ab15070a60c727118c50e96e0",
+        "be233bda4e98cc9cca1deeb1278f01c4f146d626"
       ],
       "predates_remediation": false,
       "inclusion_reason": "Review provenance, operating boundaries, historical evidence or release instructions.",
@@ -945,7 +990,7 @@
       "sha256": {
         "master": null,
         "production": null,
-        "head": "bb418085a20fc51d318ce981dcfedc1ffdc08d183b84d0ec25a2d65b600774f8"
+        "head": "01f36ce8002a7e1973cb3957019dbad3098554bdf3bdb8c9bbb2225828d326eb"
       }
     },
     {
@@ -994,7 +1039,8 @@
       "category": "documentation",
       "originating_commits": [
         "5190019c2c03ee68e7c278490c063ec4d6c07e21",
-        "8f6887f64bb3dd88f039cc07e3bcb5ada12eb919"
+        "8f6887f64bb3dd88f039cc07e3bcb5ada12eb919",
+        "ab1e47c8a16c589ad6149684d8eb27fd91c2804e"
       ],
       "predates_remediation": false,
       "inclusion_reason": "Review provenance, operating boundaries, historical evidence or release instructions.",
@@ -1007,7 +1053,28 @@
       "sha256": {
         "master": null,
         "production": null,
-        "head": "669959d49a178a59604a9af1571dc1abee17e96e90e70b08d34584fec27a6d05"
+        "head": "a8faa4a40112daa19abfbea6bfc27e782e1f8f7b156ddfd8041159d1901d7ee9"
+      }
+    },
+    {
+      "path": "docs/publication-safety/NORTHCENTRALUS_AMENDMENT.md",
+      "category": "documentation",
+      "originating_commits": [
+        "a70a2276dc255d398a8a628aa8745238fa4cc07a",
+        "be233bda4e98cc9cca1deeb1278f01c4f146d626"
+      ],
+      "predates_remediation": false,
+      "inclusion_reason": "Review provenance, operating boundaries, historical evidence or release instructions.",
+      "runtime_changes_vs_master": false,
+      "runtime_differs_from_production": false,
+      "public_release_contents_change_vs_production": false,
+      "required_for_publication_patch": false,
+      "required_to_preserve_historical_integration": false,
+      "verification": "Full final-tree regression/CI plus origin review; see COMPLETION_20261106.md",
+      "sha256": {
+        "master": null,
+        "production": null,
+        "head": "82f10ea425fd6ca7d86c45d7938109a7c639363721615c1b2ea2bfd767e313a2"
       }
     },
     {
@@ -1100,6 +1167,7 @@
       "category": "documentation",
       "originating_commits": [
         "8b8f3e9da56620f1a841aa3bc8a3ca38491ce10d",
+        "be233bda4e98cc9cca1deeb1278f01c4f146d626",
         "e68ae27f2ed75dbe1393fa49c2c1cffefd945c3d",
         "ec85c0a503f0c995bff85245c71c2a3ab77f69d7"
       ],
@@ -1114,7 +1182,7 @@
       "sha256": {
         "master": null,
         "production": null,
-        "head": "b0676a3ace33ce5707741d84731afaa81ba98801eb50047bc635bd64cd7d21fc"
+        "head": "6deea90784e2cc5cf05fffccb01ee415926dc24614e59302af8c1b2918d44baa"
       }
     },
     {
@@ -6888,6 +6956,7 @@
       "category": "publication_deployment_safety",
       "originating_commits": [
         "351c70e2802f47910490278c669c1ee130668e46",
+        "be233bda4e98cc9cca1deeb1278f01c4f146d626",
         "e68ae27f2ed75dbe1393fa49c2c1cffefd945c3d"
       ],
       "predates_remediation": false,
@@ -6901,7 +6970,7 @@
       "sha256": {
         "master": null,
         "production": null,
-        "head": "2d0ad97f3fa7f812ec5c9930c6ab5eef000e7e02d9c3f2aa42fe83002840e2d1"
+        "head": "f8655c10e6dd430a21ab7f177cd9b350fa9c6f1ae5da75ee99cbb11c169566db"
       }
     },
     {
@@ -7567,6 +7636,7 @@
       "path": "src/groundtruth/automation/staging.py",
       "category": "publication_deployment_safety",
       "originating_commits": [
+        "be233bda4e98cc9cca1deeb1278f01c4f146d626",
         "e68ae27f2ed75dbe1393fa49c2c1cffefd945c3d"
       ],
       "predates_remediation": false,
@@ -7580,7 +7650,7 @@
       "sha256": {
         "master": null,
         "production": null,
-        "head": "0ec3174aaf2c18da224cb6f10de519f3a7ad88bcb8feaac3cf9bb9019b9a85f2"
+        "head": "8929936299815930e7b4d5566e4eb3133dc0fa41f795d23926f3b1aa67dde2af"
       }
     },
     {
@@ -7609,6 +7679,7 @@
       "path": "src/groundtruth/automation/staging_image.py",
       "category": "publication_deployment_safety",
       "originating_commits": [
+        "be233bda4e98cc9cca1deeb1278f01c4f146d626",
         "e68ae27f2ed75dbe1393fa49c2c1cffefd945c3d"
       ],
       "predates_remediation": false,
@@ -7622,7 +7693,7 @@
       "sha256": {
         "master": null,
         "production": null,
-        "head": "078d995078e80936c8208e08a7ea361e46a4740540779c8b5a60fcc2a8846d9c"
+        "head": "30c632ea5883852fe31957a3facdaae24b8a143ad6712bea039db0f6438a3a28"
       }
     },
     {
@@ -7650,6 +7721,7 @@
       "category": "publication_deployment_safety",
       "originating_commits": [
         "351c70e2802f47910490278c669c1ee130668e46",
+        "be233bda4e98cc9cca1deeb1278f01c4f146d626",
         "e68ae27f2ed75dbe1393fa49c2c1cffefd945c3d"
       ],
       "predates_remediation": false,
@@ -7663,7 +7735,7 @@
       "sha256": {
         "master": null,
         "production": null,
-        "head": "fa1b2d8a11af51417c16e3ebf6bbafb4593dd00d0b3788aac82eab96ce8bdbfc"
+        "head": "825449f0b1bb1a4c38d2a1a1f927208613fdce32b52e81d385425915c9d9f2c9"
       }
     },
     {
@@ -9108,6 +9180,7 @@
       "originating_commits": [
         "351c70e2802f47910490278c669c1ee130668e46",
         "49eee1adccf61fb0972210bbea447139200c055a",
+        "be233bda4e98cc9cca1deeb1278f01c4f146d626",
         "e68ae27f2ed75dbe1393fa49c2c1cffefd945c3d"
       ],
       "predates_remediation": false,
@@ -9121,7 +9194,7 @@
       "sha256": {
         "master": null,
         "production": null,
-        "head": "a13eec442246ec11f0f800181442b49a9a760e2e0b0f0cb0a58d17c29b9ec577"
+        "head": "47cb7f442943011223bf889dee71649f612c00e0e790507e2206e6e8b32e5f70"
       }
     },
     {
