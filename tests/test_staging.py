@@ -29,6 +29,51 @@ def test_synthetic_json_is_platform_independent(tmp_path):
     assert (tmp_path / "fixture.json").read_bytes() == b'{\n  "synthetic": true\n}\n'
 
 
+def test_janitor_reads_only_its_group_without_directory_permissions(manifest, monkeypatch):
+    import importlib.util
+
+    monkeypatch.syspath_prepend(str(ROOT / "scripts/azure"))
+    spec = importlib.util.spec_from_file_location(
+        "stage_cli_scope_test", ROOT / "scripts/azure/staging.py"
+    )
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    principal = "33333333-3333-3333-3333-333333333333"
+    manifest["principals"] = {"janitor": principal}
+    role_id = (
+        manifest["resource_group_id"] + "/providers/Microsoft.Authorization/roleDefinitions/role"
+    )
+    calls = []
+
+    def run(*args):
+        calls.append(args)
+        if "definition" in args:
+            return json.dumps(
+                [
+                    {
+                        "id": role_id,
+                        "permissions": [
+                            {"actions": module.JANITOR_ACTIONS, "dataActions": [], "notActions": []}
+                        ],
+                    }
+                ]
+            )
+        return json.dumps(
+            [
+                {
+                    "principalId": principal,
+                    "scope": manifest["resource_group_id"],
+                    "roleDefinitionId": role_id,
+                }
+            ]
+        )
+
+    monkeypatch.setattr(module, "run", run)
+    assert module.CleanupAzure(manifest).scope() == manifest["resource_group_id"]
+    assert all(args[args.index("--scope") + 1] == manifest["resource_group_id"] for args in calls)
+    assert "--assignee" not in calls[0] and "--all" not in calls[0]
+
+
 @pytest.fixture
 def manifest():
     cache = json.loads((ROOT / "deploy/production-policy.json").read_text())["cache_expected"]

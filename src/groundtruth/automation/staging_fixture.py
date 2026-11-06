@@ -31,7 +31,9 @@ def digest(path: Path) -> str:
 
 def write_json(path: Path, value) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(value, sort_keys=True, indent=2) + "\n", encoding="utf-8", newline="\n")
+    path.write_text(
+        json.dumps(value, sort_keys=True, indent=2) + "\n", encoding="utf-8", newline="\n"
+    )
 
 
 def no_production(value) -> None:

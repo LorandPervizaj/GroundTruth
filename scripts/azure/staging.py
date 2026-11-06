@@ -166,29 +166,23 @@ class CleanupAzure:
         return account["id"]
 
     def scope(self):
+        # Scope the ARM reads and avoid Microsoft Graph directory permissions.
         assignments = json.loads(
             run(
                 "az",
                 "role",
                 "assignment",
                 "list",
-                "--assignee",
-                self.m["cleanup_client_id"],
+                "--scope",
+                self.m["resource_group_id"],
                 "--include-inherited",
-                "--all",
+                "--fill-principal-name",
+                "false",
+                "--fill-role-definition-name",
+                "false",
                 "-o",
                 "json",
             )
-        )
-        require(
-            bool(assignments)
-            and all(
-                x["scope"].lower() == self.m["resource_group_id"].lower()
-                and x["roleDefinitionName"] in {janitor_role_name(self.m), "Reader"}
-                for x in assignments
-            )
-            and any(x["roleDefinitionName"] == janitor_role_name(self.m) for x in assignments),
-            "Janitor lacks exact group permission or has broader access",
         )
         roles = json.loads(
             run(
@@ -196,6 +190,8 @@ class CleanupAzure:
                 "role",
                 "definition",
                 "list",
+                "--scope",
+                self.m["resource_group_id"],
                 "--name",
                 janitor_role_name(self.m),
                 "-o",
@@ -209,6 +205,16 @@ class CleanupAzure:
             and not permissions.get("dataActions")
             and not permissions.get("notActions"),
             "Janitor role is broader than deletion/readback",
+        )
+        own = [x for x in assignments if x["principalId"] == self.m["principals"]["janitor"]]
+        require(
+            bool(own)
+            and all(
+                x["scope"].lower() == self.m["resource_group_id"].lower()
+                and x["roleDefinitionId"].lower() == roles[0]["id"].lower()
+                for x in own
+            ),
+            "Janitor lacks exact group permission or has inherited broader access",
         )
         return self.m["resource_group_id"]
 
@@ -502,7 +508,8 @@ print('STAGING_TABLE_INITIALIZED')
                 "--scope",
                 data_scope(m),
                 "--include-inherited",
-                "--all",
+                "--fill-principal-name",
+                "false",
                 "-o",
                 "json",
             )

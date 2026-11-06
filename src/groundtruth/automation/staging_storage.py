@@ -135,7 +135,6 @@ def authorization_plan(m, principals):
 JANITOR_ACTIONS = [
     "Microsoft.Resources/subscriptions/resourceGroups/read",
     "Microsoft.Resources/subscriptions/resourceGroups/delete",
-    "Microsoft.Resources/resources/read",
     "Microsoft.Authorization/roleAssignments/read",
     "Microsoft.Authorization/roleDefinitions/read",
 ]
