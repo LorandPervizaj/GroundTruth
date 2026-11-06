@@ -8,12 +8,12 @@ Fresh before audit reproduced 36 advisories in six packages. [DEPENDENCY_ADVISOR
 
 | Package | Before | Final | Dependency scope |
 | --- | --- | --- | --- |
-| aiohttp | 3.14.3 | 3.14.4 | research â†’ Scrapy |
+| aiohttp | 3.14.3 | 3.14.4 | research → Scrapy |
 | Black | 26.5.1 | 26.10.1 | direct dev |
-| filelock | 3.29.1 | 4.2.1 | research â†’ tldextract; dev â†’ virtualenv/discovery/CacheControl |
-| msgpack | 1.2.2 | 1.2.3 | dev â†’ pip-audit â†’ CacheControl |
-| Twisted | 26.4.0 | 26.10.0 stable | research â†’ Scrapy |
-| virtualenv | 21.14.2 | 21.14.10 | dev â†’ pre-commit |
+| filelock | 3.29.1 | 4.2.1 | research → tldextract; dev → virtualenv/discovery/CacheControl |
+| msgpack | 1.2.2 | 1.2.3 | dev → pip-audit → CacheControl |
+| Twisted | 26.4.0 | 26.10.0 stable | research → Scrapy |
+| virtualenv | 21.14.2 | 21.14.10 | dev → pre-commit |
 
 Virtualenv also requires packaging 26.3 (previously 26.2). No full-tree upgrade occurred. An intermediate audit exposed another virtualenv advisory, CVE-2026-113713, in 21.14.9; final 21.14.10 fixes it. Audit after the final resolution: **zero known vulnerabilities**, without ignored IDs or changed audit thresholds. `uv lock --check` and frozen synchronization passed. Transitive security floors are constrained in uv while preserving separate install graphs; production `--extra web --no-dev` does not acquire these six research/dev packages. Alternative pip-only installations do not inherit uv constraints and are not the reviewed deployment route.
 
@@ -45,7 +45,7 @@ External actions still required: explicit spending/provisioning approval; approv
 
 ## 4. Git integration and review
 
-Branch: `codex/publication-integration-20261104`; [draft PR #20](https://github.com/LorandPervizaj/GroundTruth/pull/20). Recovery branch at the original integration head: `codex/recovery-publication-20261106` â†’ `8b8f3e9da56620f1a841aa3bc8a3ca38491ce10d`. Remote master remained `0b6f5ce3bc26a1b0313ae7f726e235b64c8f2d52` when refreshed. Original checkout remains `codex/minimal-cost-persistence-20261027` / `eb19c4229fda90d7765d4a477b314f34a96118d9`; its dirty files were not imported.
+Branch: `codex/publication-integration-20261104`; [draft PR #20](https://github.com/LorandPervizaj/GroundTruth/pull/20). Recovery branch at the original integration head: `codex/recovery-publication-20261106` → `8b8f3e9da56620f1a841aa3bc8a3ca38491ce10d`. Remote master remained `0b6f5ce3bc26a1b0313ae7f726e235b64c8f2d52` when refreshed. Original checkout remains `codex/minimal-cost-persistence-20261027` / `eb19c4229fda90d7765d4a477b314f34a96118d9`; its dirty files were not imported.
 
 Implementation commits: `48d0e6f` dependency remediation; `166fbe6` browser/performance fixes; `e68ae27` staging preparation/controller extension and offline tests. Later inventory/report commits are metadata-only. Full final identities are available from PR head and the inventory's explicit snapshot boundary; the inventory cannot embed its own final commit hash without a self-reference.
 
@@ -63,7 +63,7 @@ Production before-state fingerprint: `c09762c637dae8b10f58ab6737cb3255243eb4c22e
 
 Production writer workflows remain disabled, repository/environment publication/deployment gates false, and operator windows closed. Existing owner-review/branch restriction protections remain; administrator bypass and sole-owner self-review limitations were not silently changed. No production OIDC/RBAC/secret rotation occurred.
 
-Status vocabulary for final closure: dependency/workflow implementation and provenance can be RESOLVED only with current evidence; Azure provisioning, live identity/janitor installation and real Stage A are BLOCKED â€” EXTERNAL APPROVAL. Production B/C, new listing publication and architecture refactoring remain DEFERRED â€” OUT OF SCOPE. Any failed final hosted job remains BLOCKED â€” TECHNICAL; this document does not waive it.
+Status vocabulary for final closure: dependency/workflow implementation and provenance can be RESOLVED only with current evidence; Azure provisioning, live identity/janitor installation and real Stage A are BLOCKED — EXTERNAL APPROVAL. Production B/C, new listing publication and architecture refactoring remain DEFERRED — OUT OF SCOPE. Any failed final hosted job remains BLOCKED — TECHNICAL; this document does not waive it.
 
 ## North Central US amendment
 
