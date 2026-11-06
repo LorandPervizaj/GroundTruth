@@ -32,7 +32,7 @@ def test_k6_workflow_runs_on_safe_local_target() -> None:
     assert workflow["permissions"] == {"contents": "read"}
 
     job = workflow["jobs"]["performance"]
-    assert job["runs-on"] == "ubuntu-latest"
+    assert job["runs-on"] == "ubuntu-24.04"
     assert job["env"]["BASE_URL"] == "http://127.0.0.1:8000"
     assert job["services"]["postgres"]["image"] == "postgis/postgis:16-3.4"
 
