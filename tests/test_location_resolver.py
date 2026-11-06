@@ -11,7 +11,7 @@ def test_rruga_b_resolves_matiqan_district():
 
 
 def test_royal_mall_gets_rruga_b():
-    r = LocationResolver().resolve("Royal Mall, Matiqan")
+    r = LocationResolver().resolve("Banesë në kompleksin Royal Mall, Matiqan")
     assert r.neighborhood_slug == "matiqan"
     assert r.district_slug == "rruga-b"
     assert r.complex_slug == "royal-mall"

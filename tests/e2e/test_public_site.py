@@ -8,6 +8,7 @@ import subprocess
 import sys
 import time
 from collections.abc import Generator
+from pathlib import Path
 
 import pytest
 from playwright.sync_api import Browser, Page, Route, expect, sync_playwright
@@ -17,7 +18,7 @@ pytestmark = [
     pytest.mark.skipif(os.getenv("RUN_E2E") != "1", reason="set RUN_E2E=1"),
 ]
 
-BASE_URL = "http://127.0.0.1:8765"
+BASE_URL = os.getenv("METRIK_E2E_BASE_URL", "http://127.0.0.1:8765").rstrip("/")
 
 
 def _wait_for_server(timeout: float = 20.0) -> None:
@@ -33,6 +34,15 @@ def _wait_for_server(timeout: float = 20.0) -> None:
 
 @pytest.fixture(scope="module")
 def browser() -> Generator[Browser, None, None]:
+    if os.getenv("METRIK_E2E_BASE_URL"):
+        # Release gates exercise the already-running immutable local QA image.
+        if not BASE_URL.startswith(("http://127.0.0.1:", "http://localhost:")):
+            pytest.fail("External E2E target must be an authorized loopback QA origin")
+        with sync_playwright() as playwright:
+            instance = playwright.chromium.launch()
+            yield instance
+            instance.close()
+        return
     env = {
         **os.environ,
         "APP_ENV": "development",
@@ -63,11 +73,18 @@ def browser() -> Generator[Browser, None, None]:
 
 
 @pytest.fixture
-def page(browser: Browser) -> Generator[Page, None, None]:
+def page(browser: Browser, request) -> Generator[Page, None, None]:
     context = browser.new_context(viewport={"width": 375, "height": 812})
+    context.tracing.start(screenshots=True, snapshots=True, sources=True)
     page = context.new_page()
-    yield page
-    context.close()
+    try:
+        yield page
+    finally:
+        output = Path("artifacts/browser")
+        output.mkdir(parents=True, exist_ok=True)
+        page.screenshot(path=str(output / f"{request.node.name}.png"), full_page=True)
+        context.tracing.stop(path=str(output / f"{request.node.name}.zip"))
+        context.close()
 
 
 def test_home_and_language_switch(page: Page) -> None:

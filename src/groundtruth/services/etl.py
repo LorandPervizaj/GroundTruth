@@ -125,6 +125,18 @@ class EtlService:
                 normalized_schema.scraped_at = raw.scraped_at
                 is_valid = True
                 validation = self._validator.validate(normalized_schema)
+                if raw.source_website == "harta":
+                    from groundtruth.schemas.etl import ValidationIssue
+
+                    for code in parsed_schema.extra_fields.get("source_validation_issues", []):
+                        validation.issues.append(
+                            ValidationIssue(
+                                code=code,
+                                field="source_consistency",
+                                message="Harta source field requires review: " + code,
+                            )
+                        )
+                    validation.is_valid = not validation.issues
                 if factors.location_invalid:
                     from groundtruth.schemas.etl import ValidationIssue
 

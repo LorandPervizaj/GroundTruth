@@ -218,6 +218,48 @@ def perf_health(request: Request) -> dict:
     }
 
 
+@app.get("/api/deployment")
+def deployment_identity(request: Request) -> JSONResponse:
+    """Authenticated, read-only worker identity and durable-store readiness."""
+    import json
+    import os
+    from pathlib import Path
+
+    from groundtruth.services.artifact_integrity import get_artifact_integrity_state
+    from groundtruth.services.readiness import evaluate_readiness
+
+    require_ops_access(request)
+    settings = get_settings()
+    ready = evaluate_readiness(settings)
+    revision = os.environ.get("CONTAINER_APP_REVISION", "")
+    try:
+        guard = json.loads(Path("/tmp/checkpoint-c-cache-schema.json").read_text())
+        guarded = (
+            bool(revision)
+            and guard.get("revision") == revision
+            and guard.get("source_instance_excluded") is True
+            and guard.get("tables_after") == 21
+            and guard.get("head") == "h2i3j4k5l6m7"
+        )
+    except (OSError, ValueError):
+        guarded = False
+    payload = {
+        "revision": revision,
+        "serving_source_sha": os.environ.get("METRIK_DEPLOY_SOURCE_SHA", ""),
+        "data_release_id": os.environ.get("METRIK_DEPLOY_DATA_RELEASE_ID", ""),
+        "image": os.environ.get("METRIK_DEPLOY_IMAGE", ""),
+        "backend": settings.product_write_backend,
+        "artifacts_verified": get_artifact_integrity_state().verified,
+        "cache_guard_verified": guarded,
+        "ok": ready.get("ok") is True
+        and guarded
+        and settings.product_write_backend == "azure_table",
+    }
+    return JSONResponse(
+        payload, status_code=200 if payload["ok"] else 503, headers={"Cache-Control": "no-store"}
+    )
+
+
 @app.get("/api/metrics")
 def api_metrics(request: Request) -> dict:
     """Basic in-process request counters (lock down in production)."""

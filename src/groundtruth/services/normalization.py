@@ -19,7 +19,7 @@ from groundtruth.processing.normalizers.heating import HeatingNormalizer
 from groundtruth.processing.normalizers.price import PriceNormalizer
 from groundtruth.schemas.pipeline import NormalizedListingSchema, ParsedListingSchema
 
-NORMALIZATION_VERSION = "2.0.0"
+NORMALIZATION_VERSION = "2.1.0"
 GAZETTEER_VERSION = compute_gazetteer_version()
 
 
@@ -56,7 +56,7 @@ class NormalizationService:
             street_raw=parsed.street_raw,
             complex_raw=parsed.complex_raw,
             description=parsed.description_original,
-            city=parsed.city,
+            city=extra.get("pricing_compatibility_city", parsed.city),
         )
 
         neighborhood_id = self._db_id(Neighborhood, resolution.neighborhood_slug)
@@ -113,6 +113,17 @@ class NormalizationService:
             building_match_type=building_match.match_type if building_match else "missing",
             location_invalid=resolution.invalid_location,
             location_invalid_reason=resolution.invalid_reason,
+            location_semantics={
+                "market_entity_id": resolution.market_entity_id,
+                "market_subarea_slug": resolution.market_subarea_slug,
+                "parent_relationships": list(resolution.parent_relationships),
+                "physical_street_slug": resolution.physical_street_slug,
+                "proximity_mentions": list(resolution.proximity_mentions),
+                "source_city_raw": extra.get("source_city_raw", parsed.city),
+                "parser_derived_city": parsed.city,
+                "pricing_compatibility_city": extra.get("pricing_compatibility_city"),
+                "city_scope_policy": extra.get("city_scope_policy"),
+            },
         )
 
         property_type = refine_property_type(
@@ -136,7 +147,7 @@ class NormalizationService:
             rent_price=rent_price,
             currency=currency,
             price_per_sqm=price_per_sqm,
-            city=parsed.city,
+            city=extra.get("pricing_compatibility_city", parsed.city),
             neighborhood_id=neighborhood_id or parsed.neighborhood_id,
             district_id=district_id,
             street_id=parsed.street_id,

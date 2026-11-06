@@ -9,6 +9,8 @@ from decimal import Decimal
 from typing import Any
 
 from groundtruth.gazetteers.loader import GazetteerService
+from groundtruth.gazetteers.location_resolver import location_term_matches
+from groundtruth.gazetteers.location_tree import normalize_text
 from groundtruth.models.enums import ListingType, PropertyType
 from groundtruth.processing.extractors.bedrooms import extract_bedrooms_from_text, sanitize_bedrooms
 from groundtruth.processing.extractors.property_type import (
@@ -418,7 +420,6 @@ class MerrJepParsingService:
     ) -> str | None:
         if not text:
             return None
-        lower = text.lower()
         entries = self._gazetteer._data.get(kind, [])  # noqa: SLF001
         candidates: list[tuple[int, str]] = []
         for entry in entries:
@@ -427,7 +428,9 @@ class MerrJepParsingService:
                 if entry_city and city.lower() not in entry_city and entry_city not in city.lower():
                     continue
             for name in [entry["name"], *entry.get("aliases", [])]:
-                if len(name) >= 3 and name.lower() in lower:
+                if len(name) >= 3 and location_term_matches(
+                    normalize_text(text), normalize_text(name)
+                ):
                     candidates.append((len(name), entry["name"]))
         if not candidates:
             return None

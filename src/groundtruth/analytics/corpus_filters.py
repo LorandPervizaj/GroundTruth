@@ -24,7 +24,7 @@ TOPIA_PARSER_VERSION = PARSER_VERSIONS["topia"]
 MYREALESTATE_PARSER_VERSION = PARSER_VERSIONS["myrealestate"]
 
 # Compatibility re-export — authoritative definition is portals.registry.
-SOURCE_DISPLAY_NAMES: dict[str, str] = source_display_names()
+SOURCE_DISPLAY_NAMES: dict[str, str] = source_display_names(public_only=True)
 
 # Part B2 — informal Facebook tier; never blended into public medians.
 INFORMAL_SOURCE_WEBSITES: frozenset[str] = frozenset({"facebook", "facebook-groups"})

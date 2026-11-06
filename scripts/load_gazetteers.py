@@ -135,6 +135,18 @@ def _upsert_building(
     )
 
 
+def _reserve_neighborhood_ids(session, entries: list[dict]) -> None:
+    """Keep generated IDs above both existing and incoming explicit IDs."""
+    existing_max = (
+        session.query(Neighborhood.id).order_by(Neighborhood.id.desc()).limit(1).scalar() or 0
+    )
+    incoming_max = max((entry.get("id") or 0 for entry in entries), default=0)
+    session.execute(
+        text("SELECT setval('neighborhoods_id_seq', :next_id, false)"),
+        {"next_id": max(existing_max, incoming_max) + 1},
+    )
+
+
 def load() -> None:
     """Import JSON gazetteers into neighborhoods, streets, complexes, buildings tables."""
     configure_logging()
@@ -146,10 +158,7 @@ def load() -> None:
     session = session_factory()
 
     try:
-        max_id = (
-            session.query(Neighborhood.id).order_by(Neighborhood.id.desc()).limit(1).scalar() or 0
-        )
-        session.execute(text(f"SELECT setval('neighborhoods_id_seq', {max_id}, true)"))
+        _reserve_neighborhood_ids(session, gazetteer._data.get("neighborhoods", []))
 
         for entry in gazetteer._data.get("neighborhoods", []):
             _upsert_neighborhood(session, entry)

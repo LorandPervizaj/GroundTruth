@@ -51,7 +51,7 @@ concurrency:
 
 jobs:
   performance:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
 
     services:
@@ -96,7 +96,8 @@ jobs:
       - name: Start local Metrik
         shell: bash
         run: |
-          uv run groundtruth serve --no-reload > /tmp/metrik-k6.log 2>&1 &
+          # Avoid holding uv's cache lock for the lifetime of the server.
+          .venv/bin/groundtruth serve --no-reload > /tmp/metrik-k6.log 2>&1 &
           echo $! > /tmp/metrik-k6.pid
 
           for attempt in {1..45}; do
@@ -147,6 +148,23 @@ jobs:
           path: artifacts/
           if-no-files-found: ignore
           retention-days: 14
+
+      - name: Stop isolated Metrik before cache cleanup
+        if: always()
+        shell: bash
+        run: |
+          if [ -f /tmp/metrik-k6.pid ]; then
+            server_pid="$(cat /tmp/metrik-k6.pid)"
+            if kill -0 "$server_pid" 2>/dev/null; then
+              kill "$server_pid"
+              for attempt in {1..20}; do
+                if ! kill -0 "$server_pid" 2>/dev/null; then exit 0; fi
+                sleep 0.5
+              done
+              echo "Test server did not stop; cache cleanup is unsafe"
+              exit 1
+            fi
+          fi
 
       - name: Show Metrik log on failure
         if: failure()

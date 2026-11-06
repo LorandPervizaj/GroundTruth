@@ -1,0 +1,155 @@
+{
+  "purpose": "Read-only amendment evidence; NOT executable preflight approval",
+  "checked_at": "2026-11-06T10:57:38.283664+00:00",
+  "region": "northcentralus",
+  "subscription": "c73c2fd1-9b7f-4221-a868-757128f2e416",
+  "subscription_type": "Azure for Students",
+  "spending_limit": "On",
+  "allowed_regions": [
+    "eastus2",
+    "westus2",
+    "canadacentral",
+    "northcentralus",
+    "mexicocentral"
+  ],
+  "managed_environment_count": {
+    "current": 0,
+    "limit": 1,
+    "checked_at": "2026-11-06T10:51:35.062662+00:00"
+  },
+  "providers": {
+    "Microsoft.App": {
+      "registration_state": "Registered",
+      "resource_type": "managedEnvironments",
+      "region_advertised": true
+    },
+    "Microsoft.ContainerRegistry": {
+      "registration_state": "Registered",
+      "resource_type": "registries",
+      "region_advertised": true
+    },
+    "Microsoft.Storage": {
+      "registration_state": "Registered",
+      "resource_type": "storageAccounts",
+      "region_advertised": true
+    },
+    "Microsoft.ManagedIdentity": {
+      "registration_state": "Registered",
+      "resource_type": "userAssignedIdentities",
+      "region_advertised": true
+    }
+  },
+  "storage": {
+    "sku": "Standard_LRS",
+    "kind": "StorageV2",
+    "regional_sku_restrictions": []
+  },
+  "quota_environment_id": null,
+  "quota_vcpu_available": null,
+  "consumption_core_capacity": "UNVERIFIED until new staging environment exists",
+  "actual_allocation_capacity": "UNVERIFIED until separately approved provisioning",
+  "pricing": {
+    "checked_at": "2026-11-06T10:57:38.283664+00:00",
+    "region": "northcentralus",
+    "currency": "USD",
+    "meters": {
+      "Azure Container Apps": [
+        {
+          "meterName": "Standard Memory Active Usage",
+          "retailPrice": 3e-06,
+          "unitOfMeasure": "1 GiB Second",
+          "currencyCode": "USD"
+        },
+        {
+          "meterName": "Standard Requests",
+          "retailPrice": 0.4,
+          "unitOfMeasure": "1M",
+          "currencyCode": "USD"
+        },
+        {
+          "meterName": "Standard vCPU Active Usage",
+          "retailPrice": 2.4e-05,
+          "unitOfMeasure": "1 Second",
+          "currencyCode": "USD"
+        }
+      ],
+      "Container Registry": [
+        {
+          "meterName": "Basic Registry Unit",
+          "retailPrice": 0.1666,
+          "unitOfMeasure": "1/Day",
+          "currencyCode": "USD"
+        }
+      ],
+      "Storage": [
+        {
+          "meterName": "Read Operations",
+          "retailPrice": 0.00036,
+          "unitOfMeasure": "10K",
+          "currencyCode": "USD"
+        },
+        {
+          "meterName": "LRS Data Stored",
+          "retailPrice": 0.045,
+          "unitOfMeasure": "1 GB/Month",
+          "currencyCode": "USD"
+        },
+        {
+          "meterName": "List Operations",
+          "retailPrice": 0.00036,
+          "unitOfMeasure": "10K",
+          "currencyCode": "USD"
+        },
+        {
+          "meterName": "Batch Write Operations",
+          "retailPrice": 0.00036,
+          "unitOfMeasure": "10K",
+          "currencyCode": "USD"
+        },
+        {
+          "meterName": "Write Operations",
+          "retailPrice": 0.00036,
+          "unitOfMeasure": "10K",
+          "currencyCode": "USD"
+        },
+        {
+          "meterName": "Delete Operations",
+          "retailPrice": 0.00036,
+          "unitOfMeasure": "10K",
+          "currencyCode": "USD"
+        },
+        {
+          "meterName": "Scan Operations",
+          "retailPrice": 0.00036,
+          "unitOfMeasure": "10K",
+          "currencyCode": "USD"
+        }
+      ]
+    },
+    "three_active_replicas_hour_usd": 0.324,
+    "two_hour_estimate_usd": 0.8322123287671234,
+    "four_hour_estimate_usd": 1.4802246575342468,
+    "spending_ceiling_usd": 3,
+    "credits_or_free_grants_assumed": false
+  },
+  "production_baseline": {
+    "fingerprint": "c09762c637dae8b10f58ab6737cb3255243eb4c22edc6964c1e4554757b1b08b",
+    "traffic": [
+      {
+        "revisionName": "ca-metrik-api--phase5-c-889184ff8a24",
+        "weight": 100
+      }
+    ],
+    "images": {
+      "ca-metrik-api--phase5-c-889184ff8a24": "acrmetrikbetalgy2mu.azurecr.io/metrik-api@sha256:dbe95c0584a7b914651205fe736a6bd2d45e1b7ee5345ce3737d00055f833d29"
+    },
+    "production_region": "East US 2",
+    "compatibility": "passed"
+  },
+  "azure_mutations_performed": false,
+  "janitor_installed": false,
+  "real_stage_a_tests": "NOT_EXECUTED",
+  "proposed_budget_usd": 3,
+  "northcentralus_execution_approved": false,
+  "source_receipts": "Integration checkout .tmp/northcentralus-amendment/*.json"
+}

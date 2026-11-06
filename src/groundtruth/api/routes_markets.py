@@ -143,6 +143,14 @@ def rent_yield(response: Response) -> RentYieldResponse:
     from groundtruth.services.lookup_cache import cache_is_loaded
 
     set_public_cache(response, max_age=120)
+    settings = get_settings()
+    if not settings.is_development and settings.api_require_lookup_cache:
+        # Published artifacts are hashed release inputs, never rewritten by a GET.
+        published = load_rent_yield_cache()
+        if not published:
+            raise HTTPException(status_code=503, detail="Published rent-yield data is unavailable.")
+        return RentYieldResponse(rows=published, cached=True)
+
     if cache_is_loaded():
         rows = build_rent_yield_from_lookup_cache()
         if rows:

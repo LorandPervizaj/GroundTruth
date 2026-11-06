@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import subprocess
 from collections.abc import Callable
 from datetime import datetime
@@ -27,15 +28,20 @@ from groundtruth.config import PROJECT_ROOT
 def source_git_sha() -> str:
     configured = os.getenv("GROUNDTRUTH_SOURCE_GIT_SHA")
     if configured:
+        if not re.fullmatch(r"[0-9a-f]{40}", configured):
+            raise ValueError("DATA_SOURCE_SHA must be a full immutable commit SHA")
         return configured
     result = subprocess.run(
-        ["git", "rev-parse", "--short=12", "HEAD"],
+        ["git", "rev-parse", "--verify", "HEAD^{commit}"],
         cwd=PROJECT_ROOT,
         check=False,
         capture_output=True,
         text=True,
     )
-    return result.stdout.strip() if result.returncode == 0 else "unknown"
+    value = result.stdout.strip()
+    if result.returncode or not re.fullmatch(r"[0-9a-f]{40}", value):
+        raise ValueError("Cannot establish immutable data-generation source")
+    return value
 
 
 def make_release_id(now: datetime | None = None, *, git_sha: str | None = None) -> str:

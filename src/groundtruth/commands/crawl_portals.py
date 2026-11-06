@@ -5,8 +5,55 @@ from __future__ import annotations
 import typer
 from rich.console import Console
 
+from groundtruth.scrapers.harta_contract import (
+    DEFAULT_MAX_LISTINGS,
+    DEFAULT_MAX_REQUESTS,
+    DEFAULT_MAX_SECONDS,
+    DEFAULT_RECHECK_DAYS,
+)
+
 console = Console()
 crawl_app = typer.Typer(help="Scraping commands")
+
+
+@crawl_app.command("harta")
+def crawl_harta(
+    max_listings: int = typer.Option(DEFAULT_MAX_LISTINGS, min=1, max=1000),
+    max_pages: int = typer.Option(4, min=1, max=100),
+    max_requests: int = typer.Option(DEFAULT_MAX_REQUESTS, min=1, max=2000),
+    max_seconds: int = typer.Option(DEFAULT_MAX_SECONDS, min=1, max=3600),
+    recheck_days: int = typer.Option(DEFAULT_RECHECK_DAYS, min=1),
+    report_path: str = typer.Option("reports/generated/harta_crawl_report.json"),
+    crawl_window: str | None = typer.Option(None),
+) -> None:
+    """Bounded private Harta research crawl; public and automatic jobs stay disabled."""
+    from scrapy.crawler import CrawlerProcess
+    from scrapy.utils.project import get_project_settings
+
+    process = CrawlerProcess(get_project_settings())
+    crawler = process.create_crawler("harta")
+    process.crawl(
+        crawler,
+        max_listings=str(max_listings),
+        max_pages=str(max_pages),
+        max_requests=str(max_requests),
+        max_seconds=str(max_seconds),
+        recheck_days=str(recheck_days),
+        report_path=report_path,
+        crawl_window=crawl_window,
+    )
+    process.start()
+    reason = crawler.stats.get_value("finish_reason") if crawler.stats else None
+    if (
+        reason != "finished"
+        or not crawler.spider
+        or crawler.spider.errors_count
+        or crawler.spider.metrics["parse_failures"]
+        or crawler.spider.run_status() not in {"complete", "bounded_complete"}
+    ):
+        console.print("[red]Harta crawl incomplete; inspect the private crawl report.[/red]")
+        raise typer.Exit(1)
+    console.print("Harta raw crawl finished. Run groundtruth etl run --source harta.")
 
 
 def _run_gjirafa_crawl(

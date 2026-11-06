@@ -32,6 +32,9 @@ class PortalConfig:
     weekly: bool
     """Whether this portal participates in the standard weekly ingest set."""
 
+    public: bool = True
+    """Whether this source is approved for public corpus/release inclusion."""
+
 
 # Ordered by source_priority ascending — insertion order feeds derived maps/tuples.
 # Public display_name values are intentional placeholders (legal/product hygiene).
@@ -84,6 +87,15 @@ PORTALS: Final[tuple[PortalConfig, ...]] = (
         source_priority=5,
         weekly=True,
     ),
+    PortalConfig(
+        name="harta",
+        spider="harta",
+        parser_version="0.3.0-harta",
+        display_name="Portal G",
+        source_priority=6,
+        weekly=False,
+        public=False,
+    ),
 )
 
 
@@ -99,9 +111,9 @@ def parser_versions() -> dict[str, str]:
     return {p.name: p.parser_version for p in PORTALS}
 
 
-def source_display_names() -> dict[str, str]:
+def source_display_names(*, public_only: bool = False) -> dict[str, str]:
     """Map source_website → public/report display name."""
-    return {p.name: p.display_name for p in PORTALS}
+    return {p.name: p.display_name for p in PORTALS if not public_only or p.public}
 
 
 def source_priority_order() -> tuple[str, ...]:
@@ -120,4 +132,4 @@ def all_portal_names() -> frozenset[str]:
 
 def public_parser_placeholders() -> list[str]:
     """Opaque public labels — never emit real parser version tokens (they embed brands)."""
-    return [f"parser-{i}" for i in range(1, len(PORTALS) + 1)]
+    return [f"parser-{i}" for i in range(1, sum(p.public for p in PORTALS) + 1)]

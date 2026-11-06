@@ -20,6 +20,8 @@ param(
   [string]$EnvironmentName = "beta"
 )
 
+throw 'Legacy direct infrastructure deployment is disabled. Use the reviewed manual publication workflow; infrastructure changes require a separate plan.'
+
 $ErrorActionPreference = "Stop"
 $Root = Resolve-Path (Join-Path $PSScriptRoot "..\..")
 Set-Location $Root

@@ -28,6 +28,26 @@ def validate_production_settings(settings: Settings) -> None:
             errors.append(f"DATABASE_URL contains unsafe placeholder '{marker}' in production")
             break
 
+    if settings.product_write_backend != "azure_table":
+        errors.append(
+            "Production authoritative submissions require Azure Table with managed identity"
+        )
+
+    if settings.product_write_backend == "azure_table":
+        from urllib.parse import urlparse
+
+        endpoint = urlparse(settings.product_table_endpoint)
+        if (
+            endpoint.scheme != "https"
+            or not (endpoint.hostname or "").endswith(
+                (".table.core.windows.net", ".table.cosmos.azure.com", ".table.cosmosdb.azure.com")
+            )
+            or endpoint.query
+        ):
+            errors.append("Production Table Storage requires its HTTPS Azure endpoint")
+        if settings.product_table_connection_string:
+            errors.append("Production Table Storage requires managed identity, not account keys")
+
     if settings.product_write_backend == "jsonl":
         errors.append(
             "PRODUCT_WRITE_BACKEND=jsonl is not allowed in production "

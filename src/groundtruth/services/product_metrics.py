@@ -90,6 +90,13 @@ def load_product_events(
     """Load product events from DB or JSONL within the rolling window."""
     since = datetime.now(UTC) - timedelta(days=days)
     settings = get_settings()
+    if settings.product_write_backend == "azure_table":
+        from groundtruth.services.table_submissions import active_store
+
+        return [
+            json.loads(row["PayloadJson"])
+            for row in active_store().records(kind="events", since=since)
+        ]
     if settings.product_write_backend == "database":
         if session is None:
             from groundtruth.database.session import get_session_factory

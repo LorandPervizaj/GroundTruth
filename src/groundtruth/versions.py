@@ -8,10 +8,12 @@ from __future__ import annotations
 
 from typing import Final
 
-from groundtruth.portals.registry import parser_versions
+from groundtruth.portals.registry import PORTALS, parser_versions
 
 ETL_PIPELINE_VERSION: Final = "1.0.0"
 
 PARSER_VERSIONS: Final[dict[str, str]] = parser_versions()
-ACTIVE_PARSER_VERSIONS: Final[tuple[str, ...]] = tuple(PARSER_VERSIONS.values())
+ACTIVE_PARSER_VERSIONS: Final[tuple[str, ...]] = tuple(
+    p.parser_version for p in PORTALS if p.public
+)
 FACEBOOK_PARSER_VERSION: Final = "0.1.0-facebook-informal"

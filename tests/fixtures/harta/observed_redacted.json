@@ -1,0 +1,53 @@
+{
+  "fixture_note": "Observed 2026-10-21 public HTML property shape, plus explicit monthly period from JSON-LD. UUID, address and coordinates redacted. Description replaced by numeric consistency facts; not a representative accuracy sample.",
+  "property": {
+    "id": "11111111-1111-4111-8111-111111111111",
+    "city": "Prishtinë",
+    "sqft": 85,
+    "floor": null,
+    "price": 410,
+    "state": "Prishtinë",
+    "title": "Apartament • 85m2",
+    "status": "active",
+    "address": "Rruga A, Prishtinë, Kosovë",
+    "country": "Kosovë",
+    "bedrooms": 2,
+    "currency": "EUR",
+    "latitude": 42.65,
+    "bathrooms": 1,
+    "condition": null,
+    "longitude": 21.15,
+    "created_at": "2026-07-12 21:53:51.286+00",
+    "price_unit": "total",
+    "living_area": null,
+    "price_total": 410,
+    "listing_type": "rent",
+    "price_per_m2": 4.823529411764706,
+    "surface_area": 85,
+    "surface_unit": "m2",
+    "property_type": "apartment",
+    "property_sub_type": null,
+    "construction_status": "ready",
+    "contract_issues": [],
+    "features": {
+      "parking": "private",
+      "elevator": true,
+      "furnished": true,
+      "floor_levels": [
+        "4"
+      ],
+      "rental_period": "monthly"
+    },
+    "description_facts": {
+      "asking_prices": [
+        "400"
+      ],
+      "areas_sqm": [],
+      "per_sqm_prices": [],
+      "transaction_types": [
+        "rent"
+      ],
+      "non_apartment_type": false
+    }
+  }
+}

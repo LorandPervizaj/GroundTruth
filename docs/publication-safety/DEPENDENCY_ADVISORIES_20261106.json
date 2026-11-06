@@ -1,0 +1,948 @@
+{
+  "before_count": 36,
+  "after_count": 0,
+  "advisories": [
+    {
+      "package": "aiohttp",
+      "before": "3.14.3",
+      "after": "3.14.4",
+      "advisory": "CVE-2026-111064",
+      "aliases": [
+        "GHSA-5wr8-gcqf-gqf3"
+      ],
+      "severity": "high",
+      "affected": [
+        {
+          "package": {
+            "ecosystem": "pip",
+            "name": "aiohttp"
+          },
+          "vulnerable_version_range": "<= 3.14.3",
+          "first_patched_version": "3.14.4",
+          "vulnerable_functions": []
+        }
+      ],
+      "summary": "aiohttp server lacks an initial request/header timeout",
+      "source": "https://github.com/advisories/GHSA-5wr8-gcqf-gqf3",
+      "disposition": "upgraded; absent from full after audit",
+      "production_install": false,
+      "scope": "research"
+    },
+    {
+      "package": "aiohttp",
+      "before": "3.14.3",
+      "after": "3.14.4",
+      "advisory": "GHSA-2g87-pp6c-29x5",
+      "aliases": [],
+      "severity": "high",
+      "affected": [
+        {
+          "package": {
+            "ecosystem": "pip",
+            "name": "aiohttp"
+          },
+          "vulnerable_version_range": "<= 3.14.3",
+          "first_patched_version": "3.14.4",
+          "vulnerable_functions": []
+        }
+      ],
+      "summary": "aiohttp: Multiple instances of excessive or unbounded memory/CPU use",
+      "source": "https://github.com/advisories/GHSA-2g87-pp6c-29x5",
+      "disposition": "upgraded; absent from full after audit",
+      "production_install": false,
+      "scope": "research"
+    },
+    {
+      "package": "aiohttp",
+      "before": "3.14.3",
+      "after": "3.14.4",
+      "advisory": "CVE-2026-111063",
+      "aliases": [
+        "GHSA-494j-54xm-rwp3"
+      ],
+      "severity": "medium",
+      "affected": [
+        {
+          "package": {
+            "ecosystem": "pip",
+            "name": "aiohttp"
+          },
+          "vulnerable_version_range": "<= 3.14.3",
+          "first_patched_version": "3.14.4",
+          "vulnerable_functions": []
+        }
+      ],
+      "summary": "AIOHTTP: Secure attribute not enforced for shared cookie",
+      "source": "https://github.com/advisories/GHSA-494j-54xm-rwp3",
+      "disposition": "upgraded; absent from full after audit",
+      "production_install": false,
+      "scope": "research"
+    },
+    {
+      "package": "aiohttp",
+      "before": "3.14.3",
+      "after": "3.14.4",
+      "advisory": "CVE-2026-111750",
+      "aliases": [
+        "GHSA-pqxq-w44r-73xw"
+      ],
+      "severity": "medium",
+      "affected": [
+        {
+          "package": {
+            "ecosystem": "pip",
+            "name": "aiohttp"
+          },
+          "vulnerable_version_range": "<= 3.14.3",
+          "first_patched_version": "3.14.4",
+          "vulnerable_functions": []
+        }
+      ],
+      "summary": "AIOHTTP: Pure-Python parser request smuggling",
+      "source": "https://github.com/advisories/GHSA-pqxq-w44r-73xw",
+      "disposition": "upgraded; absent from full after audit",
+      "production_install": false,
+      "scope": "research"
+    },
+    {
+      "package": "aiohttp",
+      "before": "3.14.3",
+      "after": "3.14.4",
+      "advisory": "CVE-2026-111066",
+      "aliases": [
+        "GHSA-9xw5-w5jj-pvcg"
+      ],
+      "severity": "high",
+      "affected": [
+        {
+          "package": {
+            "ecosystem": "pip",
+            "name": "aiohttp"
+          },
+          "vulnerable_version_range": ">= 2.0.0, < 3.14.4",
+          "first_patched_version": "3.14.4",
+          "vulnerable_functions": []
+        }
+      ],
+      "summary": "AIOHTTP: File descriptor exhaustion in multipart requests",
+      "source": "https://github.com/advisories/GHSA-9xw5-w5jj-pvcg",
+      "disposition": "upgraded; absent from full after audit",
+      "production_install": false,
+      "scope": "research"
+    },
+    {
+      "package": "aiohttp",
+      "before": "3.14.3",
+      "after": "3.14.4",
+      "advisory": "CVE-2026-111749",
+      "aliases": [
+        "GHSA-gx76-c99x-2c96"
+      ],
+      "severity": "low",
+      "affected": [
+        {
+          "package": {
+            "ecosystem": "pip",
+            "name": "aiohttp"
+          },
+          "vulnerable_version_range": "<= 3.14.3",
+          "first_patched_version": "3.14.4",
+          "vulnerable_functions": []
+        }
+      ],
+      "summary": "AIOHTTP: Cookie from subdomain can remove Host-Only Scope from existing cookies",
+      "source": "https://github.com/advisories/GHSA-gx76-c99x-2c96",
+      "disposition": "upgraded; absent from full after audit",
+      "production_install": false,
+      "scope": "research"
+    },
+    {
+      "package": "aiohttp",
+      "before": "3.14.3",
+      "after": "3.14.4",
+      "advisory": "CVE-2026-111065",
+      "aliases": [
+        "GHSA-6cjc-53gc-5rqm"
+      ],
+      "severity": "medium",
+      "affected": [
+        {
+          "package": {
+            "ecosystem": "pip",
+            "name": "aiohttp"
+          },
+          "vulnerable_version_range": "<= 3.14.3",
+          "first_patched_version": "3.14.4",
+          "vulnerable_functions": []
+        }
+      ],
+      "summary": "AIOHTTP: Connector pool exhaustion via Max-Age overflow",
+      "source": "https://github.com/advisories/GHSA-6cjc-53gc-5rqm",
+      "disposition": "upgraded; absent from full after audit",
+      "production_install": false,
+      "scope": "research"
+    },
+    {
+      "package": "aiohttp",
+      "before": "3.14.3",
+      "after": "3.14.4",
+      "advisory": "CVE-2026-111748",
+      "aliases": [
+        "GHSA-f9xw-jh8m-3mwq"
+      ],
+      "severity": "medium",
+      "affected": [
+        {
+          "package": {
+            "ecosystem": "pip",
+            "name": "aiohttp"
+          },
+          "vulnerable_version_range": "<= 3.14.3",
+          "first_patched_version": "3.14.4",
+          "vulnerable_functions": []
+        }
+      ],
+      "summary": "AIOHTTP: Absolute-form request targets can spoof Request.scheme",
+      "source": "https://github.com/advisories/GHSA-f9xw-jh8m-3mwq",
+      "disposition": "upgraded; absent from full after audit",
+      "production_install": false,
+      "scope": "research"
+    },
+    {
+      "package": "black",
+      "before": "26.5.1",
+      "after": "26.10.1",
+      "advisory": "CVE-2026-114134",
+      "aliases": [
+        "GHSA-cg8m-r9f2-5wm2"
+      ],
+      "severity": "high",
+      "affected": [
+        {
+          "package": {
+            "ecosystem": "pip",
+            "name": "black"
+          },
+          "vulnerable_version_range": "< 26.10.1",
+          "first_patched_version": "26.10.1",
+          "vulnerable_functions": []
+        }
+      ],
+      "summary": "Black: GitHub Action installs unvalidated required-version from pyproject.toml",
+      "source": "https://github.com/advisories/GHSA-cg8m-r9f2-5wm2",
+      "disposition": "upgraded; absent from full after audit",
+      "production_install": false,
+      "scope": "dev"
+    },
+    {
+      "package": "filelock",
+      "before": "3.29.1",
+      "after": "4.2.1",
+      "advisory": "CVE-2026-112940",
+      "aliases": [
+        "GHSA-v4x8-3wr5-3wq8"
+      ],
+      "severity": "high",
+      "affected": [
+        {
+          "package": {
+            "ecosystem": "pip",
+            "name": "filelock"
+          },
+          "vulnerable_version_range": ">= 3.20.4, <= 4.2.0",
+          "first_patched_version": "4.2.1",
+          "vulnerable_functions": []
+        }
+      ],
+      "summary": "filelock ReadWriteLock: SQLite reopens the lock database by name, so a planted symlink or journal file makes the lock user's process overwrite or unlink its own files",
+      "source": "https://github.com/advisories/GHSA-v4x8-3wr5-3wq8",
+      "disposition": "upgraded; absent from full after audit",
+      "production_install": false,
+      "scope": "research+dev"
+    },
+    {
+      "package": "filelock",
+      "before": "3.29.1",
+      "after": "4.2.1",
+      "advisory": "CVE-2026-112913",
+      "aliases": [
+        "GHSA-9vhv-jxww-xfm5"
+      ],
+      "severity": "low",
+      "affected": [
+        {
+          "package": {
+            "ecosystem": "pip",
+            "name": "filelock"
+          },
+          "vulnerable_version_range": ">= 3.20.4, <= 4.2.0",
+          "first_patched_version": "4.2.1",
+          "vulnerable_functions": []
+        }
+      ],
+      "summary": "filelock: ReadWriteLock on Windows acts on SQLite side files another local user places beside its database",
+      "source": "https://github.com/advisories/GHSA-9vhv-jxww-xfm5",
+      "disposition": "upgraded; absent from full after audit",
+      "production_install": false,
+      "scope": "research+dev"
+    },
+    {
+      "package": "filelock",
+      "before": "3.29.1",
+      "after": "4.2.1",
+      "advisory": "CVE-2026-112907",
+      "aliases": [
+        "GHSA-567q-5qvw-pf92"
+      ],
+      "severity": "low",
+      "affected": [
+        {
+          "package": {
+            "ecosystem": "pip",
+            "name": "filelock"
+          },
+          "vulnerable_version_range": ">= 3.22.0, <= 4.2.0",
+          "first_patched_version": "4.2.1",
+          "vulnerable_functions": []
+        }
+      ],
+      "summary": "filelock: On Windows an oplock on a soft lock's marker holds SoftFileLock.acquire() past its timeout and blocks the stale break",
+      "source": "https://github.com/advisories/GHSA-567q-5qvw-pf92",
+      "disposition": "upgraded; absent from full after audit",
+      "production_install": false,
+      "scope": "research+dev"
+    },
+    {
+      "package": "filelock",
+      "before": "3.29.1",
+      "after": "4.2.1",
+      "advisory": "CVE-2026-112936",
+      "aliases": [
+        "GHSA-j8f7-rjxc-mr56"
+      ],
+      "severity": "medium",
+      "affected": [
+        {
+          "package": {
+            "ecosystem": "pip",
+            "name": "filelock"
+          },
+          "vulnerable_version_range": ">= 3.20.4, <= 4.0.8",
+          "first_patched_version": "4.0.9",
+          "vulnerable_functions": []
+        }
+      ],
+      "summary": "filelock: ReadWriteLock follows a symlink at the lock path into SQLite",
+      "source": "https://github.com/advisories/GHSA-j8f7-rjxc-mr56",
+      "disposition": "upgraded; absent from full after audit",
+      "production_install": false,
+      "scope": "research+dev"
+    },
+    {
+      "package": "filelock",
+      "before": "3.29.1",
+      "after": "4.2.1",
+      "advisory": "CVE-2026-112910",
+      "aliases": [
+        "GHSA-8mx5-7m5m-r77g"
+      ],
+      "severity": "medium",
+      "affected": [
+        {
+          "package": {
+            "ecosystem": "pip",
+            "name": "filelock"
+          },
+          "vulnerable_version_range": ">= 3.10.0, <= 4.2.0",
+          "first_patched_version": "4.2.1",
+          "vulnerable_functions": []
+        }
+      ],
+      "summary": "filelock: WindowsFileLock ignores mode: a 0o600 lock file and the ReadWriteLock database inherit the directory ACL",
+      "source": "https://github.com/advisories/GHSA-8mx5-7m5m-r77g",
+      "disposition": "upgraded; absent from full after audit",
+      "production_install": false,
+      "scope": "research+dev"
+    },
+    {
+      "package": "filelock",
+      "before": "3.29.1",
+      "after": "4.2.1",
+      "advisory": "CVE-2026-112909",
+      "aliases": [
+        "GHSA-69hj-f68j-2879"
+      ],
+      "severity": "medium",
+      "affected": [
+        {
+          "package": {
+            "ecosystem": "pip",
+            "name": "filelock"
+          },
+          "vulnerable_version_range": "<= 4.2.0",
+          "first_patched_version": "4.2.1",
+          "vulnerable_functions": []
+        }
+      ],
+      "summary": "filelock: UnixFileLock truncates and chmods any regular file another user renames or hard-links onto the lock path",
+      "source": "https://github.com/advisories/GHSA-69hj-f68j-2879",
+      "disposition": "upgraded; absent from full after audit",
+      "production_install": false,
+      "scope": "research+dev"
+    },
+    {
+      "package": "filelock",
+      "before": "3.29.1",
+      "after": "4.2.1",
+      "advisory": "CVE-2026-112939",
+      "aliases": [
+        "GHSA-rfpc-qcw5-3pc4"
+      ],
+      "severity": "medium",
+      "affected": [
+        {
+          "package": {
+            "ecosystem": "pip",
+            "name": "filelock"
+          },
+          "vulnerable_version_range": ">= 3.22.0, <= 4.2.0",
+          "first_patched_version": "4.2.1",
+          "vulnerable_functions": []
+        }
+      ],
+      "summary": "filelock: SoftFileLock removes a live holder's marker when another user forges the PID in a writable marker",
+      "source": "https://github.com/advisories/GHSA-rfpc-qcw5-3pc4",
+      "disposition": "upgraded; absent from full after audit",
+      "production_install": false,
+      "scope": "research+dev"
+    },
+    {
+      "package": "filelock",
+      "before": "3.29.1",
+      "after": "4.2.1",
+      "advisory": "CVE-2026-112915",
+      "aliases": [
+        "GHSA-cwqr-hh33-gh44"
+      ],
+      "severity": "medium",
+      "affected": [
+        {
+          "package": {
+            "ecosystem": "pip",
+            "name": "filelock"
+          },
+          "vulnerable_version_range": ">= 3.20.4, <= 4.2.0",
+          "first_patched_version": "4.2.1",
+          "vulnerable_functions": []
+        }
+      ],
+      "summary": "filelock ReadWriteLock: a crafted lock database makes every acquire stall or hang regardless of timeout",
+      "source": "https://github.com/advisories/GHSA-cwqr-hh33-gh44",
+      "disposition": "upgraded; absent from full after audit",
+      "production_install": false,
+      "scope": "research+dev"
+    },
+    {
+      "package": "filelock",
+      "before": "3.29.1",
+      "after": "4.2.1",
+      "advisory": "CVE-2026-112935",
+      "aliases": [
+        "GHSA-fq56-3cx3-fjxp"
+      ],
+      "severity": "medium",
+      "affected": [
+        {
+          "package": {
+            "ecosystem": "pip",
+            "name": "filelock"
+          },
+          "vulnerable_version_range": ">= 3.22.0, <= 4.2.0",
+          "first_patched_version": "4.2.1",
+          "vulnerable_functions": []
+        }
+      ],
+      "summary": "filelock: SoftFileLock stale-lock break removes a live lock file on a reused inode number and admits two holders",
+      "source": "https://github.com/advisories/GHSA-fq56-3cx3-fjxp",
+      "disposition": "upgraded; absent from full after audit",
+      "production_install": false,
+      "scope": "research+dev"
+    },
+    {
+      "package": "msgpack",
+      "before": "1.2.2",
+      "after": "1.2.3",
+      "advisory": "CVE-2026-114613",
+      "aliases": [
+        "GHSA-j586-36cw-2gc2"
+      ],
+      "severity": "high",
+      "affected": [
+        {
+          "package": {
+            "ecosystem": "pip",
+            "name": "msgpack"
+          },
+          "vulnerable_version_range": "< 1.2.3",
+          "first_patched_version": "1.2.3",
+          "vulnerable_functions": []
+        }
+      ],
+      "summary": "MessagePack: Unbounded memory leak in msgpack C extension on strict_map_key validation failure",
+      "source": "https://github.com/advisories/GHSA-j586-36cw-2gc2",
+      "disposition": "upgraded; absent from full after audit",
+      "production_install": false,
+      "scope": "dev"
+    },
+    {
+      "package": "twisted",
+      "before": "26.4.0",
+      "after": "26.10.0",
+      "advisory": "CVE-2026-106454",
+      "aliases": [
+        "GHSA-8pqf-f4m5-798g"
+      ],
+      "severity": "medium",
+      "affected": [
+        {
+          "package": {
+            "ecosystem": "pip",
+            "name": "Twisted"
+          },
+          "vulnerable_version_range": "<= 26.4.0",
+          "first_patched_version": null,
+          "vulnerable_functions": []
+        }
+      ],
+      "summary": "Twisted: IMAP wildcardToRegexp() ReDoS",
+      "source": "https://github.com/advisories/GHSA-8pqf-f4m5-798g",
+      "disposition": "upgraded; absent from full after audit",
+      "production_install": false,
+      "scope": "research"
+    },
+    {
+      "package": "twisted",
+      "before": "26.4.0",
+      "after": "26.10.0",
+      "advisory": "CVE-2026-115778",
+      "aliases": [
+        "GHSA-cwm5-jh59-mwxr"
+      ],
+      "severity": "high",
+      "affected": [
+        {
+          "package": {
+            "ecosystem": "pip",
+            "name": "Twisted"
+          },
+          "vulnerable_version_range": "<= 26.4.0",
+          "first_patched_version": "26.10.0rc1",
+          "vulnerable_functions": []
+        }
+      ],
+      "summary": "Twisted: Unauthenticated Remote Denial of Service in the Twisted conch Telnet Transport via an Unbounded Subnegotiation Buffer",
+      "source": "https://github.com/advisories/GHSA-cwm5-jh59-mwxr",
+      "disposition": "upgraded; absent from full after audit",
+      "production_install": false,
+      "scope": "research"
+    },
+    {
+      "package": "twisted",
+      "before": "26.4.0",
+      "after": "26.10.0",
+      "advisory": "CVE-2026-115774",
+      "aliases": [
+        "GHSA-2qrf-pqgx-qh9v"
+      ],
+      "severity": "medium",
+      "affected": [
+        {
+          "package": {
+            "ecosystem": "pip",
+            "name": "Twisted"
+          },
+          "vulnerable_version_range": "<= 26.4.0",
+          "first_patched_version": "26.10.0rc1",
+          "vulnerable_functions": []
+        }
+      ],
+      "summary": "Twisted: Denial of Service in the Twisted IMAP4 Server via a Negative Literal Size in SEARCH",
+      "source": "https://github.com/advisories/GHSA-2qrf-pqgx-qh9v",
+      "disposition": "upgraded; absent from full after audit",
+      "production_install": false,
+      "scope": "research"
+    },
+    {
+      "package": "twisted",
+      "before": "26.4.0",
+      "after": "26.10.0",
+      "advisory": "CVE-2026-115775",
+      "aliases": [
+        "GHSA-3476-c5c2-fr73"
+      ],
+      "severity": "high",
+      "affected": [
+        {
+          "package": {
+            "ecosystem": "pip",
+            "name": "Twisted"
+          },
+          "vulnerable_version_range": "<= 26.4.0",
+          "first_patched_version": "26.10.0rc1",
+          "vulnerable_functions": []
+        }
+      ],
+      "summary": "Twisted: Unauthenticated Remote Denial of Service in the Twisted words domish XML Element Stream via an Unbounded Element Tree",
+      "source": "https://github.com/advisories/GHSA-3476-c5c2-fr73",
+      "disposition": "upgraded; absent from full after audit",
+      "production_install": false,
+      "scope": "research"
+    },
+    {
+      "package": "twisted",
+      "before": "26.4.0",
+      "after": "26.10.0",
+      "advisory": "CVE-2026-115776",
+      "aliases": [
+        "GHSA-53xc-49m8-p798"
+      ],
+      "severity": "high",
+      "affected": [
+        {
+          "package": {
+            "ecosystem": "pip",
+            "name": "Twisted"
+          },
+          "vulnerable_version_range": "<= 26.4.0",
+          "first_patched_version": "26.10.0rc1",
+          "vulnerable_functions": []
+        }
+      ],
+      "summary": "Twisted: Unauthenticated Remote Denial of Service in the Twisted IRC Server via an Unbounded Line Buffer",
+      "source": "https://github.com/advisories/GHSA-53xc-49m8-p798",
+      "disposition": "upgraded; absent from full after audit",
+      "production_install": false,
+      "scope": "research"
+    },
+    {
+      "package": "twisted",
+      "before": "26.4.0",
+      "after": "26.10.0",
+      "advisory": "CVE-2026-115877",
+      "aliases": [
+        "GHSA-q7qq-6mhp-9rc4"
+      ],
+      "severity": "medium",
+      "affected": [
+        {
+          "package": {
+            "ecosystem": "pip",
+            "name": "Twisted"
+          },
+          "vulnerable_version_range": "<= 26.4.0",
+          "first_patched_version": "26.10.0rc1",
+          "vulnerable_functions": []
+        }
+      ],
+      "summary": "Twisted: HTTP Request Smuggling in twisted.web via a Bare CR or LF in a Header Value",
+      "source": "https://github.com/advisories/GHSA-q7qq-6mhp-9rc4",
+      "disposition": "upgraded; absent from full after audit",
+      "production_install": false,
+      "scope": "research"
+    },
+    {
+      "package": "twisted",
+      "before": "26.4.0",
+      "after": "26.10.0",
+      "advisory": "CVE-2026-83813",
+      "aliases": [
+        "GHSA-jj36-9pvh-vj5r"
+      ],
+      "severity": "low",
+      "affected": [
+        {
+          "package": {
+            "ecosystem": "pip",
+            "name": "Twisted"
+          },
+          "vulnerable_version_range": "<= 26.4.0",
+          "first_patched_version": "26.10.0rc1",
+          "vulnerable_functions": []
+        }
+      ],
+      "summary": "Twisted: DNS Response Spoofing in twisted.names Due to Missing Source Address Validation",
+      "source": "https://github.com/advisories/GHSA-jj36-9pvh-vj5r",
+      "disposition": "upgraded; absent from full after audit",
+      "production_install": false,
+      "scope": "research"
+    },
+    {
+      "package": "twisted",
+      "before": "26.4.0",
+      "after": "26.10.0",
+      "advisory": "GHSA-vpp8-g58w-m8mp",
+      "aliases": [],
+      "severity": "high",
+      "affected": [
+        {
+          "package": {
+            "ecosystem": "pip",
+            "name": "Twisted"
+          },
+          "vulnerable_version_range": "<= 26.4.0",
+          "first_patched_version": "26.10.0rc1",
+          "vulnerable_functions": []
+        }
+      ],
+      "summary": "Twisted: Unauthenticated Remote Denial of Service in the Twisted HTTP/2 Server via Rapid Stream Reset",
+      "source": "https://github.com/advisories/GHSA-vpp8-g58w-m8mp",
+      "disposition": "upgraded; absent from full after audit",
+      "production_install": false,
+      "scope": "research"
+    },
+    {
+      "package": "virtualenv",
+      "before": "21.14.2",
+      "after": "21.14.10",
+      "advisory": "CVE-2026-113726",
+      "aliases": [
+        "GHSA-5vjq-rrrf-7h2q"
+      ],
+      "severity": "high",
+      "affected": [
+        {
+          "package": {
+            "ecosystem": "pip",
+            "name": "virtualenv"
+          },
+          "vulnerable_version_range": "<= 21.14.3",
+          "first_patched_version": "21.14.4",
+          "vulnerable_functions": []
+        }
+      ],
+      "summary": "virtualenv activate runs commands from the environment name in zsh with PROMPT_SUBST",
+      "source": "https://github.com/advisories/GHSA-5vjq-rrrf-7h2q",
+      "disposition": "upgraded; absent from full after audit",
+      "production_install": false,
+      "scope": "dev"
+    },
+    {
+      "package": "virtualenv",
+      "before": "21.14.2",
+      "after": "21.14.10",
+      "advisory": "CVE-2026-113725",
+      "aliases": [
+        "GHSA-vxj4-q4g9-crj7"
+      ],
+      "severity": "high",
+      "affected": [
+        {
+          "package": {
+            "ecosystem": "pip",
+            "name": "virtualenv"
+          },
+          "vulnerable_version_range": "<= 21.14.6",
+          "first_patched_version": "21.14.7",
+          "vulnerable_functions": []
+        }
+      ],
+      "summary": "virtualenv bash activate runs commands from an environment name with a backslash before $",
+      "source": "https://github.com/advisories/GHSA-vxj4-q4g9-crj7",
+      "disposition": "upgraded; absent from full after audit",
+      "production_install": false,
+      "scope": "dev"
+    },
+    {
+      "package": "virtualenv",
+      "before": "21.14.2",
+      "after": "21.14.10",
+      "advisory": "CVE-2026-113722",
+      "aliases": [
+        "GHSA-c978-59m8-c77v"
+      ],
+      "severity": "high",
+      "affected": [
+        {
+          "package": {
+            "ecosystem": "pip",
+            "name": "virtualenv"
+          },
+          "vulnerable_version_range": "< 21.14.9",
+          "first_patched_version": "21.14.9",
+          "vulnerable_functions": []
+        }
+      ],
+      "summary": "virtualenv: Generated POSIX console launchers interpret destination paths as shell syntax",
+      "source": "https://github.com/advisories/GHSA-c978-59m8-c77v",
+      "disposition": "upgraded; absent from full after audit",
+      "production_install": false,
+      "scope": "dev"
+    },
+    {
+      "package": "virtualenv",
+      "before": "21.14.2",
+      "after": "21.14.10",
+      "advisory": "CVE-2026-113714",
+      "aliases": [
+        "GHSA-494p-63j8-28p3"
+      ],
+      "severity": "low",
+      "affected": [
+        {
+          "package": {
+            "ecosystem": "pip",
+            "name": "virtualenv"
+          },
+          "vulnerable_version_range": "< 21.14.9",
+          "first_patched_version": "21.14.9",
+          "vulnerable_functions": []
+        }
+      ],
+      "summary": "virtualenv: Downloaded wheel selection and caching precede verification",
+      "source": "https://github.com/advisories/GHSA-494p-63j8-28p3",
+      "disposition": "upgraded; absent from full after audit",
+      "production_install": false,
+      "scope": "dev"
+    },
+    {
+      "package": "virtualenv",
+      "before": "21.14.2",
+      "after": "21.14.10",
+      "advisory": "CVE-2026-113723",
+      "aliases": [
+        "GHSA-6w3r-xr62-4xcp"
+      ],
+      "severity": "high",
+      "affected": [
+        {
+          "package": {
+            "ecosystem": "pip",
+            "name": "virtualenv"
+          },
+          "vulnerable_version_range": "< 21.14.9",
+          "first_patched_version": "21.14.9",
+          "vulnerable_functions": []
+        }
+      ],
+      "summary": "virtualenv: Bash prompt values can change meaning under older compatibility modes",
+      "source": "https://github.com/advisories/GHSA-6w3r-xr62-4xcp",
+      "disposition": "upgraded; absent from full after audit",
+      "production_install": false,
+      "scope": "dev"
+    },
+    {
+      "package": "virtualenv",
+      "before": "21.14.2",
+      "after": "21.14.10",
+      "advisory": "CVE-2026-113715",
+      "aliases": [
+        "GHSA-qmx5-4p3x-wvqf"
+      ],
+      "severity": "low",
+      "affected": [
+        {
+          "package": {
+            "ecosystem": "pip",
+            "name": "virtualenv"
+          },
+          "vulnerable_version_range": "< 21.14.9",
+          "first_patched_version": "21.14.9",
+          "vulnerable_functions": []
+        }
+      ],
+      "summary": "virtualenv: Venv configuration readback can reinterpret path boundaries",
+      "source": "https://github.com/advisories/GHSA-qmx5-4p3x-wvqf",
+      "disposition": "upgraded; absent from full after audit",
+      "production_install": false,
+      "scope": "dev"
+    },
+    {
+      "package": "virtualenv",
+      "before": "21.14.2",
+      "after": "21.14.10",
+      "advisory": "CVE-2026-113720",
+      "aliases": [
+        "GHSA-fc2g-4w5p-6whm"
+      ],
+      "severity": "medium",
+      "affected": [
+        {
+          "package": {
+            "ecosystem": "pip",
+            "name": "virtualenv"
+          },
+          "vulnerable_version_range": "< 21.14.9",
+          "first_patched_version": "21.14.9",
+          "vulnerable_functions": []
+        }
+      ],
+      "summary": "virtualenv: Seeded files retain permissions from an older cache",
+      "source": "https://github.com/advisories/GHSA-fc2g-4w5p-6whm",
+      "disposition": "upgraded; absent from full after audit",
+      "production_install": false,
+      "scope": "dev"
+    },
+    {
+      "package": "virtualenv",
+      "before": "21.14.2",
+      "after": "21.14.10",
+      "advisory": "CVE-2026-113717",
+      "aliases": [
+        "GHSA-cx28-75q4-x26q"
+      ],
+      "severity": "low",
+      "affected": [
+        {
+          "package": {
+            "ecosystem": "pip",
+            "name": "virtualenv"
+          },
+          "vulnerable_version_range": "< 21.14.9",
+          "first_patched_version": "21.14.9",
+          "vulnerable_functions": []
+        }
+      ],
+      "summary": "virtualenv: Pip seeding with download omits wheel digest verification",
+      "source": "https://github.com/advisories/GHSA-cx28-75q4-x26q",
+      "disposition": "upgraded; absent from full after audit",
+      "production_install": false,
+      "scope": "dev"
+    },
+    {
+      "package": "virtualenv",
+      "before": "21.14.2",
+      "after": "21.14.10",
+      "advisory": "CVE-2026-113718",
+      "aliases": [
+        "GHSA-394h-qwmc-48pf"
+      ],
+      "severity": "high",
+      "affected": [
+        {
+          "package": {
+            "ecosystem": "pip",
+            "name": "virtualenv"
+          },
+          "vulnerable_version_range": "< 21.14.9",
+          "first_patched_version": "21.14.9",
+          "vulnerable_functions": []
+        }
+      ],
+      "summary": "virtualenv: Xonsh activation literals depend on the script decoding codec",
+      "source": "https://github.com/advisories/GHSA-394h-qwmc-48pf",
+      "disposition": "upgraded; absent from full after audit",
+      "production_install": false,
+      "scope": "dev"
+    }
+  ],
+  "extra_finding": "Intermediate virtualenv21.14.9 audit exposed CVE-2026-113713; final21.14.10 resolves it. No ignore list used.",
+  "dependency_chains": {
+    "aiohttp": "research -> scrapy",
+    "black": "direct dev",
+    "filelock": "research -> scrapy -> tldextract; dev -> virtualenv/python-discovery/CacheControl",
+    "msgpack": "dev -> pip-audit -> CacheControl",
+    "twisted": "research -> scrapy",
+    "virtualenv": "dev -> pre-commit"
+  },
+  "reachability": "Research HTTP clients process untrusted portal input; Twisted mail/listener modules have no application callers. Dev tools process repository/config/cache input. Production frozen web install excludes all six. Package presence is not proof of exploitable production paths."
+}

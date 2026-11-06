@@ -1,0 +1,24 @@
+[
+  {
+    "case": "original_broad_dardania",
+    "title": "Banese per zyre me qira ne lagjen Dardania",
+    "description": "Leshohet banese me qira per zyre ne lagjen Dardania, e lokacionin mbrapa postes kryesore. Banesa gjendet ne katin e pare dhe ka 100m2.\n4 njesi\nCmimi: 500 euro\n\n[redacted]\n\nPer me shume informata mund te na kontaktoni ne numrin\n[contact redacted] WhatsApp dhe Viber [contact redacted]\n[contact redacted] WhatsApp dhe Viber [contact redacted]",
+    "neighborhood_raw": "Dardania",
+    "expect_not_district": "shkolla-dardania",
+    "source_record_sha256": "51565eca7caa8f4083a2922c1b272387e21fcfde368ebbbc9dc28ca3a5a22d3b"
+  },
+  {
+    "case": "original_ahmet_krasniqi",
+    "title": "Banese me qira ne lagjen Arberia",
+    "description": "Banesë me qira në lagjen Arberia,ne rrugen Ahmet Krasniqi,te banesat e Tregtise,perballe me Meridian market.Banesa eshte e mobiluar ne teresi.Lift funksional.termokosi i vendosur\nKati:6\nSipërfaqe:65 m2\nÇmimi i qirasë: 300 plus depozita\nRenditja:\n♦Sallon me kuzhinë\n♦Dhomë gjumi\n♦Banjo\n♦Ballkon\n♦Korridor\nPër më shumë informata mund të na beni like faqen tone ne facebook Smart Real Estate,\n[redacted]\n, ose mund të na kontaktoni në këtë numër telefoni\n[contact redacted]\nWhatsApp & Viber\n[contact redacted]\n",
+    "street_raw": null,
+    "expect_not_district": "rruga-a",
+    "source_record_sha256": "2ce7b0d839404cdb4c67ead327664f5b11cf952ab8662c526113e72350b44f90"
+  },
+  {
+    "case": "original_pro_rks_city",
+    "source_city": "Fushë Kosovë",
+    "source_raw_hash": "e3ec919155cdb3604f1501a6fb9396d7b173f775b417eb4bd7d859a456b02a29",
+    "policy": "Preserve source city, retain legacy pricing compatibility pending review."
+  }
+]

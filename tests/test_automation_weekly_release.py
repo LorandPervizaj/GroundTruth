@@ -28,8 +28,14 @@ def test_release_id_uses_iso_week() -> None:
 
 
 def test_source_git_sha_prefers_immutable_build_value(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("GROUNDTRUTH_SOURCE_GIT_SHA", "a" * 40)
+    assert source_git_sha() == "a" * 40
+
+
+def test_abbreviated_data_source_is_not_immutable_approval(monkeypatch):
     monkeypatch.setenv("GROUNDTRUTH_SOURCE_GIT_SHA", "deadbeef1234")
-    assert source_git_sha() == "deadbeef1234"
+    with pytest.raises(ValueError, match="full immutable"):
+        source_git_sha()
 
 
 def test_lookback_uses_verified_watermark_and_recovers_missed_week() -> None:

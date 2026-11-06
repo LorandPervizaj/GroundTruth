@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import re
+import unicodedata
 from dataclasses import dataclass, field
 from functools import lru_cache
 from pathlib import Path
@@ -100,6 +102,8 @@ def load_location_tree() -> LocationTree:
         tree.gazetteer_to_neighborhood[slug] = slug
 
         for item in nh.get("districts") or []:
+            if item.get("resolution_enabled") is False:
+                continue
             dslug = item["slug"]
             tree.districts[dslug] = TreeDistrict(
                 slug=dslug,
@@ -133,4 +137,5 @@ def load_location_tree() -> LocationTree:
 
 
 def normalize_text(text: str) -> str:
-    return GazetteerService._normalize(text)
+    text = unicodedata.normalize("NFC", text)
+    return GazetteerService._normalize(re.sub(r"[_\W]", " ", text))

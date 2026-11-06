@@ -116,7 +116,10 @@ def test_deployment_receives_the_exact_release_tag() -> None:
     deploy = workflow["jobs"]["deploy"]
     assert deploy["needs"] == "research"
     assert deploy["uses"] == f"./.github/workflows/{DEPLOY}"
-    assert deploy["with"] == {"release_tag": "${{ needs.research.outputs.release_tag }}"}
+    assert deploy["with"]["release_tag"] == "${{ needs.research.outputs.release_tag }}"
+    assert deploy["with"]["serving_source_sha"] == "${{ inputs.serving_source_sha }}"
+    assert deploy["with"]["expected_state"] == "${{ inputs.expected_state }}"
+    assert _triggers(workflow)["workflow_dispatch"]["inputs"]["deploy"]["default"] is False
     assert "needs.research.result == 'success'" in deploy["if"]
     outputs = workflow["jobs"]["research"]["outputs"]
     assert outputs["release_tag"] == "${{ steps.candidate.outputs.release_tag }}"
@@ -137,25 +140,22 @@ def test_deploy_workflow_verifies_before_deploy_and_has_rollback() -> None:
     workflow, text = _workflow(DEPLOY)
     steps = workflow["jobs"]["deploy"]["steps"]
     order = [
-        "Validate exact release tag",
-        "Download and verify exact GitHub release",
-        "Verify release again at deploy boundary",
-        "Build immutable serving image",
-        "Trivy scan",
-        "Push immutable serving image",
-        "Capture current production target",
-        "Deploy candidate revision",
-        "Verify live production contract",
-        "Restore previous production image after failure",
-        "Verify rollback",
+        "Validate immutable approval inputs",
+        "Verify exact data bundle and independent source approval",
+        "Install verified data into serving build context",
+        "Verify approved baseline before build",
+        "Build and verify reviewed serving image",
+        "Trivy release gate",
+        "Push and prove immutable build identity",
+        "Capture deploy validate promote and verify with guarded rollback",
     ]
     indexes = [_step_index(steps, name) for name in order]
     assert indexes == sorted(indexes)
-    assert "find_spec('scrapy') is None" in text
-    assert "PREVIOUS_IMAGE" in text
-    assert "CANDIDATE_DIGEST" in text
-    assert "${RELEASE_ID}-${sha}" in text
-    assert "metrik-api:latest" not in text
+    assert '"$CANDIDATE_IMAGE_DIGEST"' in text
+    assert "--revision-weight" not in text  # one tested state-machine owns mutation
+    assert "safe_deploy.py apply" in text
+    assert "METRIK_DEPLOY_ENABLED" in workflow["jobs"]["deploy"]["if"]
+    assert "METRIK_OPERATOR_WINDOW" in workflow["jobs"]["deploy"]["if"]
 
 
 def test_release_installer_verifies_before_installing() -> None:
@@ -174,50 +174,33 @@ def test_release_installer_verifies_before_installing() -> None:
     assert "releases/latest" not in script
 
 
-def test_code_deploys_keep_the_live_data_release() -> None:
+def test_code_deploys_require_an_exact_reviewed_data_release() -> None:
     workflow, text = _workflow("azure-beta-deploy.yml")
-    steps = workflow["jobs"]["deploy"]["steps"]
-    keep = _step_index(steps, "Keep the live verified data release")
-    assert _step_index(steps, "Azure login") < keep
-    assert keep < _step_index(steps, "Verify release artifacts")
-    assert keep < _step_index(steps, "Build, scan tooling absence, push immutable tag")
-    run = steps[keep]["run"]
-    assert "/api/meta" in run
-    assert "scripts/release/install-verified-release.sh" in run
-    assert "releases/latest" not in text
+    assert set(_triggers(workflow)) == {"workflow_dispatch"}
     assert (
-        _triggers(workflow)["workflow_dispatch"]["inputs"]["data_release_tag"]["required"] is False
+        _triggers(workflow)["workflow_dispatch"]["inputs"]["data_release_tag"]["required"] is True
     )
-    assert 'grep -F "\\"$DATA_RELEASE_ID\\""' in text
+    assert workflow["jobs"]["deploy"]["uses"] == "./.github/workflows/weekly-release-deploy.yml"
+    assert "steps" not in workflow["jobs"]["deploy"]
+    assert "az containerapp" not in text
+    deploy, _ = _workflow(DEPLOY)
+    assert deploy["concurrency"] == {
+        "group": "metrik-ca-metrik-api-production",
+        "cancel-in-progress": False,
+    }
 
 
-def test_deploys_wait_for_the_new_revision_before_checking_it() -> None:
+def test_ready_is_not_treated_as_promotion() -> None:
+    script = (ROOT / "scripts/azure/wait-for-revision.sh").read_text()
+    assert "latestReadyRevisionName" not in script
+    assert "promotion_verified=false" in script
+    assert "exit 2" in script  # legacy shared-ingress identity shortcut is rejected
     workflow, _ = _workflow(DEPLOY)
     steps = workflow["jobs"]["deploy"]["steps"]
-    deploy = steps[_step_index(steps, "Deploy candidate revision")]["run"]
-    assert "--revision-suffix" in deploy
-    assert deploy.index("az containerapp update") < deploy.index("wait-for-revision.sh")
-    assert '"$RELEASE_ID"' in deploy.split("wait-for-revision.sh", 1)[1]
-    rollback = steps[_step_index(steps, "Restore previous production image after failure")]["run"]
-    assert "--revision-suffix" in rollback
-    assert "wait-for-revision.sh" in rollback
-    tooling = steps[_step_index(steps, "Check out deploy tooling")]["with"]
-    assert "ref" not in tooling
-    for step in steps:
-        run = step.get("run", "")
-        for script in ("wait-for-revision.sh", "smoke.ps1"):
-            if script in run:
-                assert f".deploy-tools/scripts/azure/{script}" in run
-
-    workflow, _ = _workflow("azure-beta-deploy.yml")
-    steps = workflow["jobs"]["deploy"]["steps"]
-    deploy = steps[_step_index(steps, "Deploy Container App revision")]["run"]
-    assert "--revision-suffix" in deploy
-    assert "DATA_RELEASE_ID" in deploy.split("wait-for-revision.sh", 1)[1]
-
-    script = (ROOT / "scripts" / "azure" / "wait-for-revision.sh").read_text(encoding="utf-8")
-    assert "latestReadyRevisionName" in script
-    assert "/api/meta" in script
+    checkouts = [step for step in steps if step.get("uses", "").startswith("actions/checkout")]
+    assert checkouts[0]["with"]["ref"] == "${{ inputs.tooling_source_sha }}"
+    assert checkouts[1]["with"]["ref"] == "${{ inputs.serving_source_sha }}"
+    assert all(step["with"]["ref"] != "refs/tags/${{ inputs.release_tag }}" for step in checkouts)
 
 
 def test_smoke_script_runs_on_linux_runners() -> None:
@@ -246,3 +229,23 @@ def test_telegram_steps_never_block_research_or_deployment() -> None:
             for step in job.get("steps", []):
                 if "telegram" in step.get("name", "").lower():
                     assert step.get("continue-on-error") is True, f"{name}: {step['name']}"
+
+
+def test_publication_is_default_off_and_requires_environment_review():
+    workflow, text = _workflow(RESEARCH)
+    assert _triggers(workflow)["workflow_dispatch"]["inputs"]["publish"]["default"] is False
+    research = workflow["jobs"]["research"]
+    assert research["environment"] == "azure-beta"
+    publish = research["steps"][_step_index(research["steps"], "Publish immutable GitHub release")]
+    assert "inputs.publish" in publish["if"]
+    assert "vars.METRIK_PUBLICATION_ENABLED == 'true'" in publish["if"]
+
+
+def test_deployment_requires_distinct_repository_and_environment_gates():
+    workflow, text = _workflow(DEPLOY)
+    job = workflow["jobs"]["deploy"]
+    assert "vars.METRIK_DEPLOY_ENABLED == 'true'" in job["if"]
+    assert job["env"]["METRIK_DEPLOY_ENABLED"] == "${{ vars.METRIK_ENV_DEPLOY_ENABLED }}"
+    assert job["env"]["METRIK_OPERATOR_WINDOW"] == "${{ vars.METRIK_ENV_OPERATOR_WINDOW }}"
+    assert 'test "$METRIK_DEPLOY_ENABLED" = true' in text
+    assert 'test "$METRIK_OPERATOR_WINDOW" = exclusive' in text

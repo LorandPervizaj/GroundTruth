@@ -65,7 +65,7 @@ class TestInputCaps:
             json={**_FEEDBACK_PAYLOAD, "message": huge},
             headers={"Content-Length": str(len(huge) + 200)},
         )
-        assert res.status_code in (413, 422)
+        assert res.status_code == 413
 
     def test_rejects_non_json_content_type(self) -> None:
         res = client.post(

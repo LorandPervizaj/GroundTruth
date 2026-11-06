@@ -74,4 +74,4 @@ class TestNeighborhoodNormalizer:
         normalizer = NeighborhoodNormalizer(gazetteer_service)
         match = normalizer.normalize("Kodra e Diellit", city="Prishtina")
         assert match is not None
-        assert match.slug == "sunny-hill"
+        assert match.slug == "bregu-i-diellit"

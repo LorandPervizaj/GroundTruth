@@ -32,11 +32,14 @@ from groundtruth.provenance.rules import (
     PRICE_PLACEHOLDER_OVERRIDE,
     PRICE_SALE_DESC_FALLBACK,
     PRICE_SALE_SHORTHAND,
+    PRICE_SALE_UNIT_TOTAL,
+    PRICE_SALE_UNIT_UNRESOLVED,
     PRICE_STRUCTURED,
     TYPE_RAW_FIELD,
     TYPE_TITLE_INFER,
 )
 from groundtruth.schemas.pipeline import ParsedListingSchema
+from groundtruth.services.harta_parsing import HartaParsingService
 from groundtruth.services.merrjep_parsing import MerrJepParsingService
 from groundtruth.services.myrealestate_parsing import MyRealEstateParsingService
 from groundtruth.services.pro_rks_parsing import ProRksParsingService
@@ -116,6 +119,17 @@ class ParsingService:
             return self._parse_topia(raw)
         if raw.source_website == "myrealestate":
             return self._parse_myrealestate(raw)
+        if raw.source_website == "harta":
+            schema = HartaParsingService().parse_payload(
+                dict(raw.raw_payload or {}),
+                url=raw.original_url,
+                raw_listing_id=raw.id,
+                scrape_run_id=raw.scrape_run_id,
+                spider_version=raw.spider_version,
+            )
+            if schema.source_listing_id != raw.source_listing_id:
+                raise ValueError("Harta raw/property identity mismatch")
+            return schema
         raise ValueError(f"No parser for source: {raw.source_website}")
 
     def _parse_topia(self, raw: RawListing) -> ParsedListingSchema:
@@ -420,8 +434,56 @@ class ParsingService:
         area_sqm: float | None,
         description: str | None,
         prov: ProvenanceCollector | None = None,
-    ) -> tuple[Decimal, str | None]:
+    ) -> tuple[Decimal | None, str | None]:
         """Correct Gjirafa sale shorthand (e.g. 1,300 EUR → 130,000) and description fallback."""
+        # Explicit source units take precedence over the legacy 100x shorthand.
+        # Multiple areas (including net/gross components), rates or conflicting
+        # structured values cannot safely establish one total. Leave it missing
+        # so the unchanged validator quarantines it rather than guessing a basis.
+        unit_marker = r"(?:€|eur(?:o)?)\s*(?:/\s*)?m[²2](?!\w)"
+        if description and re.search(unit_marker, description, re.I):
+            rates = {
+                self._price.normalize(m.group(1))
+                for m in re.finditer(
+                    r"(?<![\d.,+−-])(\d[\d.,]*)\s*" + unit_marker, description, re.I
+                )
+            }
+            if not rates or price in rates:
+                area_matches = list(
+                    re.finditer(r"(?<![\d.,+−-])(\d+(?:[.,]\d+)?)\s*m[²2](?!\w)", description, re.I)
+                )
+                source_areas = {Decimal(m.group(1).replace(",", ".")) for m in area_matches}
+                result = None
+                if len(rates) == len(source_areas) == 1 and area_sqm is not None:
+                    rate, source_area = next(iter(rates)), next(iter(source_areas))
+                    if (
+                        rate is not None
+                        and rate > 0
+                        and source_area > 0
+                        and source_area == Decimal(str(area_sqm))
+                        and not any(
+                            re.search(
+                                r"\b(?:rreth|afërsisht|approximately|about)\s*$",
+                                description[max(0, m.start() - 25) : m.start()],
+                                re.I,
+                            )
+                            for m in area_matches
+                        )
+                    ):
+                        total = (rate * source_area).quantize(Decimal("0.01"))
+                        if price in {rate, total}:
+                            result = total
+                rule = PRICE_SALE_UNIT_TOTAL if result is not None else PRICE_SALE_UNIT_UNRESOLVED
+                if prov:
+                    prov.record(
+                        "sale_price",
+                        result,
+                        rule_id=rule,
+                        source="description",
+                        source_text=description,
+                        confidence_contribution=0.20 if result else 0,
+                    )
+                return result, rule
         if area_sqm is None or area_sqm <= 0:
             return price, None
         area = Decimal(str(area_sqm))

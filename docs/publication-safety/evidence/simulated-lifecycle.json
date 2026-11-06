@@ -1,0 +1,85 @@
+{
+  "external_systems": "All Azure and HTTP operations mocked; not a live deployment/rollback",
+  "scenarios": {
+    "successful_promotion": {
+      "outcome": "verified",
+      "approval": {
+        "serving_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "serving_tree": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "tooling_sha": "cccccccccccccccccccccccccccccccccccccccc",
+        "tooling_tree": "dddddddddddddddddddddddddddddddddddddddd",
+        "data_source_sha": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+        "release_id": "new-data",
+        "bundle_sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+        "expected_state": "2a2674bd12d2d311fd27ab3338cd39edf141ab3ec05204b7243301644e2c1c5f",
+        "tooling_ref": ""
+      },
+      "events": [
+        "candidate_created",
+        "promotion_requested"
+      ],
+      "before_fingerprint": "2a2674bd12d2d311fd27ab3338cd39edf141ab3ec05204b7243301644e2c1c5f",
+      "previous": {
+        "ca-metrik-api--old": {
+          "image": "registry.example/metrik@sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "release_id": "old-data"
+        }
+      },
+      "previous_traffic": [
+        {
+          "revisionName": "ca-metrik-api--old",
+          "weight": 100
+        }
+      ],
+      "configuration_fingerprint": "2c7893d15714b4cb02fa195cf0b14b25b122f480d97511bcae64d51a87ff216a",
+      "candidate_image": "registry.example/metrik@sha256:2222222222222222222222222222222222222222222222222222222222222222",
+      "candidate_revision": "ca-metrik-api--new"
+    },
+    "weighted_rollback": {
+      "outcome": "failed",
+      "approval": {
+        "serving_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "serving_tree": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "tooling_sha": "cccccccccccccccccccccccccccccccccccccccc",
+        "tooling_tree": "dddddddddddddddddddddddddddddddddddddddd",
+        "data_source_sha": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+        "release_id": "new-data",
+        "bundle_sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+        "expected_state": "942bcbd51bd389717f3ea0dce9b46e48177543d40cdfb2a71ef23f6d2c3bd55d",
+        "tooling_ref": ""
+      },
+      "events": [
+        "candidate_created",
+        "promotion_requested"
+      ],
+      "before_fingerprint": "942bcbd51bd389717f3ea0dce9b46e48177543d40cdfb2a71ef23f6d2c3bd55d",
+      "previous": {
+        "ca-metrik-api--old": {
+          "image": "registry.example/metrik@sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "release_id": "old-data"
+        },
+        "ca-metrik-api--other": {
+          "image": "registry.example/metrik@sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "release_id": "old-data"
+        }
+      },
+      "previous_traffic": [
+        {
+          "revisionName": "ca-metrik-api--old",
+          "weight": 35
+        },
+        {
+          "revisionName": "ca-metrik-api--other",
+          "weight": 65
+        }
+      ],
+      "configuration_fingerprint": "2c7893d15714b4cb02fa195cf0b14b25b122f480d97511bcae64d51a87ff216a",
+      "candidate_image": "registry.example/metrik@sha256:2222222222222222222222222222222222222222222222222222222222222222",
+      "candidate_revision": "ca-metrik-api--new",
+      "error_type": "ValueError",
+      "error": "Simulated public HTTP 500 after promotion",
+      "rollback": "verified_exact_previous_allocation",
+      "cleanup": "failed_owned_candidate_deactivated"
+    }
+  }
+}

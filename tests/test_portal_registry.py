@@ -24,6 +24,7 @@ def test_known_production_portals_present() -> None:
         "vision",
         "topia",
         "myrealestate",
+        "harta",
     }
     assert all_portal_names() == expected
     assert set(parser_versions()) == expected
@@ -49,7 +50,7 @@ def test_parser_versions_present_and_shared() -> None:
 
 def test_display_names_consistent() -> None:
     names = source_display_names()
-    assert names == SOURCE_DISPLAY_NAMES
+    assert source_display_names(public_only=True) == SOURCE_DISPLAY_NAMES
     assert names == {
         "gjirafa": "Portal A",
         "merrjep": "Portal B",
@@ -57,6 +58,7 @@ def test_display_names_consistent() -> None:
         "vision": "Portal D",
         "topia": "Portal E",
         "myrealestate": "Portal F",
+        "harta": "Portal G",
     }
     # Phrase join order stays stable for empty active_sources_phrase fallback.
     assert list(names.values()) == [p.display_name for p in PORTALS]
@@ -68,14 +70,14 @@ def test_display_names_consistent() -> None:
 def test_source_priorities_consistent() -> None:
     order = source_priority_order()
     assert order == SOURCE_PRIORITY
-    assert order == ("gjirafa", "merrjep", "pro-rks", "vision", "topia", "myrealestate")
+    assert order == ("gjirafa", "merrjep", "pro-rks", "vision", "topia", "myrealestate", "harta")
     for i, name in enumerate(order):
         assert get_portal(name).source_priority == i
 
 
 def test_weekly_flags_valid() -> None:
     weekly = weekly_portal_names()
-    assert weekly == all_portal_names()
+    assert weekly == all_portal_names() - {"harta"}
     for portal in PORTALS:
-        assert portal.weekly is True
+        assert portal.weekly is (portal.name != "harta")
         assert portal.spider == portal.name

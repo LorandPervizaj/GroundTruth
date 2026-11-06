@@ -17,11 +17,32 @@ on:
         description: Optional catch-up interval in days (1-56). Empty uses the verified watermark.
         required: false
         type: string
+      publish:
+        description: Publish the verified data bundle only after protected-environment approval
+        required: false
+        type: boolean
+        default: false
       deploy:
         description: Deploy the verified release to public Metrik after publication
         required: false
         type: boolean
-        default: true
+        default: false
+      serving_source_sha:
+        description: Explicit reviewed Table-compatible application SHA
+        required: false
+        type: string
+      tooling_source_sha:
+        required: false
+        type: string
+      tooling_tree_sha:
+        required: false
+        type: string
+      serving_tree_sha:
+        required: false
+        type: string
+      expected_state:
+        required: false
+        type: string
 
 permissions:
   contents: read
@@ -32,6 +53,7 @@ concurrency:
 
 jobs:
   research:
+    environment: azure-beta
     if: ${{ github.ref == 'refs/heads/master' }}
     runs-on: [self-hosted, Windows, X64, groundtruth-research]
     timeout-minutes: 1440
@@ -104,7 +126,12 @@ jobs:
           RESULT: ${{ steps.pipeline.outputs.result }}
         run: uv run --no-sync groundtruth research publication-candidate --result $env:RESULT --github-output $env:GITHUB_OUTPUT
 
+      - name: Reject coupled research publication and deployment
+        if: ${{ inputs.deploy }}
+        run: throw 'Use deploy=false; then review the saved bundle and explicit publication approval separately.'
+
       - name: Publish immutable GitHub release
+        if: ${{ inputs.publish && vars.METRIK_PUBLICATION_ENABLED == 'true' && vars.METRIK_ENV_PUBLICATION_ENABLED == 'true' }}
         env:
           GH_TOKEN: ${{ github.token }}
           RELEASE_TAG: ${{ steps.candidate.outputs.release_tag }}
@@ -133,6 +160,7 @@ jobs:
           if (Compare-Object $assets $expected) { throw "Published assets differ from the verified bundle and checksum." }
 
       - name: Notify release verified
+        if: ${{ inputs.publish && vars.METRIK_PUBLICATION_ENABLED == 'true' && vars.METRIK_ENV_PUBLICATION_ENABLED == 'true' }}
         env:
           RELEASE_TAG: ${{ steps.candidate.outputs.release_tag }}
         run: |
@@ -150,13 +178,19 @@ jobs:
 
   deploy:
     needs: research
-    if: ${{ needs.research.result == 'success' && needs.research.outputs.release_tag != '' && (github.event_name == 'schedule' || inputs.deploy) }}
+    if: ${{ needs.research.result == 'success' && needs.research.outputs.release_tag != '' && inputs.deploy && vars.METRIK_DEPLOY_ENABLED == 'true' && vars.METRIK_OPERATOR_WINDOW == 'exclusive' }}
     permissions:
       contents: read
       id-token: write
     uses: ./.github/workflows/weekly-release-deploy.yml
     with:
       release_tag: ${{ needs.research.outputs.release_tag }}
+      tooling_source_sha: ${{ inputs.tooling_source_sha }}
+      tooling_tree_sha: ${{ inputs.tooling_tree_sha }}
+      serving_source_sha: ${{ inputs.serving_source_sha }}
+      serving_tree_sha: ${{ inputs.serving_tree_sha }}
+      expected_state: ${{ inputs.expected_state }}
+      approve_deployment: ${{ inputs.deploy }}
     secrets: inherit
 
   report-research-failure:

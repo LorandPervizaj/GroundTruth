@@ -1,0 +1,180 @@
+{
+  "version": "unit-price-golden-corrections-1.0.0",
+  "original_fixture_sha256": "0aff91c0fde2bb869ed305bafd4d024e75687f5c1a7e0128ebaa1729e1c7bc21",
+  "baseline_commit": "2cc30f7",
+  "scored_rows_preserved": 901,
+  "corrections": [
+    {
+      "row_index_zero_based": 326,
+      "source_listing_id": "banesa-51959",
+      "old_expected_price": "85000.00",
+      "new_expected_price": "MISSING",
+      "structured_price": "850 EUR",
+      "structured_area": "106",
+      "reason": "Conflicting structured/narrative area or multiple net/gross/terrace/unit areas; no defensible single total. Expected parser omission remains scored."
+    },
+    {
+      "row_index_zero_based": 333,
+      "source_listing_id": "banesa-33008",
+      "old_expected_price": "100000.00",
+      "new_expected_price": "MISSING",
+      "structured_price": "1,000 EUR",
+      "structured_area": "97",
+      "reason": "Conflicting structured/narrative area or multiple net/gross/terrace/unit areas; no defensible single total. Expected parser omission remains scored."
+    },
+    {
+      "row_index_zero_based": 341,
+      "source_listing_id": "banesa-42966",
+      "old_expected_price": "85000.00",
+      "new_expected_price": "49300.00",
+      "structured_price": "850 EUR",
+      "structured_area": "58",
+      "reason": "Matching structured/source euro rate times the single matching advertised area; replaces unsupported100x label."
+    },
+    {
+      "row_index_zero_based": 515,
+      "source_listing_id": "banesa-59837",
+      "old_expected_price": "98000.00",
+      "new_expected_price": "96040.00",
+      "structured_price": "980 EUR",
+      "structured_area": "98",
+      "reason": "Matching structured/source euro rate times the single matching advertised area; replaces unsupported100x label."
+    },
+    {
+      "row_index_zero_based": 630,
+      "source_listing_id": "banesa-60579",
+      "old_expected_price": "120000.00",
+      "new_expected_price": "MISSING",
+      "structured_price": "1,200 EUR",
+      "structured_area": "91",
+      "reason": "Conflicting structured/narrative area or multiple net/gross/terrace/unit areas; no defensible single total. Expected parser omission remains scored."
+    },
+    {
+      "row_index_zero_based": 631,
+      "source_listing_id": "banesa-30274",
+      "old_expected_price": "175000.00",
+      "new_expected_price": "MISSING",
+      "structured_price": "1,750 EUR",
+      "structured_area": "57",
+      "reason": "Conflicting structured/narrative area or multiple net/gross/terrace/unit areas; no defensible single total. Expected parser omission remains scored."
+    },
+    {
+      "row_index_zero_based": 634,
+      "source_listing_id": "banesa-32420",
+      "old_expected_price": "80000.00",
+      "new_expected_price": "MISSING",
+      "structured_price": "800 EUR",
+      "structured_area": "94",
+      "reason": "Conflicting structured/narrative area or multiple net/gross/terrace/unit areas; no defensible single total. Expected parser omission remains scored."
+    },
+    {
+      "row_index_zero_based": 637,
+      "source_listing_id": "banesa-61608",
+      "old_expected_price": "110000.00",
+      "new_expected_price": "MISSING",
+      "structured_price": "1,100 EUR",
+      "structured_area": "91",
+      "reason": "Conflicting structured/narrative area or multiple net/gross/terrace/unit areas; no defensible single total. Expected parser omission remains scored."
+    },
+    {
+      "row_index_zero_based": 639,
+      "source_listing_id": "banesa-58381",
+      "old_expected_price": "130000.00",
+      "new_expected_price": "MISSING",
+      "structured_price": "1,300 EUR",
+      "structured_area": "109",
+      "reason": "Conflicting structured/narrative area or multiple net/gross/terrace/unit areas; no defensible single total. Expected parser omission remains scored."
+    },
+    {
+      "row_index_zero_based": 644,
+      "source_listing_id": "banesa-32966",
+      "old_expected_price": "140000.00",
+      "new_expected_price": "189000.00",
+      "structured_price": "1,400 EUR",
+      "structured_area": "135",
+      "reason": "Matching structured/source euro rate times the single matching advertised area; replaces unsupported100x label."
+    },
+    {
+      "row_index_zero_based": 762,
+      "source_listing_id": "banesa-73701",
+      "old_expected_price": "160000.00",
+      "new_expected_price": "212800.00",
+      "structured_price": "1,600 EUR",
+      "structured_area": "133",
+      "reason": "Matching structured/source euro rate times the single matching advertised area; replaces unsupported100x label."
+    },
+    {
+      "row_index_zero_based": 769,
+      "source_listing_id": "banesa-79565",
+      "old_expected_price": "130000.00",
+      "new_expected_price": "84500.00",
+      "structured_price": "1,300 EUR",
+      "structured_area": "65",
+      "reason": "Matching structured/source euro rate times the single matching advertised area; replaces unsupported100x label."
+    },
+    {
+      "row_index_zero_based": 771,
+      "source_listing_id": "banesa-41635",
+      "old_expected_price": "103000.00",
+      "new_expected_price": "110210.00",
+      "structured_price": "1,030 EUR",
+      "structured_area": "107",
+      "reason": "Matching structured/source euro rate times the single matching advertised area; replaces unsupported100x label."
+    },
+    {
+      "row_index_zero_based": 774,
+      "source_listing_id": "banesa-32458",
+      "old_expected_price": "100000.00",
+      "new_expected_price": "MISSING",
+      "structured_price": "1,000 EUR",
+      "structured_area": "56",
+      "reason": "Conflicting structured/narrative area or multiple net/gross/terrace/unit areas; no defensible single total. Expected parser omission remains scored."
+    },
+    {
+      "row_index_zero_based": 775,
+      "source_listing_id": "banesa-32418",
+      "old_expected_price": "78000.00",
+      "new_expected_price": "84240.00",
+      "structured_price": "780 EUR",
+      "structured_area": "108",
+      "reason": "Matching structured/source euro rate times the single matching advertised area; replaces unsupported100x label."
+    },
+    {
+      "row_index_zero_based": 783,
+      "source_listing_id": "banesa-75350",
+      "old_expected_price": "120000.00",
+      "new_expected_price": "MISSING",
+      "structured_price": "1,200 EUR",
+      "structured_area": "61",
+      "reason": "Conflicting structured/narrative area or multiple net/gross/terrace/unit areas; no defensible single total. Expected parser omission remains scored."
+    },
+    {
+      "row_index_zero_based": 784,
+      "source_listing_id": "banesa-75018",
+      "old_expected_price": "128000.00",
+      "new_expected_price": "120320.00",
+      "structured_price": "1,280 EUR",
+      "structured_area": "94",
+      "reason": "Matching structured/source euro rate times the single matching advertised area; replaces unsupported100x label."
+    },
+    {
+      "row_index_zero_based": 791,
+      "source_listing_id": "banesa-73819",
+      "old_expected_price": "125000.00",
+      "new_expected_price": "81250.00",
+      "structured_price": "1,250 EUR",
+      "structured_area": "65",
+      "reason": "Matching structured/source euro rate times the single matching advertised area; replaces unsupported100x label."
+    },
+    {
+      "row_index_zero_based": 898,
+      "source_listing_id": "banesa-41486",
+      "old_expected_price": "88000.00",
+      "new_expected_price": "50160.00",
+      "structured_price": "880 EUR",
+      "structured_area": "57",
+      "reason": "Matching structured/source euro rate times the single matching advertised area; replaces unsupported100x label."
+    }
+  ],
+  "scope": "Expected extraction behavior from literal archived source claims; not real-world publisher validation. Thresholds and stored baseline scores unchanged."
+}
