@@ -28,12 +28,14 @@ from groundtruth.automation.deployment import (
 )
 from groundtruth.automation.deployment_source import verify_source
 from groundtruth.automation.staging import (
+    bound_endpoints,
     checkpoint,
     cleanup,
     controller_policy,
     preflight,
     prepare,
     validate,
+    validate_image_region,
 )
 from groundtruth.automation.staging_fixture import build_context, generate, write_json
 from groundtruth.automation.staging_image import build_and_verify
@@ -59,6 +61,11 @@ class StageAzure(Azure):
         super().__init__(policy)
         self.manifest = manifest
 
+    def inspect_image(self, image):
+        labels = super().inspect_image(image)
+        validate_image_region(self.manifest, labels)
+        return labels
+
     def check(self):
         m = self.manifest
         validate(m, now=datetime.now(UTC))
@@ -67,6 +74,10 @@ class StageAzure(Azure):
             "Wrong active subscription",
         )
         app = self.app()
+        require(
+            app.get("location", "").replace(" ", "").lower() == m["region"],
+            "Wrong staging application region",
+        )
         require(app["id"].lower() == m["app_id"].lower(), "Wrong staging app")
         props = app["properties"]
         require(
@@ -79,6 +90,10 @@ class StageAzure(Azure):
             "Wrong runtime identity",
         )
         ingress = props["configuration"]["ingress"]
+        require(
+            "https://" + ingress["fqdn"] == bound_endpoints(m)["public"],
+            "Staging ingress domain/region differs",
+        )
         require(
             not any(s.get("value") for s in props["configuration"].get("secrets", [])),
             "Plaintext secret readback cannot enter a checkpoint",
@@ -382,13 +397,11 @@ def main():
             bool(re.fullmatch(r"[0-9a-f-]{36}", m.get("runtime_client_id", ""))),
             "Bound staging identity required",
         )
-        require(
-            m.get("domain", "").endswith(".eastus2.azurecontainerapps.io"),
-            "Bound staging domain required",
-        )
+        endpoints = bound_endpoints(m)
         write_json(args.output / "infrastructure.json", infrastructure(m))
         write_json(args.output / "application.json", application(m))
         write_json(args.output / "bound-manifest.json", m)
+        write_json(args.output / "expected-endpoints.json", endpoints)
         write_json(args.output / "federation-plan.json", federation_plan(m))
         write_json(args.output / "authorization-plan.json", authorization_plan(m, m["principals"]))
         write_json(

@@ -15,6 +15,10 @@ def janitor_role_name(m):
 
 
 def validate_security(m, account, assignments, runtime_principal):
+    require(
+        account.get("location", "").replace(" ", "").lower() == m["region"],
+        "Wrong staging storage region",
+    )
     require(account["id"].lower() == m["table_id"].lower(), "Wrong storage account")
     p = account.get("properties", account)
     require(

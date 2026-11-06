@@ -1,3 +1,4 @@
+# North Central US manifest only; production remains in East US 2. No installation authorized.
 # INACTIVE reusable template. No production credential or environment is accepted.
 name: Staging primary cleanup
 on:

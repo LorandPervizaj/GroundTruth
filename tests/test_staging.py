@@ -29,6 +29,67 @@ def test_synthetic_json_is_platform_independent(tmp_path):
     assert (tmp_path / "fixture.json").read_bytes() == b'{\n  "synthetic": true\n}\n'
 
 
+def test_northcentralus_manifest_and_bound_endpoints(manifest):
+    assert manifest["region"] == "northcentralus"
+    assert not any(manifest["approval"].values())
+    manifest["domain"] = "synthetic.northcentralus.azurecontainerapps.io"
+    staging.validate(manifest, now=NOW)
+    endpoints = staging.bound_endpoints(manifest)
+    assert all(
+        ".northcentralus.azurecontainerapps.io" in url
+        for key, url in endpoints.items()
+        if key != "table"
+    )
+    assert endpoints["table"] == manifest["table_endpoint"]
+
+
+@pytest.mark.parametrize("region", ["eastus2", "westus2", "canadacentral", "mexicocentral"])
+def test_amended_policy_rejects_old_or_other_regions(manifest, region):
+    manifest["region"] = region
+    with pytest.raises(ValueError, match="region"):
+        staging.validate(manifest, now=NOW)
+
+
+@pytest.mark.parametrize(
+    "domain",
+    [
+        "synthetic.eastus2.azurecontainerapps.io",
+        "synthetic.westus2.azurecontainerapps.io",
+        "northcentralus.attacker.invalid",
+        "*.northcentralus.azurecontainerapps.io",
+    ],
+)
+def test_bound_endpoints_reject_foreign_region_or_origin(manifest, domain):
+    manifest["domain"] = domain
+    with pytest.raises(ValueError):
+        staging.validate(manifest, now=NOW)
+
+
+@pytest.mark.parametrize("region", [None, "eastus2", "westus2"])
+def test_synthetic_image_requires_amended_region_label(manifest, region):
+    staging.validate_image_region(manifest, {"io.metrik.staging-region": "northcentralus"})
+    with pytest.raises(ValueError):
+        staging.validate_image_region(manifest, {"io.metrik.staging-region": region})
+
+
+@pytest.mark.parametrize(
+    "fault", ["region", "production_environment", "missing_cores", "insufficient_cores"]
+)
+def test_core_quota_evidence_cannot_borrow_production_capacity(manifest, fault):
+    manifest["approval"] = dict.fromkeys(manifest["approval"], True)
+    observed = evidence(manifest)
+    if fault == "region":
+        observed["region"] = "eastus2"
+    if fault == "production_environment":
+        observed["quota_environment_id"] = "/production/cae-metrik-beta"
+    if fault == "missing_cores":
+        observed["quota_vcpu_available"] = None
+    if fault == "insufficient_cores":
+        observed["quota_vcpu_available"] = 2
+    with pytest.raises(ValueError, match="quota"):
+        staging.preflight(manifest, observed, now=NOW)
+
+
 def test_janitor_reads_only_its_group_without_directory_permissions(manifest, monkeypatch):
     import importlib.util
 
@@ -94,6 +155,8 @@ def manifest():
 def evidence(m):
     return {
         "subscription": staging.SUBSCRIPTION,
+        "region": "northcentralus",
+        "quota_environment_id": m["environment_id"],
         "providers_registered": True,
         "quota_vcpu_available": 3,
         "janitor": {
@@ -456,12 +519,16 @@ def test_synthetic_release_serves_real_read_api_contracts(tmp_path, monkeypatch)
         search._load_aliases.cache_clear()
 
 
-@pytest.mark.parametrize("fault", ["key", "anonymous", "tls", "https", "principal", "scope"])
-def test_storage_security_configuration_rejects_insecure_access(manifest, fault):
+@pytest.mark.parametrize(
+    "fault", ["key", "anonymous", "tls", "https", "principal", "scope", "region"]
+)
+@pytest.mark.parametrize("location", ["northcentralus", "North Central US"])
+def test_storage_security_configuration_rejects_insecure_access(manifest, fault, location):
     from groundtruth.automation.staging_storage import data_scope, validate_security
 
     account = {
         "id": manifest["table_id"],
+        "location": location,
         "allowSharedKeyAccess": False,
         "allowBlobPublicAccess": False,
         "supportsHttpsTrafficOnly": True,
@@ -490,6 +557,8 @@ def test_storage_security_configuration_rejects_insecure_access(manifest, fault)
         roles[0]["principalId"] = staging.PRODUCTION_PRINCIPAL
     if fault == "scope":
         roles[0]["scope"] = manifest["resource_group_id"]
+    if fault == "region":
+        account["location"] = "eastus2"
     with pytest.raises(ValueError):
         validate_security(manifest, account, roles, runtime)
 
@@ -534,9 +603,10 @@ def test_rendered_resources_enforce_storage_rbac_and_compute(manifest):
 
     manifest.update(
         runtime_client_id="11111111-1111-1111-1111-111111111111",
-        domain="synthetic.eastus2.azurecontainerapps.io",
+        domain="synthetic.northcentralus.azurecontainerapps.io",
     )
     resources = infrastructure(manifest)["resources"]
+    assert {r["location"] for r in resources if "location" in r} == {"northcentralus"}
     storage = next(r for r in resources if r["type"] == "Microsoft.Storage/storageAccounts")
     assert storage["properties"]["allowSharedKeyAccess"] is False
     assert storage["properties"]["allowBlobPublicAccess"] is False
@@ -544,6 +614,7 @@ def test_rendered_resources_enforce_storage_rbac_and_compute(manifest):
     assert storage["properties"]["supportsHttpsTrafficOnly"] is True
     assert storage["properties"]["networkAcls"]["defaultAction"] == "Allow"
     app = application(manifest)
+    assert app["resources"][0]["location"] == "northcentralus"
     assert app["parameters"]["opsToken"]["type"] == "secureString"
     template = app["resources"][0]["properties"]["template"]
     assert sum(c["resources"]["cpu"] for c in template["containers"]) == 1

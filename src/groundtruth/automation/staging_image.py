@@ -8,6 +8,7 @@ import tarfile
 from pathlib import Path
 
 from groundtruth.automation.deployment import require
+from groundtruth.automation.staging import STAGING_REGION
 from groundtruth.automation.staging_fixture import digest, verify, write_json
 
 
@@ -66,6 +67,7 @@ def build_and_verify(output: Path, *, runner=subprocess.run) -> dict:
         "io.metrik.data-source-sha": sha,
         "io.metrik.data-release-id": manifest["release"]["release_id"],
         "io.metrik.bundle-sha256": bundle_sha,
+        "io.metrik.staging-region": STAGING_REGION,
     }
     args = ["docker", "build", "--tag", tag]
     for name, value in labels.items():
@@ -147,6 +149,7 @@ print('synthetic-image-content-verified')
         "tag": tag,
         "bundle_sha256": bundle_sha,
         "image_config_digest": config["Id"],
+        "staging_region": STAGING_REGION,
         "baseline_tag": baseline_tag,
         "baseline_image_config_digest": baseline["Id"],
         "registry_manifest_digest": None,

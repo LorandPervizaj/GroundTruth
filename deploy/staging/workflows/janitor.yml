@@ -1,3 +1,4 @@
+# North Central US manifest only; production remains in East US 2. No installation authorized.
 # INACTIVE TEMPLATE. Install on master only through a separately approved change.
 name: Staging expiry janitor
 on:

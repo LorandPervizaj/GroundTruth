@@ -2,6 +2,12 @@
 
 This directory contains **inactive preparation**, not an installed Azure deployment or janitor. No Azure resource creation, identity/RBAC mutation, paid test, default-branch installation or production change is authorized by this implementation. Production policy is unchanged.
 
+## North Central US amendment, November 6
+
+Staging manifests now accept **only `northcentralus`**. Production stays in East US 2. Reusing an old East US 2 manifest, image label, domain binding or quota receipt fails closed. The earlier East US 2 approval does not authorize this region. See `docs/publication-safety/NORTHCENTRALUS_AMENDMENT.md` for the approval checklist and `northcentralus-preflight-evidence.json` for read-only regional/pricing evidence. Nothing here installs identities or a janitor.
+
+All regional ARM resources derive `location` from the validated manifest. Bind `domain` to the new environment's actual `<environment-label>.northcentralus.azurecontainerapps.io`; no invented endpoint may satisfy live evidence. `render` emits `expected-endpoints.json` for app/A/B/candidate HTTPS origins and the new global Table endpoint. The ACR endpoint remains `<new-registry>.azurecr.io`; its location must be North Central US. Synthetic OCI images carry `io.metrik.staging-region=northcentralus` in addition to source/tree/data labels; rebuild from the newly approved full SHA and verify actual registry manifest digests before running.
+
 ## Source and offline verification
 
 - `src/groundtruth/automation/staging.py`: exact subscription/run/resource identities, two-hour expiry/four-hour cleanup deadline, reviewed guard hashes, fixed SKU/compute limits, current-price/permission/janitor evidence validation, atomic durable receipts and scoped cleanup.
@@ -47,7 +53,7 @@ The ARM application takes only freshly generated staging `cachePassword` and `op
 
 `preflight --manifest <bound-manifest.json> --evidence <captured-evidence.json> --output <receipt.json>` requires:
 
-- Explicit spending, provisioning and janitor-installation approvals; same subscription/region, registered providers and at least three vCPUs of quota headroom.
+- Explicit spending, provisioning and janitor-installation approvals; same subscription, `region=northcentralus`, registered providers, `quota_environment_id` equal to the exact new manifest environment ID, and numeric `quota_vcpu_available >= 3` from that environment's Consumption usage readback. A regional 0/1 environment count is insufficient.
 - Actual default-branch janitor installation, active workflow, a successful independent verification run, 15-minute schedule, and exact manifest hash.
 - Verified cleanup permission at only the exact staging group; new distinct runtime/deploy/cleanup principals with no production access; Table permission scoped only to the new table and deployment permission only to the new app.
 - A UTC-stamped USD retail quote at most 24 hours old for the exact approved meters. Rate increases beyond 1% or a four-hour estimate above USD 2 fail; the USD 3 authorization is not a real-time provider cap.
@@ -69,6 +75,10 @@ An authorized installation change must:
 The expiry janitor refuses unexpired runs; primary cleanup may remove an owned unexpired run after tests. Both verify exact scope, ownership tags and absence afterward. Permission/transport failures or incomplete deletion are errors, never successful absence. Deletion polling is bounded to ten minutes; workflow timeout is twenty. At two hours cleanup starts; at 2.5 hours the owner uses the scoped fallback, and four-hour survivors are incidents. The shared cleanup concurrency lock prevents overlapping cleanup jobs.
 
 After deletion, independently cross-check recorded ARM IDs, group absence, run-specific role definition/federation/identity absence, and any orphaned authorization objects. Remove staging workflow secret/variable references and disable its run enable flags under the approved installation authority; a deleted janitor identity must not leave a repeatedly failing schedule enabled. Record every remaining item and billable survivor. Recheck delayed billing at 24/48 hours. No cleanup verification is claimed before the real run.
+
+## Bootstrap capacity gate — no execution authorized yet
+
+Azure exposes Consumption core usage per existing managed environment. Before explicit North Central US approval, keep that evidence null/unverified; never copy production's quota. Future approval must include bounded bootstrap: create the exact new group/restricted identities, install and independently verify cleanup at that group, then allocate only the Consumption environment with logging disabled. Before registry/storage/app allocation, read that new environment's core quota and require three available vCPUs. Allocation failure, unreadable quota or fewer than three cores means owned bootstrap deletion and a failed/incomplete run, not retry, quota request, upsizing or migration. No first paid resource is allowed without a verified independent janitor. TTL starts at first resource creation, including bootstrap; do not reset it after binding IDs.
 
 ## Future Stage A execution order
 

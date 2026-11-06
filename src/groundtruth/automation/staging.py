@@ -14,6 +14,7 @@ from groundtruth.automation.deployment import DIGEST, SHA, cache_guard, fingerpr
 from groundtruth.automation.staging_fixture import no_production
 
 SUBSCRIPTION = "c73c2fd1-9b7f-4221-a868-757128f2e416"
+STAGING_REGION = "northcentralus"
 PRODUCTION_PRINCIPAL = "f469a82e-9324-4b6f-a92e-498eb4b5acf2"
 PRODUCTION_CLIENT = "89d6c8e2-3de1-46b5-8ce3-df6212487ed6"
 GUARD_SHA = "cb53f92225872378adb456a54e8c62ecda8ec86d84a3ed78116b935c475b66fb"
@@ -51,7 +52,7 @@ def prepare(
         "schema": 1,
         "run_id": run_id,
         "subscription": SUBSCRIPTION,
-        "region": "eastus2",
+        "region": STAGING_REGION,
         "resource_group": group,
         "resource_group_id": root,
         "owner": "LorandPervizaj",
@@ -128,7 +129,7 @@ def validate(m: dict, *, now: datetime, allow_expired=False) -> None:
         "Wrong resource group",
     )
     require(
-        m["region"] == "eastus2"
+        m["region"] == STAGING_REGION
         and m["purpose"] == "metrik-stage-a"
         and m["owner"] == "LorandPervizaj",
         "Wrong region/ownership",
@@ -260,10 +261,41 @@ def validate(m: dict, *, now: datetime, allow_expired=False) -> None:
         "Invalid cache guard",
     )
     cache_guard(m, m["candidate_revision"])
+    if "domain" in m:
+        bound_endpoints(m)
+
+
+def bound_endpoints(m: dict) -> dict:
+    """Expected hosts are bound only to the approved new staging region."""
+    require(m["region"] == STAGING_REGION, "Wrong staging endpoint region")
+    domain = m.get("domain", "")
+    require(
+        bool(
+            re.fullmatch(
+                r"[a-z0-9][a-z0-9-]*\." + STAGING_REGION + r"\.azurecontainerapps\.io", domain
+            )
+        ),
+        "Bound North Central US staging domain required",
+    )
+    return {
+        "public": "https://" + m["app_name"] + "." + domain,
+        "baseline_a": "https://" + m["app_name"] + "--baseline-a." + domain,
+        "baseline_b": "https://" + m["app_name"] + "--baseline-b." + domain,
+        "candidate": "https://" + m["candidate_revision"] + "." + domain,
+        "table": m["table_endpoint"],
+    }
+
+
+def validate_image_region(m: dict, labels: dict) -> None:
+    require(
+        m["region"] == STAGING_REGION and labels.get("io.metrik.staging-region") == STAGING_REGION,
+        "Synthetic image staging region differs",
+    )
 
 
 def preflight(m: dict, evidence: dict, *, now: datetime) -> dict:
     validate(m, now=now)
+    cores = evidence.get("quota_vcpu_available")
     require(
         all(
             m["approval"].get(k) is True
@@ -273,8 +305,11 @@ def preflight(m: dict, evidence: dict, *, now: datetime) -> dict:
     )
     require(
         evidence.get("subscription") == SUBSCRIPTION
+        and evidence.get("region") == STAGING_REGION
+        and evidence.get("quota_environment_id") == m["environment_id"]
         and evidence.get("providers_registered")
-        and evidence.get("quota_vcpu_available", 0) >= 3,
+        and type(cores) in (int, float)
+        and cores >= 3,
         "Subscription/provider/quota preflight failed",
     )
     janitor = evidence.get("janitor", {})
