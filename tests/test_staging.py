@@ -24,6 +24,11 @@ ROOT = Path(__file__).resolve().parents[1]
 NOW = datetime(2026, 11, 6, tzinfo=UTC)
 
 
+def test_synthetic_json_is_platform_independent(tmp_path):
+    write_json(tmp_path / "fixture.json", {"synthetic": True})
+    assert (tmp_path / "fixture.json").read_bytes() == b'{\n  "synthetic": true\n}\n'
+
+
 @pytest.fixture
 def manifest():
     cache = json.loads((ROOT / "deploy/production-policy.json").read_text())["cache_expected"]
