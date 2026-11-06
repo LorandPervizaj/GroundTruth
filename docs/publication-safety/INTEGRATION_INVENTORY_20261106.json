@@ -1,5 +1,5 @@
 {
-  "snapshot_head": "8f6887f64bb3dd88f039cc07e3bcb5ada12eb919",
+  "snapshot_head": "351c70e2802f47910490278c669c1ee130668e46",
   "remote_master": "0b6f5ce3bc26a1b0313ae7f726e235b64c8f2d52",
   "production_source": "889184ff8a24ac0dacd87433cc71a5405bd23b7b",
   "safety_start": "92b05c887ec084fff8af718784bcfbe3e423a0a4",
@@ -52,6 +52,11 @@
       "predates_remediation": true
     },
     {
+      "sha": "351c70e2802f47910490278c669c1ee130668e46",
+      "title": "Scope janitor permission readback to its group and normalize fixture formatting",
+      "predates_remediation": false
+    },
+    {
       "sha": "35bce784d7a74d73cab61eaa86e32cb59e7c5242",
       "title": "Freeze Metrik release candidate with production public baseline and safe reference bootstrap",
       "predates_remediation": true
@@ -79,6 +84,11 @@
     {
       "sha": "4e27ebd770a1d48445f63c3ae3ddcece779c76f6",
       "title": "Cover publication failures and document controlled validation boundaries",
+      "predates_remediation": false
+    },
+    {
+      "sha": "5190019c2c03ee68e7c278490c063ec4d6c07e21",
+      "title": "Refresh provenance inventory to cover all review metadata",
       "predates_remediation": false
     },
     {
@@ -983,6 +993,7 @@
       "path": "docs/publication-safety/INTEGRATION_INVENTORY_20261106.json",
       "category": "documentation",
       "originating_commits": [
+        "5190019c2c03ee68e7c278490c063ec4d6c07e21",
         "8f6887f64bb3dd88f039cc07e3bcb5ada12eb919"
       ],
       "predates_remediation": false,
@@ -996,7 +1007,7 @@
       "sha256": {
         "master": null,
         "production": null,
-        "head": "ee2e8a7c8d03a15cc7f87423f736539b06ec0dd4a976b107a3958f0616e4590f"
+        "head": "669959d49a178a59604a9af1571dc1abee17e96e90e70b08d34584fec27a6d05"
       }
     },
     {
@@ -6876,6 +6887,7 @@
       "path": "scripts/azure/staging.py",
       "category": "publication_deployment_safety",
       "originating_commits": [
+        "351c70e2802f47910490278c669c1ee130668e46",
         "e68ae27f2ed75dbe1393fa49c2c1cffefd945c3d"
       ],
       "predates_remediation": false,
@@ -6889,7 +6901,7 @@
       "sha256": {
         "master": null,
         "production": null,
-        "head": "49e51c998bf8df102a85ffe9b8410421c88c1d490dc1a61f1fe28714f314f3f5"
+        "head": "2d0ad97f3fa7f812ec5c9930c6ab5eef000e7e02d9c3f2aa42fe83002840e2d1"
       }
     },
     {
@@ -7575,6 +7587,7 @@
       "path": "src/groundtruth/automation/staging_fixture.py",
       "category": "publication_deployment_safety",
       "originating_commits": [
+        "351c70e2802f47910490278c669c1ee130668e46",
         "49eee1adccf61fb0972210bbea447139200c055a",
         "e68ae27f2ed75dbe1393fa49c2c1cffefd945c3d"
       ],
@@ -7589,7 +7602,7 @@
       "sha256": {
         "master": null,
         "production": null,
-        "head": "d79259ced65b2849d11423d5e02fb07c91eb5b14a46fe59339e6db0e03584dd3"
+        "head": "221fd4478fa500d51fb4d6af53eb58ec8871feef90d3578e796b52f1d8b1719c"
       }
     },
     {
@@ -7636,6 +7649,7 @@
       "path": "src/groundtruth/automation/staging_storage.py",
       "category": "publication_deployment_safety",
       "originating_commits": [
+        "351c70e2802f47910490278c669c1ee130668e46",
         "e68ae27f2ed75dbe1393fa49c2c1cffefd945c3d"
       ],
       "predates_remediation": false,
@@ -7649,7 +7663,7 @@
       "sha256": {
         "master": null,
         "production": null,
-        "head": "f656663987c58b61a473b623f3ff04618d93044e95f6792ebd1897ac031a370e"
+        "head": "fa1b2d8a11af51417c16e3ebf6bbafb4593dd00d0b3788aac82eab96ce8bdbfc"
       }
     },
     {
@@ -9092,6 +9106,7 @@
       "path": "tests/test_staging.py",
       "category": "tests_fixtures",
       "originating_commits": [
+        "351c70e2802f47910490278c669c1ee130668e46",
         "49eee1adccf61fb0972210bbea447139200c055a",
         "e68ae27f2ed75dbe1393fa49c2c1cffefd945c3d"
       ],
@@ -9106,7 +9121,7 @@
       "sha256": {
         "master": null,
         "production": null,
-        "head": "00585fd372e35b2b59f2fd938242a76078618704e5f952f9ee4523603bf3f4db"
+        "head": "a13eec442246ec11f0f800181442b49a9a760e2e0b0f0cb0a58d17c29b9ec577"
       }
     },
     {
