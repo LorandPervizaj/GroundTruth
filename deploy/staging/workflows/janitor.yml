@@ -1,0 +1,63 @@
+# INACTIVE TEMPLATE. Install on master only through a separately approved change.
+name: Staging expiry janitor
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+    inputs:
+      verify_only:
+        description: Verify scoped credentials and ownership without deleting resources
+        required: true
+        default: false
+        type: boolean
+permissions:
+  contents: read
+  id-token: write
+concurrency:
+  group: metrik-staging-cleanup-${{ vars.METRIK_STAGING_RUN_ID }}
+  cancel-in-progress: false
+jobs:
+  cleanup:
+    if: ${{ vars.METRIK_STAGING_JANITOR_ENABLED == 'true' && github.ref == 'refs/heads/master' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      MANIFEST_JSON: ${{ vars.METRIK_STAGING_MANIFEST_JSON }}
+      MANIFEST_SHA: ${{ vars.METRIK_STAGING_MANIFEST_SHA256 }}
+      TOOLING_SHA: ${{ vars.METRIK_STAGING_TOOLING_SHA }}
+      METRIK_STAGING_EXECUTION_ENABLED: 'true'
+      VERIFY_ONLY: ${{ inputs.verify_only && 'true' || 'false' }}
+    steps:
+      - name: Require reviewed tooling commit
+        shell: bash
+        run: '[[ "$TOOLING_SHA" =~ ^[0-9a-f]{40}$ ]]'
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ vars.METRIK_STAGING_TOOLING_SHA }}
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: false
+      - run: uv sync --extra web --frozen
+      - uses: azure/login@v2
+        with:
+          client-id: ${{ vars.METRIK_STAGING_JANITOR_CLIENT_ID }}
+          tenant-id: ${{ vars.METRIK_STAGING_TENANT_ID }}
+          subscription-id: ${{ vars.METRIK_STAGING_SUBSCRIPTION_ID }}
+      - name: Write reviewed non-secret run manifest
+        run: |
+          mkdir -p artifacts
+          python -c "import os,pathlib; pathlib.Path('artifacts/run.json').write_text(os.environ['MANIFEST_JSON'])"
+      - name: Remove only the expired allowlisted group
+        run: |
+          flags=()
+          if [ "$VERIFY_ONLY" = true ]; then flags+=(--verify-only); fi
+          uv run python scripts/azure/staging.py cleanup "${flags[@]}" \
+            --manifest artifacts/run.json --manifest-sha256 "$MANIFEST_SHA" \
+            --approved-execution --output artifacts/cleanup-receipt.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: staging-cleanup-${{ github.run_id }}-${{ github.run_attempt }}
+          path: artifacts/
+          retention-days: 14

@@ -157,6 +157,11 @@ def test_candidate_validated_before_explicit_traffic_and_readback(setup):
     assert d.receipt["previous"][OLD]["image"] == OLD_IMAGE
 
 
+def test_default_production_receipt_excludes_raw_recovery_configuration(setup):
+    _, apply = execute(setup)
+    assert "recovery" not in apply()
+
+
 def test_ready_new_release_without_routing_is_not_success(setup):
     cloud, _, _ = setup
     cloud.ignore_traffic = True

@@ -1,0 +1,61 @@
+# INACTIVE reusable template. No production credential or environment is accepted.
+name: Staging primary cleanup
+on:
+  workflow_call:
+    inputs:
+      manifest_json:
+        required: true
+        type: string
+      manifest_sha256:
+        required: true
+        type: string
+      tooling_sha:
+        required: true
+        type: string
+permissions:
+  contents: read
+  id-token: write
+concurrency:
+  group: metrik-staging-cleanup-${{ vars.METRIK_STAGING_RUN_ID }}
+  cancel-in-progress: false
+jobs:
+  cleanup:
+    if: ${{ always() && vars.METRIK_STAGING_PRIMARY_CLEANUP_ENABLED == 'true' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      MANIFEST_JSON: ${{ inputs.manifest_json }}
+      MANIFEST_SHA: ${{ inputs.manifest_sha256 }}
+      TOOLING_SHA: ${{ inputs.tooling_sha }}
+      METRIK_STAGING_EXECUTION_ENABLED: 'true'
+    steps:
+      - name: Require reviewed tooling commit
+        run: '[[ "$TOOLING_SHA" =~ ^[0-9a-f]{40}$ ]]'
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tooling_sha }}
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: false
+      - run: uv sync --extra web --frozen
+      - uses: azure/login@v2
+        with:
+          client-id: ${{ vars.METRIK_STAGING_JANITOR_CLIENT_ID }}
+          tenant-id: ${{ vars.METRIK_STAGING_TENANT_ID }}
+          subscription-id: ${{ vars.METRIK_STAGING_SUBSCRIPTION_ID }}
+      - name: Write non-secret run manifest
+        run: |
+          mkdir -p artifacts
+          python -c "import os,pathlib; pathlib.Path('artifacts/run.json').write_text(os.environ['MANIFEST_JSON'])"
+      - name: Unconditional owned-run cleanup
+        run: >-
+          uv run python scripts/azure/staging.py cleanup --primary-cleanup
+          --manifest artifacts/run.json --manifest-sha256 "$MANIFEST_SHA"
+          --approved-execution --output artifacts/cleanup-receipt.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: staging-primary-cleanup-${{ github.run_id }}-${{ github.run_attempt }}
+          path: artifacts/
+          retention-days: 14

@@ -1,6 +1,6 @@
 # Temporary Azure staging — approval proposal
 
-Prepared 2026-11-04. **PLAN ONLY: no provisioning, paid-service activation, production revision creation, or traffic changes are authorized.**
+Prepared 2026-11-04; implementation and RBAC-only networking preparation updated 2026-11-06. **PLAN ONLY: no provisioning, paid-service activation, production revision creation, or traffic changes are authorized.**
 
 ## Decision requested
 
@@ -10,7 +10,7 @@ Approval covers only the resources and Stage A tests below, including deleting t
 
 ## Architecture and isolation
 
-Use a new resource group `rg-metrik-stage-<run-id>` containing a new Consumption-only Container Apps environment, one staging app in Multiple revision mode, a new Standard LRS storage account, a Basic image registry, and two new managed identities. Names include a random run suffix; record exact ARM IDs in a run manifest before mutations.
+Use a new resource group `rg-metrik-stage-<run-id>` containing a new Consumption-only Container Apps environment, one staging app in Multiple revision mode, a new Standard LRS storage account, a Basic image registry, and three new managed identities (runtime, deployment and independent janitor), plus a run-specific janitor role in the temporary group. Names include a random run suffix; record exact ARM IDs in a run manifest before mutations.
 
 ```text
 Protected manual staging workflow / local approved bootstrap
@@ -30,7 +30,7 @@ No references to production environment, registry, Table account, database, Cosm
 
 Generate fresh ops token, PostgreSQL password, and any storage credentials in memory; use encrypted staging-scoped secret storage, never production secrets. Runtime identity has Table data access only on the new staging account and AcrPull only on the new registry. Deployment identity has Container Apps management only on the new staging app after bootstrap and AcrPush only on the staging registry. Bootstrap and cleanup permissions are separate, restricted to the exact temporary resource group; no standing subscription-wide GitHub writer. All identities and federation records are new, contained in the staging resource group and removed with it.
 
-Storage networking: HTTPS only, disable anonymous blob access, restrict the Table endpoint to the approved runner/staging egress IP allowlist where supported, and verify connections before tests. No VNet, NAT Gateway, private endpoint, or dedicated workload profile is included. App ingress is restricted to the approved runner IP, using the staging app and revision-specific endpoints; fail closed if that rule prevents required revision access. The subscription is shared, so this is resource/data/credential isolation, not a separate subscription security boundary.
+Storage networking (preparation approved by the user on November 6): public HTTPS connectivity with authentication required for all Table data operations; disable Shared Key authorization and anonymous Blob access, require TLS 1.2 or newer, and scope the dedicated runtime identity to only the synthetic StageSubmissions table. Production principals are forbidden. Same-region Storage traffic cannot use the app public-egress IP allowlist, so no such firewall guarantee is claimed. Verify managed-identity access and real denial of unauthorized identities, valid Shared Key, anonymous and HTTP requests during the separately approved Stage A run. No VNet, NAT Gateway, private endpoint, or dedicated workload profile is included. App ingress is restricted to the approved runner IP, using the staging app and revision-specific endpoints; fail closed if that rule prevents required revision access. The subscription is shared, so this is resource/data/credential isolation, not a separate subscription security boundary.
 
 ## Resources and cost estimate
 
@@ -44,7 +44,7 @@ USD retail rates retrieved 2026-11-04 from Microsoft's Retail Prices API for `ea
 | PostgreSQL cache sidecars + EmptyDir | Included within each revision's 1 vCPU / 2 GiB allocation; no managed database/disk | Included above | $0 extra |
 | Basic ACR | Isolated image storage, local build, no ACR Tasks; keep images below included storage | $0.00694 equivalent | Reserve **$0.1666**, a full day conservatively |
 | Standard LRS storage account / Table service | At most 0.1 GB synthetic records and 100,000 total transactions | Capacity about $0.0000062; transactions metered separately | Under **$0.004** including transactions |
-| Two user-assigned identities, federation and scoped RBAC | Separate runtime/deployment credentials; bootstrap and janitor use narrowly scoped approved credentials | $0 resource charge | $0 |
+| Three user-assigned identities, federation, scoped RBAC and a run-specific role definition | Separate runtime/deployment/janitor credentials; bootstrap remains separately approved | $0 resource charge | $0 |
 | HTTPS ingress, managed app FQDN and platform TLS | No custom domain, Front Door, gateway or paid certificate | Included; request/egress allowance below | $0 fixed |
 | Requests | At most 10,000 external requests; $0.40 per million | Workload dependent | **$0.004** |
 | Internet data transfer | At most 0.1 GB responses/evidence; reserve $0.10/GB without relying on free grants | Workload dependent | **$0.01** |
@@ -97,8 +97,8 @@ Abort promotion on any readiness failure, identity/digest/release mismatch, unex
 
 ## Known limits and acceptance
 
-Resource/credential isolation still shares subscription quota with production. Check headroom and keep bounded replicas; stop rather than increase quotas. Public Azure service endpoints remain used with IP restriction, HTTPS and synthetic data; private networking would require a new costed proposal. Logs are streamed, so failed-run evidence must be captured by the runner before deletion. Local image build capability, synthetic fixture validation, staging-specific policy and the independent janitor are prerequisites to implement after approval, not completed infrastructure.
+Resource/credential isolation still shares subscription quota with production. Check headroom and keep bounded replicas; stop rather than increase quotas. Public Azure service endpoints remain used with IP restriction, HTTPS and synthetic data; private networking would require a new costed proposal. Logs are streamed, so failed-run evidence must be captured by the runner before deletion. Synthetic fixture/context/image verification, staging policy/preflight/controller integration and inactive primary/janitor workflow templates are implemented; see deploy/staging/README.md. Real image CI and final readiness are recorded in COMPLETION_20261106.md and PR #20. Live default-branch installation, scoped identities/role assignments, quota/pricing readback and real Azure authorization/cleanup tests remain approval-gated external actions, not completed infrastructure.
 
 Stage A is complete only when real deployment, direct identity, denial cases, promotion, exact weighted rollback, failure/interruption recovery and verified cleanup have receipts, and production snapshots match. Any skipped case is reported as incomplete. Stage B (production zero-traffic candidate) and Stage C (production promotion/rollback) remain separate decisions even after a full staging pass.
 
-Current state: **plan prepared; approval and spending authorization pending; zero staging resources created; Stage A/B/C unexecuted.**
+Current state: **preparation implemented; only RBAC-only networking preparation is approved. Provisioning, paid execution and default-branch cleanup installation remain unapproved; zero staging resources created; Stage A/B/C unexecuted.**
