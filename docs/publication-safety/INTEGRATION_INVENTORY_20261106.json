@@ -1,10 +1,10 @@
 {
-  "snapshot_head": "e68ae27f2ed75dbe1393fa49c2c1cffefd945c3d",
+  "snapshot_head": "8f6887f64bb3dd88f039cc07e3bcb5ada12eb919",
   "remote_master": "0b6f5ce3bc26a1b0313ae7f726e235b64c8f2d52",
   "production_source": "889184ff8a24ac0dacd87433cc71a5405bd23b7b",
   "safety_start": "92b05c887ec084fff8af718784bcfbe3e423a0a4",
   "merge_base": "0b6f5ce3bc26a1b0313ae7f726e235b64c8f2d52",
-  "file_count": 429,
+  "file_count": 431,
   "commits": [
     {
       "sha": "0327f96496416b3dd69801019fa6c10c87c9aad3",
@@ -72,6 +72,11 @@
       "predates_remediation": true
     },
     {
+      "sha": "49eee1adccf61fb0972210bbea447139200c055a",
+      "title": "Keep synthetic fixture bytes deterministic across Windows and Linux",
+      "predates_remediation": false
+    },
+    {
       "sha": "4e27ebd770a1d48445f63c3ae3ddcece779c76f6",
       "title": "Cover publication failures and document controlled validation boundaries",
       "predates_remediation": false
@@ -104,6 +109,11 @@
     {
       "sha": "8b8f3e9da56620f1a841aa3bc8a3ca38491ce10d",
       "title": "Record draft PR validation blockers and staging readiness prerequisites",
+      "predates_remediation": false
+    },
+    {
+      "sha": "8f6887f64bb3dd88f039cc07e3bcb5ada12eb919",
+      "title": "Document complete integration provenance and technical readiness evidence",
       "predates_remediation": false
     },
     {
@@ -909,6 +919,26 @@
       }
     },
     {
+      "path": "docs/publication-safety/COMPLETION_20261106.md",
+      "category": "documentation",
+      "originating_commits": [
+        "8f6887f64bb3dd88f039cc07e3bcb5ada12eb919"
+      ],
+      "predates_remediation": false,
+      "inclusion_reason": "Review provenance, operating boundaries, historical evidence or release instructions.",
+      "runtime_changes_vs_master": false,
+      "runtime_differs_from_production": false,
+      "public_release_contents_change_vs_production": false,
+      "required_for_publication_patch": false,
+      "required_to_preserve_historical_integration": false,
+      "verification": "Full final-tree regression/CI plus origin review; see COMPLETION_20261106.md",
+      "sha256": {
+        "master": null,
+        "production": null,
+        "head": "bb418085a20fc51d318ce981dcfedc1ffdc08d183b84d0ec25a2d65b600774f8"
+      }
+    },
+    {
       "path": "docs/publication-safety/DEPENDENCY_ADVISORIES_20261106.json",
       "category": "documentation",
       "originating_commits": [
@@ -947,6 +977,26 @@
         "master": null,
         "production": null,
         "head": "f52a5761261af797131fac54636cee8222d3d436725a1dacf43509f1dbef0d5e"
+      }
+    },
+    {
+      "path": "docs/publication-safety/INTEGRATION_INVENTORY_20261106.json",
+      "category": "documentation",
+      "originating_commits": [
+        "8f6887f64bb3dd88f039cc07e3bcb5ada12eb919"
+      ],
+      "predates_remediation": false,
+      "inclusion_reason": "Review provenance, operating boundaries, historical evidence or release instructions.",
+      "runtime_changes_vs_master": false,
+      "runtime_differs_from_production": false,
+      "public_release_contents_change_vs_production": false,
+      "required_for_publication_patch": false,
+      "required_to_preserve_historical_integration": false,
+      "verification": "Full final-tree regression/CI plus origin review; see COMPLETION_20261106.md",
+      "sha256": {
+        "master": null,
+        "production": null,
+        "head": "ee2e8a7c8d03a15cc7f87423f736539b06ec0dd4a976b107a3958f0616e4590f"
       }
     },
     {
@@ -7525,6 +7575,7 @@
       "path": "src/groundtruth/automation/staging_fixture.py",
       "category": "publication_deployment_safety",
       "originating_commits": [
+        "49eee1adccf61fb0972210bbea447139200c055a",
         "e68ae27f2ed75dbe1393fa49c2c1cffefd945c3d"
       ],
       "predates_remediation": false,
@@ -7538,7 +7589,7 @@
       "sha256": {
         "master": null,
         "production": null,
-        "head": "67a0b41c15cb799341fa2e3756fd0a09ae8736d0dfa6e7e44fcedbac82609fec"
+        "head": "d79259ced65b2849d11423d5e02fb07c91eb5b14a46fe59339e6db0e03584dd3"
       }
     },
     {
@@ -9041,6 +9092,7 @@
       "path": "tests/test_staging.py",
       "category": "tests_fixtures",
       "originating_commits": [
+        "49eee1adccf61fb0972210bbea447139200c055a",
         "e68ae27f2ed75dbe1393fa49c2c1cffefd945c3d"
       ],
       "predates_remediation": false,
@@ -9054,7 +9106,7 @@
       "sha256": {
         "master": null,
         "production": null,
-        "head": "6ce6ed7ec559f3cdfab2b6d22ef7a9b1a102944a15da7dd4060991bbf975b915"
+        "head": "00585fd372e35b2b59f2fd938242a76078618704e5f952f9ee4523603bf3f4db"
       }
     },
     {
